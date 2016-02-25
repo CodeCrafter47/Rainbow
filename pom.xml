@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.projectrainbow</groupId>
+    <artifactId>rainbow-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.9-pre3-SNAPSHOT</version>
+    <modules>
+        <module>nms</module>
+        <module>rainbow</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <build.number>unknown</build.number>
+        <minecraft.version>1.9-pre3</minecraft.version>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>jenkins</id>
+            <activation>
+                <property>
+                    <name>env.BUILD_NUMBER</name>
+                </property>
+            </activation>
+            <properties>
+                <build.number>${env.BUILD_NUMBER}</build.number>
+            </properties>
+        </profile>
+    </profiles>
+
+    <repositories>
+        <repository>
+            <id>codecrafter47-repo</id>
+            <url>http://nexus.codecrafter47.dyndns.eu/content/repositories/public/</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>codecrafter47-repo</id>
+            <url>http://nexus.codecrafter47.dyndns.eu/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>download-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <id>download-minecraft-server</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://s3.amazonaws.com/Minecraft.Download/versions/${minecraft.version}/minecraft_server.${minecraft.version}.jar</url>
+                            <unpack>false</unpack>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <md5>43e73ee7c6b56253447fe2d012647fee</md5>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+                <executions>
+                    <execution>
+                        <id>install-minecraft-server</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>com.mojang</groupId>
+                            <artifactId>minecraft-server</artifactId>
+                            <version>${minecraft.version}</version>
+                            <packaging>jar</packaging>
+                            <file>${project.build.directory}/lib/minecraft_server.${minecraft.version}.jar</file>
+                            <createChecksum>true</createChecksum>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
