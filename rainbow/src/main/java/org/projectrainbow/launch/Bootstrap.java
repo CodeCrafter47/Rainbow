@@ -79,13 +79,6 @@ public class Bootstrap {
             // dev environment
             options.add("--mixin");
             options.add("mixins.json");
-            System.setProperty("mixin.debug.verbose", "true");
-            System.setProperty("mixin.debug.verify", "true");
-            System.setProperty("mixin.debug.countInjections", "true");
-            System.setProperty("mixin.checks.interfaces", "true");
-        } else {
-            // obfuscated
-            System.setProperty("mixin.obf", "searge");
         }
 
         for (String tweakClass : tweakClasses) {

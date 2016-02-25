@@ -166,7 +166,7 @@
                             <artifactSet>
                                 <excludes>
                                     <exclude>com.mojang:minecraft-server</exclude>
-                                    <exclude>org.projectrainbow:nms</exclude>
+                                    <!--<exclude>org.projectrainbow:nms</exclude>-->
                                 </excludes>
                             </artifactSet>
                             <transformers>
