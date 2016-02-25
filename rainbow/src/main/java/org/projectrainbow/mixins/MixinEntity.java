@@ -6,6 +6,7 @@ import PluginReference.MC_EntityType;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_Location;
 import PluginReference.MC_MotionData;
+import PluginReference.MC_Player;
 import PluginReference.MC_PotionEffect;
 import PluginReference.MC_World;
 import com.google.common.base.Objects;
@@ -28,6 +29,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Collections;
 import java.util.List;
@@ -136,9 +138,21 @@ public abstract class MixinEntity implements MC_Entity {
         invulnerable = value;
     }
 
-    @Inject(method = "a(DZLnet/minecraft/src/IBlockState;Lnet/minecraft/src/BlockPos;)V", at = @At("RETURN"))
-    protected void a(double var1, boolean var3, IBlockState var4, BlockPos var5, CallbackInfo callbackInfo) {
-        Hooks.onFallComplete(this, this.fallDistance, new MC_Location(var5.getX(), var5.getY(), var5.getZ(), dimension), inWater);
+    private float waterFallDistance = 0;
+
+    @Inject(method = "handleWaterMovement", at = @At(value = "FIELD", target = "fallDistance"))
+    private void onWaterEntered(CallbackInfoReturnable<Boolean> callbackInfo) {
+        waterFallDistance = fallDistance;
+    }
+
+    @Inject(method = "a(DZLnet/minecraft/src/IBlockState;Lnet/minecraft/src/BlockPos;)V", at = @At("HEAD"))
+    protected void a(double var1, boolean onGround, IBlockState var4, BlockPos var5, CallbackInfo callbackInfo) {
+        if(onGround && fallDistance > 0) {
+            Hooks.onFallComplete(this, this.fallDistance, new MC_Location(var5.getX(), var5.getY(), var5.getZ(), dimension), inWater);
+        } else if (inWater && waterFallDistance > 0) {
+            Hooks.onFallComplete(this, this.waterFallDistance, new MC_Location(var5.getX(), var5.getY(), var5.getZ(), dimension), inWater);
+            waterFallDistance = 0;
+        }
     }
 
     @Override
