@@ -652,6 +652,9 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
     @Override
     public MC_Location getBedRespawnLocation() {
         BlockPos loc = getBedLocation();
+        if (loc == null) {
+            return getWorld().getSpawnLocation();
+        }
         return new MC_Location(dimension, loc.getX(), loc.getY(), loc.getZ());
     }
 
