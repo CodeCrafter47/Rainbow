@@ -1,5 +1,6 @@
 package org.projectrainbow.mixins;
 
+import PluginReference.MC_Location;
 import PluginReference.MC_Player;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.src.BlockPos;
@@ -16,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -41,6 +43,12 @@ public class MixinServerConfigurationManager {
                            CallbackInfoReturnable<EntityPlayerMP> callback, BlockPos whatEver, @Coerce boolean b, ItemInWorldManager maybe,
                            EntityPlayerMP newPlayer, WorldServer worldServer, BlockPos spawnPoint){
         Hooks.onPlayerRespawn((MC_Player) newPlayer);
+    }
+
+    @Redirect(method = "recreatePlayerEntity", at = @At(value = "INVOKE", target = "getSpawnPoint"))
+    private BlockPos onRespawnSendCompassTarget(WorldServer worldServer, EntityPlayerMP oldPlayer, int dimension, boolean fromEnd){
+        MC_Location compassTarget = ((MC_Player) oldPlayer).getCompassTarget();
+        return new BlockPos(compassTarget.getBlockX(), compassTarget.getBlockY(), compassTarget.getBlockZ());
     }
 
     @ModifyArg(method = "removeAllPlayers", at = @At(value = "INVOKE", target = "Lnet/minecraft/src/NetHandlerPlayServer;kickPlayerFromServer(Ljava/lang/String;)V"))
