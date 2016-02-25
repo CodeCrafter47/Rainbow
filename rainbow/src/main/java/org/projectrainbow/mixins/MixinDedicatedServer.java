@@ -7,6 +7,7 @@ import net.minecraft.src.ICommandManager;
 import net.minecraft.src.ICommandSender;
 import org.projectrainbow.Hooks;
 import org.projectrainbow._DiwUtils;
+import org.projectrainbow.launch.Bootstrap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
@@ -44,7 +45,7 @@ public class MixinDedicatedServer {
         System.out.println("            / _, _/ /_/ / / / / / /_/ / /_/ / |/ |/ / ");
         System.out.println("           /_/ |_|\\__,_/_/_/ /_/_.___/\\____/|__/|__/  ");
         System.out.println(" ");
-        System.out.println("Rainbow Mod v" + _DiwUtils.DiwModVersion + ": Based on Minecraft version " + _DiwUtils.MC_VERSION_STRING);
+        System.out.println("Rainbow Mod " + Bootstrap.minecraftVersion + "#" + Bootstrap.buildNumber);
     }
 
     /*
