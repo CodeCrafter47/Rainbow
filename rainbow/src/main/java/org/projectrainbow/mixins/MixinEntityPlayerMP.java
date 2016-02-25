@@ -483,7 +483,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public MC_ItemStack getItemInHand() {
-        return (MC_ItemStack) (Object) inventory.getCurrentItem();
+        return Objects.firstNonNull((MC_ItemStack) (Object) inventory.getCurrentItem(), EmptyItemStack.getInstance());
     }
 
     @Override
@@ -493,12 +493,12 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public MC_ItemStack getItemInOffHand() {
-        return (MC_ItemStack) (Object) inventory.c[0];
+        return Objects.firstNonNull((MC_ItemStack) (Object) inventory.c[0], EmptyItemStack.getInstance());
     }
 
     @Override
     public void setItemInOffHand(MC_ItemStack item) {
-        inventory.c[0] = (ItemStack) (Object) item;
+        inventory.c[0] = item instanceof EmptyItemStack ? null : (ItemStack) (Object) item;
     }
 
     @Override

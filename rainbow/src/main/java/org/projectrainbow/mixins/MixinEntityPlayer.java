@@ -3,6 +3,7 @@ package org.projectrainbow.mixins;
 import PluginReference.MC_EventInfo;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_Player;
+import com.google.common.base.Objects;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.src.BlockPos;
 import net.minecraft.src.Container;
@@ -12,6 +13,7 @@ import net.minecraft.src.FoodStats;
 import net.minecraft.src.InventoryPlayer;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.PlayerCapabilities;
+import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
 import org.projectrainbow.commands._CmdNameColor;
@@ -83,19 +85,19 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
     @Inject(method = "dropItem", at = @At("HEAD"), cancellable = true)
     private void onItemDropped(ItemStack var1, boolean var2, boolean var3, CallbackInfoReturnable<EntityItem> callbackInfo) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptItemDrop((MC_Player) this, (MC_ItemStack) (Object) var1, ei);
+        Hooks.onAttemptItemDrop((MC_Player) this, Objects.firstNonNull((MC_ItemStack) (Object) var1, EmptyItemStack.getInstance()), ei);
         if (ei.isCancelled) {
             callbackInfo.setReturnValue(null);
         }
     }
 
     @Override
-    public List getArmor() {
+    public List<MC_ItemStack> getArmor() {
         return PluginHelper.invArrayToList(inventory.armorInventory);
     }
 
     @Override
-    public void setArmor(List var1) {
+    public void setArmor(List<MC_ItemStack> var1) {
         PluginHelper.updateInv(inventory.armorInventory, var1);
     }
 }

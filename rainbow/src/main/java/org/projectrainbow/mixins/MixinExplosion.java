@@ -4,13 +4,13 @@ import PluginReference.MC_Entity;
 import PluginReference.MC_EventInfo;
 import PluginReference.MC_Location;
 import PluginReference.MC_World;
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import net.minecraft.src.BlockPos;
 import net.minecraft.src.Entity;
 import net.minecraft.src.Explosion;
 import net.minecraft.src.World;
 import org.projectrainbow.Hooks;
+import org.projectrainbow.LocationTransformer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -46,24 +46,28 @@ public class MixinExplosion {
 
     @Inject(method = "doExplosionA", at = @At("HEAD"), cancellable = true)
     private void onExplosion(CallbackInfo callbackInfo) {
-        MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptExplosion(new MC_Location(explosionX, explosionY, explosionZ, ((MC_World)worldObj).getDimension()), ei);
-        if (ei.isCancelled) {
-            callbackInfo.cancel();
+        try {
+            MC_EventInfo ei = new MC_EventInfo();
+            Hooks.onAttemptExplosion(new MC_Location(explosionX, explosionY, explosionZ, ((MC_World)worldObj).getDimension()), ei);
+            if (ei.isCancelled) {
+                callbackInfo.cancel();
+            }
+        } catch (Throwable th) {
+            th.printStackTrace();
         }
     }
 
     @Inject(method = "doExplosionB", at = @At("HEAD"), cancellable = true)
     private void onExplosionB(boolean b, CallbackInfo callbackInfo) {
-        MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptExplodeSpecific((MC_Entity) exploder, Lists.transform(affectedBlockPositions, new Function<BlockPos, MC_Location>() {
-            @Override
-            public MC_Location apply(BlockPos o) {
-                return new MC_Location(o.getX(), o.getY(), o.getZ(), ((MC_World)worldObj).getDimension());
+        try {
+            MC_EventInfo ei = new MC_EventInfo();
+            Hooks.onAttemptExplodeSpecific((MC_Entity) exploder, Lists.transform(affectedBlockPositions, new LocationTransformer(worldObj)));
+            if (ei.isCancelled) {
+                callbackInfo.cancel();
             }
-        }));
-        if (ei.isCancelled) {
-            callbackInfo.cancel();
+        } catch (Throwable th) {
+            th.printStackTrace();
         }
     }
+
 }

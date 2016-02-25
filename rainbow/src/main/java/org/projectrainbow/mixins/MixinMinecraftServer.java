@@ -25,6 +25,8 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static net.minecraft.src.ng.at;
+
 @Mixin(MinecraftServer.class)
 public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     @Shadow
@@ -194,6 +196,12 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     @ModifyArg(method = "a(Lnet/minecraft/src/jz;)V", at = @At(value = "INVOKE", target = "net.minecraft.server.MinecraftServer.getFile(Ljava/lang/String;)Ljava/io/File;"))
     private String setServerIcon(String old) {
         return ServerWrapper.serverIconFileName;
+    }
+
+    @ModifyArg(method = "updateTimeLightAndEntities", at = @At(value = "INVOKE", target = "makeCrashReport"))
+    private Throwable onException(Throwable th) {
+        th.printStackTrace();
+        return th;
     }
 
     @Override

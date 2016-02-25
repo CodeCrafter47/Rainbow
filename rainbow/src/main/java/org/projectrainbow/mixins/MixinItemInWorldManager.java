@@ -4,6 +4,7 @@ import PluginReference.MC_EventInfo;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_Location;
 import PluginReference.MC_Player;
+import com.google.common.base.Objects;
 import net.minecraft.src.Block;
 import net.minecraft.src.BlockPos;
 import net.minecraft.src.Blocks;
@@ -23,6 +24,7 @@ import net.minecraft.src.WorldSettings;
 import net.minecraft.src.qo;
 import org.apache.logging.log4j.LogManager;
 import org.projectrainbow.BlockWrapper;
+import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
 import org.spongepowered.asm.mixin.Mixin;
@@ -54,7 +56,7 @@ public class MixinItemInWorldManager {
     private boolean hookInteract(Block block, World var2, BlockPos var5, IBlockState state, EntityPlayer var1, EnumHand var4, ItemStack var6, EnumFacing face, float var7, float var8, float var9) {
         if (block.a(var2, var5, state, var1, var4, var6, face, var7, var8, var9)) {
             LogManager.getLogger().debug("JKC DBG: INTERACTING WITH BLOCK, like Chest/Furnace but also Cake" + var1.getName());
-            Hooks.onInteracted((MC_Player) var1, new MC_Location(var5.getX(), var5.getY(), var5.getZ(), var1.dimension), (MC_ItemStack) (Object) var6);
+            Hooks.onInteracted((MC_Player) var1, new MC_Location(var5.getX(), var5.getY(), var5.getZ(), var1.dimension), Objects.firstNonNull((MC_ItemStack) (Object) var6, EmptyItemStack.getInstance()));
             return true;
         }
         return false;
@@ -81,7 +83,7 @@ public class MixinItemInWorldManager {
         }
         if (bWrap != null) {
             MC_EventInfo ei = new MC_EventInfo();
-            Hooks.onAttemptBlockPlace((MC_Player) var1, loc, bWrap, (MC_ItemStack) (Object) itemStack, locPlacedAgainst, PluginHelper.directionMap.get(face), ei);
+            Hooks.onAttemptBlockPlace((MC_Player) var1, loc, bWrap, Objects.firstNonNull((MC_ItemStack) (Object) itemStack, EmptyItemStack.getInstance()), locPlacedAgainst, PluginHelper.directionMap.get(face), ei);
             if (ei.isCancelled) {
                 return qo.FAIL;
             }
@@ -89,7 +91,7 @@ public class MixinItemInWorldManager {
         qo a = itemStack.a(var1, var2, var5, var4, face, var7, var8, var9);
         if (a == qo.SUCCESS) {
             LogManager.getLogger().debug("JKC DBG: " + var1.getName() + " PLACING " + itemStack.getDisplayName());
-            Hooks.onItemPlaced((MC_Player) var1, loc, (MC_ItemStack) (Object) itemStack, locPlacedAgainst, PluginHelper.directionMap.get(face));
+            Hooks.onItemPlaced((MC_Player) var1, loc, Objects.firstNonNull((MC_ItemStack) (Object) itemStack, EmptyItemStack.getInstance()), locPlacedAgainst, PluginHelper.directionMap.get(face));
         }
         return a;
     }

@@ -7,6 +7,7 @@ import PluginReference.MC_EventInfo;
 import PluginReference.MC_FloatTriplet;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_Player;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import net.minecraft.src.DamageSource;
 import net.minecraft.src.EntityArmorStand;
@@ -15,6 +16,7 @@ import net.minecraft.src.EnumHand;
 import net.minecraft.src.ItemSlot;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Rotations;
+import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
 import org.spongepowered.asm.mixin.Final;
@@ -189,12 +191,12 @@ public abstract class MixinEntityArmorStand extends MixinEntityLivingBase implem
 
     @Override
     public MC_ItemStack getItemInHand() {
-        return (MC_ItemStack) (Object) contents[0];
+        return Objects.firstNonNull((MC_ItemStack) (Object) contents[0], EmptyItemStack.getInstance());
     }
 
     @Override
     public void setItemInHand(MC_ItemStack item) {
-        contents[0] = (ItemStack) (Object) item;
+        contents[0] = item instanceof EmptyItemStack ? null : (ItemStack) (Object) item;
     }
 
     private MC_FloatTriplet wrap(Rotations rotations) {

@@ -242,6 +242,9 @@ public class ServerWrapper implements MC_Server {
 
     public MC_ItemStack createItemStack(byte[] rawData) {
         try {
+            if (rawData.length == 0) {
+                return EmptyItemStack.getInstance();
+            }
             NBTTagCompound exc = new NBTTagCompound();
             ByteArrayInputStream bis = new ByteArrayInputStream(rawData);
             DataInputStream dis = new DataInputStream(bis);
@@ -253,7 +256,7 @@ public class ServerWrapper implements MC_Server {
             return (MC_ItemStack) (Object) is;
         } catch (Exception var6) {
             var6.printStackTrace();
-            return null;
+            return EmptyItemStack.getInstance();
         }
     }
 

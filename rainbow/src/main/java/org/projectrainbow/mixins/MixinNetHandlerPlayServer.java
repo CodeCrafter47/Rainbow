@@ -6,6 +6,7 @@ import PluginReference.MC_ItemStack;
 import PluginReference.MC_Location;
 import PluginReference.MC_Player;
 import PluginReference.MC_Sign;
+import com.google.common.base.Objects;
 import net.minecraft.src.BlockPos;
 import net.minecraft.src.Entity;
 import net.minecraft.src.EntityPlayerMP;
@@ -35,6 +36,7 @@ import net.minecraft.src.WorldServer;
 import net.minecraft.src.fu;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
 import org.projectrainbow._DiwUtils;
@@ -110,7 +112,7 @@ public class MixinNetHandlerPlayServer {
     @Inject(method = "a(Lnet/minecraft/src/InboundPacketUseItem;)V", at = @At(value = "INVOKE", target = "net.minecraft.src.EntityPlayerMP.markPlayerActive()V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     public void onRightClickAir(InboundPacketUseItem packet, CallbackInfo callbackInfo, WorldServer world, EnumHand hand, ItemStack itemStack) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptItemUse((MC_Player) playerEntity, (MC_ItemStack) (Object) itemStack, ei);
+        Hooks.onAttemptItemUse((MC_Player) playerEntity, Objects.firstNonNull((MC_ItemStack) (Object) itemStack, EmptyItemStack.getInstance()), ei);
         if (ei.isCancelled) {
             callbackInfo.cancel();
         }

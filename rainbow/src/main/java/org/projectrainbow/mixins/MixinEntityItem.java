@@ -4,9 +4,11 @@ import PluginReference.MC_EventInfo;
 import PluginReference.MC_ItemEntity;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_Player;
+import com.google.common.base.Objects;
 import net.minecraft.src.EntityItem;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
+import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,10 +37,10 @@ public abstract class MixinEntityItem implements MC_ItemEntity {
     @Shadow
     public abstract void setThrower(String var1);
 
-    @Inject(method = "onCollideWithPlayer", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "onCollideWithPlayer", at = @At(value = "INVOKE", target = "addItemStackToInventory"), cancellable = true)
     private void onPickup(EntityPlayer player, CallbackInfo callbackInfo) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptItemPickup((MC_Player) player, (MC_ItemStack) (Object) getEntityItem(), false, ei);
+        Hooks.onAttemptItemPickup((MC_Player) player, getItemStack(), false, ei);
         if (ei.isCancelled) {
             callbackInfo.cancel();
         }
@@ -46,12 +48,12 @@ public abstract class MixinEntityItem implements MC_ItemEntity {
 
     @Override
     public MC_ItemStack getItemStack() {
-        return (MC_ItemStack) (Object) getEntityItem();
+        return Objects.firstNonNull((MC_ItemStack) (Object) getEntityItem(), EmptyItemStack.getInstance());
     }
 
     @Override
     public void setItemStack(MC_ItemStack is) {
-        setEntityItemStack((ItemStack) (Object) is);
+        setEntityItemStack(is instanceof EmptyItemStack ? null : (ItemStack) (Object) is);
     }
 
     @Override

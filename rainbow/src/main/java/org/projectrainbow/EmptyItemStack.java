@@ -1,5 +1,6 @@
 package org.projectrainbow;
 
+import PluginReference.MC_Enchantment;
 import PluginReference.MC_EnchantmentType;
 import PluginReference.MC_ItemStack;
 
@@ -89,12 +90,12 @@ public class EmptyItemStack implements MC_ItemStack {
     }
 
     @Override
-    public void setEnchantments(List var1) {
+    public void setEnchantments(List<MC_Enchantment> var1) {
 
     }
 
     @Override
-    public List getEnchantments() {
+    public List<MC_Enchantment> getEnchantments() {
         return Collections.emptyList();
     }
 
@@ -109,12 +110,12 @@ public class EmptyItemStack implements MC_ItemStack {
     }
 
     @Override
-    public List getLore() {
+    public List<String> getLore() {
         return Collections.emptyList();
     }
 
     @Override
-    public void setLore(List var1) {
+    public void setLore(List<String> var1) {
 
     }
 

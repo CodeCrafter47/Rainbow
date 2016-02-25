@@ -4,12 +4,14 @@ import PluginReference.MC_EventInfo;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_Location;
 import PluginReference.MC_World;
+import com.google.common.base.Objects;
 import net.minecraft.src.EntityMinecartHopper;
 import net.minecraft.src.EnumFacing;
 import net.minecraft.src.IHopper;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.TileEntityHopper;
 import net.minecraft.src.qg;
+import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -49,7 +51,7 @@ public class MixinTileEntityHopper {
             MC_EventInfo ei = new MC_EventInfo();
 
 
-            Hooks.onAttemptHopperReceivingItem(joeLoc, (MC_ItemStack) (Object) itemStack, isMinecartHopper, ei);
+            Hooks.onAttemptHopperReceivingItem(joeLoc, Objects.firstNonNull((MC_ItemStack) (Object) itemStack, EmptyItemStack.getInstance()), isMinecartHopper, ei);
 
 
             if (ei.isCancelled) {
