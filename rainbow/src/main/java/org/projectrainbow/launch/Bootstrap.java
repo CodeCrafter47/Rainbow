@@ -115,7 +115,7 @@ public class Bootstrap {
     static {
         try {
             Properties properties = new Properties();
-            properties.load(Bootstrap.class.getClassLoader().getResourceAsStream("release.properties"));
+            properties.load(Bootstrap.class.getClassLoader().getResourceAsStream("build.properties"));
             minecraftVersion = properties.getProperty("mcversion");
             buildNumber = properties.getProperty("build");
         } catch (IOException ex) {
