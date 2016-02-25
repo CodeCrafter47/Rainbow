@@ -4,6 +4,7 @@ package org.projectrainbow;
 import PluginReference.ChatColor;
 import com.google.common.io.Files;
 
+import javax.xml.crypto.Data;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -26,6 +27,18 @@ public class _UUIDMapper {
     private static String Filename = "Player_UUID_Mapping.dat";
 
     public _UUIDMapper() {}
+
+    public static String GetPlayerExactName(String tgtName) {
+        String uuid = LowerNameToUUID.get(tgtName.toLowerCase());
+        if (uuid == null) {
+            return null;
+        }
+        List<String> names = UUIDToNameList.get(uuid);
+        if (names == null || names.isEmpty()) {
+            return null;
+        }
+        return names.get(names.size() - 1);
+    }
 
     public static void SaveData() {
         try {

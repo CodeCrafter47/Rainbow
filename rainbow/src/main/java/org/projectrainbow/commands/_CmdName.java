@@ -45,6 +45,7 @@ public class _CmdName implements MC_Command {
                     _DiwUtils.RainbowString(
                             "----------------------------------------------"));
             int hits = 0;
+            // todo fix for uuids
             Iterator msg = _JOT_OnlineTimeUtils.Data.playerData.keySet().iterator();
 
             while (msg.hasNext()) {

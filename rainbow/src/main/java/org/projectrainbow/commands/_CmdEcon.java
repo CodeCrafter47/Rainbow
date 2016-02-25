@@ -8,9 +8,11 @@ import net.minecraft.src.CommandBase;
 import org.projectrainbow.ServerWrapper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow._EconomyManager;
+import org.projectrainbow._UUIDMapper;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 
 public class _CmdEcon implements MC_Command {
@@ -80,7 +82,7 @@ public class _CmdEcon implements MC_Command {
                         return;
                     }
 
-                    _EconomyManager.SetBalance(tgtName, amt);
+                    _EconomyManager.SetBalance(UUID.fromString(_UUIDMapper.GetUUIDFromPlayerName(tgtName)), amt);
                     _EconomyManager.ShowBalanceOf(plr, exactName);
                 }
             } else if (args.length == 3 && args[0].equalsIgnoreCase("add")) {
@@ -103,7 +105,7 @@ public class _CmdEcon implements MC_Command {
                         return;
                     }
 
-                    _EconomyManager.Deposit(tgtName, amt);
+                    _EconomyManager.Deposit(UUID.fromString(_UUIDMapper.GetUUIDFromPlayerName(tgtName)), amt);
                     _EconomyManager.ShowBalanceOf(plr, exactName);
                 }
             } else {

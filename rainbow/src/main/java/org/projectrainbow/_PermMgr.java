@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-
+// todo use uuids
 public class _PermMgr {
 
     public static Map<String, ConcurrentHashMap<String, Boolean>> permData = new ConcurrentHashMap();

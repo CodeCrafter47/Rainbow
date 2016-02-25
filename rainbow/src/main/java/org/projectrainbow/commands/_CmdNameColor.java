@@ -120,8 +120,9 @@ public class _CmdNameColor extends CommandBase{
                 return;
             }
         }
-        final String key = pName.toLowerCase();
-        final String existing = _CmdNameColor.ColorNameDict.get(key);
+        final String key = p.getUniqueID().toString();
+        String existing = _CmdNameColor.ColorNameDict.get(key);
+        if(existing == null)existing = _CmdNameColor.ColorNameDict.get(pName.toLowerCase());
         if (existing != null && newName.equalsIgnoreCase("off")) {
             _CmdNameColor.ColorNameDict.remove(key);
             ((IMixinICommandSender)p).sendMessage(String.valueOf(_ColorHelper.GREEN) + "You remove your colored name: " + _ColorHelper.YELLOW + existing);

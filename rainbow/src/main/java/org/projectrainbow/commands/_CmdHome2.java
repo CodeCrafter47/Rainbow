@@ -40,7 +40,10 @@ public class _CmdHome2 implements MC_Command {
             } else {
                 String pName1 = plr.getName();
 
-                _SerializableLocation sloc = _HomeUtils.playerHomes2.get(pName1);
+                _SerializableLocation sloc = _HomeUtils.playerHomes2.get(plr.getUUID().toString());
+                if(sloc == null) {
+                    sloc = _HomeUtils.playerHomes2.get(pName1);
+                }
                 if (sloc == null) {
                     plr.sendMessage(
                             ChatColor.RED

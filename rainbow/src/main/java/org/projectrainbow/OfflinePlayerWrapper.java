@@ -21,35 +21,28 @@ import java.util.UUID;
 
 public class OfflinePlayerWrapper implements MC_Player {
 
-    public String m_name = null;
+    public String uuid = null;
 
-    public OfflinePlayerWrapper(String argName) {
-        this.m_name = argName;
+    public OfflinePlayerWrapper(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getName() {
-        return this.m_name;
+        return ServerWrapper.getInstance().getLastKnownPlayerNameFromUUID(uuid);
     }
 
     public UUID getUUID() {
-        if (this.m_name == null) {
-            return null;
-        } else {
-            String uid = _UUIDMapper.GetUUIDFromPlayerName(this.m_name);
-
-            return uid == null ? null : UUID.fromString(uid);
-        }
+        return UUID.fromString(uuid);
     }
 
     public void sendMessage(String msg) {
         System.out.println(
-                "DBG: Unsupported: sendMessage to OfflinePlayer: " + this.m_name);
+                "DBG: Unsupported: sendMessage to OfflinePlayer");
     }
 
     public void executeCommand(String cmd) {
         System.out.println(
-                "DBG: Unsupported: executeCommand to OfflinePlayer: "
-                        + this.m_name);
+                "DBG: Unsupported: executeCommand to OfflinePlayer");
     }
 
     public boolean isOp() {
@@ -58,36 +51,34 @@ public class OfflinePlayerWrapper implements MC_Player {
 
     public String getIPAddress() {
         System.out.println(
-                "DBG: Unsupported: getIPAddress to OfflinePlayer: "
-                        + this.m_name);
+                "DBG: Unsupported: getIPAddress to OfflinePlayer");
         return "";
     }
 
     public MC_World getWorld() {
         System.out.println(
-                "DBG: Unsupported: getWorld to OfflinePlayer: " + this.m_name);
+                "DBG: Unsupported: getWorld to OfflinePlayer");
         return null;
     }
 
     public MC_GameMode getGameMode() {
         System.out.println(
-                "DBG: Unsupported: getGameMode to OfflinePlayer: " + this.m_name);
+                "DBG: Unsupported: getGameMode to OfflinePlayer");
         return MC_GameMode.UNKNOWN;
     }
 
     public MC_ItemStack getItemInHand() {
         System.out.println(
-                "DBG: Unsupported: getItemInHand to OfflinePlayer: "
-                        + this.m_name);
+                "DBG: Unsupported: getItemInHand to OfflinePlayer");
         return null;
     }
 
     public double getEconomyBalance() {
-        return _EconomyManager.GetBalance(this.m_name).doubleValue();
+        return _EconomyManager.GetBalance(getUUID());
     }
 
     public void setEconomyBalance(double amt) {
-        _EconomyManager.SetBalance(this.m_name, Double.valueOf(amt));
+        _EconomyManager.SetBalance(getUUID(), amt);
     }
 
     public float getHealth() {
@@ -104,38 +95,35 @@ public class OfflinePlayerWrapper implements MC_Player {
 
     public MC_Location getLocation() {
         System.out.println(
-                "DBG: Unsupported: getLocation to OfflinePlayer: " + this.m_name);
+                "DBG: Unsupported: getLocation to OfflinePlayer");
         return null;
     }
 
     public MC_Server getServer() {
         System.out.println(
-                "DBG: Unsupported: getServer to OfflinePlayer: " + this.m_name);
+                "DBG: Unsupported: getServer to OfflinePlayer");
         return null;
     }
 
     public void teleport(MC_Location arg0) {
         System.out.println(
-                "DBG: Unsupported: teleport to OfflinePlayer: " + this.m_name);
+                "DBG: Unsupported: teleport to OfflinePlayer");
     }
 
     public List<MC_ItemStack> getInventory() {
         System.out.println(
-                "DBG: Unsupported: getInventory to OfflinePlayer: "
-                        + this.m_name);
+                "DBG: Unsupported: getInventory to OfflinePlayer");
         return null;
     }
 
     public void updateInventory() {
         System.out.println(
-                "DBG: Unsupported: updateInventory to OfflinePlayer: "
-                        + this.m_name);
+                "DBG: Unsupported: updateInventory to OfflinePlayer");
     }
 
     public void setInventory(List<MC_ItemStack> arg0) {
         System.out.println(
-                "DBG: Unsupported: setInventory to OfflinePlayer: "
-                        + this.m_name);
+                "DBG: Unsupported: setInventory to OfflinePlayer");
     }
 
     public MC_EntityType getType() {
@@ -143,7 +131,7 @@ public class OfflinePlayerWrapper implements MC_Player {
     }
 
     public String internalInfo() {
-        return this.m_name;
+        return this.getName();
     }
 
     public boolean isDead() {
@@ -269,16 +257,14 @@ public class OfflinePlayerWrapper implements MC_Player {
     public void setTotalExperience(int arg0) {}
 
     public boolean hasCustomName() {
-        String pName = this.m_name;
-        String key = pName.toLowerCase();
+        String key = uuid;
         String customName = (String) _CmdNameColor.ColorNameDict.get(key);
 
-        return customName == null ? false : customName.equalsIgnoreCase(pName);
+        return customName == null ? false : customName.equalsIgnoreCase(getName());
     }
 
     public void setCustomName(String newName) {
-        String pName = this.m_name;
-        String key = pName.toLowerCase();
+        String key = uuid;
 
         if (newName != null && newName.length() > 0) {
             _CmdNameColor.ColorNameDict.put(key, newName);
@@ -288,11 +274,10 @@ public class OfflinePlayerWrapper implements MC_Player {
     }
 
     public String getCustomName() {
-        String pName = this.m_name;
-        String key = pName.toLowerCase();
+        String key = uuid;
         String customName = (String) _CmdNameColor.ColorNameDict.get(key);
 
-        return customName == null ? pName : customName;
+        return customName == null ? getName() : customName;
     }
 
     public float getMaxHealth() {

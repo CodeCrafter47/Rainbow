@@ -75,7 +75,10 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
      */
     @Redirect(method = "getDisplayName", at = @At(value = "INVOKE", target = "net.minecraft.src.EntityPlayer.getName()Ljava/lang/String;", ordinal = 0))
     public String hook_getName(EntityPlayer player) {
-        String s = _CmdNameColor.ColorNameDict.get(player.getName().toLowerCase());
+        String s = _CmdNameColor.ColorNameDict.get(player.getUniqueID().toString());
+        if (s == null) {
+            s = _CmdNameColor.ColorNameDict.get(player.getName().toLowerCase());
+        }
         if (s != null) {
             return s;
         }

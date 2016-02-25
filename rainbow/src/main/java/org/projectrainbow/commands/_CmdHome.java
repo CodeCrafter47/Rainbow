@@ -50,7 +50,10 @@ public class _CmdHome extends CommandBase
             return;
         }
         final String pName = p.getName();
-        final _SerializableLocation sloc = _HomeUtils.playerHomes.get(pName);
+        _SerializableLocation sloc = _HomeUtils.playerHomes.get(p.getUniqueID().toString());
+        if(sloc == null) {
+            sloc = _HomeUtils.playerHomes.get(pName);
+        }
         if (sloc == null) {
             ((IMixinICommandSender)p).sendMessage(String.valueOf(_ColorHelper.RED) + "You don't have a home set. Try first: " + _ColorHelper.GOLD + "/sethome");
             return;

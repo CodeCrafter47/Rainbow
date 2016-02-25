@@ -4,6 +4,7 @@ package org.projectrainbow;
 import PluginReference.ChatColor;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_Player;
+import com.google.common.base.Objects;
 import com.google.common.io.Files;
 
 import java.io.BufferedInputStream;
@@ -16,6 +17,7 @@ import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -87,49 +89,50 @@ public class _EconomyManager {
     }
 
     public static Double GetBalance(MC_Player cs) {
-        return GetBalance(cs.getName());
+        if (!economy.containsKey(cs.getUUID().toString())) {
+            return Objects.firstNonNull(economy.get(cs.getName().toLowerCase()), 0.0D);
+        }
+        return GetBalance(cs.getUUID());
     }
 
-    public static Double GetBalance(String name) {
-        Double val = (Double) economy.get(name.toLowerCase());
+    public static Double GetBalance(UUID uuid) {
+        Double val = (Double) economy.get(uuid.toString());
 
         return val == null ? Double.valueOf(0.0D) : val;
     }
 
     public static void SetBalance(MC_Player cs, Double val) {
-        SetBalance(cs.getName(), val);
+        SetBalance(cs.getUUID(), val);
     }
 
-    public static void SetBalance(String name, Double val) {
-        economy.put(name.toLowerCase(), val);
+    public static void SetBalance(UUID uuid, Double val) {
+        economy.put(uuid.toString(), val);
     }
 
-    public static void Withdraw(String name, Double val) {
-        double dbl = GetBalance(name).doubleValue();
-
-        SetBalance(name, dbl - val.doubleValue());
+    public static void Withdraw(MC_Player player, Double val) {
+        SetBalance(player, GetBalance(player) - val);
     }
 
-    public static void Deposit(String name, Double val) {
-        double dbl = GetBalance(name).doubleValue();
+    public static void Deposit(UUID player, Double val) {
+        SetBalance(player, GetBalance(player) + val);
+    }
 
-        SetBalance(name, dbl + val.doubleValue());
+    public static void Deposit(MC_Player player, Double val) {
+        SetBalance(player, GetBalance(player) + val);
     }
 
     public static void ShowBalance(MC_Player cs) {
-        Double bal = GetBalance(cs.getName());
+        Double bal = GetBalance(cs);
 
-        _DiwUtils.reply(cs,
-                ChatColor.AQUA + "Your Balance: " + ChatColor.GREEN
-                        + String.format("%.2f", new Object[]{bal}));
+        _DiwUtils.reply(cs, ChatColor.AQUA + "Your Balance: " + ChatColor.GREEN + String.format("%.2f", bal));
     }
 
     public static void ShowBalanceOf(MC_Player cs, String tgtName) {
-        Double bal = GetBalance(tgtName);
+        Double bal = GetBalance(UUID.fromString(_UUIDMapper.GetUUIDFromPlayerName(tgtName)));
 
         _DiwUtils.reply(cs,
                 ChatColor.AQUA + tgtName + " Balance: " + ChatColor.GREEN
-                        + String.format("%.2f", new Object[]{bal}));
+                        + String.format("%.2f", bal));
     }
 
     public static String GetItemKey(MC_ItemStack is) {
@@ -144,7 +147,7 @@ public class _EconomyManager {
         String key = GetItemKey(is);
 
         itemWorth.put(key, dbl);
-        if (dbl.doubleValue() <= 0.0D) {
+        if (dbl <= 0.0D) {
             itemWorth.remove(key);
         }
 
@@ -173,10 +176,10 @@ public class _EconomyManager {
             double amt = _DiwUtils.PayDayAmount;
             String msg = _DiwUtils.RainbowString("Pay Day!!! ", "b")
                     + ChatColor.GREEN + "You receive "
-                    + String.format("%.2f", new Object[]{Double.valueOf(amt)});
+                    + String.format("%.2f", Double.valueOf(amt));
 
             p.sendMessage(msg);
-            Deposit(p.getName(), amt);
+            Deposit(p, amt);
         }
 
     }

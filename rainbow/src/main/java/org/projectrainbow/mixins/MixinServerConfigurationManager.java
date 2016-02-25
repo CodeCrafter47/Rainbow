@@ -32,7 +32,7 @@ public class MixinServerConfigurationManager {
 
     @Inject(method = "playerLoggedIn", at = @At("HEAD"))
     private void onLogin(EntityPlayerMP var1, CallbackInfo callback) {
-        _JOT_OnlineTimeUtils.HandlePlayerLogin(var1.getName());
+        _JOT_OnlineTimeUtils.HandlePlayerLogin((MC_Player) var1);
         _UUIDMapper.AddMap(var1.getName(), var1.getUniqueID().toString());
         Hooks.onPlayerLogin(var1.getName(), var1.getUniqueID(), var1.getPlayerIP());
         Hooks.onPlayerJoin((MC_Player) var1);

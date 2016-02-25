@@ -44,7 +44,7 @@ public class _CmdSetHome2 implements MC_Command {
                 _SerializableLocation sloc = new _SerializableLocation(plr.getLocation().x,
                         plr.getLocation().y, plr.getLocation().z, plr.getLocation().dimension, plr.getLocation().yaw, plr.getLocation().pitch);
 
-                _HomeUtils.playerHomes2.put(pName, sloc);
+                _HomeUtils.playerHomes2.put(plr.getUUID().toString(), sloc);
                 String msg = String.format("Home2 Set for %s set to %s",
                         pName, sloc.toString());
 

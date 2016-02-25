@@ -32,7 +32,6 @@ import org.projectrainbow.commands._CmdBp;
 import org.projectrainbow.commands._CmdColors;
 import org.projectrainbow.commands._CmdCron;
 import org.projectrainbow.commands._CmdDelWarp;
-import org.projectrainbow.commands._CmdDivorce;
 import org.projectrainbow.commands._CmdDiw;
 import org.projectrainbow.commands._CmdEcon;
 import org.projectrainbow.commands._CmdEnderchest;
@@ -41,7 +40,6 @@ import org.projectrainbow.commands._CmdHome2;
 import org.projectrainbow.commands._CmdIgnore;
 import org.projectrainbow.commands._CmdJEmote;
 import org.projectrainbow.commands._CmdJot;
-import org.projectrainbow.commands._CmdMarry;
 import org.projectrainbow.commands._CmdName;
 import org.projectrainbow.commands._CmdNameColor;
 import org.projectrainbow.commands._CmdPay;
@@ -212,12 +210,6 @@ public class _DiwUtils {
             }
 
             try {
-                _MarryManager.SaveMarriageData();
-            } catch (Exception var10) {
-                var10.printStackTrace();
-            }
-
-            try {
                 _WarpManager.SaveWarps();
             } catch (Exception var9) {
                 var9.printStackTrace();
@@ -294,7 +286,6 @@ public class _DiwUtils {
         _WarpManager.LoadWarps();
         _EconomyManager.LoadEconomy();
         _CmdIgnore.LoadData();
-        _MarryManager.LoadMarriageData();
         _PermMgr.LoadData();
         _DiwUtils.g_didLoadDataFiles = true;
 
@@ -321,14 +312,12 @@ public class _DiwUtils {
         ServerWrapper.getInstance().registerCommand(new _CmdBal());
         ServerWrapper.getInstance().registerCommand(new _CmdColors());
         ServerWrapper.getInstance().registerCommand(new _CmdDelWarp());
-        ServerWrapper.getInstance().registerCommand(new _CmdDivorce());
         ServerWrapper.getInstance().registerCommand(new _CmdEcon());
         ServerWrapper.getInstance().registerCommand(new _CmdEnderchest());
         ServerWrapper.getInstance().registerCommand(new _CmdHome2());
         ServerWrapper.getInstance().registerCommand(new _CmdIgnore());
         ServerWrapper.getInstance().registerCommand(new _CmdJEmote());
         ServerWrapper.getInstance().registerCommand(new _CmdJot());
-        ServerWrapper.getInstance().registerCommand(new _CmdMarry());
         ServerWrapper.getInstance().registerCommand(new _CmdName());
         ServerWrapper.getInstance().registerCommand(new _CmdTpaHere());
         ServerWrapper.getInstance().registerCommand(new _CmdPayday());

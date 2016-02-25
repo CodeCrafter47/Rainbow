@@ -469,12 +469,12 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public double getEconomyBalance() {
-        return _EconomyManager.GetBalance(getName());
+        return _EconomyManager.GetBalance(getUUID());
     }
 
     @Override
     public void setEconomyBalance(double var1) {
-        _EconomyManager.SetBalance(getName(), var1);
+        _EconomyManager.SetBalance(getUUID(), var1);
 
     }
 

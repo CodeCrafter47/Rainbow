@@ -61,7 +61,7 @@ public class _CmdSell implements MC_Command {
                     _DiwUtils.ConsoleMsg(logMsg);
                     Double sellAmt = (double) count * val;
 
-                    _EconomyManager.Deposit(plr.getName(), sellAmt);
+                    _EconomyManager.Deposit(plr, sellAmt);
                     plr.setItemInHand(null);
                     plr.updateInventory();
                     plr.sendMessage(

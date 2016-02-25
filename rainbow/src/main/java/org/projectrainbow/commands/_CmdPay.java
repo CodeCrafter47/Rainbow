@@ -8,8 +8,10 @@ import net.minecraft.src.CommandBase;
 import org.projectrainbow.ServerWrapper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow._EconomyManager;
+import org.projectrainbow._UUIDMapper;
 
 import java.util.List;
+import java.util.UUID;
 
 
 public class _CmdPay implements MC_Command {
@@ -49,7 +51,7 @@ public class _CmdPay implements MC_Command {
                 return;
             }
 
-            if (amt.doubleValue() < 10.0D) {
+            if (amt < 10.0D) {
                 _DiwUtils.reply(plr,
                         ChatColor.RED + "Amount must be at least 10.00");
             } else {
@@ -68,20 +70,20 @@ public class _CmdPay implements MC_Command {
                     } else {
                         Double bal = _EconomyManager.GetBalance(plr);
 
-                        if (bal.doubleValue() < amt.doubleValue()) {
+                        if (bal < amt) {
                             _DiwUtils.reply(plr,
                                     ChatColor.RED + "You only have "
                                             + ChatColor.GREEN
-                                            + String.format("%.2f", new Object[] { bal}));
+                                            + String.format("%.2f", bal));
                         } else {
-                            _EconomyManager.Withdraw(plr.getName(), amt);
-                            _EconomyManager.Deposit(tgtName, amt);
+                            _EconomyManager.Withdraw(plr, amt);
+                            _EconomyManager.Deposit(UUID.fromString(_UUIDMapper.GetUUIDFromPlayerName(tgtName)), amt);
                             String logMsg = String.format("%s paid %.2f to %s",
-                                    new Object[] { plr.getName(), amt, tgtName});
+                                    plr.getName(), amt, tgtName);
 
                             System.out.println("ECONOMY: " + logMsg);
                             String strAmt = String.format("%.2f",
-                                    new Object[] { amt});
+                                    amt);
 
                             pTgt.sendMessage(
                                     ChatColor.GREEN + "You receive "

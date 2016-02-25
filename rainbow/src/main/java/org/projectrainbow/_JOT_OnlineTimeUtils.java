@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.UUID;
 
+import static net.minecraft.src.ng.cs;
+import static net.minecraft.src.ng.u;
+
 
 public class _JOT_OnlineTimeUtils {
 
@@ -31,14 +34,7 @@ public class _JOT_OnlineTimeUtils {
     }
 
     public static String GetPlayerExactName(String tgtName) {
-
-        for (String name : Data.playerData.keySet()) {
-            if (name.equalsIgnoreCase(tgtName)) {
-                return name;
-            }
-        }
-
-        return null;
+        return _UUIDMapper.GetPlayerExactName(tgtName);
     }
 
     public static void LoadData() {
@@ -106,14 +102,16 @@ public class _JOT_OnlineTimeUtils {
 
     }
 
-    public static void HandlePlayerLogin(String pName) {
+    public static void HandlePlayerLogin(MC_Player plr) {
         if (!ShuttingDown) {
-            _JOT_OnlineTimeEntry entry = Data.playerData.get(
-                    pName);
+            _JOT_OnlineTimeEntry entry = Data.playerData.get(plr.getUUID().toString());
+            if(entry == null) {
+                entry = Data.playerData.remove(plr.getName());
+            }
 
             if (entry == null) {
                 System.out.println("-----------------------------------------");
-                System.out.println("FIRST LOGIN ON THIS SERVER: " + pName);
+                System.out.println("FIRST LOGIN ON THIS SERVER: " + plr.getName());
                 System.out.println("-----------------------------------------");
                 if (_DiwUtils.DoWelcomeNewPlayers) {
                     _DiwUtils.MessageAllPlayers(
@@ -125,20 +123,19 @@ public class _JOT_OnlineTimeUtils {
             }
 
             _DiwUtils.ConsoleMsg(
-                    ChatColor.GREEN + "Login: " + ChatColor.YELLOW + pName
+                    ChatColor.GREEN + "Login: " + ChatColor.YELLOW + plr.getName()
                             + ChatColor.AQUA + ", Online Time: "
                             + _DiwUtils.TimeDeltaString(entry.msTotal) + ChatColor.WHITE
                             + ", Last Login: "
                             + _DiwUtils.GetDateStringFromLong(entry.msLastLogin));
             entry.msLastLogin = System.currentTimeMillis() + 1L;
-            Data.playerData.put(pName, entry);
+            Data.playerData.put(plr.getUUID().toString(), entry);
         }
     }
 
     public static void HandlePlayerLogout(String pName, UUID argUUID) {
         if (!ShuttingDown) {
-            _JOT_OnlineTimeEntry entry = Data.playerData.get(
-                    pName);
+            _JOT_OnlineTimeEntry entry = Data.playerData.get(argUUID.toString());
 
             if (entry == null) {
                 _DiwUtils.ConsoleMsg(
@@ -149,7 +146,7 @@ public class _JOT_OnlineTimeUtils {
                 long msThisSession = entry.msLastLogout - entry.msLastLogin;
 
                 entry.msTotal += msThisSession;
-                Data.playerData.put(pName, entry);
+                Data.playerData.put(argUUID.toString(), entry);
                 _DiwUtils.ConsoleMsg(
                         ChatColor.RED + "Logout: " + ChatColor.YELLOW
                                 + String.format("%-16s", pName)
@@ -193,16 +190,16 @@ public class _JOT_OnlineTimeUtils {
             pname = cs.getName();
         }
 
-        String exactName = GetPlayerExactName(pname);
+        String uuid = _UUIDMapper.GetUUIDFromPlayerName(pname);
 
-        if (exactName == null) {
+        if (uuid == null || !Data.playerData.containsKey(uuid)) {
             reply(cs, ChatColor.RED + "No data for: " + ChatColor.YELLOW + pname);
-        } else if (!CanSeeHidden(cs) && Data.hidePlayer.containsKey(exactName)) {
+        } else if (!CanSeeHidden(cs) && Data.hidePlayer.containsKey(uuid)) {
             _DiwUtils.ConsoleMsg(
                     ChatColor.LIGHT_PURPLE + "Prevented User "
                             + ChatColor.YELLOW + cs.getName() + ChatColor.LIGHT_PURPLE
                             + " from seeing online time for " + ChatColor.RED
-                            + exactName);
+                            + pname);
             reply(cs, ChatColor.RED + "No data for: " + ChatColor.YELLOW + pname);
         } else {
             reply(cs,
@@ -213,9 +210,8 @@ public class _JOT_OnlineTimeUtils {
             reply(cs,
                     ChatColor.AQUA
                             + _DiwUtils.TextLabel("Online Time For: ", labelLen)
-                            + ChatColor.YELLOW + exactName);
-            _JOT_OnlineTimeEntry entry = Data.playerData.get(
-                    exactName);
+                            + ChatColor.YELLOW + pname);
+            _JOT_OnlineTimeEntry entry = Data.playerData.get(uuid);
             long msTotal = entry.msTotal;
 
             reply(cs,
@@ -338,10 +334,10 @@ public class _JOT_OnlineTimeUtils {
                         idxEnd));
 
         for (int i = idxStart; i < idxEnd; ++i) {
-            String pName = names.get(i);
-            _JOT_OnlineTimeEntry entry = Data.playerData.get(
-                    pName);
-            MC_Player plr = ServerWrapper.getInstance().getOnlinePlayerByName(pName);
+            String uuid = names.get(i);
+            _JOT_OnlineTimeEntry entry = Data.playerData.get(uuid);
+            String name = ServerWrapper.getInstance().getLastKnownPlayerNameFromUUID(uuid);
+            MC_Player plr = ServerWrapper.getInstance().getOnlinePlayerByName(name);
             String trailer = "";
 
             if (plr != null) {
@@ -352,7 +348,7 @@ public class _JOT_OnlineTimeUtils {
                     + _DiwUtils.TextLabel(
                     String.format("#%d ",
                             i + 1)
-                            + pName,
+                            + name,
                     20)
                     + " "
                     + ChatColor.WHITE
@@ -365,7 +361,7 @@ public class _JOT_OnlineTimeUtils {
                         + String.format(
                         "#%-3d " + ChatColor.YELLOW + "%-16s "
                                 + ChatColor.WHITE + "%s",
-                        i + 1, pName,
+                        i + 1, name,
                         _DiwUtils.TimeDeltaString(GetTotalOnlineTime(entry)))
                         + trailer;
             }
