@@ -24,7 +24,6 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.UUID;
 
-// todo make sure we accept null for ALL ItemStack parameters
 public class Hooks {
     private static Logger logger = LogManager.getLogger("Minecraft");
 
