@@ -167,7 +167,7 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Override
     public MC_EntityType getType() {
-        MC_EntityType type = PluginHelper.entityMap.get(getClass());
+        MC_EntityType type = PluginHelper.getEntityType((Class<? extends Entity>) (Object) getClass());
         return Objects.firstNonNull(type, MC_EntityType.UNSPECIFIED);
     }
 

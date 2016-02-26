@@ -41,15 +41,18 @@ import net.minecraft.src.EntityFishHook;
 import net.minecraft.src.EntityGhast;
 import net.minecraft.src.EntityGiant;
 import net.minecraft.src.EntityGuardian;
+import net.minecraft.src.EntityHanging;
 import net.minecraft.src.EntityHorse;
 import net.minecraft.src.EntityItem;
 import net.minecraft.src.EntityLargeFireball;
 import net.minecraft.src.EntityLavaSlime;
+import net.minecraft.src.EntityMinecart;
 import net.minecraft.src.EntityMinecartEmpty;
 import net.minecraft.src.EntityMushroomCow;
 import net.minecraft.src.EntityOzelot;
 import net.minecraft.src.EntityPig;
 import net.minecraft.src.EntityPigZombie;
+import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.EntityPotion;
 import net.minecraft.src.EntityRabbit;
 import net.minecraft.src.EntitySheep;
@@ -90,6 +93,18 @@ public class PluginHelper {
     public static BiMap<Potion, MC_PotionEffectType> potionMap = HashBiMap.create();
     public static BiMap<Short, MC_EnchantmentType> enchantmentMap = HashBiMap.create();
     public static BiMap<BiomeGenBase, MC_WorldBiomeType> biomeMap = HashBiMap.create();
+
+    public static MC_EntityType getEntityType(Class<? extends Entity> clazz) {
+        if (EntityPlayerMP.class.isAssignableFrom(clazz)) {
+            return MC_EntityType.PLAYER;
+        } else if (EntityHanging.class.isAssignableFrom(clazz)) {
+            return MC_EntityType.HANGING;
+        } else if (EntityMinecart.class.isAssignableFrom(clazz)) {
+            return MC_EntityType.MINECART;
+        } else {
+            return Objects.firstNonNull(entityMap.get(clazz), MC_EntityType.UNSPECIFIED);
+        }
+    }
 
     public static List<MC_ItemStack> invArrayToList(ItemStack[] items) {
         int size = items.length;
@@ -156,8 +171,6 @@ public class PluginHelper {
         entityMap.put(EntityXPOrb.class, MC_EntityType.XP_ORB);
         // todo entityMap.put(EntityAreaEffectCloud.class, );
         entityMap.put(EntityEgg.class, MC_EntityType.THROWN_EGG);
-        // todo entityMap.put(EntityLeashKnot.class, );
-        // todo entityMap.put(EntityPainting.class, MC_EntityType.HANGING);
         entityMap.put(EntityTippedArrow.class, MC_EntityType.ARROW);
         entityMap.put(EntitySnowball.class, MC_EntityType.SNOWBALL);
         entityMap.put(EntityLargeFireball.class, MC_EntityType.FIREBALL);
@@ -166,7 +179,6 @@ public class PluginHelper {
         entityMap.put(EntityEnderEye.class, MC_EntityType.EYE_OF_ENDER_SIGNAL);
         entityMap.put(EntityPotion.class, MC_EntityType.THROWN_POTION);
         entityMap.put(EntityExpBottle.class, MC_EntityType.THROWN_EXP_BOTTLE);
-        // todo entityMap.put(EntityItemFrame.class, MC_EntityType.HANGING);
         // todo entityMap.put(EntityWitherSkull.class, );
         entityMap.put(EntityTNTPrimed.class, MC_EntityType.PRIMED_TNT);
         entityMap.put(EntityFallingBlock.class, MC_EntityType.FALLING_SAND);
@@ -177,12 +189,6 @@ public class PluginHelper {
         entityMap.put(EntityArmorStand.class, MC_EntityType.ARMOR_STAND);
         entityMap.put(EntityBoat.class, MC_EntityType.BOAT);
         entityMap.put(EntityMinecartEmpty.class, MC_EntityType.MINECART);
-        // todo entityMap.put(EntityMinecartChest.class, EntityMinecart.EnumMinecartType.CHEST.getName(), 43);
-        // todo entityMap.put(EntityMinecartFurnace.class, EntityMinecart.EnumMinecartType.FURNACE.getName(), 44);
-        // todo entityMap.put(EntityMinecartTNT.class, EntityMinecart.EnumMinecartType.TNT.getName(), 45);
-        // todo entityMap.put(EntityMinecartHopper.class, EntityMinecart.EnumMinecartType.HOPPER.getName(), 46);
-        // todo entityMap.put(EntityMinecartMobSpawner.class, EntityMinecart.EnumMinecartType.SPAWNER.getName(), 47);
-        // todo entityMap.put(EntityMinecartCommandBlock.class, EntityMinecart.EnumMinecartType.COMMAND_BLOCK.getName(), 40);
         entityMap.put(EntityCreeper.class, MC_EntityType.CREEPER);
         entityMap.put(EntitySkeleton.class, MC_EntityType.SKELETON);
         entityMap.put(EntitySpider.class, MC_EntityType.SPIDER);
