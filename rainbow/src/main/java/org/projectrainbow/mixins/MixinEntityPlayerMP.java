@@ -33,7 +33,6 @@ import net.minecraft.src.Entity;
 import net.minecraft.src.EntityMinecartContainer;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.EnumConnectionState;
 import net.minecraft.src.IChatComponent;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.InventoryEnderChest;
@@ -53,7 +52,6 @@ import net.minecraft.src.WorldSettings;
 import net.minecraft.src.fy;
 import net.minecraft.src.nf;
 import net.minecraft.src.qe;
-import net.minecraft.src.qf;
 import net.minecraft.src.qg;
 import org.projectrainbow.BlockWrapper;
 import org.projectrainbow.EmptyItemStack;
@@ -620,18 +618,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public boolean hasPermission(String perm) {
-        if (isOp()) {
-            return true;
-        } else {
-            boolean res = _PermMgr.hasPermission(getName(), perm, true);
-
-            if (!res) {
-                res = _PermMgr.hasPermission(getUUID().toString(), perm,
-                        false);
-            }
-
-            return res;
-        }
+        return isOp() || _PermMgr.hasPermission(getUUID(), perm);
     }
 
     @Override

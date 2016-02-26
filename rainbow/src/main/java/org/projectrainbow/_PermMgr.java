@@ -13,18 +13,24 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-// todo use uuids
 public class _PermMgr {
 
-    public static Map<String, ConcurrentHashMap<String, Boolean>> permData = new ConcurrentHashMap();
+    private static Map<String, ConcurrentHashMap<String, Boolean>> permData = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
     public static String m_DataFilename = "PermissionData.dat";
 
-    public _PermMgr() {}
+    public _PermMgr() {
+    }
+
+    public static void onLogin(String name, UUID uuid) {
+        if (!permData.containsKey(uuid.toString()) && permData.containsKey(name.toLowerCase())) {
+            permData.put(uuid.toString(), permData.remove(name.toLowerCase()));
+        }
+    }
 
     public static void SaveData() {
         try {
@@ -37,11 +43,7 @@ public class _PermMgr {
             s.writeObject(permData);
             s.close();
             long msEnd = System.currentTimeMillis();
-            String msg = ChatColor.YELLOW
-                    + String.format("%-20s: %5d players.     Took %3d ms",
-                    new Object[] {
-                "Permissions Save",
-                Integer.valueOf(permData.size()), Long.valueOf(msEnd - exc)});
+            String msg = ChatColor.YELLOW + String.format("%-20s: %5d players.     Took %3d ms", "Permissions Save", permData.size(), msEnd - exc);
 
             _DiwUtils.ConsoleMsg(msg);
         } catch (Throwable var8) {
@@ -63,9 +65,8 @@ public class _PermMgr {
             }
 
             if (!file.exists()) {
-                _DiwUtils.ConsoleMsg(
-                        "Loading Permissions: Starting new file: " + m_DataFilename);
-                permData = new ConcurrentHashMap();
+                _DiwUtils.ConsoleMsg("Loading Permissions: Starting new file: " + m_DataFilename);
+                permData = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
                 return;
             }
 
@@ -73,98 +74,78 @@ public class _PermMgr {
             ObjectInputStream s = new ObjectInputStream(
                     new BufferedInputStream(f));
 
-            permData = (ConcurrentHashMap) s.readObject();
+            permData = (Map<String, ConcurrentHashMap<String, Boolean>>) s.readObject();
             s.close();
             long msEnd = System.currentTimeMillis();
 
-            _DiwUtils.ConsoleMsg(
-                    ChatColor.YELLOW
-                            + String.format("%-20s: %5d players.  Took %3d ms",
-                            new Object[] {
-                "Permissions Load",
-                Integer.valueOf(permData.size()), Long.valueOf(msEnd - exc)}));
+            _DiwUtils.ConsoleMsg(ChatColor.YELLOW + String.format("%-20s: %5d players.  Took %3d ms", "Permissions Load", permData.size(), msEnd - exc));
         } catch (Throwable var8) {
             var8.printStackTrace();
-            _DiwUtils.ConsoleMsg(
-                    "Loading Permissions: Starting new file: " + m_DataFilename);
-            permData = new ConcurrentHashMap();
+            _DiwUtils.ConsoleMsg("Loading Permissions: Starting new file: " + m_DataFilename);
+            permData = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
         }
 
     }
 
-    public static void givePermission(String key, String perm) {
-        if (key != null) {
-            if (perm != null) {
-                key = key.toLowerCase();
-                perm = perm.toLowerCase();
-                ConcurrentHashMap map = (ConcurrentHashMap) permData.get(key);
-
-                if (map == null) {
-                    map = new ConcurrentHashMap();
-                }
-
-                map.put(perm, Boolean.valueOf(true));
-                permData.put(key, map);
-            }
-        }
-    }
-
-    public static List<String> getPermissions(String key) {
-        ArrayList perms = new ArrayList();
-
-        if (key == null) {
-            return perms;
-        } else {
-            key = key.toLowerCase();
-            Map map = (ConcurrentHashMap) permData.get(key);
+    public static void givePermission(UUID uuid, String perm) {
+        if (perm != null) {
+            String key = uuid == null ? "*" : uuid.toString();
+            perm = perm.toLowerCase();
+            ConcurrentHashMap<String, Boolean> map = permData.get(key);
 
             if (map == null) {
-                return perms;
-            } else {
-                Iterator var4 = map.keySet().iterator();
+                map = new ConcurrentHashMap<String, Boolean>();
+            }
 
-                while (var4.hasNext()) {
-                    String perm = (String) var4.next();
+            map.put(perm, true);
+            permData.put(key, map);
+        }
+    }
 
-                    perms.add(perm);
+    public static List<String> getPermissions(UUID uuid) {
+        ArrayList<String> perms = new ArrayList<String>();
+
+        String key = uuid == null ? "*" : uuid.toString();
+        Map<String, Boolean> map = permData.get(key);
+
+        if (map == null) {
+            return perms;
+        } else {
+
+            for (String perm : map.keySet())
+                perms.add(perm);
+        }
+
+        return perms;
+    }
+
+    public static void takePermission(UUID uuid, String perm) {
+        if (perm != null) {
+            String key = uuid == null ? "*" : uuid.toString();
+            perm = perm.toLowerCase();
+            ConcurrentHashMap<String, Boolean> map = permData.get(key);
+
+            if (map != null) {
+                map.remove(perm);
+                if (map.size() <= 0) {
+                    permData.remove(key);
+                } else {
+                    permData.put(key, map);
                 }
 
-                return perms;
             }
         }
     }
 
-    public static void takePermission(String key, String perm) {
-        if (key != null) {
-            if (perm != null) {
-                key = key.toLowerCase();
-                perm = perm.toLowerCase();
-                ConcurrentHashMap map = (ConcurrentHashMap) permData.get(key);
-
-                if (map != null) {
-                    map.remove(perm);
-                    if (map.size() <= 0) {
-                        permData.remove(key);
-                    } else {
-                        permData.put(key, map);
-                    }
-
-                }
-            }
-        }
+    public static boolean hasPermission(UUID uuid, String perm) {
+        return hasPermission(uuid, perm, true);
     }
 
-    public static boolean hasPermission(String key, String perm) {
-        return hasPermission(key, perm, true);
-    }
-
-    public static boolean hasPermission(String key, String perm, boolean checkAllGroup) {
-        if (key == null) {
-            return false;
-        } else if (perm == null) {
+    public static boolean hasPermission(UUID uuid, String perm, boolean checkAllGroup) {
+        if (perm == null) {
             return true;
         } else {
-            key = key.toLowerCase();
+            String key = uuid == null ? "*" : uuid.toString();
             perm = perm.toLowerCase();
             ConcurrentHashMap map = (ConcurrentHashMap) permData.get(key);
             boolean res = false;
@@ -173,16 +154,12 @@ public class _PermMgr {
                 res = map.containsKey(perm);
             }
 
-            Iterator var6 = _DiwUtils.pluginManager.plugins.iterator();
-
-            while (var6.hasNext()) {
-                PluginInfo plugin = (PluginInfo) var6.next();
-
+            for (PluginInfo plugin : _DiwUtils.pluginManager.plugins) {
                 try {
                     Boolean exc = plugin.ref.onRequestPermission(key, perm);
 
                     if (exc != null) {
-                        res = exc.booleanValue();
+                        res = exc;
                     }
                 } catch (Throwable var8) {
                     var8.printStackTrace();
@@ -190,12 +167,12 @@ public class _PermMgr {
             }
 
             return !res && checkAllGroup && !key.equals("*")
-                    ? hasPermission("*", perm, false)
+                    ? hasPermission(null, perm, false)
                     : res;
         }
     }
 
     public static void clearAllPermissions() {
-        permData = new ConcurrentHashMap();
+        permData = new ConcurrentHashMap<String, ConcurrentHashMap<String, Boolean>>();
     }
 }

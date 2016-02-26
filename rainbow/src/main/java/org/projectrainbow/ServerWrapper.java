@@ -26,6 +26,7 @@ import org.projectrainbow.plugins.PluginCommand;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -84,25 +85,66 @@ public class ServerWrapper implements MC_Server {
     }
 
     public void givePermission(String key, String perm) {
-        _PermMgr.givePermission(key, perm);
+        UUID uuid = null;
+        if (!key.equals("*")) {
+            try {
+                uuid = UUID.fromString(key);
+            } catch (Throwable th) {
+                uuid = _UUIDMapper.getUUID(key);
+            }
+            if (uuid == null) {
+                return;
+            }
+        }
+        _PermMgr.givePermission(uuid, perm);
     }
 
     public List<String> getPermissions(String key) {
-        return _PermMgr.getPermissions(key);
+        UUID uuid = null;
+        if (!key.equals("*")) {
+            try {
+                uuid = UUID.fromString(key);
+            } catch (Throwable th) {
+                uuid = _UUIDMapper.getUUID(key);
+            }
+            if (uuid == null) {
+                return Collections.emptyList();
+            }
+        }
+        return _PermMgr.getPermissions(uuid);
     }
 
     public void takePermission(String key, String perm) {
-        _PermMgr.takePermission(key, perm);
+        UUID uuid = null;
+        if (!key.equals("*")) {
+            try {
+                uuid = UUID.fromString(key);
+            } catch (Throwable th) {
+                uuid = _UUIDMapper.getUUID(key);
+            }
+            if (uuid == null) {
+                return;
+            }
+        }
+        _PermMgr.takePermission(uuid, perm);
     }
 
     public boolean hasPermission(String key, String perm) {
-        boolean res = _PermMgr.hasPermission(key, perm);
+        UUID uuid = null;
+        if (!key.equals("*")) {
+            try {
+                uuid = UUID.fromString(key);
+            } catch (Throwable th) {
+                uuid = _UUIDMapper.getUUID(key);
+            }
+            if (uuid == null) {
+                return false;
+            }
+        }
+        boolean res = _PermMgr.hasPermission(uuid, perm);
 
         if (_CmdPerm.DebugMode) {
-            System.out.println(
-                    String.format(
-                            "=== Perm Debug: Testing if \'%s\' has permission \'%s\'. Result: %s",
-                            new Object[] { key, perm, Boolean.valueOf(res)}));
+            System.out.println(String.format("=== Perm Debug: Testing if '%s'(%s) has permission '%s'. Result: %s", key, String.valueOf(uuid), perm, res));
         }
 
         return res;

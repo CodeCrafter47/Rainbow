@@ -51,6 +51,7 @@ public class Hooks {
     public static void onPlayerLogin(String playerName, UUID uuid, String ip) {
         _EconomyManager.onLogin(playerName, uuid);
         _HomeUtils.onLogin(playerName, uuid);
+        _PermMgr.onLogin(playerName, uuid);
         for (PluginInfo plugin : _DiwUtils.pluginManager.plugins) {
             try {
                 plugin.ref.onPlayerLogin(playerName, uuid, ip);
