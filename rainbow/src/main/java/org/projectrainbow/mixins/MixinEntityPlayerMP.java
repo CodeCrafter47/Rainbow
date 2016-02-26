@@ -651,7 +651,8 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
     public void playSound(String var1, float var2, float var3) {
         nf object = nf.a.getObject(new ResourceLocation(var1));
         if (object == null) {
-            throw new IllegalArgumentException("Sound " + var1 + " does not exist.");
+            System.err.println("Sound " + var1 + " does not exist.");
+            return;
         }
         ((Entity) (Object) this).a(object, var2, var3);
     }
