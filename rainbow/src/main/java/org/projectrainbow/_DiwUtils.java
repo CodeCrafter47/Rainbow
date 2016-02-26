@@ -40,7 +40,6 @@ import org.projectrainbow.commands._CmdHome2;
 import org.projectrainbow.commands._CmdIgnore;
 import org.projectrainbow.commands._CmdJEmote;
 import org.projectrainbow.commands._CmdJot;
-import org.projectrainbow.commands._CmdName;
 import org.projectrainbow.commands._CmdNameColor;
 import org.projectrainbow.commands._CmdPay;
 import org.projectrainbow.commands._CmdPayday;
@@ -318,7 +317,6 @@ public class _DiwUtils {
         ServerWrapper.getInstance().registerCommand(new _CmdIgnore());
         ServerWrapper.getInstance().registerCommand(new _CmdJEmote());
         ServerWrapper.getInstance().registerCommand(new _CmdJot());
-        ServerWrapper.getInstance().registerCommand(new _CmdName());
         ServerWrapper.getInstance().registerCommand(new _CmdTpaHere());
         ServerWrapper.getInstance().registerCommand(new _CmdPayday());
         ServerWrapper.getInstance().registerCommand(new _CmdPerm());
