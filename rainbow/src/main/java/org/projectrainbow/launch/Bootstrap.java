@@ -31,8 +31,6 @@ public class Bootstrap {
     public static void main(String[] args) {
         Bootstrap.args = args;
 
-        System.out.println(Arrays.toString(((URLClassLoader) Bootstrap.class.getClassLoader()).getURLs()));
-
         logger.info("Searching for additional tweakers...");
 
         List<String> tweakClasses = new ArrayList<String>() {{
