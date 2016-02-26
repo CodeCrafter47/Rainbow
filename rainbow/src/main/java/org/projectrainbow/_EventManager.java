@@ -17,11 +17,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class _EventManager {
 
-    public static Map<String, Long> eventCount = new ConcurrentHashMap();
+    public static Map<String, Long> eventCount = new ConcurrentHashMap<String, Long>();
     private static String OldFilename = "EventCounts2.dat";
     private static String Filename = "EventCounts.dat";
 
-    public _EventManager() {}
+    public _EventManager() {
+    }
 
     public static void SaveEventCounts() {
         try {
@@ -34,11 +35,7 @@ public class _EventManager {
             s.writeObject(eventCount);
             s.close();
             long msEnd = System.currentTimeMillis();
-            String msg = ChatColor.YELLOW
-                    + String.format("%-20s: %5d events.      Took %3d ms",
-                    new Object[] {
-                "Event Counts",
-                Integer.valueOf(eventCount.size()), Long.valueOf(msEnd - exc)});
+            String msg = ChatColor.YELLOW + String.format("%-20s: %5d events.      Took %3d ms", "Event Counts", eventCount.size(), msEnd - exc);
 
             _DiwUtils.ConsoleMsg(msg);
         } catch (Throwable var8) {
@@ -60,7 +57,7 @@ public class _EventManager {
 
             if (!file.exists()) {
                 System.out.println("Starting New Event Count DB: " + Filename);
-                eventCount = new ConcurrentHashMap();
+                eventCount = new ConcurrentHashMap<String, Long>();
                 return;
             }
 
@@ -68,12 +65,12 @@ public class _EventManager {
             ObjectInputStream s = new ObjectInputStream(
                     new BufferedInputStream(f));
 
-            eventCount = (ConcurrentHashMap) s.readObject();
+            eventCount = (Map<String, Long>) s.readObject();
             s.close();
         } catch (Throwable var4) {
             var4.printStackTrace();
             System.out.println("Starting New Event Count DB: " + Filename);
-            eventCount = new ConcurrentHashMap();
+            eventCount = new ConcurrentHashMap<String, Long>();
         }
 
     }

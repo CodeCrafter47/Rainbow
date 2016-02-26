@@ -77,7 +77,7 @@ public class _CmdPay implements MC_Command {
                                             + String.format("%.2f", bal));
                         } else {
                             _EconomyManager.Withdraw(plr, amt);
-                            _EconomyManager.Deposit(UUID.fromString(_UUIDMapper.GetUUIDFromPlayerName(tgtName)), amt);
+                            _EconomyManager.Deposit(_UUIDMapper.getUUID(tgtName), amt);
                             String logMsg = String.format("%s paid %.2f to %s",
                                     plr.getName(), amt, tgtName);
 

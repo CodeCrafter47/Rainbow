@@ -34,14 +34,7 @@ public class _CmdHome extends CommandBase
     @Override
     public void processCommand(MinecraftServer minecraftServer, ICommandSender cs, String[] args) throws CommandException {
         if (!(cs instanceof EntityPlayer)) {
-            System.out.println("Dumping Homes...");
-            System.out.println("-------------------------------------------");
-            for (final String key : _HomeUtils.playerHomes.keySet()) {
-                final _SerializableLocation home = _HomeUtils.playerHomes.get(key);
-                final String msg = String.format("Home for %s: %s", key, home.toString());
-                System.out.println(msg);
-            }
-            System.out.println("-------------------------------------------");
+            System.out.println("Only for players.");
             return;
         }
         final EntityPlayerMP p = (EntityPlayerMP)cs;
@@ -50,10 +43,7 @@ public class _CmdHome extends CommandBase
             return;
         }
         final String pName = p.getName();
-        _SerializableLocation sloc = _HomeUtils.playerHomes.get(p.getUniqueID().toString());
-        if(sloc == null) {
-            sloc = _HomeUtils.playerHomes.get(pName);
-        }
+        _SerializableLocation sloc = _HomeUtils.getHome(p.getUniqueID());
         if (sloc == null) {
             ((IMixinICommandSender)p).sendMessage(String.valueOf(_ColorHelper.RED) + "You don't have a home set. Try first: " + _ColorHelper.GOLD + "/sethome");
             return;

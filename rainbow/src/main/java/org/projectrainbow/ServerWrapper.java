@@ -30,6 +30,7 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 
 public class ServerWrapper implements MC_Server {
@@ -139,19 +140,17 @@ public class ServerWrapper implements MC_Server {
     }
 
     public String getPlayerUUIDFromName(String pName) {
-        return pName == null ? null : _UUIDMapper.GetUUIDFromPlayerName(pName);
+        if (pName == null) return null;
+        UUID uuid = _UUIDMapper.getUUID(pName);
+        return uuid == null ? null : uuid.toString();
     }
 
     public List<String> getPlayerNamesFromUUID(String uid) {
-        return _UUIDMapper.GetPlayerNamesFromUUID(uid);
+        return _UUIDMapper.getNameHistory(UUID.fromString(uid));
     }
 
     public String getLastKnownPlayerNameFromUUID(String uid) {
-        List arr = _UUIDMapper.GetPlayerNamesFromUUID(uid);
-
-        return arr == null
-                ? null
-                : (arr.size() <= 0 ? null : (String) arr.get(arr.size() - 1));
+        return _UUIDMapper.getName(UUID.fromString(uid));
     }
 
     public int getMaxBuildHeight() {

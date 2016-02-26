@@ -4,7 +4,6 @@ package org.projectrainbow;
 import PluginReference.ChatColor;
 import com.google.common.io.Files;
 
-import javax.xml.crypto.Data;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -13,23 +12,24 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 
 public class _UUIDMapper {
 
-    public static Map<String, String> LowerNameToUUID = new ConcurrentHashMap();
-    public static Map<String, List<String>> UUIDToNameList = new ConcurrentHashMap();
+    private static Map<String, String> LowerNameToUUID = new ConcurrentHashMap<String, String>();
+    private static Map<String, List<String>> UUIDToNameList = new ConcurrentHashMap<String, List<String>>();
     private static String OldFilename = "Joe_UUID_Mapping.dat";
     private static String Filename = "Player_UUID_Mapping.dat";
 
-    public _UUIDMapper() {}
+    public _UUIDMapper() {
+    }
 
-    public static String GetPlayerExactName(String tgtName) {
-        String uuid = LowerNameToUUID.get(tgtName.toLowerCase());
+    public static String getCaseCorrectedPlayerName(String name) {
+        String uuid = LowerNameToUUID.get(name.toLowerCase());
         if (uuid == null) {
             return null;
         }
@@ -54,10 +54,9 @@ public class _UUIDMapper {
             long msEnd = System.currentTimeMillis();
             String msg = ChatColor.YELLOW
                     + String.format("%-20s: %5d mappings.    Took %3d ms",
-                    new Object[] {
-                "UUID Maps",
-                Integer.valueOf(LowerNameToUUID.size()),
-                Long.valueOf(msEnd - exc)});
+                    "UUID Maps",
+                    LowerNameToUUID.size(),
+                    msEnd - exc);
 
             _DiwUtils.ConsoleMsg(msg);
         } catch (Throwable var8) {
@@ -79,8 +78,8 @@ public class _UUIDMapper {
 
             if (!file.exists()) {
                 System.out.println("Starting New NameToUUID: " + Filename);
-                LowerNameToUUID = new ConcurrentHashMap();
-                UUIDToNameList = new ConcurrentHashMap();
+                LowerNameToUUID = new ConcurrentHashMap<String, String>();
+                UUIDToNameList = new ConcurrentHashMap<String, List<String>>();
                 return;
             }
 
@@ -88,20 +87,20 @@ public class _UUIDMapper {
             ObjectInputStream s = new ObjectInputStream(
                     new BufferedInputStream(f));
 
-            LowerNameToUUID = (ConcurrentHashMap) s.readObject();
+            LowerNameToUUID = (Map<String, String>) s.readObject();
 
             try {
-                UUIDToNameList = (ConcurrentHashMap) s.readObject();
+                UUIDToNameList = (Map<String, List<String>>) s.readObject();
             } catch (Exception var5) {
-                UUIDToNameList = new ConcurrentHashMap();
+                UUIDToNameList = new ConcurrentHashMap<String, List<String>>();
             }
 
             s.close();
         } catch (Throwable var6) {
             var6.printStackTrace();
             System.out.println("Starting New NameToUUID: " + Filename);
-            LowerNameToUUID = new ConcurrentHashMap();
-            UUIDToNameList = new ConcurrentHashMap();
+            LowerNameToUUID = new ConcurrentHashMap<String, String>();
+            UUIDToNameList = new ConcurrentHashMap<String, List<String>>();
         }
 
     }
@@ -111,31 +110,40 @@ public class _UUIDMapper {
         AddMaptoNameList(pName, uuid);
     }
 
-    public static void AddMaptoNameList(String pName, String uuid) {
+    private static void AddMaptoNameList(String pName, String uuid) {
         List<String> nameList = UUIDToNameList.get(uuid);
 
         if (nameList == null) {
-            nameList = new ArrayList();
+            nameList = new ArrayList<String>();
         }
 
-        if (!((List) nameList).contains(pName)) {
-            ((List) nameList).add(pName);
+        if (!nameList.contains(pName)) {
+            nameList.add(pName);
             UUIDToNameList.put(uuid, nameList);
             if (((List) nameList).size() > 1) {
                 _DiwUtils.ConsoleMsg(
                         "UUIDMapper: " + pName
-                        + "\'s UUID has multiple names on record!: "
-                        + _DiwUtils.GetCommaList((Collection) nameList));
+                                + "\'s UUID has multiple names on record!: "
+                                + _DiwUtils.GetCommaList(nameList));
             }
         }
 
     }
 
-    public static String GetUUIDFromPlayerName(String pName) {
-        return (String) LowerNameToUUID.get(pName.toLowerCase());
+    public static UUID getUUID(String pName) {
+        String uuid = LowerNameToUUID.get(pName.toLowerCase());
+        return uuid == null ? null : UUID.fromString(uuid);
     }
 
-    public static List<String> GetPlayerNamesFromUUID(String uid) {
-        return (List) UUIDToNameList.get(uid);
+    public static String getName(UUID uuid) {
+        List<String> nameHistory = getNameHistory(uuid);
+        if (nameHistory == null || nameHistory.isEmpty()) {
+            return null;
+        }
+        return nameHistory.get(nameHistory.size() - 1);
+    }
+
+    public static List<String> getNameHistory(UUID uuid) {
+        return UUIDToNameList.get(uuid.toString());
     }
 }

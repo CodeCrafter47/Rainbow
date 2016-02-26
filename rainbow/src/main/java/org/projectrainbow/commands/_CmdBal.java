@@ -9,11 +9,13 @@ import net.minecraft.src.EnumChatFormatting;
 import org.projectrainbow.ServerWrapper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow._EconomyManager;
+import org.projectrainbow._UUIDMapper;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 
 public class _CmdBal implements MC_Command {
@@ -95,6 +97,9 @@ public class _CmdBal implements MC_Command {
             String key = (String) var5.next();
             Double amt = _EconomyManager.economy.get(key);
             String exactName = ServerWrapper.getInstance().getPlayerExactName(key);
+            if (key.length() > 16) {
+                exactName = _UUIDMapper.getName(UUID.fromString(key));
+            }
 
             if (exactName == null) {
                 exactName = key;

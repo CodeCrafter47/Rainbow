@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.UUID;
 
+// todo make sure we accept null for ALL ItemStack parameters
 public class Hooks {
     private static Logger logger = LogManager.getLogger("Minecraft");
 
@@ -48,6 +49,8 @@ public class Hooks {
     }
 
     public static void onPlayerLogin(String playerName, UUID uuid, String ip) {
+        _EconomyManager.onLogin(playerName, uuid);
+        _HomeUtils.onLogin(playerName, uuid);
         for (PluginInfo plugin : _DiwUtils.pluginManager.plugins) {
             try {
                 plugin.ref.onPlayerLogin(playerName, uuid, ip);

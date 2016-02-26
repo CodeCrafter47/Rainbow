@@ -41,7 +41,7 @@ public class _CmdSetHome extends CommandBase
         }
         final String pName = p.getName();
         final _SerializableLocation sloc = new _SerializableLocation(p.posX, p.posY, p.posZ, p.dimension, p.rotationYaw, p.rotationPitch);
-        _HomeUtils.playerHomes.put(p.getUniqueID().toString(), sloc);
+        _HomeUtils.setHome(p.getUniqueID(), sloc);
         _HomeUtils.SaveHomes();
         final String msg = String.format("Home Set for %s set to %s", pName, sloc.toString());
         System.out.println(msg);

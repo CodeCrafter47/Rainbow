@@ -20,9 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.UUID;
 
-import static net.minecraft.src.ng.cs;
-import static net.minecraft.src.ng.u;
-
 
 public class _JOT_OnlineTimeUtils {
 
@@ -34,7 +31,7 @@ public class _JOT_OnlineTimeUtils {
     }
 
     public static String GetPlayerExactName(String tgtName) {
-        return _UUIDMapper.GetPlayerExactName(tgtName);
+        return _UUIDMapper.getCaseCorrectedPlayerName(tgtName);
     }
 
     public static void LoadData() {
@@ -105,7 +102,7 @@ public class _JOT_OnlineTimeUtils {
     public static void HandlePlayerLogin(MC_Player plr) {
         if (!ShuttingDown) {
             _JOT_OnlineTimeEntry entry = Data.playerData.get(plr.getUUID().toString());
-            if(entry == null) {
+            if (entry == null) {
                 entry = Data.playerData.remove(plr.getName());
             }
 
@@ -190,7 +187,8 @@ public class _JOT_OnlineTimeUtils {
             pname = cs.getName();
         }
 
-        String uuid = _UUIDMapper.GetUUIDFromPlayerName(pname);
+        UUID uuid1 = _UUIDMapper.getUUID(pname);
+        String uuid = uuid1 == null ? null : uuid1.toString();
 
         if (uuid == null || !Data.playerData.containsKey(uuid)) {
             reply(cs, ChatColor.RED + "No data for: " + ChatColor.YELLOW + pname);

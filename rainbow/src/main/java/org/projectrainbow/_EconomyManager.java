@@ -23,8 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class _EconomyManager {
 
-    public static Map<String, Double> economy = new ConcurrentHashMap();
-    public static Map<String, Double> itemWorth = new ConcurrentHashMap();
+    public static Map<String, Double> economy = new ConcurrentHashMap<String, Double>();
+    public static Map<String, Double> itemWorth = new ConcurrentHashMap<String, Double>();
     private static String Filename = "Economy.dat";
 
     public _EconomyManager() {
@@ -42,10 +42,7 @@ public class _EconomyManager {
             s.writeObject(itemWorth);
             s.close();
             long msEnd = System.currentTimeMillis();
-            String msg = ChatColor.YELLOW
-                    + String.format("%-20s: %5d balances.    Took %3d ms",
-                    "Economy", economy.size(),
-                    msEnd - exc);
+            String msg = ChatColor.YELLOW + String.format("%-20s: %5d balances.    Took %3d ms", "Economy", economy.size(), msEnd - exc);
 
             _DiwUtils.ConsoleMsg(msg);
         } catch (Throwable var8) {
@@ -67,8 +64,8 @@ public class _EconomyManager {
 
             if (!file.exists()) {
                 System.out.println("Starting New Economy: " + Filename);
-                economy = new ConcurrentHashMap();
-                itemWorth = new ConcurrentHashMap();
+                economy = new ConcurrentHashMap<String, Double>();
+                itemWorth = new ConcurrentHashMap<String, Double>();
                 return;
             }
 
@@ -76,27 +73,29 @@ public class _EconomyManager {
             ObjectInputStream s = new ObjectInputStream(
                     new BufferedInputStream(f));
 
-            economy = (ConcurrentHashMap) s.readObject();
-            itemWorth = (ConcurrentHashMap) s.readObject();
+            economy = (Map<String, Double>) s.readObject();
+            itemWorth = (Map<String, Double>) s.readObject();
             s.close();
         } catch (Throwable var4) {
             var4.printStackTrace();
             System.out.println("Starting New Economy: " + Filename);
-            economy = new ConcurrentHashMap();
-            itemWorth = new ConcurrentHashMap();
+            economy = new ConcurrentHashMap<String, Double>();
+            itemWorth = new ConcurrentHashMap<String, Double>();
         }
+    }
 
+    public static void onLogin(String name, UUID uuid) {
+        if (!economy.containsKey(uuid.toString()) && economy.containsKey(name)) {
+            economy.put(uuid.toString(), economy.remove(name));
+        }
     }
 
     public static Double GetBalance(MC_Player cs) {
-        if (!economy.containsKey(cs.getUUID().toString())) {
-            return Objects.firstNonNull(economy.get(cs.getName().toLowerCase()), 0.0D);
-        }
         return GetBalance(cs.getUUID());
     }
 
     public static Double GetBalance(UUID uuid) {
-        Double val = (Double) economy.get(uuid.toString());
+        Double val = economy.get(uuid.toString());
 
         return val == null ? Double.valueOf(0.0D) : val;
     }
@@ -128,11 +127,10 @@ public class _EconomyManager {
     }
 
     public static void ShowBalanceOf(MC_Player cs, String tgtName) {
-        Double bal = GetBalance(UUID.fromString(_UUIDMapper.GetUUIDFromPlayerName(tgtName)));
+        UUID uuid = _UUIDMapper.getUUID(tgtName);
+        Double bal = uuid == null ? 0 : GetBalance(uuid);
 
-        _DiwUtils.reply(cs,
-                ChatColor.AQUA + tgtName + " Balance: " + ChatColor.GREEN
-                        + String.format("%.2f", bal));
+        _DiwUtils.reply(cs, ChatColor.AQUA + tgtName + " Balance: " + ChatColor.GREEN + String.format("%.2f", bal));
     }
 
     public static String GetItemKey(MC_ItemStack is) {
@@ -154,7 +152,7 @@ public class _EconomyManager {
     }
 
     public static Double GetItemWorth(MC_ItemStack is) {
-        Double dbl = (Double) itemWorth.get(GetItemKey(is));
+        Double dbl = itemWorth.get(GetItemKey(is));
 
         if (dbl == null) {
             dbl = 0.0D;
@@ -169,14 +167,10 @@ public class _EconomyManager {
         String msgLog = "---- Executing Pay Day: " + nPlayers + " players";
 
         _DiwUtils.ConsoleMsg(msgLog);
-        Iterator<MC_Player> var4 = players.iterator();
 
-        while (var4.hasNext()) {
-            MC_Player p = var4.next();
+        for (MC_Player p : players) {
             double amt = _DiwUtils.PayDayAmount;
-            String msg = _DiwUtils.RainbowString("Pay Day!!! ", "b")
-                    + ChatColor.GREEN + "You receive "
-                    + String.format("%.2f", Double.valueOf(amt));
+            String msg = _DiwUtils.RainbowString("Pay Day!!! ", "b") + ChatColor.GREEN + "You receive " + String.format("%.2f", amt);
 
             p.sendMessage(msg);
             Deposit(p, amt);

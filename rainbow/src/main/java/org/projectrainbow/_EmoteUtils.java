@@ -41,7 +41,7 @@ public class _EmoteUtils {
 
             if (!file.exists()) {
                 _DiwUtils.ConsoleMsg("Starting New Emote Database...");
-                emotes = new ConcurrentHashMap();
+                emotes = new ConcurrentHashMap<String, _EmoteEntry>();
                 return;
             }
 
@@ -49,26 +49,20 @@ public class _EmoteUtils {
             ObjectInputStream s = new ObjectInputStream(
                     new BufferedInputStream(f));
 
-            emotes = (ConcurrentHashMap) s.readObject();
+            emotes = (Map<String, _EmoteEntry>) s.readObject();
             s.close();
             long msEnd = System.currentTimeMillis();
-            String msg = String.format(
-                    "%-20s: " + ChatColor.WHITE + "%5d emotes.   Took %3d ms",
-                    new Object[] {
-                "Emote DB Loaded",
-                Integer.valueOf(emotes.size()), Long.valueOf(msEnd - exc)});
+            String msg = String.format("%-20s: " + ChatColor.WHITE + "%5d emotes.   Took %3d ms", "Emote DB Loaded", emotes.size(), msEnd - exc);
 
             _DiwUtils.ConsoleMsg(ChatColor.YELLOW + msg);
             if (emotes.containsKey("jemote")) {
                 emotes.remove("jemote");
-                _DiwUtils.ConsoleMsg(
-                        ChatColor.LIGHT_PURPLE
-                                + "--- Removed emote named \'jemote\' for safety.");
+                _DiwUtils.ConsoleMsg(ChatColor.LIGHT_PURPLE + "--- Removed emote named \'jemote\' for safety.");
             }
         } catch (Throwable var9) {
             var9.printStackTrace();
             _DiwUtils.ConsoleMsg("Starting New Emote Database...");
-            emotes = new ConcurrentHashMap();
+            emotes = new ConcurrentHashMap<String, _EmoteEntry>();
         }
 
     }
@@ -85,12 +79,7 @@ public class _EmoteUtils {
             s.close();
             long msEnd = System.currentTimeMillis();
 
-            _DiwUtils.ConsoleMsg(
-                    ChatColor.YELLOW
-                            + String.format("%-20s: %5d emotes.   Took %3d ms",
-                            new Object[] {
-                "Emote DB Save",
-                Integer.valueOf(emotes.size()), Long.valueOf(msEnd - exc)}));
+            _DiwUtils.ConsoleMsg(ChatColor.YELLOW + String.format("%-20s: %5d emotes.   Took %3d ms", "Emote DB Save", emotes.size(), msEnd - exc));
         } catch (Throwable var7) {
             System.out.println("**********************************************");
             System.out.println("SaveEmotes: " + var7.toString());
@@ -100,40 +89,23 @@ public class _EmoteUtils {
     }
 
     public static void ShowUsage(MC_Player cs) {
-        _DiwUtils.reply(cs,
-                "" + ChatColor.AQUA + ChatColor.BOLD
-                + "----- Emotion Options -----");
-        _DiwUtils.reply(cs,
-                ChatColor.GOLD + "/jemote list " + ChatColor.WHITE
-                + " -- List all emotes");
-        _DiwUtils.reply(cs,
-                ChatColor.GOLD + "/jemote mine " + ChatColor.WHITE
-                + " -- List my emotes");
+        _DiwUtils.reply(cs, "" + ChatColor.AQUA + ChatColor.BOLD + "----- Emotion Options -----");
+        _DiwUtils.reply(cs, ChatColor.GOLD + "/jemote list " + ChatColor.WHITE + " -- List all emotes");
+        _DiwUtils.reply(cs, ChatColor.GOLD + "/jemote mine " + ChatColor.WHITE + " -- List my emotes");
         if (cs.isOp()) {
-            _DiwUtils.reply(cs,
-                    ChatColor.LIGHT_PURPLE + "- Admin Options: "
-                    + ChatColor.WHITE + "Using \'smile\' as example...");
+            _DiwUtils.reply(cs, ChatColor.LIGHT_PURPLE + "- Admin Options: " + ChatColor.WHITE + "Using \'smile\' as example...");
             _DiwUtils.reply(cs, ChatColor.LIGHT_PURPLE + "/jemote info smile");
             _DiwUtils.reply(cs, ChatColor.LIGHT_PURPLE + "/jemote delete smile");
-            _DiwUtils.reply(cs,
-                    ChatColor.LIGHT_PURPLE + "/jemote add smile "
-                    + ChatColor.AQUA + "default" + ChatColor.GREEN
-                    + " smiles happily!");
-            _DiwUtils.reply(cs,
-                    ChatColor.LIGHT_PURPLE + "/jemote add smile "
-                    + ChatColor.AQUA + "self" + ChatColor.GREEN
-                    + " smiles in a mirror.");
-            _DiwUtils.reply(cs,
-                    ChatColor.LIGHT_PURPLE + "/jemote add smile "
-                    + ChatColor.AQUA + "other" + ChatColor.GREEN
-                    + " smiles at %s happily!");
+            _DiwUtils.reply(cs, ChatColor.LIGHT_PURPLE + "/jemote add smile " + ChatColor.AQUA + "default" + ChatColor.GREEN + " smiles happily!");
+            _DiwUtils.reply(cs, ChatColor.LIGHT_PURPLE + "/jemote add smile " + ChatColor.AQUA + "self" + ChatColor.GREEN + " smiles in a mirror.");
+            _DiwUtils.reply(cs, ChatColor.LIGHT_PURPLE + "/jemote add smile " + ChatColor.AQUA + "other" + ChatColor.GREEN + " smiles at %s happily!");
         }
 
     }
 
     public static void ShowEmoteDetails(MC_Player cs, String emote) {
         emote = emote.toLowerCase();
-        _EmoteEntry entry = (_EmoteEntry) emotes.get(emote);
+        _EmoteEntry entry = emotes.get(emote);
 
         if (entry == null) {
             _DiwUtils.reply(cs,
@@ -154,25 +126,18 @@ public class _EmoteUtils {
                     + _DiwUtils.GetDateStringFromLong(entry.msUpdated)
                     + ChatColor.WHITE + " by " + ChatColor.YELLOW
                     + entry.updatedBy);
-            Iterator var4 = entry.msg.keySet().iterator();
 
-            while (var4.hasNext()) {
-                String key = (String) var4.next();
-
-                _DiwUtils.reply(cs,
-                        ChatColor.AQUA + key + ": " + ChatColor.GREEN
-                        + (String) entry.msg.get(key));
+            for (String key : entry.msg.keySet()) {
+                _DiwUtils.reply(cs, ChatColor.AQUA + key + ": " + ChatColor.GREEN + entry.msg.get(key));
             }
 
-            _DiwUtils.reply(cs,
-                    ChatColor.GREEN + "---------------------------------------");
+            _DiwUtils.reply(cs, ChatColor.GREEN + "---------------------------------------");
         }
     }
 
     public static boolean CanDoEmote(MC_Player cs, String emote) {
         if (cs != null) {
-            if (!cs.hasPermission("rainbow.jemote." + emote)
-                    && !cs.hasPermission("rainbow.jemote.*")) {
+            if (!cs.hasPermission("rainbow.jemote." + emote) && !cs.hasPermission("rainbow.jemote.*")) {
                 return false;
             }
         }
@@ -196,45 +161,34 @@ public class _EmoteUtils {
             if (!emotes.containsKey(emote)) {
                 return false;
             } else if (!CanDoEmote(cs, emote)) {
-                _DiwUtils.reply(cs,
-                        ChatColor.RED + "You don\'t yet have this emote! :(...");
+                _DiwUtils.reply(cs, ChatColor.RED + "You don\'t yet have this emote! :(...");
                 return true;
             } else if (_DiwUtils.TooSoon((ICommandSender) cs, "Emote", 7)) {
                 return true;
             } else {
-                _EmoteEntry entry = (_EmoteEntry) emotes.get(emote);
+                _EmoteEntry entry = emotes.get(emote);
 
                 if (pieces.length > 1) {
                     String tgtName = pieces[1];
 
                     if (tgtName.equalsIgnoreCase(cs.getName())) {
-                        _DiwUtils.MessageAllPlayers(cs,
-                                ChatColor.GREEN + cs.getName() + " "
-                                + (String) entry.msg.get("self"));
+                        _DiwUtils.MessageAllPlayers(cs, ChatColor.GREEN + cs.getName() + " " + entry.msg.get("self"));
                         return true;
                     } else {
                         MC_Player pTgt = ServerWrapper.getInstance().getOnlinePlayerByName(tgtName);
 
                         if (pTgt == null) {
-                            _DiwUtils.reply(cs,
-                                    ChatColor.RED + "Target player not found: "
-                                    + ChatColor.YELLOW + tgtName);
+                            _DiwUtils.reply(cs, ChatColor.RED + "Target player not found: " + ChatColor.YELLOW + tgtName);
                             return true;
                         } else {
-                            String trailer = String.format(
-                                    (String) entry.msg.get("other"),
-                                    new Object[] { pTgt.getName()});
+                            String trailer = String.format(entry.msg.get("other"), pTgt.getName());
 
-                            _DiwUtils.MessageAllPlayers(cs,
-                                    ChatColor.GREEN + cs.getName() + " "
-                                    + trailer);
+                            _DiwUtils.MessageAllPlayers(cs, ChatColor.GREEN + cs.getName() + " " + trailer);
                             return true;
                         }
                     }
                 } else {
-                    _DiwUtils.MessageAllPlayers(cs,
-                            ChatColor.GREEN + cs.getName() + " "
-                            + (String) entry.msg.get("default"));
+                    _DiwUtils.MessageAllPlayers(cs, ChatColor.GREEN + cs.getName() + " " + entry.msg.get("default"));
                     return true;
                 }
             }
@@ -246,20 +200,16 @@ public class _EmoteUtils {
 
         if (args.length >= 1 && args[0].equalsIgnoreCase("list")) {
             emote = _DiwUtils.GetCommaList(emotes.keySet());
-            _DiwUtils.reply(cs,
-                    ChatColor.GREEN + "All Emotes: " + ChatColor.YELLOW + emote);
+            _DiwUtils.reply(cs, ChatColor.GREEN + "All Emotes: " + ChatColor.YELLOW + emote);
             return true;
         } else if (args.length >= 1 && args[0].equalsIgnoreCase("mine")) {
-            ArrayList emote1 = new ArrayList(emotes.keySet());
+            ArrayList<String> emote1 = new ArrayList<String>(emotes.keySet());
 
             new StringBuffer();
             Collections.sort(emote1);
             StringBuilder msNow3 = new StringBuilder();
-            Iterator var6 = emote1.iterator();
 
-            while (var6.hasNext()) {
-                String msNow4 = (String) var6.next();
-
+            for (String msNow4 : emote1) {
                 if (CanDoEmote(cs, msNow4)) {
                     if (msNow3.length() > 0) {
                         msNow3.append(", ");
@@ -269,25 +219,19 @@ public class _EmoteUtils {
                 }
             }
 
-            _DiwUtils.reply(cs,
-                    ChatColor.GREEN + "Your Emotes: " + ChatColor.YELLOW
-                    + msNow3);
+            _DiwUtils.reply(cs, ChatColor.GREEN + "Your Emotes: " + ChatColor.YELLOW + msNow3);
             return true;
         } else {
             if (HasAdminPerm(cs)) {
                 if (args.length == 2 && args[0].equalsIgnoreCase("delete")) {
                     emote = args[1].toLowerCase();
                     if (!emotes.containsKey(emote)) {
-                        _DiwUtils.reply(cs,
-                                ChatColor.RED + "Emote does not exist: "
-                                + ChatColor.YELLOW + emote);
+                        _DiwUtils.reply(cs, ChatColor.RED + "Emote does not exist: " + ChatColor.YELLOW + emote);
                         return true;
                     }
 
                     emotes.remove(emote);
-                    _DiwUtils.reply(cs,
-                            ChatColor.GREEN + "Removed Emote: "
-                            + ChatColor.YELLOW + emote);
+                    _DiwUtils.reply(cs, ChatColor.GREEN + "Removed Emote: " + ChatColor.YELLOW + emote);
                     SaveEmotes();
                     return true;
                 }
@@ -313,14 +257,12 @@ public class _EmoteUtils {
                 if (args.length >= 4 && args[0].equalsIgnoreCase("add")) {
                     emote = args[1].toLowerCase();
                     if (emote.equalsIgnoreCase("jemote")) {
-                        _DiwUtils.reply(cs,
-                                ChatColor.RED
-                                + "No! You can\'t make an emote named \'jemote\'.");
+                        _DiwUtils.reply(cs, ChatColor.RED + "No! You can\'t make an emote named \'jemote\'.");
                         return true;
                     }
 
                     String entry1 = args[2].toLowerCase();
-                    _EmoteEntry msNow2 = (_EmoteEntry) emotes.get(emote);
+                    _EmoteEntry msNow2 = emotes.get(emote);
                     long msNow1 = System.currentTimeMillis();
 
                     if (msNow2 == null) {
@@ -331,39 +273,29 @@ public class _EmoteUtils {
 
                     msNow2.msUpdated = msNow1;
                     msNow2.updatedBy = cs.getName();
-                    if (!entry1.equalsIgnoreCase("default")
-                            && !entry1.equalsIgnoreCase("self")
-                            && !entry1.equalsIgnoreCase("other")) {
-                        _DiwUtils.reply(cs,
-                                ChatColor.RED + "Unknown target type: "
-                                + ChatColor.YELLOW + entry1);
+                    if (!entry1.equalsIgnoreCase("default") && !entry1.equalsIgnoreCase("self") && !entry1.equalsIgnoreCase("other")) {
+                        _DiwUtils.reply(cs, ChatColor.RED + "Unknown target type: " + ChatColor.YELLOW + entry1);
                         return true;
                     }
 
-                    String msg = _DiwUtils.FullTranslate(
-                            _DiwUtils.ConcatArgs(args, 3));
+                    String msg = _DiwUtils.FullTranslate(_DiwUtils.ConcatArgs(args, 3));
 
                     msNow2.msg.put(entry1, msg);
                     emotes.put(emote, msNow2);
                     SaveEmotes();
                     ShowEmoteDetails(cs, emote);
-                    _DiwUtils.reply(cs,
-                            ChatColor.GREEN + "Set " + ChatColor.YELLOW + emote
-                            + ChatColor.AQUA + " " + entry1 + ChatColor.GREEN
-                            + ": " + msg);
+                    _DiwUtils.reply(cs, ChatColor.GREEN + "Set " + ChatColor.YELLOW + emote + ChatColor.AQUA + " " + entry1 + ChatColor.GREEN + ": " + msg);
                     return true;
                 }
 
                 if (args.length >= 2 && args[0].equalsIgnoreCase("add")) {
                     emote = args[1].toLowerCase();
                     if (emote.equalsIgnoreCase("jemote")) {
-                        _DiwUtils.reply(cs,
-                                ChatColor.RED
-                                + "No! You can\'t make an emote named \'jemote\'.");
+                        _DiwUtils.reply(cs, ChatColor.RED + "No! You can\'t make an emote named \'jemote\'.");
                         return true;
                     }
 
-                    _EmoteEntry entry = (_EmoteEntry) emotes.get(emote);
+                    _EmoteEntry entry = emotes.get(emote);
                     long msNow = System.currentTimeMillis();
 
                     if (entry == null) {

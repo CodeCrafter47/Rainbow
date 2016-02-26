@@ -82,7 +82,12 @@ public class _CmdEcon implements MC_Command {
                         return;
                     }
 
-                    _EconomyManager.SetBalance(UUID.fromString(_UUIDMapper.GetUUIDFromPlayerName(tgtName)), amt);
+                    UUID uuid = _UUIDMapper.getUUID(tgtName);
+                    if (uuid == null) {
+                        _DiwUtils.reply(plr, ChatColor.RED + "Unknown player: " + ChatColor.WHITE + tgtName);
+                        return;
+                    }
+                    _EconomyManager.SetBalance(uuid, amt);
                     _EconomyManager.ShowBalanceOf(plr, exactName);
                 }
             } else if (args.length == 3 && args[0].equalsIgnoreCase("add")) {
@@ -105,7 +110,12 @@ public class _CmdEcon implements MC_Command {
                         return;
                     }
 
-                    _EconomyManager.Deposit(UUID.fromString(_UUIDMapper.GetUUIDFromPlayerName(tgtName)), amt);
+                    UUID uuid = _UUIDMapper.getUUID(tgtName);
+                    if (uuid == null) {
+                        _DiwUtils.reply(plr, ChatColor.RED + "Unknown player: " + ChatColor.WHITE + tgtName);
+                        return;
+                    }
+                    _EconomyManager.Deposit(uuid, amt);
                     _EconomyManager.ShowBalanceOf(plr, exactName);
                 }
             } else {
