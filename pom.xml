@@ -17,7 +17,7 @@
         <maven.compiler.target>1.6</maven.compiler.target>
         <maven.compiler.source>1.6</maven.compiler.source>
         <build.number>unknown</build.number>
-        <minecraft.version>1.9-pre3</minecraft.version>
+        <minecraft.version>1.9-pre4</minecraft.version>
     </properties>
 
     <profiles>
@@ -68,7 +68,7 @@
                             <url>https://s3.amazonaws.com/Minecraft.Download/versions/${minecraft.version}/minecraft_server.${minecraft.version}.jar</url>
                             <unpack>false</unpack>
                             <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <md5>43e73ee7c6b56253447fe2d012647fee</md5>
+                            <md5>4d4c91aa60ea19720fdbb961ee995675</md5>
                         </configuration>
                     </execution>
                 </executions>
