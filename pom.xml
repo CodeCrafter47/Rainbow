@@ -7,7 +7,7 @@
     <groupId>org.projectrainbow</groupId>
     <artifactId>rainbow-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.9-pre3-SNAPSHOT</version>
+    <version>1.9-pre4-SNAPSHOT</version>
     <modules>
         <module>nms</module>
         <module>rainbow</module>
