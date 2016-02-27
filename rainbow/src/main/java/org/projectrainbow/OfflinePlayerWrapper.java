@@ -361,4 +361,19 @@ public class OfflinePlayerWrapper implements MC_Player {
     }
 
     public void removeEntity() {}
+
+    @Override
+    public List<MC_Entity> getRiders() {
+        return null;
+    }
+
+    @Override
+    public void addRider(MC_Entity ent) {
+
+    }
+
+    @Override
+    public void removeRider(MC_Entity ent) {
+
+    }
 }

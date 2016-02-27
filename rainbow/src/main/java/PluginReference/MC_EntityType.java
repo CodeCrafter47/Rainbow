@@ -59,8 +59,18 @@ public enum MC_EntityType
 	BOAT,
 	PRIMED_TNT,
 	FALLING_SAND,
+	@Deprecated
 	HANGING, // i.e. painting, item_frame
 	ARMOR_STAND,
 	XP_ORB,
 	ENDER_CRYSTAL,
+	
+	// Added during 1.9
+	LEASH_KNOT, 
+	PAINTING,
+	ITEM_FRAME, 
+	LIGHTNING_BOLT, // note: the above (Leash, Painting, Frames, ...) obvious before 1.9 but added as specific entities rather than just 'hanging' ones
+	SHULKER,
+	SHULKER_BULLET,
+	AREA_EFFECT_CLOUD
 }

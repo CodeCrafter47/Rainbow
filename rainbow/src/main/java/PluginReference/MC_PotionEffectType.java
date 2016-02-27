@@ -31,6 +31,7 @@ public enum MC_PotionEffectType
 	SATURATION,
 	GLOWING,
 	LEVITATION,
-	LUCK
+	LUCK,
+	UNLUCK
 	
 }

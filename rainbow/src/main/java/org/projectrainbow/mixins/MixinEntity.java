@@ -379,4 +379,19 @@ public abstract class MixinEntity implements MC_Entity {
     public int api$getEntityId() {
         return getEntityId();
     }
+
+    @Override
+    public List<MC_Entity> getRiders() {
+        return (List<MC_Entity>) (Object) getPassengers();
+    }
+
+    @Override
+    public void addRider(MC_Entity ent) {
+        ((Entity) ent).m((Entity) (Object) this);
+    }
+
+    @Override
+    public void removeRider(MC_Entity ent) {
+        ((Entity)ent).stopRiding();
+    }
 }

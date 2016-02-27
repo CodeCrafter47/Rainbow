@@ -19,6 +19,7 @@ import net.minecraft.src.BiomeGenBase;
 import net.minecraft.src.Block;
 import net.minecraft.src.DamageSource;
 import net.minecraft.src.Entity;
+import net.minecraft.src.EntityAreaEffectCloud;
 import net.minecraft.src.EntityArmorStand;
 import net.minecraft.src.EntityBat;
 import net.minecraft.src.EntityBlaze;
@@ -44,18 +45,23 @@ import net.minecraft.src.EntityGuardian;
 import net.minecraft.src.EntityHanging;
 import net.minecraft.src.EntityHorse;
 import net.minecraft.src.EntityItem;
+import net.minecraft.src.EntityItemFrame;
 import net.minecraft.src.EntityLargeFireball;
 import net.minecraft.src.EntityLavaSlime;
+import net.minecraft.src.EntityLeashKnot;
 import net.minecraft.src.EntityMinecart;
 import net.minecraft.src.EntityMinecartEmpty;
 import net.minecraft.src.EntityMushroomCow;
 import net.minecraft.src.EntityOzelot;
+import net.minecraft.src.EntityPainting;
 import net.minecraft.src.EntityPig;
 import net.minecraft.src.EntityPigZombie;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.EntityPotion;
 import net.minecraft.src.EntityRabbit;
 import net.minecraft.src.EntitySheep;
+import net.minecraft.src.EntityShulker;
+import net.minecraft.src.EntityShulkerBullet;
 import net.minecraft.src.EntitySilverfish;
 import net.minecraft.src.EntitySkeleton;
 import net.minecraft.src.EntitySlime;
@@ -79,6 +85,7 @@ import net.minecraft.src.Potion;
 import net.minecraft.src.PotionEffect;
 import net.minecraft.src.WorldSettings;
 import net.minecraft.src.rm;
+import net.minecraft.src.ya;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -97,8 +104,6 @@ public class PluginHelper {
     public static MC_EntityType getEntityType(Class<? extends Entity> clazz) {
         if (EntityPlayerMP.class.isAssignableFrom(clazz)) {
             return MC_EntityType.PLAYER;
-        } else if (EntityHanging.class.isAssignableFrom(clazz)) {
-            return MC_EntityType.HANGING;
         } else if (EntityMinecart.class.isAssignableFrom(clazz)) {
             return MC_EntityType.MINECART;
         } else {
@@ -169,7 +174,7 @@ public class PluginHelper {
 
         entityMap.put(EntityItem.class, MC_EntityType.ITEM);
         entityMap.put(EntityXPOrb.class, MC_EntityType.XP_ORB);
-        // todo entityMap.put(EntityAreaEffectCloud.class, );
+        entityMap.put(EntityAreaEffectCloud.class, MC_EntityType.AREA_EFFECT_CLOUD);
         entityMap.put(EntityEgg.class, MC_EntityType.THROWN_EGG);
         entityMap.put(EntityTippedArrow.class, MC_EntityType.ARROW);
         entityMap.put(EntitySnowball.class, MC_EntityType.SNOWBALL);
@@ -184,7 +189,7 @@ public class PluginHelper {
         entityMap.put(EntityFallingBlock.class, MC_EntityType.FALLING_SAND);
         entityMap.put(EntityFireworkRocket.class, MC_EntityType.FIREWORK);
         // todo entityMap.put(EntitySpectralArrow.class, );
-        // todo entityMap.put(EntityShulkerBullet.class, );
+        entityMap.put(EntityShulkerBullet.class, MC_EntityType.SHULKER_BULLET);
         // todo entityMap.put(EntityDragonFireball.class, );
         entityMap.put(EntityArmorStand.class, MC_EntityType.ARMOR_STAND);
         entityMap.put(EntityBoat.class, MC_EntityType.BOAT);
@@ -208,7 +213,7 @@ public class PluginHelper {
         entityMap.put(EntityWitch.class, MC_EntityType.WITCH);
         entityMap.put(EntityEndermite.class, MC_EntityType.ENDERMITE);
         entityMap.put(EntityGuardian.class, MC_EntityType.GUARDIAN);
-        // todo entityMap.put(EntityShulker.class, );
+        entityMap.put(EntityShulker.class, MC_EntityType.SHULKER);
         entityMap.put(EntityPig.class, MC_EntityType.PIG);
         entityMap.put(EntitySheep.class, MC_EntityType.SHEEP);
         entityMap.put(EntityCow.class, MC_EntityType.COW);
@@ -224,6 +229,10 @@ public class PluginHelper {
         entityMap.put(EntityVillager.class, MC_EntityType.VILLAGER);
         entityMap.put(EntityEnderCrystal.class, MC_EntityType.ENDER_CRYSTAL);
         entityMap.put(EntityFishHook.class, MC_EntityType.FISHING_HOOK);
+        entityMap.put(EntityItemFrame.class, MC_EntityType.ITEM_FRAME);
+        entityMap.put(EntityPainting.class, MC_EntityType.PAINTING);
+        entityMap.put(EntityLeashKnot.class, MC_EntityType.LEASH_KNOT);
+        entityMap.put(ya.class, MC_EntityType.LIGHTNING_BOLT);
 
         potionMap.put(rm.a, MC_PotionEffectType.SPEED);
         potionMap.put(rm.b, MC_PotionEffectType.SLOWNESS);
@@ -251,6 +260,7 @@ public class PluginHelper {
         potionMap.put(rm.x, MC_PotionEffectType.GLOWING);
         potionMap.put(rm.y, MC_PotionEffectType.LEVITATION);
         potionMap.put(rm.z, MC_PotionEffectType.LUCK);
+        potionMap.put(rm.A, MC_PotionEffectType.UNLUCK);
 
         enchantmentMap.put((short) 0, MC_EnchantmentType.PROTECTION);
         enchantmentMap.put((short) 1, MC_EnchantmentType.FIRE_PROTECTION);
@@ -261,7 +271,7 @@ public class PluginHelper {
         enchantmentMap.put((short) 6, MC_EnchantmentType.AQUA_AFFINITY);
         enchantmentMap.put((short) 7, MC_EnchantmentType.THORNS);
         enchantmentMap.put((short) 8, MC_EnchantmentType.DEPTH_STRIDER);
-        // todo enchantmentMap.put(9, MC_EnchantmentType.FROST_WALKER);
+        enchantmentMap.put((short) 9, MC_EnchantmentType.FROST_WALKER);
         enchantmentMap.put((short) 16, MC_EnchantmentType.SHARPNESS);
         enchantmentMap.put((short) 17, MC_EnchantmentType.SMITE);
         enchantmentMap.put((short) 18, MC_EnchantmentType.BANE_OF_ARTHROPODS);
@@ -278,7 +288,7 @@ public class PluginHelper {
         enchantmentMap.put((short) 51, MC_EnchantmentType.INFINITY);
         enchantmentMap.put((short) 61, MC_EnchantmentType.LUCK_OF_THE_SEA);
         enchantmentMap.put((short) 62, MC_EnchantmentType.LURE);
-        // todo enchantmentMap.put(70, MC_EnchantmentType.MENDING);
+        enchantmentMap.put((short) 70, MC_EnchantmentType.MENDING);
 
         biomeMap.put(BiomeGenBase.getBiome(0), MC_WorldBiomeType.OCEAN);
         biomeMap.put(BiomeGenBase.getBiome(1), MC_WorldBiomeType.PLAINS);

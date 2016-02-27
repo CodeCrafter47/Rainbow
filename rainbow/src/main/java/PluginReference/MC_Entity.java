@@ -277,6 +277,27 @@ public interface MC_Entity
      * Removes entity (no item drops).  Ignores player entities.
      */ 			
 	public void removeEntity();
+
+	 /** 
+     * Get Riders
+     * 
+     * @return List of Rider entity or NULL if none. 
+     */ 			
+	public List<MC_Entity> getRiders();
+
+	 /** 
+     * Add a rider
+     * 
+     * @param ent Entity to set as rider
+     */ 		
+	public void addRider(MC_Entity ent);
+
+	 /** 
+     * Remove a rider
+     * 
+     * @param ent Entity to set as rider
+     */ 		
+	public void removeRider(MC_Entity ent);
 	
 }
 

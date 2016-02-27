@@ -30,5 +30,7 @@ public enum MC_EnchantmentType
 	INFINITY,
 	LUCK_OF_THE_SEA,
 	LURE,
-	UNKNOWN
+	UNKNOWN,
+	FROST_WALKER,
+	MENDING
 }
