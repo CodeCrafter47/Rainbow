@@ -279,6 +279,7 @@ public class ServerWrapper implements MC_Server {
 
     public void registerPlayerPacketListener(MC_PlayerPacketListener argListener) {
         // todo suggest removal
+        System.err.println("packet listeners are no longer supported.");
     }
 
     public MC_ItemStack createItemStack(byte[] rawData) {
@@ -307,6 +308,7 @@ public class ServerWrapper implements MC_Server {
 
     public void registerServerPacketListener(MC_ServerPacketListener argListener) {
         // todo suggest removal
+        System.err.println("packet listeners are no longer supported.");
     }
 
     public MC_Block getBlockFromName(String blockName) {
@@ -319,11 +321,13 @@ public class ServerWrapper implements MC_Server {
 
     public boolean unregisterWorld(String worldName) {
         // todo suggest removal
+        System.err.println("built-in multiworld support has been removed. Use a plugin.");
         return false;
     }
 
     public int registerWorld(String worldName, MC_WorldSettings settings) {
         // todo suggest removal
+        System.err.println("built-in multiworld support has been removed. Use a plugin.");
         return 0;
     }
 
