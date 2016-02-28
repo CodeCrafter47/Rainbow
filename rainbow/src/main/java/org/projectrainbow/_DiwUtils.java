@@ -8,6 +8,7 @@ import PluginReference.MC_Player;
 import PluginReference.MC_World;
 import PluginReference.RainbowUtils;
 import joebkt._SerializableLocation;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.BlockPos;
 import net.minecraft.src.EntityAnimal;
@@ -68,15 +69,21 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.net.URI;
+import java.net.URL;
+import java.security.CodeSource;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class _DiwUtils {
     public static boolean ArmorStand_DanceEverywhere = false;
@@ -334,6 +341,40 @@ public class _DiwUtils {
 
         // load plugins
         pluginManager.enable();
+
+        try {
+            if (Boolean.valueOf(System.getProperty("rainbow.forceMixins", "false"))) {
+                System.out.println("Force loading mixins");
+                for (URL url : Launch.classLoader.getSources()) {
+                    try {
+                        URI uri = url.toURI();
+                        if (!"file".equals(uri.getScheme()) || !new File(uri).exists()) {
+                            continue;
+                        }
+                        JarFile jarFile = new JarFile(new File(uri));
+                        Enumeration<JarEntry> entries = jarFile.entries();
+                        while (entries.hasMoreElements()) {
+                            JarEntry jarEntry = entries.nextElement();
+                            String name = jarEntry.getName();
+                            if (name.endsWith(".class")) {
+                                String className = name.replace(".class", "").replace('/', '.');
+                                if (className.startsWith("net.minecraft.src") || !className.contains(".")) {
+                                    try {
+                                        Class.forName(className);
+                                    } catch (ClassNotFoundException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
     }
 
     public static void Shutdown() {
