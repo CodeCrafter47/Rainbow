@@ -10,6 +10,7 @@ import com.google.common.base.Objects;
 import net.minecraft.src.BlockPos;
 import net.minecraft.src.Entity;
 import net.minecraft.src.EntityPlayerMP;
+import net.minecraft.src.EnumChatFormatting;
 import net.minecraft.src.EnumFacing;
 import net.minecraft.src.EnumHand;
 import net.minecraft.src.IBlockState;
@@ -238,6 +239,15 @@ public class MixinNetHandlerPlayServer {
             if (ei.isCancelled) {
                 callbackInfo.cancel();
             }
+        }
+    }
+
+    @Redirect(method = "processUpdateSign", at = @At(value = "INVOKE", target = "net.minecraft.src.EnumChatFormatting.a(Ljava/lang/String;)Ljava/lang/String;"))
+    private String stripColorCodes(String s) {
+        if (((MC_Player) playerEntity).hasPermission("rainbow.signcolor")) {
+            return s;
+        } else {
+            return EnumChatFormatting.a(s);
         }
     }
 
