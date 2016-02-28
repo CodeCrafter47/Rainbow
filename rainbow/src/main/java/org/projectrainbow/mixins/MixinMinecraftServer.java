@@ -4,13 +4,16 @@ import PluginReference.ChatColor;
 import PluginReference.MC_Player;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.ChatComponentText;
+import net.minecraft.src.IChatComponent;
 import net.minecraft.src.Profiler;
 import net.minecraft.src.ServerConfigurationManager;
 import net.minecraft.src.jz;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.ServerWrapper;
 import org.projectrainbow._Announcer;
+import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow._EconomyManager;
 import org.projectrainbow._Janitor;
@@ -18,6 +21,7 @@ import org.projectrainbow.commands._CmdCron;
 import org.projectrainbow.interfaces.IMixinMinecraftServer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -26,9 +30,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static net.minecraft.src.ng.at;
+import static org.projectrainbow.launch.Bootstrap.logger;
 
 @Mixin(MinecraftServer.class)
 public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
+    @Shadow
+    @Final
+    private static Logger logger;
     @Shadow
     private int tickCounter;
 
@@ -196,6 +204,11 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     @ModifyArg(method = "a(Lnet/minecraft/src/jz;)V", at = @At(value = "INVOKE", target = "net.minecraft.server.MinecraftServer.getFile(Ljava/lang/String;)Ljava/io/File;"))
     private String setServerIcon(String old) {
         return ServerWrapper.serverIconFileName;
+    }
+
+    @Overwrite
+    public void addChatMessage(IChatComponent var1) {
+        logger.info(_ColorHelper.stripColor(var1.getUnformattedText()));
     }
 
     @Override

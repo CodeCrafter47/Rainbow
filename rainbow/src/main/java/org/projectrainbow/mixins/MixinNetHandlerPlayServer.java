@@ -81,6 +81,11 @@ public class MixinNetHandlerPlayServer {
         Hooks.onPlayerLogout(playerEntity.getName(), playerEntity.getUniqueID());
     }
 
+    @Redirect(method = "onDisconnect", at = @At(value = "INVOKE", target = "info", ordinal = 0, remap = false))
+    private void fixToString(Logger logger, String text, IChatComponent chatComponent) {
+        logger.info(this.playerEntity.getName() + " lost connection: " + chatComponent.getUnformattedText());
+    }
+
     @Inject(method = "a(Lnet/minecraft/src/InboundPacketPlayerDigging;)V", at = @At(value = "INVOKE", target = "net.minecraft.src.EntityPlayerMP.markPlayerActive()V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void onPacketPlayerDigging(InboundPacketPlayerDigging packet, CallbackInfo callback, WorldServer worldServer, BlockPos blockPos) {
         if (packet.c().equals(InboundPacketPlayerDigging.Action.START_DESTROY_BLOCK)) {
