@@ -11,6 +11,7 @@
     <modules>
         <module>install-dependencies</module>
         <module>rainbow</module>
+        <module>PluginReference</module>
     </modules>
 
     <properties>
