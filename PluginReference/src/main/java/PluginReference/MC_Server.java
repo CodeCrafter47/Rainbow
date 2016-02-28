@@ -229,14 +229,16 @@ public interface MC_Server
      * Register a handler to intercept outgoing network packets to player
      * 
      * @param myListener Object implementing MC_PlayerPacketListener
-     */ 		
+     */
+	@Deprecated
 	public void registerPlayerPacketListener(MC_PlayerPacketListener myListener); 
 
 	 /** 
      * Register a handler to intercept incoming network packets to server
      * 
      * @param myListener Object implementing MC_ServerPacketListener
-     */ 		
+     */
+	@Deprecated
 	public void registerServerPacketListener(MC_ServerPacketListener myListener); 
 	
 	 /** 
@@ -267,6 +269,7 @@ public interface MC_Server
      * @param worldName World Name
      * @return Dimension (Integer identifier) for this world
 	 */
+	@Deprecated
 	public int registerWorld(String worldName, MC_WorldSettings settings);
 
 	/**
@@ -275,6 +278,7 @@ public interface MC_Server
      * @param worldName World Name
      * @return True if unregistered, False if unrecognized
 	 */
+	@Deprecated
 	public boolean unregisterWorld(String worldName);
 	
 

@@ -1,0 +1,5 @@
+public+synthetic PluginReference/MC_Server/registerPlayerPacketListener(LPluginReference/MC_PlayerPacketListener;)V
+public+synthetic PluginReference/MC_Server/registerServerPacketListener(LPluginReference/MC_ServerPacketListener;)V
+
+public+synthetic PluginReference/MC_Server/registerWorld(Ljava/lang/String;LPluginReference/MC_WorldSettings;)I
+public+synthetic PluginReference/MC_Server/unregisterWorld(Ljava/lang/String;)Z
