@@ -65,6 +65,8 @@
     "MixinNetHandlerHandshakeTCP",
     "MixinNetworkManager",
     "MixinNetHandlerLoginServer",
-    "MixinCommandBase"
+    "MixinCommandBase",
+    "MixinContainerHopper",
+    "MixinContainerDispenser"
   ]
 }

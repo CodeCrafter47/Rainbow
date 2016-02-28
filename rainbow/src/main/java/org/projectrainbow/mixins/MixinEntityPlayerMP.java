@@ -62,6 +62,8 @@ import org.projectrainbow._Backpack;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow._EconomyManager;
 import org.projectrainbow._PermMgr;
+import org.projectrainbow.interfaces.IMixinContainerDispenser;
+import org.projectrainbow.interfaces.IMixinContainerHopper;
 import org.projectrainbow.interfaces.IMixinEntityPlayerMP;
 import org.projectrainbow.interfaces.IMixinNBTBase;
 import org.projectrainbow.interfaces.IMixinPlayerCapabilities;
@@ -306,7 +308,9 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
                 containerType = MC_ContainerType.FURNACE;
             } else if (this.openContainer instanceof ContainerHopper) {
                 containerType = MC_ContainerType.HOPPER;
-                // todo check whether is minecart
+                if (((IMixinContainerHopper)this.openContainer).isMinecart()) {
+                    containerType = MC_ContainerType.MINECART_HOPPER;
+                }
             } else if (this.openContainer instanceof ContainerPlayer) {
                 containerType = MC_ContainerType.PLAYER_INVENTORY;
             } else if (this.openContainer instanceof ContainerEnchantment) {
@@ -346,7 +350,9 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
                 }
             } else if (this.openContainer instanceof ContainerDispenser) {
                 containerType = MC_ContainerType.DISPENSER;
-                // todo check for dropper
+                if (((IMixinContainerDispenser)this.openContainer).isDropper()) {
+                    containerType = MC_ContainerType.DROPPER;
+                }
             } else if (this.openContainer instanceof ContainerHorseInventory) {
                 containerType = MC_ContainerType.CHEST_HORSE;
             }
