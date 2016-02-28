@@ -2,6 +2,7 @@ package org.projectrainbow;
 
 import PluginReference.RainbowUtils;
 import net.minecraft.src.Entity;
+import net.minecraft.src.EntityList;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.WorldServer;
@@ -29,14 +30,10 @@ public class _Janitor {
             WorldServer world = worlds[i];
 
             for (Entity ent : world.loadedEntityList) {
-                String entClassName = ent.getClass().getSimpleName();
+                String entClassName = EntityList.getEntityString(ent);
                 String mobName = entClassName;
                 if (ent instanceof EntityPlayerMP) {
                     mobName = ent.getName();
-                }
-
-                if (mobName.equalsIgnoreCase("ItemEntity")) {
-                    mobName = "Item";
                 }
 
                 boolean isPlayer = false;
