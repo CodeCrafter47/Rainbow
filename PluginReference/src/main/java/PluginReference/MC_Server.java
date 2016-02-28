@@ -25,6 +25,13 @@ public interface MC_Server
      * @return List of PluginInfo objects 
      */ 			
 	public List<PluginInfo> getPlugins();
+
+	/**
+	 * Get plugin info for a specific plugin
+	 * @param name the plugins name
+	 * @return plugin info
+     */
+	public PluginInfo getPluginInfo(String name);
 	 /** 
      * Get a player object of an online player by name
      * 

@@ -330,4 +330,15 @@ public class ServerWrapper implements MC_Server {
     public List<MC_World> getWorlds() {
         return (List<MC_World>) (Object) Lists.newArrayList(_DiwUtils.getMinecraftServer().worldServers);
     }
+
+    @Override
+    public PluginInfo getPluginInfo(String name) {
+        PluginInfo info = null;
+        for (PluginInfo pluginInfo : getPlugins()) {
+            if (pluginInfo.name.equals(name)) {
+                info = pluginInfo;
+            }
+        }
+        return info;
+    }
 }
