@@ -198,12 +198,6 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         return ServerWrapper.serverIconFileName;
     }
 
-    @ModifyArg(method = "updateTimeLightAndEntities", at = @At(value = "INVOKE", target = "makeCrashReport"))
-    private Throwable onException(Throwable th) {
-        th.printStackTrace();
-        return th;
-    }
-
     @Override
     public void onServerIconUpdated() {
         this.a(this.q);

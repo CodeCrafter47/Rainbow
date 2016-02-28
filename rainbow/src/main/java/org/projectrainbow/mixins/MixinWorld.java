@@ -47,10 +47,4 @@ public abstract class MixinWorld {
             callbackInfo.cancel();
         }
     }
-
-    @ModifyArg(method = "updateEntities", at = @At(value = "INVOKE", target = "makeCrashReport"))
-    private Throwable onException(Throwable th) {
-        th.printStackTrace();
-        return th;
-    }
 }

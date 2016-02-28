@@ -45,7 +45,7 @@ public class MixinServerConfigurationManager {
         Hooks.onPlayerRespawn((MC_Player) newPlayer);
     }
 
-    @Redirect(method = "recreatePlayerEntity", at = @At(value = "INVOKE", target = "getSpawnPoint"))
+    @Redirect(method = "recreatePlayerEntity", at = @At(value = "INVOKE", target = "net.minecraft.src.WorldServer.getSpawnPoint()Lnet/minecraft/src/BlockPos;"))
     private BlockPos onRespawnSendCompassTarget(WorldServer worldServer, EntityPlayerMP oldPlayer, int dimension, boolean fromEnd){
         MC_Location compassTarget = ((MC_Player) oldPlayer).getCompassTarget();
         return new BlockPos(compassTarget.getBlockX(), compassTarget.getBlockY(), compassTarget.getBlockZ());

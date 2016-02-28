@@ -37,7 +37,7 @@ public abstract class MixinEntityItem implements MC_ItemEntity {
     @Shadow
     public abstract void setThrower(String var1);
 
-    @Inject(method = "onCollideWithPlayer", at = @At(value = "INVOKE", target = "addItemStackToInventory"), cancellable = true)
+    @Inject(method = "onCollideWithPlayer", at = @At(value = "INVOKE", target = "net.minecraft.src.InventoryPlayer.addItemStackToInventory(Lnet/minecraft/src/ItemStack;)Z"), cancellable = true)
     private void onPickup(EntityPlayer player, CallbackInfo callbackInfo) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptItemPickup((MC_Player) player, getItemStack(), false, ei);

@@ -166,7 +166,7 @@
                             <artifactSet>
                                 <excludes>
                                     <exclude>com.mojang:minecraft-server</exclude>
-                                    <!--<exclude>org.projectrainbow:nms</exclude>-->
+                                    <exclude>org.projectrainbow:nms</exclude>
                                 </excludes>
                             </artifactSet>
                             <transformers>
@@ -182,11 +182,10 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--
             <plugin>
                 <groupId>net.md-5</groupId>
                 <artifactId>specialsource-maven-plugin</artifactId>
-                <version>1.2.1-CodeCrafter47-3-SNAPSHOT</version>
+                <version>1.2.1-CodeCrafter47-4-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>reobfuscate</id>
@@ -195,19 +194,18 @@
                             <goal>remap</goal>
                         </goals>
                         <configuration>
-                            <srgIn>${project.parent.basedir}/nms/reverse.srg</srgIn>
-                            <extraSrgs>
-                                <srg>${project.build.directory}/mixin.srg</srg>
-                            </extraSrgs>
+                            <srgIn>${project.parent.basedir}/nms/mapping.srg</srgIn>
+                            <reverse>true</reverse>
                             <skipDebug>false</skipDebug>
                             <copyResources>true</copyResources>
+                            <mixinSupport>true</mixinSupport>
                             <remappedDependencies>
                                 <remappedDependency>org.projectrainbow:nms:${project.version}:jar</remappedDependency>
                             </remappedDependencies>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
         </plugins>
     </build>
 </project>

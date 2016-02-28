@@ -139,7 +139,7 @@ public abstract class MixinEntity implements MC_Entity {
 
     private float waterFallDistance = 0;
 
-    @Inject(method = "handleWaterMovement", at = @At(value = "FIELD", target = "fallDistance"))
+    @Inject(method = "handleWaterMovement", at = @At(value = "FIELD", target = "net.minecraft.src.Entity.fallDistance:F"))
     private void onWaterEntered(CallbackInfoReturnable<Boolean> callbackInfo) {
         waterFallDistance = fallDistance;
     }
