@@ -39,12 +39,23 @@
             <id>codecrafter47-repo</id>
             <url>http://nexus.codecrafter47.dyndns.eu/content/repositories/public/</url>
         </repository>
+        <repository>
+            <id>sponge-repo</id>
+            <url>http://repo.spongepowered.org/maven</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
         <pluginRepository>
             <id>codecrafter47-repo</id>
             <url>http://nexus.codecrafter47.dyndns.eu/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>sponge-repo</id>
+            <url>http://repo.spongepowered.org/maven</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
