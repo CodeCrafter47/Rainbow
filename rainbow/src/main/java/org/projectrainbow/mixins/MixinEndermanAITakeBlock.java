@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(EntityEnderman.AITakeBlock.class)
+@Mixin(targets = "net.minecraft.src.EntityEnderman$AITakeBlock")
 public class MixinEndermanAITakeBlock {
     @Shadow
     @Final

@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Random;
 
-@Mixin(EntityEnderman.AIPlaceBlock.class)
+@Mixin(targets = "net.minecraft.src.EntityEnderman$AIPlaceBlock")
 public class MixinEndermanAIPlaceBlock {
     @Shadow
     @Final

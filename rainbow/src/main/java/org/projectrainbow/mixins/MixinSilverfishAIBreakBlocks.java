@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(EntitySilverfish.b.class)
+@Mixin(targets = "net/minecraft/src/EntitySilverfish$b")
 public class MixinSilverfishAIBreakBlocks {
     @Shadow
     private EntitySilverfish a;

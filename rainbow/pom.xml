@@ -21,15 +21,15 @@
     <dependencies>
         <dependency>
             <groupId>org.projectrainbow</groupId>
-            <artifactId>nms</artifactId>
-            <version>1.9-pre4-SNAPSHOT</version>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.mojang</groupId>
-                    <artifactId>minecraft-server</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>install-dependencies</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectrainbow</groupId>
+            <artifactId>minecraft-server</artifactId>
+            <version>${minecraft.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -68,8 +68,18 @@
         <dependency>
             <groupId>org.spongepowered</groupId>
             <artifactId>mixin</artifactId>
-            <version>0.5.3-CodeCrafter47-6</version>
+            <version>0.5.3-SNAPSHOT</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.googlecode.jarjar</groupId>
+                    <artifactId>jarjar</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm-commons</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -97,12 +107,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
                 <configuration>
-                    <!--
-                    <compilerArgs>
-                        <arg>-AreobfSrgFile=${project.parent.basedir}/nms/reverse.srg</arg>
-                        <arg>-AoutSrgFile=${project.build.directory}/mixin.srg</arg>
-                        <arg>-AoutRefMapFile=${project.build.outputDirectory}/mixin.refmap.srg</arg>
-                    </compilerArgs>-->
                     <proc>none</proc>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
@@ -165,15 +169,19 @@
                         <configuration>
                             <artifactSet>
                                 <excludes>
-                                    <exclude>com.mojang:minecraft-server</exclude>
-                                    <exclude>org.projectrainbow:nms</exclude>
+                                    <exclude>org.projectrainbow:minecraft-server</exclude>
                                 </excludes>
                             </artifactSet>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>org.projectrainbow.launch.Bootstrap</Main-Class>
-                                        <TweakClass>org.spongepowered.asm.launch.MixinTweaker</TweakClass>
+                                        <Main-Class>
+                                            org.projectrainbow.launch.Bootstrap
+                                        </Main-Class>
+                                        <TweakClass>
+                                            org.spongepowered.asm.launch.MixinTweaker
+                                        </TweakClass>
                                         <MixinConfigs>mixins.json</MixinConfigs>
                                     </manifestEntries>
                                 </transformer>
@@ -194,13 +202,16 @@
                             <goal>remap</goal>
                         </goals>
                         <configuration>
-                            <srgIn>${project.parent.basedir}/nms/mapping.srg</srgIn>
+                            <srgIn>${project.parent.basedir}/mapping.srg
+                            </srgIn>
                             <reverse>true</reverse>
                             <skipDebug>false</skipDebug>
                             <copyResources>true</copyResources>
                             <mixinSupport>true</mixinSupport>
                             <remappedDependencies>
-                                <remappedDependency>org.projectrainbow:nms:${project.version}:jar</remappedDependency>
+                                <remappedDependency>
+                                    org.projectrainbow:minecraft-server:${minecraft.version}:jar
+                                </remappedDependency>
                             </remappedDependencies>
                         </configuration>
                     </execution>

@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(EntityRabbit.AIRaidFarm.class)
+@Mixin(targets = "net.minecraft.src.EntityRabbit$AIRaidFarm")
 public class MixinRabbitAIRaidFarm {
     @Shadow
     @Final
