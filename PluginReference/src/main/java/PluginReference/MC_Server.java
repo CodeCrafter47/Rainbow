@@ -263,6 +263,23 @@ public interface MC_Server
      */ 		
 	public MC_Block getBlockFromName(String name);
 
+	/**
+	 * Get an MC_Block from a block id
+	 *
+	 * @param id Block id
+	 * @return MC_Block object
+	 */
+	public MC_Block getBlock(int id);
+
+	/**
+	 * Get an MC_Block from a block id and subtype
+	 *
+	 * @param id Block id
+	 * @param subtype Block subtype
+	 * @return MC_Block object
+	 */
+	public MC_Block getBlock(int id, int subtype);
+
 	 /** 
      * Logs a message both to console and server logs
      * 

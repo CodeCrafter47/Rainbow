@@ -13,6 +13,7 @@ import PluginReference.MC_World;
 import PluginReference.MC_WorldSettings;
 import PluginReference.PluginInfo;
 import com.google.common.collect.Lists;
+import net.minecraft.src.Block;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
@@ -340,5 +341,15 @@ public class ServerWrapper implements MC_Server {
             }
         }
         return info;
+    }
+
+    @Override
+    public MC_Block getBlock(int id) {
+        return new BlockWrapper(Block.getBlockById(id).getDefaultState());
+    }
+
+    @Override
+    public MC_Block getBlock(int id, int subtype) {
+        return new BlockWrapper(Block.getBlockById(id).getStateFromMeta(subtype));
     }
 }
