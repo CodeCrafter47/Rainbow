@@ -1,0 +1,37 @@
+<assembly
+        xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3 http://maven.apache.org/xsd/assembly-1.1.3.xsd">
+    <id>bin</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>${project.basedir}/src/assembly</directory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>
+                ${project.parent.basedir}/PluginReference/target/site/apidocs
+            </directory>
+            <outputDirectory>/for_plugin_devs/JavaDoc/</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${project.build.directory}</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>Rainbow-*.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/PluginReference/target
+            </directory>
+            <outputDirectory>/for_plugin_devs/</outputDirectory>
+            <includes>
+                <include>PluginReference-*SNAPSHOT.jar</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</assembly>

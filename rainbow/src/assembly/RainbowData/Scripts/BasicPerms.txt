@@ -1,0 +1,35 @@
+; This is an example script.  Run it in game with
+; /diw script 
+; to give these permissions to everyone...
+
+/perm give * rainbow.help
+/perm give * rainbow.bal
+/perm give * rainbow.bp
+/perm give * rainbow.buy
+/perm give * rainbow.colors
+/perm give * rainbow.ec
+/perm give * rainbow.home
+/perm give * rainbow.ignore
+/perm give * rainbow.jemote
+/perm give * rainbow.jemote.*
+/perm give * rainbow.jot
+/perm give * rainbow.me
+/perm give * rainbow.namecolor
+/perm give * rainbow.pay
+/perm give * rainbow.plugins
+/perm give * rainbow.ride
+/perm give * rainbow.sell
+/perm give * rainbow.sethome
+/perm give * rainbow.spawn
+/perm give * rainbow.suicide
+/perm give * rainbow.tell
+/perm give * rainbow.throw
+/perm give * rainbow.tpaccept
+/perm give * rainbow.tpahere
+/perm give * rainbow.trigger
+/perm give * rainbow.ver
+/perm give * rainbow.warp
+/perm give * rainbow.wild
+/perm give * rainbow.worth
+/perm give * rainbow.chatcolor
+/perm give * rainbow.signcolor

@@ -1,0 +1,54 @@
+
+Open the "runit.bat" file and customize the RAM setting and path to Java on your machine:
+-----------------------------------------------------------------------
+"C:\Program Files\Java\jre7\bin\java.exe" -Xmx4000m -Xincgc -jar Rainbow.jar
+-----------------------------------------------------------------------
+
+Launch the jar using "_RunIt.bat"
+
+If you get an error, check the path to Java and adjust accordingly. For example, you may find
+it is located at C:\Program Files(x86)\Java\jre7\bin\java.exe
+
+If you're using Linux, create a shell script equivalent. I use the following command on my Linux environments:
+java -Xmx4000m -Xincgc -jar Rainbow.jar
+
+
+However, here are some follow-up suggestions:
+
+- When you first run the server, you'll need to agree to Mojang's EULA (eula.txt). So get that done.
+
+- If your world is brand new, I suggest running the following which
+  will clear a 16x16 area for designing your new spawn...
+  If you are using an existing world, skip this part
+  ---------------------------------------------------
+  /spawn
+  /diw skyclear 16
+  /diw setgrass 16
+  /diw border 16
+  ---------------------------------------------------
+
+can use /setworldspawn to change spawn location.
+
+Note, the "server.properties" file defaults spawn protection to 16 radius.  Increase if desired.
+
+Note: For new servers, note that the initial creation of chunks and region files cause a little lag.
+That's normal and should go away after that's done once for each one. If you want to pre-create
+a lot of such files before having players join, you can run the "/wild" teleport command to
+load a lot up.
+
+
+- To give players permissions to built-in rainbow features, you can do:
+/diw script BasicPerms
+
+- If you want to let players sell blocks to the server (i.e. "/sell hand"), then start by holding 
+  a dirt block and do "/setworth 1".  Do the same for cobblestone. Customize further as you like. 
+
+After comfortable, try out a plugin or two. I recommend 'RainbowKits' as your first since it's
+simple to use and understand.  You can remove if you don't like but good practice.
+http://www.project-rainbow.org/site/downloads/?sa=view;down=52
+
+
+For latest info and plugins see web-site:
+http://www.project-rainbow.org/site/
+
+PS: If that site is ever unavailable, try http://rbow.org

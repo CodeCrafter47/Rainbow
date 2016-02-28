@@ -1,0 +1,53 @@
+; Delay in seconds. Set to -1 to disable
+Delay=733
+
+; Prefix used for announcements...
+Prefix=&c[Announcer]
+
+; -----------------------------
+; Specific to this server...
+; -----------------------------
+&eDid you know? &bYou can use &d/sethome&b and &/home
+&eIf you get stuck, there's always &d/suicide
+&eDid you know? &bCheck enderchest with &d/ec
+&dHow long have you been online? &b/jot me
+&dWho has been online the most? &b/jot top
+&eFind a random place near spawn with &d/wild
+&eTeleport to friends with &d/tpahere &eand &d/tpaccept
+&eRide something or someone with &d/ride
+&eTip: &bHolding &dF3+A &bwill reload chunks!
+
+; -----------------------------
+; Generic ones...
+; -----------------------------
+&a&lHave a nice day!
+&b&lWould you risk it... for a biscuit?
+&e&lYou're a wizard Harry!
+&6&lIf two wrongs don't make a right...&ftry three!
+&eI'm looking to buy a new boomerang, &fhow can I throw the old one out?
+&eI put my phone in airplane mode, &bbut it's not flying!
+&eWhat is Bruce Lee's favorite drink? &9&oWataaaaah!
+&eA blind man walks into a bar. &fAnd a table. And a chair...
+&eWhat kind of shoes do ninjas wear? &b&oSneakers!
+&eWhy can't a bike stand on its own? &9It's two tired...
+&eWhat do you call a big pile of kittens? &9A meowntain.
+&fHacks not allowed. &bThose caught will be punished!
+&eWhy did the duck go to jail? &fIt was selling &bquack!
+&eWhat do you call a cow on a trampoline? &fA Milkshake!
+&4Roses are red, &6foxes are clever. &bI found &bdiamonds, &din the nether!
+&eNever trust atoms, &b&othey make up everything!
+&eWhat do you call a fake noodle? &bAn IMPASTA!
+&eWhat would you call cheese that isn't yours? ... &6&lNacho Cheese!
+&bWhat &ekey &bopens a &eBanana? &f&o... A monkey!
+&eWhy is 6 afraid of 7? &f... &b&oCuz 7 8 9!
+&bTime flies like an arrow. &eFruit flies like a banana.
+&eWhy couldn't the Enderman write in his book? &fBecause he was at &7&lThe End!
+&eIf life gives you lemons, you probably just found &elemons.
+&fAn old lady at the bank asked me if I could help check her balance, ... so I pushed her.
+&fWe've got your X-Ray. It's bad news. There's a scary skeleton man living inside you!
+&fI couldn't figure out why the frisbee kept getting bigger, then it hit me.
+&fI used to be addicted to soap, but I'm clean now.
+&fTwo pretzels were walking down the street ...one got &oassaulted 
+&dSenpai notice me!
+&d&lLeft foot let's stomp! &d&oCharlie Brown now ya'll
+&eWhy was the block sad? &fBecause an Enderman &oput it down!
