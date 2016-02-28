@@ -3,3 +3,6 @@ public+synthetic PluginReference/MC_Server/registerServerPacketListener(LPluginR
 
 public+synthetic PluginReference/MC_Server/registerWorld(Ljava/lang/String;LPluginReference/MC_WorldSettings;)I
 public+synthetic PluginReference/MC_Server/unregisterWorld(Ljava/lang/String;)Z
+
+public+synthetic PluginReference/PluginBase/onBlockBroke(LPluginReference/MC_Player;LPluginReference/MC_Location;I)V
+public+synthetic PluginReference/PluginBase/onPlayerLogin(Ljava/lang/String;Ljava/util/UUID;Ljava/lang/String;)V

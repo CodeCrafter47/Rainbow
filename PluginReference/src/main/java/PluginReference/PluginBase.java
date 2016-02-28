@@ -1,5 +1,6 @@
 package PluginReference;
 
+import java.net.InetAddress;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,14 +29,33 @@ public abstract class PluginBase
 	public void onTick(int tickNumber)  {}
 	
 	// Login/Logout...
-	 /** 
+	/**
      * Called when a player logs in. Note use onPlayerJoin if you need to interact with the player such as send messages.
      * 
      * @param playerName Player Name
      * @param uuid Player UUID
      * @param ip Player IP Address
-     */ 		
+     */
+	@Deprecated
 	public void onPlayerLogin(String playerName, UUID uuid, String ip)  {}
+
+	/**
+	 * Called when a player logs in. Note use onPlayerJoin if you need to interact with the player such as send messages.
+	 *
+	 * If the player will be kicked because he is banned, a whitelist is active or the server is full,
+	 * then ei.isCancelled is true and ei.tag holds the reason why the player will be disconnected.
+	 *
+	 * Setting ei.isCancelled to true will disconnect the player. If you do that set ei.tag to the disconnect reason
+	 * displayed to the client.
+	 *
+	 * Setting ei.isCancelled to false will allow the player to connect, even if he is banned or the server is full.
+	 *
+	 * @param playerName Player Name
+	 * @param uuid Player UUID
+	 * @param address Remote player address
+	 */
+	public void onPlayerLogin(String playerName, UUID uuid, InetAddress address, MC_EventInfo ei)  {}
+
 	 /** 
      * Called when a player logs out
      * 
@@ -70,7 +90,8 @@ public abstract class PluginBase
      * @param plr Player that broke block.
      * @param loc Location of broken block
      * @param blockKey Minecraft integer representation of the block (See BlockHelper.getBlockID_FromKey)
-     */ 		
+     */
+	@Deprecated
 	public void onBlockBroke(MC_Player plr, MC_Location loc, int blockKey)  {}
 	
 	 /** 

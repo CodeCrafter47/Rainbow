@@ -1,7 +1,9 @@
 package org.projectrainbow.mixins;
 
+import PluginReference.MC_EventInfo;
 import PluginReference.MC_Location;
 import PluginReference.MC_Player;
+import com.google.common.base.Objects;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.src.BlockPos;
 import net.minecraft.src.EntityPlayerMP;
@@ -22,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -72,6 +75,20 @@ public class MixinServerConfigurationManager {
             }
 
             lastConnectTime.put(var4, var3);
+        }
+    }
+
+    @Inject(method = "allowUserToConnect", at = @At("RETURN"), cancellable = true)
+    public void attemptLoginEvent(SocketAddress var1, GameProfile var2, CallbackInfoReturnable<String> callbackInfo) {
+        MC_EventInfo ei = new MC_EventInfo();
+        ei.tag = callbackInfo.getReturnValue();
+        ei.isCancelled = ei.tag != null;
+        Hooks.onPlayerLogin(var2.getName(), var2.getId(), ((InetSocketAddress)var1).getAddress(), ei);
+
+        if (ei.isCancelled) {
+            callbackInfo.setReturnValue("" + ei.tag);
+        } else {
+            callbackInfo.setReturnValue(null);
         }
     }
 }

@@ -21,6 +21,7 @@ import PluginReference.PluginInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.net.InetAddress;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,6 +55,16 @@ public class Hooks {
         for (PluginInfo plugin : _DiwUtils.pluginManager.plugins) {
             try {
                 plugin.ref.onPlayerLogin(playerName, uuid, ip);
+            } catch (Throwable th) {
+                logger.error("Failed to pass event to plugin " + plugin.name, th);
+            }
+        }
+    }
+
+    public static void onPlayerLogin(String playerName, UUID uuid, InetAddress address, MC_EventInfo ei) {
+        for (PluginInfo plugin : _DiwUtils.pluginManager.plugins) {
+            try {
+                plugin.ref.onPlayerLogin(playerName, uuid, address, ei);
             } catch (Throwable th) {
                 logger.error("Failed to pass event to plugin " + plugin.name, th);
             }

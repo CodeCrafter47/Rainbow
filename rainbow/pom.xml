@@ -29,6 +29,7 @@
             <groupId>org.projectrainbow</groupId>
             <artifactId>PluginReference</artifactId>
             <version>${project.parent.version}</version>
+            <classifier>original</classifier>
             <scope>compile</scope>
         </dependency>
         <dependency>
