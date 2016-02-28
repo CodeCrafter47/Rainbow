@@ -68,6 +68,9 @@
                         <goals>
                             <goal>javadoc</goal>
                         </goals>
+                        <configuration>
+                            <failOnError>false</failOnError>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
