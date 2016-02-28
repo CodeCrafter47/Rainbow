@@ -59,7 +59,7 @@ public class PluginClassLoader extends URLClassLoader {
 	}
 
 	private boolean isBadClass(String name) {
-		return name.startsWith("org.projectrainbow.") || name.startsWith("net.minecraft.") || name.startsWith("joebkt.") || !name.contains(".");
+		return name.startsWith("org.projectrainbow.") || name.startsWith("net.minecraft.") || !name.contains(".");
 	}
 
 	Class<?> findClass(String name, boolean checkGlobal) throws ClassNotFoundException {

@@ -33,6 +33,7 @@ public class ServerTweaker implements ITweaker {
         Launch.classLoader.addClassLoaderExclusion("com.google.gson.");
         Launch.classLoader.addClassLoaderExclusion("org.apache.commons.io");
         Launch.classLoader.addClassLoaderExclusion("PluginReference.");
+        Launch.classLoader.addClassLoaderExclusion("joebkt.");
 
         if (!Bootstrap.isMinecraftServerIncluded()) {
             // download server jar
