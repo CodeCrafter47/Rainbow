@@ -27,6 +27,8 @@ import org.projectrainbow.BlockWrapper;
 import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
+import org.projectrainbow.interfaces.IMixinItemDoor;
+import org.projectrainbow.interfaces.IMixinItemReed;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -70,14 +72,9 @@ public class MixinItemInWorldManager {
         if (itemStack.getItem() instanceof ItemBlock) {
             bWrap = new BlockWrapper(((ItemBlock) itemStack.getItem()).getBlock().getDefaultState());
         } else if (itemStack.getItem() instanceof ItemReed) {
-            ItemReed item = (ItemReed) itemStack.getItem();
-
-            // todo bWrap = new BlockWrapper(item.getBm_blkObj.toBlockState());
+            bWrap = new BlockWrapper(((IMixinItemReed)itemStack.getItem()).getBlock().getDefaultState());
         } else if (itemStack.getItem() instanceof ItemDoor) {
-            ItemDoor item = (ItemDoor) itemStack.getItem();
-
-            // todo bWrap = new BlockWrapper(item.getm_blkObj.toBlockState());
-            bWrap = new BlockWrapper(Blocks.oak_door.getDefaultState());
+            bWrap = new BlockWrapper(((IMixinItemDoor)itemStack.getItem()).getBlock().getDefaultState());
         } else if (itemStack.getItem() instanceof ItemSign) {
             bWrap = new BlockWrapper(Blocks.standing_sign.getDefaultState());
         }

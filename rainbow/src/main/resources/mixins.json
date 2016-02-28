@@ -67,6 +67,8 @@
     "MixinNetHandlerLoginServer",
     "MixinCommandBase",
     "MixinContainerHopper",
-    "MixinContainerDispenser"
+    "MixinContainerDispenser",
+    "MixinItemReed",
+    "MixinItemDoor"
   ]
 }
