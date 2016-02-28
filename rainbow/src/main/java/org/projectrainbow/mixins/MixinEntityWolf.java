@@ -4,6 +4,7 @@ import PluginReference.MC_Wolf;
 import net.minecraft.src.EntityWolf;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
+import org.spongepowered.asm.mixin.Intrinsic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -22,6 +23,7 @@ public abstract class MixinEntityWolf {
      *
      * @return True if angry, False otherwise
      */
+    @Intrinsic
     public boolean api$getAngry() {
         return isAngry();
     }
@@ -31,6 +33,7 @@ public abstract class MixinEntityWolf {
      *
      * @param flag True if angry, false otherwise
      */
+    @Intrinsic
     public void api$setAngry(boolean flag) {
         setAngry(flag);
     }
