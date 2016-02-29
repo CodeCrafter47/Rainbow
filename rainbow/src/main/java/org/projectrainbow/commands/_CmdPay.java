@@ -34,6 +34,10 @@ public class _CmdPay implements MC_Command {
 
     @Override
     public void handleCommand(MC_Player plr, String[] args) {
+        if (plr == null) {
+            System.out.println("--- Only for players!");
+            return;
+        }
         if (args.length != 2) {
             _DiwUtils.reply(plr,
                     ChatColor.RED + "Usage: " + ChatColor.GOLD + "/pay "

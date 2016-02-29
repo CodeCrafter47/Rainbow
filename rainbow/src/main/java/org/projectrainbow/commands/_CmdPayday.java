@@ -40,7 +40,7 @@ public class _CmdPayday implements MC_Command {
                                 + "Paydays disabled.  Use /diw toggle paydays");
             }
         } else {
-            String msg = "PayDay triggered by " + plr.getName();
+            String msg = "PayDay triggered by " + (plr != null ? plr.getName() : "CONSOLE");
 
             _DiwUtils.ConsoleMsg(msg);
             _EconomyManager.DoPayDay();

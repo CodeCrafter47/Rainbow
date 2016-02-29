@@ -92,7 +92,7 @@ public class _EmoteUtils {
         _DiwUtils.reply(cs, "" + ChatColor.AQUA + ChatColor.BOLD + "----- Emotion Options -----");
         _DiwUtils.reply(cs, ChatColor.GOLD + "/jemote list " + ChatColor.WHITE + " -- List all emotes");
         _DiwUtils.reply(cs, ChatColor.GOLD + "/jemote mine " + ChatColor.WHITE + " -- List my emotes");
-        if (cs.isOp()) {
+        if (cs == null || cs.isOp()) {
             _DiwUtils.reply(cs, ChatColor.LIGHT_PURPLE + "- Admin Options: " + ChatColor.WHITE + "Using \'smile\' as example...");
             _DiwUtils.reply(cs, ChatColor.LIGHT_PURPLE + "/jemote info smile");
             _DiwUtils.reply(cs, ChatColor.LIGHT_PURPLE + "/jemote delete smile");
@@ -146,7 +146,7 @@ public class _EmoteUtils {
     }
 
     public static boolean HasAdminPerm(MC_Player cs) {
-        return cs.isOp();
+        return cs == null || cs.isOp();
     }
 
     public static boolean HandleEmote(MC_Player cs, String cmd) {

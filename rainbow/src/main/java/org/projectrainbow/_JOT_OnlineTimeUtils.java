@@ -248,11 +248,11 @@ public class _JOT_OnlineTimeUtils {
     }
 
     public static boolean HasAdminPerm(MC_Player cs) {
-        return cs.isOp();
+        return cs == null || cs.isOp();
     }
 
     public static boolean CanSeeHidden(MC_Player cs) {
-        return cs.isOp();
+        return cs == null || cs.isOp();
     }
 
     public static void ShowUsage(MC_Player cs) {

@@ -37,11 +37,11 @@ public class _CmdBal implements MC_Command {
 
     @Override
     public void handleCommand(MC_Player plr, String[] args) {
-        if (args.length <= 0) {
+        if (args.length <= 0 && plr != null) {
             _EconomyManager.ShowBalance(plr);
         } else if (args.length == 1 && args[0].equalsIgnoreCase("top")) {
             this.ShowBalTop(plr);
-        } else {
+        } else if (args.length == 1) {
             String tgtName = args[0];
             String exactName = ServerWrapper.getInstance().getPlayerExactName(tgtName);
 
@@ -52,6 +52,8 @@ public class _CmdBal implements MC_Command {
             } else {
                 _EconomyManager.ShowBalanceOf(plr, exactName);
             }
+        } else {
+            _DiwUtils.reply(plr, getHelpLine(plr));
         }
     }
 

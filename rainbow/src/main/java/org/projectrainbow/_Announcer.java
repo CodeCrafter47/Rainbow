@@ -76,7 +76,7 @@ public class _Announcer {
     }
 
     public static void HandleCommand(MC_Player cs, String[] args) {
-        if (!cs.isOp()) {
+        if (cs != null && !cs.isOp()) {
             _DiwUtils.reply(cs, ChatColor.RED + "[Announcer] Ops Only!");
         } else if (args.length <= 0) {
             SendUsage(cs);
