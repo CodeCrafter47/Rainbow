@@ -11,21 +11,36 @@ import joebkt._SerializableLocation;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.BlockPos;
+import net.minecraft.src.Entity;
+import net.minecraft.src.EntityAgeable;
+import net.minecraft.src.EntityAmbientCreature;
 import net.minecraft.src.EntityAnimal;
+import net.minecraft.src.EntityAreaEffectCloud;
 import net.minecraft.src.EntityArmorStand;
+import net.minecraft.src.EntityArrow;
+import net.minecraft.src.EntityBoat;
+import net.minecraft.src.EntityEnderCrystal;
+import net.minecraft.src.EntityEnderEye;
 import net.minecraft.src.EntityFallingBlock;
+import net.minecraft.src.EntityFireworkRocket;
 import net.minecraft.src.EntityFishHook;
 import net.minecraft.src.EntityItem;
 import net.minecraft.src.EntityItemFrame;
+import net.minecraft.src.EntityMinecart;
 import net.minecraft.src.EntityPainting;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
+import net.minecraft.src.EntitySquid;
+import net.minecraft.src.EntityThrowable;
+import net.minecraft.src.EntityXPOrb;
 import net.minecraft.src.EnumDimension;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.ServerCommandManager;
 import net.minecraft.src.WorldServer;
+import net.minecraft.src.xr;
+import net.minecraft.src.xz;
 import org.apache.logging.log4j.LogManager;
 import org.projectrainbow.commands._CmdAnnouncer;
 import org.projectrainbow.commands._CmdBal;
@@ -2068,12 +2083,25 @@ public class _DiwUtils {
 
         for (MC_Entity entity : ((MC_World) world).getEntities()) {
 
-            if (!(entity instanceof EntityPlayer) && !(entity instanceof EntityArmorStand)
-                    && !(entity instanceof EntityItem)
-                    && !(entity instanceof EntityItemFrame) && !(entity instanceof EntityPainting)
+            if (!(entity instanceof EntityBoat)
+                    && !(entity instanceof EntityFallingBlock)
+                    && !(entity instanceof xr) // EntityHanging
                     && !(entity instanceof EntityFishHook)
-                    && !(entity instanceof EntityAnimal)
-                    && !(entity instanceof EntityFallingBlock)) {
+                    && !(entity instanceof xz) // EntityWeatherEffect
+                    && !(entity instanceof EntityMinecart)
+                    && !(entity instanceof EntityThrowable)
+                    && !(entity instanceof EntityArrow)
+                    && !(entity instanceof EntityEnderEye)
+                    && !(entity instanceof EntityXPOrb)
+                    && !(entity instanceof EntityItem)
+                    && !(entity instanceof EntityFireworkRocket)
+                    && !(entity instanceof EntityEnderCrystal)
+                    && !(entity instanceof EntityAreaEffectCloud)
+                    && !(entity instanceof EntityPlayer)
+                    && !(entity instanceof EntityArmorStand)
+                    && !(entity instanceof EntityAmbientCreature)
+                    && !(entity instanceof EntitySquid)
+                    && !(entity instanceof EntityAgeable)) {
                 int x = entity.getLocation().getBlockX();
                 int z = entity.getLocation().getBlockZ();
 
