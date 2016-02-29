@@ -71,7 +71,6 @@ public abstract class MixinWorldServer extends World implements MC_World {
         }
     }
 
-    // TODO: 19.02.16 this seems to be unnecessary as already in MC_Server
     @Override
     public MC_Block getBlockFromName(String var1) {
         return ServerWrapper.getInstance().getBlockFromName(var1);
