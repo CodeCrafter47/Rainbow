@@ -9,6 +9,7 @@ import net.minecraft.src.CommandBase;
 import net.minecraft.src.CommandException;
 import net.minecraft.src.ICommandSender;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,6 +47,6 @@ public class PluginCommand extends CommandBase {
 
     @Override
     public List<String> addTabCompletionOptions(MinecraftServer minecraftServer, ICommandSender sender, String[] args, BlockPos blockPos) {
-        return delegate.getTabCompletionList(sender instanceof MC_Player ? (MC_Player) sender : null, args);
+        return Objects.firstNonNull(delegate.getTabCompletionList(sender instanceof MC_Player ? (MC_Player) sender : null, args), Collections.<String>emptyList());
     }
 }
