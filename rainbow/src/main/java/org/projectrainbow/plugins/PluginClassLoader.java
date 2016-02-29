@@ -50,22 +50,7 @@ public class PluginClassLoader extends URLClassLoader {
 		return findClass(name, true);
 	}
 
-	@Override
-	public Class<?> loadClass(String name) throws ClassNotFoundException {
-		if (isBadClass(name)) {
-			throw new ClassNotFoundException(name);
-		}
-		return super.loadClass(name);
-	}
-
-	private boolean isBadClass(String name) {
-		return name.startsWith("org.projectrainbow.") || name.startsWith("net.minecraft.") || !name.contains(".");
-	}
-
 	Class<?> findClass(String name, boolean checkGlobal) throws ClassNotFoundException {
-		if (isBadClass(name)) {
-			throw new ClassNotFoundException(name);
-		}
 		Class<?> result = classes.get(name);
 
 		if (result == null) {

@@ -28,6 +28,8 @@ public class PluginManager {
     }
 
     private void LoadPlugins() {
+        ClassLoader parentClassLoader = new FilteringClassLoader(Bootstrap.class.getClassLoader());
+
         System.out.println(
                 "\n----------------------- Loading Plugins -----------------------");
         String pluginFolderName = "plugins_mod";
@@ -75,7 +77,7 @@ public class PluginManager {
                         try {
                             String exc = var16.substring(0, var16.length() - 4);
                             String className = exc + ".MyPlugin";
-                            PluginClassLoader ClassLoader = new PluginClassLoader(Bootstrap.class.getClassLoader(), this, listOfFiles[i]);
+                            PluginClassLoader ClassLoader = new PluginClassLoader(parentClassLoader, this, listOfFiles[i]);
 
                             URL resource = ClassLoader.getResource("plugin.properties");
                             InputStream stream = resource != null ? resource.openStream() : null;
