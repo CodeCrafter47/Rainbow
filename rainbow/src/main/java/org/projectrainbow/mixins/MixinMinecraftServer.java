@@ -211,6 +211,11 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         logger.info(_ColorHelper.stripColor(var1.getUnformattedText()));
     }
 
+    @Overwrite
+    public String getServerModName() {
+        return _DiwUtils.MC_SERVER_MOD_NAME;
+    }
+
     @Override
     public void onServerIconUpdated() {
         this.a(this.q);
