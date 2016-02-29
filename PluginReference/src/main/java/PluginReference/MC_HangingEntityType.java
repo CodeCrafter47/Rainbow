@@ -7,5 +7,6 @@ public enum MC_HangingEntityType
 {
 	UNSPECIFIED,
 	ITEM_FRAME,
+	LEASH_KNOT,
 	PAINTING
 }

@@ -42,7 +42,7 @@ public abstract class MixinEntityHanging extends MixinEntity {
         MC_HangingEntityType type = MC_HangingEntityType.UNSPECIFIED;
 
         if (((Object) this) instanceof EntityLeashKnot) {
-            // todo type = MC_HangingEntityType.LEASH_KNOT;
+            type = MC_HangingEntityType.LEASH_KNOT;
         } else if (((Object) this) instanceof EntityItemFrame) {
             type = MC_HangingEntityType.ITEM_FRAME;
         } else if (((Object) this) instanceof EntityPainting) {
