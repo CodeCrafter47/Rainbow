@@ -7,6 +7,7 @@ import net.minecraft.src.CommandException;
 import net.minecraft.src.ICommandSender;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
+import org.projectrainbow.launch.Bootstrap;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,6 +37,6 @@ public class _CmdVer extends CommandBase
 
     @Override
     public void processCommand(MinecraftServer minecraftServer, ICommandSender cs, String[] strings) throws CommandException {
-        _DiwUtils.reply(cs, String.valueOf(_ColorHelper.AQUA) + "Rainbow Server Mod: " + _ColorHelper.LIGHT_PURPLE + "Version " + _DiwUtils.DiwModVersion);
+        _DiwUtils.reply(cs, String.valueOf(_ColorHelper.AQUA) + "Rainbow Server Mod: " + _ColorHelper.LIGHT_PURPLE + "Version " + _DiwUtils.MC_VERSION_STRING + " Build " + Bootstrap.buildNumber);
     }
 }
