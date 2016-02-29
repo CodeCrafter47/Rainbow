@@ -11,8 +11,10 @@ public interface MC_World
      * Get an MC_Block from a block name
      * 
      * @param name Block name
-     * @return MC_Block object 
+     * @return MC_Block object
+	 * @deprecated use MC_Server#getBlockFromName instead
      */ 		
+	@Deprecated
 	public MC_Block getBlockFromName(String name);
 
 	 /** 

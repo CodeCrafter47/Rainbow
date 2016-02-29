@@ -9,3 +9,5 @@ public+synthetic PluginReference/PluginBase/onPlayerLogin(Ljava/lang/String;Ljav
 public+synthetic PluginReference/PluginBase/onAttemptPlaceOrInteract(LPluginReference/MC_Player;LPluginReference/MC_Location;LPluginReference/MC_EventInfo;LPluginReference/MC_DirectionNESWUD;)V
 
 public+synthetic PluginReference/MC_EntityType/HANGING
+
+public+synthetic PluginReference/MC_World/getBlockFromName(Ljava/lang/String;)LPluginReference/MC_Block;
