@@ -153,8 +153,20 @@ public abstract class PluginBase
      * @param loc Location of Block
      * @param ei Event Info w/cancel option
      * @param dir Direction of the interaction
-     */ 		
+	 * @deprecated this is only called for main hand interactions
+     */
+	@Deprecated
 	public void onAttemptPlaceOrInteract(MC_Player plr, MC_Location loc, MC_EventInfo ei, MC_DirectionNESWUD dir)  {}
+	/**
+	 * Called when a player attempts to either place or interact with a block
+	 *
+	 * @param plr Player Object
+	 * @param loc Location of Block
+	 * @param dir Direction of the interaction
+	 * @param hand Which hand the player uses
+	 * @param ei Event Info w/cancel option
+	 */
+	public void onAttemptPlaceOrInteract(MC_Player plr, MC_Location loc, MC_DirectionNESWUD dir, MC_Hand hand, MC_EventInfo ei)  {}
 	 /** 
      * Called when an explosion occurs but not for individual blocks.
      * 

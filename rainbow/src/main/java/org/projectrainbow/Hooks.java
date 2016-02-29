@@ -9,6 +9,7 @@ import PluginReference.MC_DirectionNESWUD;
 import PluginReference.MC_Entity;
 import PluginReference.MC_EventInfo;
 import PluginReference.MC_GeneratedColumn;
+import PluginReference.MC_Hand;
 import PluginReference.MC_HangingEntityType;
 import PluginReference.MC_ItemFrameActionType;
 import PluginReference.MC_ItemStack;
@@ -171,10 +172,13 @@ public class Hooks {
         }
     }
 
-    public static void onAttemptPlaceOrInteract(MC_Player plr, MC_Location loc, MC_EventInfo ei, MC_DirectionNESWUD dir) {
+    public static void onAttemptPlaceOrInteract(MC_Player plr, MC_Location loc, MC_DirectionNESWUD dir, MC_Hand hand, MC_EventInfo ei) {
         for (PluginInfo plugin : _DiwUtils.pluginManager.plugins) {
             try {
-                plugin.ref.onAttemptPlaceOrInteract(plr, loc, ei, dir);
+                if(hand == MC_Hand.MAIN_HAND) {
+                    plugin.ref.onAttemptPlaceOrInteract(plr, loc, ei, dir);
+                }
+                plugin.ref.onAttemptPlaceOrInteract(plr, loc, dir, hand, ei);
             } catch (Throwable th) {
                 logger.error("Failed to pass event to plugin " + plugin.name, th);
             }

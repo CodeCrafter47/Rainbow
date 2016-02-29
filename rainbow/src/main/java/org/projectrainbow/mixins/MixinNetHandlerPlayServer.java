@@ -104,7 +104,7 @@ public class MixinNetHandlerPlayServer {
                                               EnumHand hand, ItemStack itemStack, BlockPos blockPos,
                                               EnumFacing clickedFace) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptPlaceOrInteract((MC_Player) playerEntity, new MC_Location(blockPos.getX(), blockPos.getY(), blockPos.getZ(), playerEntity.dimension), ei, PluginHelper.directionMap.get(clickedFace));
+        Hooks.onAttemptPlaceOrInteract((MC_Player) playerEntity, new MC_Location(blockPos.getX(), blockPos.getY(), blockPos.getZ(), playerEntity.dimension), PluginHelper.directionMap.get(clickedFace), PluginHelper.handMap.get(hand), ei);
         if (ei.isCancelled) {
             for (BlockPos pos : BlockPos.getAllInBox(blockPos.add(-1, -1, -1), blockPos.add(1, 1, 1))) {
                 if (pos.getY() < 0 || pos.getY() > 255) continue;

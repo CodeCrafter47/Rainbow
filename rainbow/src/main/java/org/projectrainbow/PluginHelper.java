@@ -8,6 +8,7 @@ import PluginReference.MC_EnchantmentType;
 import PluginReference.MC_EntityType;
 import PluginReference.MC_GameMode;
 import PluginReference.MC_GameRuleType;
+import PluginReference.MC_Hand;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_PotionEffect;
 import PluginReference.MC_PotionEffectType;
@@ -42,7 +43,6 @@ import net.minecraft.src.EntityFishHook;
 import net.minecraft.src.EntityGhast;
 import net.minecraft.src.EntityGiant;
 import net.minecraft.src.EntityGuardian;
-import net.minecraft.src.EntityHanging;
 import net.minecraft.src.EntityHorse;
 import net.minecraft.src.EntityItem;
 import net.minecraft.src.EntityItemFrame;
@@ -80,6 +80,7 @@ import net.minecraft.src.EntityWolf;
 import net.minecraft.src.EntityXPOrb;
 import net.minecraft.src.EntityZombie;
 import net.minecraft.src.EnumFacing;
+import net.minecraft.src.EnumHand;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Potion;
 import net.minecraft.src.PotionEffect;
@@ -100,6 +101,7 @@ public class PluginHelper {
     public static BiMap<Potion, MC_PotionEffectType> potionMap = HashBiMap.create();
     public static BiMap<Short, MC_EnchantmentType> enchantmentMap = HashBiMap.create();
     public static BiMap<BiomeGenBase, MC_WorldBiomeType> biomeMap = HashBiMap.create();
+    public static BiMap<EnumHand, MC_Hand> handMap = HashBiMap.create();
 
     public static MC_EntityType getEntityType(Class<? extends Entity> clazz) {
         if (EntityPlayerMP.class.isAssignableFrom(clazz)) {
@@ -331,6 +333,9 @@ public class PluginHelper {
         biomeMap.put(BiomeGenBase.getBiome(38), MC_WorldBiomeType.MESA_PLATEAU_F);
         biomeMap.put(BiomeGenBase.getBiome(39), MC_WorldBiomeType.MESA_PLATEAU);
         // todo add new biomes
+
+        handMap.put(EnumHand.MAIN_HAND, MC_Hand.MAIN_HAND);
+        handMap.put(EnumHand.OFF_HAND, MC_Hand.OFF_HAND);
     }
 
     public static MC_Block getBlockFromName(String blockName) {
