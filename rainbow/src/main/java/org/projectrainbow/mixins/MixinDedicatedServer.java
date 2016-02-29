@@ -5,6 +5,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.DedicatedServer;
 import net.minecraft.src.ICommandManager;
 import net.minecraft.src.ICommandSender;
+import net.minecraft.src.PropertyManager;
 import org.projectrainbow.Hooks;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.launch.Bootstrap;
@@ -46,6 +47,15 @@ public class MixinDedicatedServer {
         System.out.println("           /_/ |_|\\__,_/_/_/ /_/_.___/\\____/|__/|__/  ");
         System.out.println(" ");
         System.out.println("Rainbow Mod " + Bootstrap.minecraftVersion + "#" + Bootstrap.buildNumber);
+    }
+
+    @Redirect(method = "startServer", at = @At(value = "INVOKE", target = "net.minecraft.src.PropertyManager.getStringProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"))
+    String defaultMotd(PropertyManager propertyManager, String key, String defaultValue) {
+        if (key.equals("motd")) {
+            defaultValue = _DiwUtils.DefaultMOTD;
+        }
+
+        return propertyManager.getStringProperty(key, defaultValue);
     }
 
     /*
