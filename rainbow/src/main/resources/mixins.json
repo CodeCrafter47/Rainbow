@@ -69,6 +69,7 @@
     "MixinContainerHopper",
     "MixinContainerDispenser",
     "MixinItemReed",
-    "MixinItemDoor"
+    "MixinItemDoor",
+    "MixinItemMonsterPlacer"
   ]
 }
