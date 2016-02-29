@@ -22,8 +22,25 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import java.util.Map;
+
+import static org.projectrainbow.launch.Bootstrap.args;
+
 @Mixin(CommandHandler.class)
 public class MixinCommandHandler {
+
+    @Redirect(method = "executeCommand", at = @At(value = "INVOKE", target = "get"))
+    private Object caseInsensitiveMapGet(Map map, Object key) {
+        Object o = map.get(key);
+        if (o == null && key instanceof String) {
+            for (Object o1 : map.keySet()) {
+                if (o1 instanceof String && ((String) key).equalsIgnoreCase((String) o1)) {
+                    o = map.get(o1);
+                }
+            }
+        }
+        return o;
+    }
 
     @Inject(method = "tryExecute", at = @At("HEAD"))
     private void onCommandExecuteStart(ICommandSender sender, String[] args, ICommand command, String commandLine, CallbackInfoReturnable<Boolean> callbackInfo) {
