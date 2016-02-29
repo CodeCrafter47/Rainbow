@@ -7,6 +7,7 @@ import PluginReference.MC_Location;
 import PluginReference.MC_Player;
 import PluginReference.MC_Sign;
 import com.google.common.base.Objects;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.src.BlockPos;
 import net.minecraft.src.Entity;
 import net.minecraft.src.EntityPlayerMP;
@@ -48,6 +49,7 @@ import org.projectrainbow._JoeCommandStats;
 import org.projectrainbow.interfaces.IMixinEntityPlayerMP;
 import org.projectrainbow.interfaces.IMixinOutboundPacketSoundEffect;
 import org.projectrainbow.interfaces.IMixinOutboundPacketSpawnPosition;
+import org.projectrainbow.launch.Bootstrap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -178,6 +180,13 @@ public class MixinNetHandlerPlayServer {
             return _DiwUtils.TranslateChatString(message, ((MC_Player)playerEntity).isOp());
         }
         return message;
+    }
+
+    @Inject(method = "handleSlashCommand", at = @At("HEAD"))
+    private void onCommand(String command, CallbackInfo callbackInfo) {
+        if (!command.startsWith("/login")) {
+            Bootstrap.logger.info("" + ((MC_Player)playerEntity).getName() + ": " + command);
+        }
     }
 
     @Inject(method = "setPlayerLocation(DDDFFLjava/util/Set;)V", at = @At("HEAD"), cancellable = true)
