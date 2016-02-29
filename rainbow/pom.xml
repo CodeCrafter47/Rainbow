@@ -30,13 +30,19 @@
             <artifactId>PluginReference</artifactId>
             <version>${project.parent.version}</version>
             <classifier>original</classifier>
-            <scope>compile</scope>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectrainbow</groupId>
+            <artifactId>PluginReference</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.projectrainbow</groupId>
             <artifactId>minecraft-server</artifactId>
             <version>${minecraft.version}</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

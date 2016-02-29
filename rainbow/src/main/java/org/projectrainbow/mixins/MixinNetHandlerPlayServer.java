@@ -52,6 +52,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -167,6 +168,16 @@ public class MixinNetHandlerPlayServer {
                 }
             }
         }
+    }
+
+    @ModifyVariable(method = "processChatMessage", at = @At(value = "INVOKE", target = "startsWith"))
+    private String chatColor(String message) {
+        if (message.startsWith("/") && !message.startsWith("/w") && !message.startsWith("/whisper") && !message.startsWith("/msg"))
+            return message;
+        if (((MC_Player)playerEntity).hasPermission("rainbow.chatcolor")) {
+            return _DiwUtils.TranslateChatString(message, ((MC_Player)playerEntity).isOp());
+        }
+        return message;
     }
 
     @Inject(method = "setPlayerLocation(DDDFFLjava/util/Set;)V", at = @At("HEAD"), cancellable = true)
