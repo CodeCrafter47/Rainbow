@@ -334,7 +334,7 @@ public class _JOT_OnlineTimeUtils {
         for (int i = idxStart; i < idxEnd; ++i) {
             String uuid = names.get(i);
             _JOT_OnlineTimeEntry entry = Data.playerData.get(uuid);
-            String name = ServerWrapper.getInstance().getLastKnownPlayerNameFromUUID(uuid);
+            String name = uuid.length() > 16 ? ServerWrapper.getInstance().getLastKnownPlayerNameFromUUID(uuid) : uuid;
             MC_Player plr = ServerWrapper.getInstance().getOnlinePlayerByName(name);
             String trailer = "";
 

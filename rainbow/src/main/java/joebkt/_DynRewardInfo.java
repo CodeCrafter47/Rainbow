@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 
 public class _DynRewardInfo implements Serializable {
+    public static final long serialVersionUID = 6817304496081338816L;
 
     public _SerializableLocation Loc = null;
     public String RewardName = "";

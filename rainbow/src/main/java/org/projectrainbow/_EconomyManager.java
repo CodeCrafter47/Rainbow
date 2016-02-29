@@ -85,8 +85,8 @@ public class _EconomyManager {
     }
 
     public static void onLogin(String name, UUID uuid) {
-        if (!economy.containsKey(uuid.toString()) && economy.containsKey(name)) {
-            economy.put(uuid.toString(), economy.remove(name));
+        if (!economy.containsKey(uuid.toString()) && economy.containsKey(name.toLowerCase())) {
+            economy.put(uuid.toString(), economy.remove(name.toLowerCase()));
         }
     }
 
