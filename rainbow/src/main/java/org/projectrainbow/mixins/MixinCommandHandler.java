@@ -40,7 +40,7 @@ public class MixinCommandHandler {
         } else if (sender instanceof RConConsoleSource) {
             newInfo.senderType = MC_CommandSenderType.RCON;
         } else if (sender instanceof Entity) {
-            // todo newInfo.senderType = MC_CommandSenderType.ENTITY;
+            newInfo.senderType = MC_CommandSenderType.ENTITY;
         }
 
         ServerWrapper.commandSenderInfo.addLast(newInfo);

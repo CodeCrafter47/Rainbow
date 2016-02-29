@@ -6,5 +6,6 @@ public enum MC_CommandSenderType
 	PLAYER,
 	CONSOLE,
 	COMMANDBLOCK,
+	ENTITY,
 	RCON
 }
