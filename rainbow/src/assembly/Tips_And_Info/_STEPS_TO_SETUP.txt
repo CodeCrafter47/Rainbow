@@ -1,4 +1,3 @@
-
 Open the "runit.bat" file and customize the RAM setting and path to Java on your machine:
 -----------------------------------------------------------------------
 "C:\Program Files\Java\jre7\bin\java.exe" -Xmx4000m -Xincgc -jar Rainbow.jar
