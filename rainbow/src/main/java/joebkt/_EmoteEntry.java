@@ -8,6 +8,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class _EmoteEntry implements Serializable {
 
+    public static final long serialVersionUID = 9052784146419977008L;
+
     public Map<String, String> msg = new ConcurrentHashMap();
     public long msCreated;
     public long msUpdated;

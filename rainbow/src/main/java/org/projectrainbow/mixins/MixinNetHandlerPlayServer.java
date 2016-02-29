@@ -162,7 +162,7 @@ public class MixinNetHandlerPlayServer {
             }
 
             if (packet.getMessage().startsWith("/")) {
-                if (_EmoteUtils.HandleEmote((MC_Player) playerEntity, packet.getMessage())) {
+                if (_EmoteUtils.HandleEmote((MC_Player) playerEntity, packet.getMessage().substring(1))) {
                     callbackInfo.cancel();
                     return;
                 }
