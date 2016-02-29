@@ -7,3 +7,5 @@ public+synthetic PluginReference/MC_Server/unregisterWorld(Ljava/lang/String;)Z
 public+synthetic PluginReference/PluginBase/onBlockBroke(LPluginReference/MC_Player;LPluginReference/MC_Location;I)V
 public+synthetic PluginReference/PluginBase/onPlayerLogin(Ljava/lang/String;Ljava/util/UUID;Ljava/lang/String;)V
 public+synthetic PluginReference/PluginBase/onAttemptPlaceOrInteract(LPluginReference/MC_Player;LPluginReference/MC_Location;LPluginReference/MC_EventInfo;LPluginReference/MC_DirectionNESWUD;)V
+
+public+synthetic PluginReference/MC_EntityType/HANGING
