@@ -51,3 +51,4 @@ Prefix=&c[Announcer]
 &dSenpai notice me!
 &d&lLeft foot let's stomp! &d&oCharlie Brown now ya'll
 &eWhy was the block sad? &fBecause an Enderman &oput it down!
+

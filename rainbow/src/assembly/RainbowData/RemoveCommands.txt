@@ -1,3 +1,2 @@
 ; If you don't like a command provided by default. Add a line for each command.
 ; Lines starting with semi-colon are ignored.
-

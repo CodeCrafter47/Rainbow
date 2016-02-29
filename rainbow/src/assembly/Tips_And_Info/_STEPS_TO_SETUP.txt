@@ -49,5 +49,3 @@ http://www.project-rainbow.org/site/downloads/?sa=view;down=52
 
 For latest info and plugins see web-site:
 http://www.project-rainbow.org/site/
-
-PS: If that site is ever unavailable, try http://rbow.org

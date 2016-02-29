@@ -33,3 +33,4 @@
 /perm give * rainbow.worth
 /perm give * rainbow.chatcolor
 /perm give * rainbow.signcolor
+
