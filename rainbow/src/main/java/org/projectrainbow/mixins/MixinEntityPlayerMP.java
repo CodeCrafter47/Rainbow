@@ -386,6 +386,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
     @Override
     public void clonePlayer(EntityPlayer entityPlayer, boolean b) {
         this.backpack = ((IMixinEntityPlayerMP) entityPlayer).getBackpack();
+        this.compassTarget = ((MC_Player)entityPlayer).getCompassTarget();
         super.clonePlayer(entityPlayer, b);
     }
 
