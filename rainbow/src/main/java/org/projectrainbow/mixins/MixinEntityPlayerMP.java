@@ -177,6 +177,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
             isDead = false;
             entityplayermp1.playerNetServerHandler.setPlayerLocation(entityplayermp1.posX, entityplayermp1.posY, entityplayermp1.posZ, entityplayermp1.rotationYaw, entityplayermp1.rotationPitch);
             entityplayermp1.setSneaking(false);
+            MC_Location compassTarget = getCompassTarget();
             entityplayermp1.playerNetServerHandler.sendPacket(new OutboundPacketSpawnPosition(new BlockPos(compassTarget.getBlockX(), compassTarget.getBlockY(), compassTarget.getBlockZ())));
             entityplayermp1.playerNetServerHandler.sendPacket(new OutboundPacketSetExperience(entityplayermp1.experience, entityplayermp1.experienceTotal, entityplayermp1.experienceLevel));
             mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(entityplayermp1, toWorld);
