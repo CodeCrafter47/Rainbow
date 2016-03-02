@@ -204,12 +204,12 @@ public abstract class MixinItemStack implements MC_ItemStack {
         } else if (!stackTagCompound.hasKey("display")) {
             return null;
         } else {
-            stackTagCompound = stackTagCompound.getCompoundTag("display");
-            if (!stackTagCompound.hasKey("Lore")) {
+            NBTTagCompound display = stackTagCompound.getCompoundTag("display");
+            if (!display.hasKey("Lore")) {
                 return null;
             } else {
                 ArrayList<String> res = new ArrayList<String>();
-                NBTTagList lore = stackTagCompound.getTagList("Lore", 8);
+                NBTTagList lore = display.getTagList("Lore", 8);
 
                 for (int i = 0; i < lore.tagCount(); ++i) {
                     res.add(lore.getStringTagAt(i));
