@@ -222,7 +222,7 @@ public abstract class MixinItemStack implements MC_ItemStack {
 
     @Override
     public void setLore(List<String> argLore) {
-        if (stackTagCompound.hasKey("display")) {
+        if (!stackTagCompound.hasKey("display")) {
             stackTagCompound.setTag("display", new NBTTagCompound());
         }
 
