@@ -1,5 +1,13 @@
 package org.projectrainbow.plugins;
 
+import sun.misc.CompoundEnumeration;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
+
 public class FilteringClassLoader extends ClassLoader {
     public FilteringClassLoader(ClassLoader delegate) {
         super(delegate);
@@ -29,7 +37,27 @@ public class FilteringClassLoader extends ClassLoader {
         return super.loadClass(name, b);
     }
 
+    @Override
+    public URL getResource(String s) {
+        if (isBadResource(s)) {
+            return null;
+        }
+        return super.getResource(s);
+    }
+
+    @Override
+    protected URL findResource(String s) {
+        if (isBadResource(s)) {
+            return null;
+        }
+        return super.findResource(s);
+    }
+
     private boolean isBadClass(String name) {
         return name.startsWith("org.projectrainbow.") || name.startsWith("net.minecraft.") || name.startsWith("joebkt.") || !name.contains(".");
+    }
+
+    private boolean isBadResource(String name) {
+        return name.equals("plugin.properties");
     }
 }
