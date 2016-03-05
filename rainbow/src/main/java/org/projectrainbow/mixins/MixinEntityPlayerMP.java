@@ -50,7 +50,9 @@ import net.minecraft.src.TileEntityChest;
 import net.minecraft.src.WorldServer;
 import net.minecraft.src.WorldSettings;
 import net.minecraft.src.fy;
+import net.minecraft.src.hz;
 import net.minecraft.src.nf;
+import net.minecraft.src.nh;
 import net.minecraft.src.qe;
 import net.minecraft.src.qg;
 import org.projectrainbow.BlockWrapper;
@@ -89,6 +91,9 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static net.minecraft.src.ng.ca;
+import static net.minecraft.src.ng.hy;
 
 @Mixin(EntityPlayerMP.class)
 public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements IMixinEntityPlayerMP, MC_Player {
@@ -662,7 +667,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
             System.err.println("Sound " + var1 + " does not exist.");
             return;
         }
-        ((Entity) (Object) this).a(object, var2, var3);
+        playerNetServerHandler.sendPacket(new hz(object, nh.AMBIENT, posX, posY, posZ, var2, var3));
     }
 
     @Override
