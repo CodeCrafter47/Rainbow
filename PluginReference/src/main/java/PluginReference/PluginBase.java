@@ -554,6 +554,16 @@ public abstract class PluginBase
      * @param container Container interface for get/set items inside dispenser
      * @param ei Event Info w/cancel option
      */ 			
-	public void onAttemptDispense(MC_Location loc, int idxItem, MC_Container container, MC_EventInfo ei) {}	
+	public void onAttemptDispense(MC_Location loc, int idxItem, MC_Container container, MC_EventInfo ei) {}
+
+	/**
+	 * Called when an entity is pushed by another entity.
+	 *
+	 * @param entity entity
+	 * @param pushedEntity pushed entity
+	 * @param velocity velocity applied to the pushed entity, can be changed
+     * @param ei event info, can be cancelled
+     */
+	public void onEntityPushed(MC_Entity entity, MC_Entity pushedEntity, MC_FloatTriplet velocity, MC_EventInfo ei) {}
 }
 

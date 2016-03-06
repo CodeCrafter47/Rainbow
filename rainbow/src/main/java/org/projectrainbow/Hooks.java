@@ -8,6 +8,7 @@ import PluginReference.MC_DamageType;
 import PluginReference.MC_DirectionNESWUD;
 import PluginReference.MC_Entity;
 import PluginReference.MC_EventInfo;
+import PluginReference.MC_FloatTriplet;
 import PluginReference.MC_GeneratedColumn;
 import PluginReference.MC_Hand;
 import PluginReference.MC_HangingEntityType;
@@ -175,7 +176,7 @@ public class Hooks {
     public static void onAttemptPlaceOrInteract(MC_Player plr, MC_Location loc, MC_DirectionNESWUD dir, MC_Hand hand, MC_EventInfo ei) {
         for (PluginInfo plugin : _DiwUtils.pluginManager.plugins) {
             try {
-                if(hand == MC_Hand.MAIN_HAND) {
+                if (hand == MC_Hand.MAIN_HAND) {
                     plugin.ref.onAttemptPlaceOrInteract(plr, loc, ei, dir);
                 }
                 plugin.ref.onAttemptPlaceOrInteract(plr, loc, dir, hand, ei);
@@ -581,6 +582,16 @@ public class Hooks {
         for (PluginInfo plugin : _DiwUtils.pluginManager.plugins) {
             try {
                 plugin.ref.onAttemptDispense(loc, idxItem, container, ei);
+            } catch (Throwable th) {
+                logger.error("Failed to pass event to plugin " + plugin.name, th);
+            }
+        }
+    }
+
+    public static void onEntityPushed(MC_Entity entity, MC_Entity pushedEntity, MC_FloatTriplet velocity, MC_EventInfo ei) {
+        for (PluginInfo plugin : _DiwUtils.pluginManager.plugins) {
+            try {
+                plugin.ref.onEntityPushed(entity, pushedEntity, velocity, ei);
             } catch (Throwable th) {
                 logger.error("Failed to pass event to plugin " + plugin.name, th);
             }

@@ -3,6 +3,8 @@ package org.projectrainbow.mixins;
 import PluginReference.MC_DamageType;
 import PluginReference.MC_Entity;
 import PluginReference.MC_EntityType;
+import PluginReference.MC_EventInfo;
+import PluginReference.MC_FloatTriplet;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_Location;
 import PluginReference.MC_MotionData;
@@ -27,6 +29,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -151,6 +154,17 @@ public abstract class MixinEntity implements MC_Entity {
         } else if (inWater && waterFallDistance > 0) {
             Hooks.onFallComplete(this, this.waterFallDistance, new MC_Location(var5.getX(), var5.getY(), var5.getZ(), dimension), inWater);
             waterFallDistance = 0;
+        }
+    }
+
+    @Redirect(method = "applyEntityCollision", at = @At(value = "INVOKE", target = "net.minecraft.src.Entity.addVelocity(DDD)V"))
+    void onEntityPushed(Entity pushedEntity, double xVelocity, double yVelocity, double zVelocity, Entity other) {
+        MC_Entity entity = pushedEntity == other ? this : (MC_Entity) other;
+        MC_EventInfo ei = new MC_EventInfo();
+        MC_FloatTriplet velocity = new MC_FloatTriplet((float) xVelocity, (float) yVelocity, (float) zVelocity);
+        Hooks.onEntityPushed(entity, (MC_Entity) pushedEntity, velocity, ei);
+        if (!ei.isCancelled) {
+            pushedEntity.addVelocity(velocity.x, velocity.y, velocity.z);
         }
     }
 
