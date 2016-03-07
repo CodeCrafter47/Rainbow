@@ -1,0 +1,22 @@
+package PluginExample.commands;
+
+import PluginExample.CmdBase;
+import PluginExample.MyPlugin;
+import PluginReference.ChatColor;
+import PluginReference.MC_ItemStack;
+import PluginReference.MC_Player;
+
+import static PluginExample.MyPlugin.server;
+
+public class CmdDrop2 extends CmdBase {
+    public CmdDrop2() {
+        super("drop2", "Test drops");
+    }
+
+    @Override
+    protected void execute(MC_Player plr, String[] args) {
+        MC_ItemStack is = MyPlugin.server.createItemStack(1, 4, 1);
+        plr.getWorld().dropItem(is, plr.getLocation(), null);
+        plr.sendMessage(ChatColor.GREEN + "Ok. 4 stone");
+    }
+}

@@ -33,5 +33,21 @@
                 <include>PluginReference-*SNAPSHOT.jar</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/PluginExample/target
+            </directory>
+            <outputDirectory>/for_plugin_devs/</outputDirectory>
+            <includes>
+                <include>PluginExample*.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/PluginExampleEvents/target
+            </directory>
+            <outputDirectory>/for_plugin_devs/</outputDirectory>
+            <includes>
+                <include>PluginExampleEvents*.jar</include>
+            </includes>
+        </fileSet>
     </fileSets>
 </assembly>
