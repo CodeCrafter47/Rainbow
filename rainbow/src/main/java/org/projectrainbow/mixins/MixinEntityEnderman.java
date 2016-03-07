@@ -19,7 +19,8 @@ public abstract class MixinEntityEnderman extends MixinEntityLivingBase implemen
 
     @Override
     public MC_Block getCarriedBlock() {
-        return new BlockWrapper(getHeldBlockState());
+        IBlockState heldBlockState = getHeldBlockState();
+        return heldBlockState == null ? null : new BlockWrapper(heldBlockState);
     }
 
     @Override
