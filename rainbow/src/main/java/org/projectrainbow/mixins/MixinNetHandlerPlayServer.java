@@ -7,7 +7,6 @@ import PluginReference.MC_Location;
 import PluginReference.MC_Player;
 import PluginReference.MC_Sign;
 import com.google.common.base.Objects;
-import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.src.BlockPos;
 import net.minecraft.src.Entity;
 import net.minecraft.src.EntityPlayerMP;
@@ -176,8 +175,8 @@ public class MixinNetHandlerPlayServer {
     private String chatColor(String message) {
         if (message.startsWith("/") && !message.startsWith("/w") && !message.startsWith("/whisper") && !message.startsWith("/msg"))
             return message;
-        if (((MC_Player)playerEntity).hasPermission("rainbow.chatcolor")) {
-            return _DiwUtils.TranslateChatString(message, ((MC_Player)playerEntity).isOp());
+        if (((MC_Player) playerEntity).hasPermission("rainbow.chatcolor")) {
+            return _DiwUtils.TranslateChatString(message, ((MC_Player) playerEntity).isOp());
         }
         return message;
     }
@@ -185,7 +184,7 @@ public class MixinNetHandlerPlayServer {
     @Inject(method = "handleSlashCommand", at = @At("HEAD"))
     private void onCommand(String command, CallbackInfo callbackInfo) {
         if (!command.startsWith("/login")) {
-            Bootstrap.logger.info("" + ((MC_Player)playerEntity).getName() + ": " + command);
+            Bootstrap.logger.info("" + ((MC_Player) playerEntity).getName() + ": " + command);
         }
     }
 
@@ -196,19 +195,17 @@ public class MixinNetHandlerPlayServer {
         double dz = flags.contains(OutboundPacketPlayerPosLook.EnumFlags.Z) ? z : playerEntity.posZ - z;
         float finalYaw = flags.contains(OutboundPacketPlayerPosLook.EnumFlags.Y_ROT) ? yaw + playerEntity.rotationYaw : yaw;
         float finalPitch = flags.contains(OutboundPacketPlayerPosLook.EnumFlags.X_ROT) ? pitch + playerEntity.rotationPitch : pitch;
-        if (dx * dx + dy * dy + dz * dz > 4) {
-            // teleport
-            MC_EventInfo ei = new MC_EventInfo();
-            Hooks.onAttemptPlayerTeleport((MC_Player) playerEntity, new MC_Location(playerEntity.posX + dx, playerEntity.posY + dy, playerEntity.posZ + dz, playerEntity.dimension, finalYaw, finalPitch), ei);
-            if (ei.isCancelled) {
-                callbackInfo.cancel();
+        // teleport
+        MC_EventInfo ei = new MC_EventInfo();
+        Hooks.onAttemptPlayerTeleport((MC_Player) playerEntity, new MC_Location(playerEntity.posX + dx, playerEntity.posY + dy, playerEntity.posZ + dz, playerEntity.dimension, finalYaw, finalPitch), ei);
+        if (ei.isCancelled) {
+            callbackInfo.cancel();
 
-                if (++this.z == 2147483647) {
-                    this.z = 0;
-                }
-
-                playerEntity.playerNetServerHandler.sendPacket(new OutboundPacketPlayerPosLook(playerEntity.posX, playerEntity.posY, playerEntity.posZ, playerEntity.rotationYaw, playerEntity.rotationPitch, Collections.<OutboundPacketPlayerPosLook.EnumFlags>emptySet(), this.z));
+            if (++this.z == 2147483647) {
+                this.z = 0;
             }
+
+            playerEntity.playerNetServerHandler.sendPacket(new OutboundPacketPlayerPosLook(playerEntity.posX, playerEntity.posY, playerEntity.posZ, playerEntity.rotationYaw, playerEntity.rotationPitch, Collections.<OutboundPacketPlayerPosLook.EnumFlags>emptySet(), this.z));
         }
     }
 
