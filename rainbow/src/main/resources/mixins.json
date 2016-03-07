@@ -70,6 +70,7 @@
     "MixinContainerDispenser",
     "MixinItemReed",
     "MixinItemDoor",
-    "MixinItemMonsterPlacer"
+    "MixinItemMonsterPlacer",
+    "MixinTileEntityNote"
   ]
 }

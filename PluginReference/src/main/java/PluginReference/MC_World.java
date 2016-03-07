@@ -268,6 +268,14 @@ public interface MC_World
      * @return List of MC_Chunk objects 
      */ 			
 	public List<MC_Chunk> getLoadedChunks();
+
+	/**
+	 * Gets the note block at the location.
+	 *
+	 * @param location The location
+	 * @return The note block or null if there is none
+     */
+	MC_NoteBlock getNoteBlockAt(MC_Location location);
 	
 }
 

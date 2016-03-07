@@ -11,6 +11,7 @@ import PluginReference.MC_EntityType;
 import PluginReference.MC_GameRuleType;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_Location;
+import PluginReference.MC_NoteBlock;
 import PluginReference.MC_Sign;
 import PluginReference.MC_World;
 import PluginReference.MC_WorldBiomeType;
@@ -32,6 +33,7 @@ import net.minecraft.src.ISaveHandler;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Material;
 import net.minecraft.src.Profiler;
+import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 import net.minecraft.src.WorldInfo;
 import net.minecraft.src.WorldProvider;
@@ -321,5 +323,11 @@ public abstract class MixinWorldServer extends World implements MC_World {
     @Override
     public List<MC_Chunk> getLoadedChunks() {
         return (List<MC_Chunk>) (Object) ((ChunkProviderServer) v).a();
+    }
+
+    @Override
+    public MC_NoteBlock getNoteBlockAt(MC_Location location) {
+        TileEntity tileEntity = getTileEntity(new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+        return tileEntity instanceof MC_NoteBlock ? (MC_NoteBlock) tileEntity : null;
     }
 }
