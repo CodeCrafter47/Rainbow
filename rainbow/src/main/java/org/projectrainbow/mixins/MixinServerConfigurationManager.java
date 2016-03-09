@@ -41,11 +41,10 @@ public class MixinServerConfigurationManager {
         Hooks.onPlayerJoin((MC_Player) var1);
     }
 
-    @Inject(method = "recreatePlayerEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/src/NetHandlerPlayServer;setPlayerLocation(DDDFF)V"), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "recreatePlayerEntity", at = @At("RETURN"))
     private void onRespawn(EntityPlayerMP oldPlayer, int dimension, boolean fromEnd /* false if player has been dead; if false inventory is cleared */,
-                           CallbackInfoReturnable<EntityPlayerMP> callback, BlockPos whatEver, @Coerce boolean b, ItemInWorldManager maybe,
-                           EntityPlayerMP newPlayer, WorldServer worldServer, BlockPos spawnPoint){
-        Hooks.onPlayerRespawn((MC_Player) newPlayer);
+                           CallbackInfoReturnable<EntityPlayerMP> callback){
+        Hooks.onPlayerRespawn((MC_Player) callback.getReturnValue());
     }
 
     @Redirect(method = "recreatePlayerEntity", at = @At(value = "INVOKE", target = "net.minecraft.src.WorldServer.getSpawnPoint()Lnet/minecraft/src/BlockPos;"))

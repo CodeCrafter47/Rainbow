@@ -45,6 +45,7 @@ import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.PluginHelper;
 import org.projectrainbow.ServerWrapper;
 import org.projectrainbow._DiwUtils;
+import org.projectrainbow.interfaces.IMixinWorldServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -56,7 +57,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Mixin(WorldServer.class)
-public abstract class MixinWorldServer extends World implements MC_World {
+public abstract class MixinWorldServer extends World implements MC_World, IMixinWorldServer {
 
     protected MixinWorldServer(ISaveHandler iSaveHandler, WorldInfo worldInfo, WorldProvider worldProvider, Profiler profiler, boolean b) {
         super(iSaveHandler, worldInfo, worldProvider, profiler, b);
@@ -329,5 +330,10 @@ public abstract class MixinWorldServer extends World implements MC_World {
     public MC_NoteBlock getNoteBlockAt(MC_Location location) {
         TileEntity tileEntity = getTileEntity(new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
         return tileEntity instanceof MC_NoteBlock ? (MC_NoteBlock) tileEntity : null;
+    }
+
+    @Override
+    public int getClientDimension() {
+        return getDimension();
     }
 }

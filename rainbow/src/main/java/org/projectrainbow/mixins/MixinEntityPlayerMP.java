@@ -69,6 +69,7 @@ import org.projectrainbow.interfaces.IMixinContainerHopper;
 import org.projectrainbow.interfaces.IMixinEntityPlayerMP;
 import org.projectrainbow.interfaces.IMixinNBTBase;
 import org.projectrainbow.interfaces.IMixinPlayerCapabilities;
+import org.projectrainbow.interfaces.IMixinWorldServer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -169,9 +170,9 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
             EntityPlayerMP entityplayermp1 = (EntityPlayerMP) (Object) this;
 
             // Support vanilla clients going into custom dimensions
-            int clientDimension = toWorld.provider.getDimension().getDimensionId();
+            int clientDimension = ((IMixinWorldServer)toWorld).getClientDimension();
             // Force vanilla client to refresh their chunk cache if same dimension
-            if (fromWorld.provider.getDimension().getDimensionId() == clientDimension) {
+            if (((IMixinWorldServer)fromWorld).getClientDimension() == clientDimension) {
                 entityplayermp1.playerNetServerHandler.sendPacket(
                         new OutboundPacketRespawn((byte) (clientDimension >= 0 ? -1 : 0), toWorld.getDifficulty(), toWorld.getWorldInfo().getTerrainType(),
                                 entityplayermp1.theItemInWorldManager.getGameType()));
