@@ -110,6 +110,12 @@ public class OfflinePlayerWrapper implements MC_Player {
                 "DBG: Unsupported: teleport to OfflinePlayer");
     }
 
+    @Override
+    public void teleport(MC_Location loc, boolean safe) {
+        System.out.println(
+                "DBG: Unsupported: teleport to OfflinePlayer");
+    }
+
     public List<MC_ItemStack> getInventory() {
         System.out.println(
                 "DBG: Unsupported: getInventory to OfflinePlayer");

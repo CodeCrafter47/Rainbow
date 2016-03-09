@@ -136,6 +136,9 @@ public abstract class MixinEntity implements MC_Entity {
     @Shadow(prefix = "getRiddenEntity$")
     public abstract Entity getRiddenEntity$getRider();
 
+    @Shadow
+    public abstract void setPosition(double var1, double var3, double var5);
+
     protected void setInvulnerable(boolean value) {
         invulnerable = value;
     }

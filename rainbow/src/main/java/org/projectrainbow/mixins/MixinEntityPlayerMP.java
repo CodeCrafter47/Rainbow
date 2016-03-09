@@ -143,6 +143,10 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public void teleport(WorldServer world, double x, double y, double z, float yaw, float pitch) {
+        teleport(world, x, y, z, yaw, pitch, true);
+    }
+
+    public void teleport(WorldServer world, double x, double y, double z, float yaw, float pitch, boolean safe) {
         stopRiding();
         for (Entity passenger : getPassengers()) {
             passenger.stopRiding();
@@ -181,6 +185,9 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
             entityplayermp1.playerNetServerHandler.sendPacket(new OutboundPacketRespawn(clientDimension, toWorld.getDifficulty(), toWorld.getWorldInfo().getTerrainType(), entityplayermp1.theItemInWorldManager.getGameType()));
             setWorld(toWorld);
             isDead = false;
+            while(safe && !toWorld.getCollidingBoundingBoxes((Entity) (Object) this, this.getEntityBoundingBox()).isEmpty() && this.posY < 255.0D) {
+                this.setPosition(this.posX, this.posY + 1.0D, this.posZ);
+            }
             entityplayermp1.playerNetServerHandler.setPlayerLocation(entityplayermp1.posX, entityplayermp1.posY, entityplayermp1.posZ, entityplayermp1.rotationYaw, entityplayermp1.rotationPitch);
             entityplayermp1.setSneaking(false);
             MC_Location compassTarget = getCompassTarget();
@@ -446,7 +453,12 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public void teleport(MC_Location var1) {
-        teleport(_DiwUtils.getMinecraftServer().worldServerForDimension(var1.dimension), var1.x, var1.y, var1.z, var1.yaw, var1.pitch);
+        teleport(var1, true);
+    }
+
+    @Override
+    public void teleport(MC_Location var1, boolean safe) {
+        teleport(_DiwUtils.getMinecraftServer().worldServerForDimension(var1.dimension), var1.x, var1.y, var1.z, var1.yaw, var1.pitch, safe);
     }
 
     @Override
