@@ -133,6 +133,9 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
     @Shadow
     public abstract void setSpectatingEntity(Entity var1);
 
+    @Shadow
+    public abstract void setGameType(WorldSettings.GameType var1);
+
     /*
      * add teleport helper methods
      */
@@ -477,7 +480,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public void setGameMode(MC_GameMode var1) {
-        theItemInWorldManager.setGameType(PluginHelper.gamemodeMap.inverse().get(var1));
+        setGameType(PluginHelper.gamemodeMap.inverse().get(var1));
     }
 
     @Override
