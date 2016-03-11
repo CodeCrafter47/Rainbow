@@ -11,6 +11,21 @@
 
     <artifactId>rainbow</artifactId>
 
+    <profiles>
+        <profile>
+            <id>jenkins</id>
+            <activation>
+                <property>
+                    <name>env.BUILD_NUMBER</name>
+                </property>
+            </activation>
+            <build>
+                <finalName>Rainbow-${minecraft.version}-b${env.BUILD_NUMBER}</finalName>
+            </build>
+        </profile>
+    </profiles>
+
+
     <repositories>
         <repository>
             <id>mojang</id>
@@ -94,10 +109,22 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.projectrainbow</groupId>
+            <artifactId>PluginExample</artifactId>
+            <version>1.9-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectrainbow</groupId>
+            <artifactId>PluginExampleEvents</artifactId>
+            <version>1.9-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
-        <finalName>Rainbow-${project.version}</finalName>
+        <finalName>Rainbow-${minecraft.version}</finalName>
         <resources>
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
@@ -248,7 +275,7 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>Rainbow-${minecraft.version}-#${build.number}</finalName>
+                            <finalName>Rainbow-${minecraft.version}-b${build.number}</finalName>
                             <attach>false</attach>
                             <appendAssemblyId>false</appendAssemblyId>
                             <descriptors>

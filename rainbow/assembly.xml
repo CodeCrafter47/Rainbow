@@ -30,15 +30,18 @@
             </directory>
             <outputDirectory>/for_plugin_devs/</outputDirectory>
             <includes>
-                <include>PluginReference-*SNAPSHOT.jar</include>
+                <include>PluginReference-*.jar</include>
             </includes>
+            <excludes>
+                <exclude>PluginReference-*original.jar</exclude>
+            </excludes>
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/PluginExample/target
             </directory>
             <outputDirectory>/for_plugin_devs/</outputDirectory>
             <includes>
-                <include>PluginExample*.jar</include>
+                <include>*.jar</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -46,7 +49,7 @@
             </directory>
             <outputDirectory>/for_plugin_devs/</outputDirectory>
             <includes>
-                <include>PluginExampleEvents*.jar</include>
+                <include>*.jar</include>
             </includes>
         </fileSet>
     </fileSets>

@@ -11,7 +11,22 @@
 
     <artifactId>PluginReference</artifactId>
 
+    <profiles>
+        <profile>
+            <id>jenkins</id>
+            <activation>
+                <property>
+                    <name>env.BUILD_NUMBER</name>
+                </property>
+            </activation>
+            <build>
+                <finalName>PluginReference-${minecraft.version}-b${env.BUILD_NUMBER}</finalName>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
+        <finalName>PluginReference-${minecraft.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
