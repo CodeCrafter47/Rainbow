@@ -33,6 +33,7 @@ import net.minecraft.src.Packet;
 import net.minecraft.src.PacketBuffer;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.TileEntitySign;
+import net.minecraft.src.Vec3;
 import net.minecraft.src.WorldServer;
 import net.minecraft.src.fu;
 import org.apache.logging.log4j.LogManager;
@@ -69,6 +70,8 @@ public class MixinNetHandlerPlayServer {
     public EntityPlayerMP playerEntity;
     @Shadow
     private int z;
+    @Shadow
+    private Vec3 y;
 
     @Redirect(method = "processPlayer", at = @At(value = "INVOKE", target = "warn", remap = false))
     private void doLogWarning(Logger logger, String message) {
@@ -216,9 +219,9 @@ public class MixinNetHandlerPlayServer {
         double z = packet.c(this.playerEntity.posZ);
         float yaw = packet.a(this.playerEntity.rotationYaw);
         float pitch = packet.b(this.playerEntity.rotationPitch);
-        double oldX = x - this.playerEntity.posX;
-        double oldY = y - this.playerEntity.posY;
-        double oldZ = z - this.playerEntity.posZ;
+        double oldX = this.playerEntity.posX;
+        double oldY = this.playerEntity.posY;
+        double oldZ = this.playerEntity.posZ;
         float oldYaw = this.playerEntity.rotationYaw;
         float oldPitch = this.playerEntity.rotationPitch;
 
@@ -233,6 +236,8 @@ public class MixinNetHandlerPlayServer {
             Hooks.onAttemptPlayerMove(player, from, to, ei);
 
             if (ei.isCancelled) {
+                this.y = new Vec3(oldX, oldY, oldZ);
+                playerEntity.playerNetServerHandler.sendPacket(new OutboundPacketPlayerPosLook(oldX, oldY, oldZ, oldYaw, oldPitch, Collections.<OutboundPacketPlayerPosLook.EnumFlags>emptySet(), ++this.z));
                 callbackInfo.cancel();
             }
         }
