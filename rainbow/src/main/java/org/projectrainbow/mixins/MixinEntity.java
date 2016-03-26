@@ -356,7 +356,7 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Override
     public List getNearbyEntities(float var1) {
-        return worldObj.getEntitiesInAABBexcluding((Entity) (Object) this, new AxisAlignedBB(posX - var1, posZ - var1, posZ - var1, posX + var1, posY + var1, posZ + var1), Predicates.<Entity>alwaysTrue());
+        return worldObj.getEntitiesInAABBexcluding((Entity) (Object) this, new AxisAlignedBB(posX - var1, posY - var1, posZ - var1, posX + var1, posY + var1, posZ + var1), Predicates.<Entity>alwaysTrue());
     }
 
     @Override
