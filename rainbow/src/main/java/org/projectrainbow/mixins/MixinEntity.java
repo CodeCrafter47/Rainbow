@@ -76,6 +76,8 @@ public abstract class MixinEntity implements MC_Entity {
     @Shadow
     private int fire;
 
+    protected MC_Entity attacker = null;
+
     @Shadow
     public abstract List<Entity> getPassengers();
 
@@ -334,7 +336,7 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Override
     public MC_Entity getAttacker() {
-        return null;
+        return attacker;
     }
 
     @Override

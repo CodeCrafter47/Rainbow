@@ -724,7 +724,7 @@ public class MyPlugin extends PluginBase {
 
         String logMsg = String.format("onAttemptEntityDamage: %s %s by %s for %.2f @ %s", entName, dmgType.toString(), strAttacker, amt, ent.getLocation().toString());
         // Commenting out echo since it is annoyingly often.  Uncomment if you need to experiment...
-        //System.out.println("EventSamplePlugin -- " + logMsg);
+        System.out.println("EventSamplePlugin -- " + logMsg);
 
         if (ToggleDamage) {
             ei.isCancelled = true;

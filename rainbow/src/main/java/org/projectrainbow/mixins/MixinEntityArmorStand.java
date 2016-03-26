@@ -88,17 +88,15 @@ public abstract class MixinEntityArmorStand extends MixinEntityLivingBase implem
     private void onAttacked(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> callbackInfo) {
         m_rainbowAdjustedDamage = damage;
         damageModified = false;
-        MC_Entity entity = (MC_Entity) damageSource.getEntity();
-        MC_Player player = entity instanceof MC_Player ? (MC_Player) entity : null;
-        if (player != null) {
-            MC_EventInfo ei = new MC_EventInfo();
+        attacker = (MC_Entity) damageSource.getEntity();
 
-            Hooks.onAttemptEntityDamage(this, PluginHelper.wrap(damageSource), damage, ei);
+        MC_EventInfo ei = new MC_EventInfo();
 
-            if (ei.isCancelled) {
-                callbackInfo.cancel();
-                callbackInfo.setReturnValue(false);
-            }
+        Hooks.onAttemptEntityDamage(this, PluginHelper.wrap(damageSource), damage, ei);
+
+        if (ei.isCancelled) {
+            callbackInfo.cancel();
+            callbackInfo.setReturnValue(false);
         }
     }
 

@@ -23,21 +23,18 @@ public abstract class MixinEntityHanging extends MixinEntity {
     private void onAttacked2(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> callbackInfo) {
         m_rainbowAdjustedDamage = damage;
         damageModified = false;
-        MC_Entity entity = (MC_Entity) damageSource.getEntity();
-        MC_Player player = entity instanceof MC_Player ? (MC_Player) entity : null;
-        if (player != null) {
-            MC_EventInfo ei = new MC_EventInfo();
-
-            Hooks.onAttemptEntityDamage(this, PluginHelper.wrap(damageSource), damage, ei);
-
-            if (ei.isCancelled) {
-                callbackInfo.cancel();
-                callbackInfo.setReturnValue(false);
-                return;
-            }
-        }
+        attacker = (MC_Entity) damageSource.getEntity();
 
         MC_EventInfo ei = new MC_EventInfo();
+
+        Hooks.onAttemptEntityDamage(this, PluginHelper.wrap(damageSource), damage, ei);
+
+        if (ei.isCancelled) {
+            callbackInfo.cancel();
+            callbackInfo.setReturnValue(false);
+        }
+
+        ei = new MC_EventInfo();
 
         MC_HangingEntityType type = MC_HangingEntityType.UNSPECIFIED;
 
@@ -49,7 +46,7 @@ public abstract class MixinEntityHanging extends MixinEntity {
             type = MC_HangingEntityType.PAINTING;
         }
 
-        Hooks.onAttemptDamageHangingEntity(player, getLocation(), type, ei);
+        Hooks.onAttemptDamageHangingEntity(attacker instanceof MC_Player ? (MC_Player) attacker : null, getLocation(), type, ei);
 
         if (ei.isCancelled) {
             callbackInfo.cancel();

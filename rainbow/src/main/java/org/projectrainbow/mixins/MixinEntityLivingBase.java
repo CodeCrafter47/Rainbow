@@ -33,7 +33,7 @@ import java.util.Map;
 
 @Mixin(EntityLivingBase.class)
 @Implements(@Interface(iface = MC_Entity.class, prefix = "api$"))
-public abstract class MixinEntityLivingBase extends MixinEntity{
+public abstract class MixinEntityLivingBase extends MixinEntity {
     @Shadow
     protected EntityPlayer attackingPlayer;
     @Shadow
@@ -85,27 +85,25 @@ public abstract class MixinEntityLivingBase extends MixinEntity{
     private void onAttacked(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> callbackInfo) {
         m_rainbowAdjustedDamage = damage;
         damageModified = false;
-        MC_Entity entity = (MC_Entity) damageSource.getEntity();
-        MC_Player player = entity instanceof MC_Player ? (MC_Player) entity : null;
-        if (player != null) {
-            MC_EventInfo ei = new MC_EventInfo();
+        attacker = (MC_Entity) damageSource.getEntity();
 
-            Hooks.onAttemptEntityDamage(this, PluginHelper.wrap(damageSource), damage, ei);
+        MC_EventInfo ei = new MC_EventInfo();
 
-            if (ei.isCancelled) {
-                callbackInfo.cancel();
-                callbackInfo.setReturnValue(false);
-            }
+        Hooks.onAttemptEntityDamage(this, PluginHelper.wrap(damageSource), damage, ei);
+
+        if (ei.isCancelled) {
+            callbackInfo.cancel();
+            callbackInfo.setReturnValue(false);
         }
     }
 
     @ModifyArg(method = "attackEntityFrom", at = @At(value = "INVOKE", target = "net.minecraft.src.EntityLivingBase.damageEntity(Lnet/minecraft/src/DamageSource;F)V"))
-    private float applyAdjustedDamage(float oldDamage){
+    private float applyAdjustedDamage(float oldDamage) {
         return damageModified ? m_rainbowAdjustedDamage : oldDamage;
     }
 
     @Inject(method = "attackEntityFrom", at = @At(value = "INVOKE", target = "net.minecraft.src.EntityLivingBase.onDeath(Lnet/minecraft/src/DamageSource;)V"))
-    private void hookOnDeath(DamageSource var1, float var2, CallbackInfoReturnable<Boolean> callbackInfo){
+    private void hookOnDeath(DamageSource var1, float var2, CallbackInfoReturnable<Boolean> callbackInfo) {
         Hooks.onAttemptDeath(this, (MC_Entity) var1.getEntity(), PluginHelper.wrap(var1), var2);
         if (!(this instanceof MC_Player)) {
             Hooks.onNonPlayerEntityDeath(this, (MC_Entity) var1.getEntity(), PluginHelper.wrap(var1));
@@ -113,7 +111,7 @@ public abstract class MixinEntityLivingBase extends MixinEntity{
     }
 
     @Inject(method = "addPotionEffect", at = @At("HEAD"), cancellable = true)
-    private void onAddPotionEffect(PotionEffect var1, CallbackInfo callbackInfo){
+    private void onAddPotionEffect(PotionEffect var1, CallbackInfo callbackInfo) {
         if (this instanceof MC_Player) {
             MC_EventInfo ei = new MC_EventInfo();
             Hooks.onAttemptPotionEffect((MC_Player) this, PluginHelper.potionMap.get(var1.a()), ei);
@@ -150,7 +148,7 @@ public abstract class MixinEntityLivingBase extends MixinEntity{
 
     @Override
     public float getArmorAdjustedDamage(MC_DamageType var1, float var2) {
-        return ra.a(var2, (float)((EntityLivingBase) (Object) this).getTotalArmorValue());
+        return ra.a(var2, (float) ((EntityLivingBase) (Object) this).getTotalArmorValue());
     }
 
     @Override
@@ -176,11 +174,6 @@ public abstract class MixinEntityLivingBase extends MixinEntity{
     }
 
     @Override
-    public MC_Entity getAttacker() {
-        return (MC_Entity) lastAttacker;
-    }
-
-    @Override
     public List<MC_PotionEffect> getPotionEffects() {
         List<MC_PotionEffect> potionEffects = new ArrayList<MC_PotionEffect>();
         for (PotionEffect potionEffect : getActivePotionEffects()) {
@@ -194,14 +187,14 @@ public abstract class MixinEntityLivingBase extends MixinEntity{
         clearActivePotions();
         for (MC_PotionEffect mc_potionEffect : var1) {
             PotionEffect potionEffect = PluginHelper.unwrap(mc_potionEffect);
-                PotionEffect var2 = this.activePotionsMap.get(potionEffect.a());
-                if(var2 == null) {
-                    this.activePotionsMap.put(potionEffect.a(), potionEffect);
-                    this.onNewPotionEffect(potionEffect);
-                } else {
-                    var2.combine(potionEffect);
-                    this.onChangedPotionEffect(var2, true);
-                }
+            PotionEffect var2 = this.activePotionsMap.get(potionEffect.a());
+            if (var2 == null) {
+                this.activePotionsMap.put(potionEffect.a(), potionEffect);
+                this.onNewPotionEffect(potionEffect);
+            } else {
+                var2.combine(potionEffect);
+                this.onChangedPotionEffect(var2, true);
+            }
         }
     }
 }
