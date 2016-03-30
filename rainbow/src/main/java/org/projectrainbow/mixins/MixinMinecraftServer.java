@@ -7,7 +7,7 @@ import net.minecraft.src.ChatComponentText;
 import net.minecraft.src.IChatComponent;
 import net.minecraft.src.Profiler;
 import net.minecraft.src.ServerConfigurationManager;
-import net.minecraft.src.jz;
+import net.minecraft.src.ServerStatusResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.projectrainbow.Hooks;
@@ -29,9 +29,6 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static net.minecraft.src.ng.at;
-import static org.projectrainbow.launch.Bootstrap.logger;
-
 @Mixin(MinecraftServer.class)
 public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     @Shadow
@@ -52,11 +49,11 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     protected abstract void saveAllWorlds(boolean b);
 
     @Shadow
-    public abstract void a(jz var1);
+    public abstract void a(ServerStatusResponse var1);
 
     @Shadow
     @Final
-    private jz q;
+    private ServerStatusResponse q;
     @Shadow
     private String motd;
 
@@ -201,7 +198,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         _DiwUtils.Shutdown();
     }
 
-    @ModifyArg(method = "a(Lnet/minecraft/src/jz;)V", at = @At(value = "INVOKE", target = "net.minecraft.server.MinecraftServer.getFile(Ljava/lang/String;)Ljava/io/File;"))
+    @ModifyArg(method = "a(Lnet/minecraft/src/ServerStatusResponse;)V", at = @At(value = "INVOKE", target = "net.minecraft.server.MinecraftServer.getFile(Ljava/lang/String;)Ljava/io/File;"))
     private String setServerIcon(String old) {
         return ServerWrapper.serverIconFileName;
     }

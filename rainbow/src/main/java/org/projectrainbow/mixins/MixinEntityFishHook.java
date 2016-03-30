@@ -9,8 +9,7 @@ import net.minecraft.src.Entity;
 import net.minecraft.src.EntityFishHook;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
-import net.minecraft.src.azy;
-import net.minecraft.src.azz;
+import net.minecraft.src.azw;
 import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
 import org.spongepowered.asm.mixin.Mixin;
@@ -56,7 +55,7 @@ public abstract class MixinEntityFishHook {
     }
 
     @Inject(method = "handleHookRetraction", at = @At(value = "NEW", args = "class=net.minecraft.src.EntityItem", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void hook(CallbackInfoReturnable<Integer> callbackInfo, int var1, azz.a var2, Iterator var3, ItemStack var4) {
+    private void hook(CallbackInfoReturnable<Integer> callbackInfo, int var1, azw.a var2, Iterator var3, ItemStack var4) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptFishingReel((MC_Player) angler, Objects.firstNonNull((MC_ItemStack) (Object) var4, EmptyItemStack.getInstance()), null, false, ei);
         if (ei.isCancelled) {
