@@ -1,6 +1,8 @@
 package PluginReference;
 
-/** 
+import static PluginReference.MC_HangingEntityType.LEASH_KNOT;
+
+/**
  * Entity Type
  */ 			
 public enum MC_EntityType
@@ -64,6 +66,7 @@ public enum MC_EntityType
 	ARMOR_STAND,
 	XP_ORB,
 	ENDER_CRYSTAL,
+	WITHER_SKULL,
 	
 	// Added during 1.9
 	LEASH_KNOT, 

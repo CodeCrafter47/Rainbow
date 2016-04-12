@@ -76,6 +76,7 @@ import net.minecraft.src.EntityVillager;
 import net.minecraft.src.EntityVillagerGolem;
 import net.minecraft.src.EntityWitch;
 import net.minecraft.src.EntityWither;
+import net.minecraft.src.EntityWitherSkull;
 import net.minecraft.src.EntityWolf;
 import net.minecraft.src.EntityXPOrb;
 import net.minecraft.src.EntityZombie;
@@ -186,7 +187,7 @@ public class PluginHelper {
         entityMap.put(EntityEnderEye.class, MC_EntityType.EYE_OF_ENDER_SIGNAL);
         entityMap.put(EntityPotion.class, MC_EntityType.THROWN_POTION);
         entityMap.put(EntityExpBottle.class, MC_EntityType.THROWN_EXP_BOTTLE);
-        // todo entityMap.put(EntityWitherSkull.class, );
+        entityMap.put(EntityWitherSkull.class, MC_EntityType.WITHER_SKULL);
         entityMap.put(EntityTNTPrimed.class, MC_EntityType.PRIMED_TNT);
         entityMap.put(EntityFallingBlock.class, MC_EntityType.FALLING_SAND);
         entityMap.put(EntityFireworkRocket.class, MC_EntityType.FIREWORK);
