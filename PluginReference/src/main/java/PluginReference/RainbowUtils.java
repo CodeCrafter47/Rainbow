@@ -11,6 +11,24 @@ import java.util.List;
  */ 			
 public class RainbowUtils
 {
+	private static MC_Server server;
+
+	/**
+	 * Set the server instance. For internal use only. Should not be used by
+	 * plugins.
+	 * @param server the server instance
+     */
+	public static void setServer(MC_Server server) {
+		RainbowUtils.server = server;
+	}
+
+	/**
+	 * Get an instance of the MC_Server object.
+	 * @return the server
+     */
+	public static MC_Server getServer() {
+		return server;
+	}
 	 /** 
      * Get a short description of a number of milliseconds.
      * 

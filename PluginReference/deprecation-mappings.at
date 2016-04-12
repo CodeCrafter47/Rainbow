@@ -10,4 +10,6 @@ public+synthetic PluginReference/PluginBase/onAttemptPlaceOrInteract(LPluginRefe
 
 public+synthetic PluginReference/MC_EntityType/HANGING
 
+public+synthetic PluginReference/RainbowUtils/setServer(LPluginReference/MC_Server;)V
+
 public+synthetic PluginReference/MC_World/getBlockFromName(Ljava/lang/String;)LPluginReference/MC_Block;

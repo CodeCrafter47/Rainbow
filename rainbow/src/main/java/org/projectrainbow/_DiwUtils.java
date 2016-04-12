@@ -291,6 +291,7 @@ public class _DiwUtils {
 
         System.out.println("\nInitializing 'Baked In' server goodies...");
         System.out.println("---------------------------------------------------------------");
+        RainbowUtils.setServer(ServerWrapper.getInstance());
         EnsureDirectory(_DiwUtils.RainbowDataDirectory);
         EnsureDirectory("Backpacks");
         EnsureDirectory(RainbowDataDirectory + "Scripts");
