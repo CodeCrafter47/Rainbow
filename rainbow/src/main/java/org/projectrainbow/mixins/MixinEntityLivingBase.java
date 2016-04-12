@@ -49,9 +49,6 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
     protected abstract void onChangedPotionEffect(PotionEffect var1, boolean var2);
 
     @Shadow
-    public abstract void stopRiding();
-
-    @Shadow
     @Final
     public abstract float getHealth();
 

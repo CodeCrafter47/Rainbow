@@ -13,15 +13,23 @@ import PluginReference.MC_World;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.AxisAlignedBB;
 import net.minecraft.src.BlockPos;
 import net.minecraft.src.DamageSource;
 import net.minecraft.src.Entity;
 import net.minecraft.src.EntityList;
+import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.IBlockState;
+import net.minecraft.src.OutboundPacketRespawn;
+import net.minecraft.src.OutboundPacketSetExperience;
+import net.minecraft.src.OutboundPacketSpawnPosition;
 import net.minecraft.src.World;
+import net.minecraft.src.WorldServer;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
+import org.projectrainbow._DiwUtils;
+import org.projectrainbow.interfaces.IMixinWorldServer;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Intrinsic;
@@ -140,6 +148,9 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Shadow
     public abstract void setPosition(double var1, double var3, double var5);
+
+    @Shadow
+    public abstract void stopRiding();
 
     protected void setInvulnerable(boolean value) {
         invulnerable = value;
@@ -412,5 +423,56 @@ public abstract class MixinEntity implements MC_Entity {
     @Override
     public void removeRider(MC_Entity ent) {
         ((Entity)ent).stopRiding();
+    }
+
+    @Override
+    public UUID getUUID() {
+        return getUniqueID();
+    }
+
+    @Override
+    public void teleport(MC_Location loc) {
+        teleport(loc, true);
+    }
+
+    @Override
+    public void teleport(MC_Location loc, boolean safe) {
+        teleport(_DiwUtils.getMinecraftServer().worldServerForDimension(loc.dimension), loc.x, loc.y, loc.z, loc.yaw, loc.pitch, safe);
+    }
+
+    public void teleport(WorldServer world, double x, double y, double z) {
+        teleport(world, x, y, z, rotationYaw, rotationPitch);
+    }
+
+    public void teleport(WorldServer world, double x, double y, double z, float yaw, float pitch) {
+        teleport(world, x, y, z, yaw, pitch, true);
+    }
+
+    public void teleport(WorldServer world, double x, double y, double z, float yaw, float pitch, boolean safe) {
+        stopRiding();
+        for (Entity passenger : getPassengers()) {
+            passenger.stopRiding();
+        }
+        if (world != worldObj) {
+            final WorldServer fromWorld = (WorldServer) worldObj;
+            final WorldServer toWorld = world;
+
+            fromWorld.removePlayerEntityDangerously((EntityPlayerMP) (Object) this);
+            dimension = ((MC_World) toWorld).getDimension();
+            setPositionAndRotation(x, y, z, yaw, pitch);
+
+            toWorld.z().loadChunk((int) posX >> 4, (int) posZ >> 4);
+
+            while(safe && !toWorld.getCollidingBoundingBoxes((Entity) (Object) this, this.getEntityBoundingBox()).isEmpty() && this.posY < 255.0D) {
+                this.setPosition(this.posX, this.posY + 1.0D, this.posZ);
+            }
+
+            toWorld.spawnEntityInWorld((Entity) (Object) this);
+
+            fromWorld.m(); // resetUpdateEntityTick
+            toWorld.m();
+        } else {
+            setPositionAndRotation(x, y, z, yaw, pitch);
+        }
     }
 }

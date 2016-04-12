@@ -9,8 +9,6 @@ import java.util.UUID;
  */ 			
 public interface MC_Player extends MC_Entity
 {
-	// Basic Info
-	public UUID getUUID();
 	public String getIPAddress();
 
 	// Operations
@@ -20,20 +18,7 @@ public interface MC_Player extends MC_Entity
      * @param msg Message
      */ 		
 	public void sendMessage(String msg);
-	 /** 
-     * Teleports a player somewhere
-     * 
-     * @param loc Location to teleport
-     */ 		
-	public void teleport(MC_Location loc);
-	/**
-	 * Teleports a player somewhere
-	 *
-	 * @param loc Location to teleport
-	 * @param safe if true the player will be teleported to a nearby safe
-	 *             location if you try to teleport the player into a wall
-	 */
-	public void teleport(MC_Location loc, boolean safe);
+
 	/**
      * Execute a command (as if user typed it)
      * 

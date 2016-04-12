@@ -454,11 +454,6 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
     }
 
     @Override
-    public void teleport(MC_Location var1) {
-        teleport(var1, true);
-    }
-
-    @Override
     public void teleport(MC_Location var1, boolean safe) {
         teleport(_DiwUtils.getMinecraftServer().worldServerForDimension(var1.dimension), var1.x, var1.y, var1.z, var1.yaw, var1.pitch, safe);
     }

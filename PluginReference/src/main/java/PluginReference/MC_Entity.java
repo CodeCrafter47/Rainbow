@@ -1,13 +1,14 @@
 package PluginReference;
 
 import java.util.List;
+import java.util.UUID;
 
 /** 
  * Interface for an Entity
  */ 			
 public interface MC_Entity 
 {
-	 /** 
+	 /**
      * Gets name of this entity
      * 
      * @return Entity Name 
@@ -155,7 +156,26 @@ public interface MC_Entity
      */ 			
 	public String getCustomName();
 
-	 /** 
+	// Basic Info
+	UUID getUUID();
+
+	/**
+    * Teleports a player somewhere
+    *
+    * @param loc Location to teleport
+    */
+	void teleport(MC_Location loc);
+
+	/**
+	 * Teleports a player somewhere
+	 *
+	 * @param loc Location to teleport
+	 * @param safe if true the player will be teleported to a nearby safe
+	 *             location if you try to teleport the player into a wall
+	 */
+	void teleport(MC_Location loc, boolean safe);
+
+	/**
      * Get Current health of this entity
      * 
      * @return Health Value    
