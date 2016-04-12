@@ -19,6 +19,7 @@ import PluginReference.MC_Location;
 import PluginReference.MC_MiscGriefType;
 import PluginReference.MC_Player;
 import PluginReference.MC_PotionEffectType;
+import PluginReference.MC_PrimedTNT;
 import PluginReference.MC_Projectile;
 import PluginReference.MC_Server;
 import PluginReference.MC_Sign;
@@ -844,6 +845,9 @@ public class MyPlugin extends PluginBase {
         //System.out.println("EventSamplePlugin -- " + logMsg);
         if (ent instanceof MC_Projectile) {
             System.out.printf("Projectile %s spawned by %s\n", ent, ((MC_Projectile) ent).getProjectileSource());
+        }
+        if (ent instanceof MC_PrimedTNT) {
+            System.out.printf("TNT ignited by %s\n", ((MC_PrimedTNT) ent).getEntityWhichCausedExplosion());
         }
         if (ToggleSpawn) {
             ei.isCancelled = true;

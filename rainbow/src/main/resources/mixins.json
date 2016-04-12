@@ -73,6 +73,7 @@
     "MixinItemMonsterPlacer",
     "MixinTileEntityNote",
     "MixinEntityArrow",
-    "MixinEntityThrowable"
+    "MixinEntityThrowable",
+    "MixinEntityTNTPrimed"
   ]
 }
