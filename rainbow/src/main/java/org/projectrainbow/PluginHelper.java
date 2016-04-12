@@ -30,6 +30,7 @@ import net.minecraft.src.EntityChicken;
 import net.minecraft.src.EntityCow;
 import net.minecraft.src.EntityCreeper;
 import net.minecraft.src.EntityDragon;
+import net.minecraft.src.EntityDragonFireball;
 import net.minecraft.src.EntityEgg;
 import net.minecraft.src.EntityEnderCrystal;
 import net.minecraft.src.EntityEnderEye;
@@ -194,7 +195,7 @@ public class PluginHelper {
         entityMap.put(EntityFireworkRocket.class, MC_EntityType.FIREWORK);
         entityMap.put(EntitySpectralArrow.class, MC_EntityType.SPECTRAL_ARROW);
         entityMap.put(EntityShulkerBullet.class, MC_EntityType.SHULKER_BULLET);
-        // todo entityMap.put(EntityDragonFireball.class, );
+        entityMap.put(EntityDragonFireball.class, MC_EntityType.DRAGON_FIREBALL);
         entityMap.put(EntityArmorStand.class, MC_EntityType.ARMOR_STAND);
         entityMap.put(EntityBoat.class, MC_EntityType.BOAT);
         entityMap.put(EntityMinecartEmpty.class, MC_EntityType.MINECART);
