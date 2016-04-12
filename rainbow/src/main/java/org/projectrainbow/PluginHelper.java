@@ -335,7 +335,28 @@ public class PluginHelper {
         biomeMap.put(BiomeGenBase.getBiome(37), MC_WorldBiomeType.MESA);
         biomeMap.put(BiomeGenBase.getBiome(38), MC_WorldBiomeType.MESA_PLATEAU_F);
         biomeMap.put(BiomeGenBase.getBiome(39), MC_WorldBiomeType.MESA_PLATEAU);
-        // todo add new biomes
+        biomeMap.put(BiomeGenBase.getBiome(127), MC_WorldBiomeType.VOID);
+        biomeMap.put(BiomeGenBase.getBiome(129), MC_WorldBiomeType.SUNFLOWER_PLAINS);
+        biomeMap.put(BiomeGenBase.getBiome(130), MC_WorldBiomeType.DESERT_M);
+        biomeMap.put(BiomeGenBase.getBiome(131), MC_WorldBiomeType.EXTREME_HILLS_M);
+        biomeMap.put(BiomeGenBase.getBiome(132), MC_WorldBiomeType.FLOWER_FOREST);
+        biomeMap.put(BiomeGenBase.getBiome(133), MC_WorldBiomeType.TAIGA_M);
+        biomeMap.put(BiomeGenBase.getBiome(134), MC_WorldBiomeType.SWAMPLAND_M);
+        biomeMap.put(BiomeGenBase.getBiome(140), MC_WorldBiomeType.ICE_PLAINS_SPIKES);
+        biomeMap.put(BiomeGenBase.getBiome(149), MC_WorldBiomeType.JUNGLE_M);
+        biomeMap.put(BiomeGenBase.getBiome(151), MC_WorldBiomeType.JUNGLE_EDGE_M);
+        biomeMap.put(BiomeGenBase.getBiome(155), MC_WorldBiomeType.BIRCH_FOREST_M);
+        biomeMap.put(BiomeGenBase.getBiome(156), MC_WorldBiomeType.BIRCH_FOREST_HILLS_M);
+        biomeMap.put(BiomeGenBase.getBiome(157), MC_WorldBiomeType.ROOFED_FOREST_M);
+        biomeMap.put(BiomeGenBase.getBiome(158), MC_WorldBiomeType.COLD_TAIGA_M);
+        biomeMap.put(BiomeGenBase.getBiome(160), MC_WorldBiomeType.MEGA_SPRUCE_TAIGA);
+        biomeMap.put(BiomeGenBase.getBiome(161), MC_WorldBiomeType.REDWOOD_TAIGA_HILLS_M);
+        biomeMap.put(BiomeGenBase.getBiome(162), MC_WorldBiomeType.EXTREME_HILLS_PLUS_M);
+        biomeMap.put(BiomeGenBase.getBiome(163), MC_WorldBiomeType.SAVANNA_M);
+        biomeMap.put(BiomeGenBase.getBiome(164), MC_WorldBiomeType.SAVANNA_PLATEAU_M);
+        biomeMap.put(BiomeGenBase.getBiome(165), MC_WorldBiomeType.MESA_M);
+        biomeMap.put(BiomeGenBase.getBiome(166), MC_WorldBiomeType.MESA_PLATEAU_F_M);
+        biomeMap.put(BiomeGenBase.getBiome(167), MC_WorldBiomeType.MESA_PLATEAU_M);
 
         handMap.put(EnumHand.MAIN_HAND, MC_Hand.MAIN_HAND);
         handMap.put(EnumHand.OFF_HAND, MC_Hand.OFF_HAND);
