@@ -68,6 +68,7 @@ import net.minecraft.src.EntitySlime;
 import net.minecraft.src.EntitySmallFireball;
 import net.minecraft.src.EntitySnowball;
 import net.minecraft.src.EntitySnowman;
+import net.minecraft.src.EntitySpectralArrow;
 import net.minecraft.src.EntitySpider;
 import net.minecraft.src.EntitySquid;
 import net.minecraft.src.EntityTNTPrimed;
@@ -191,7 +192,7 @@ public class PluginHelper {
         entityMap.put(EntityTNTPrimed.class, MC_EntityType.PRIMED_TNT);
         entityMap.put(EntityFallingBlock.class, MC_EntityType.FALLING_SAND);
         entityMap.put(EntityFireworkRocket.class, MC_EntityType.FIREWORK);
-        // todo entityMap.put(EntitySpectralArrow.class, );
+        entityMap.put(EntitySpectralArrow.class, MC_EntityType.SPECTRAL_ARROW);
         entityMap.put(EntityShulkerBullet.class, MC_EntityType.SHULKER_BULLET);
         // todo entityMap.put(EntityDragonFireball.class, );
         entityMap.put(EntityArmorStand.class, MC_EntityType.ARMOR_STAND);

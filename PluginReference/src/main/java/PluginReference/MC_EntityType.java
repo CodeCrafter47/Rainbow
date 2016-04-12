@@ -75,5 +75,6 @@ public enum MC_EntityType
 	LIGHTNING_BOLT, // note: the above (Leash, Painting, Frames, ...) obvious before 1.9 but added as specific entities rather than just 'hanging' ones
 	SHULKER,
 	SHULKER_BULLET,
-	AREA_EFFECT_CLOUD
+	AREA_EFFECT_CLOUD,
+    SPECTRAL_ARROW
 }
