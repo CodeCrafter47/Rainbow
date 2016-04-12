@@ -71,6 +71,8 @@
     "MixinItemReed",
     "MixinItemDoor",
     "MixinItemMonsterPlacer",
-    "MixinTileEntityNote"
+    "MixinTileEntityNote",
+    "MixinEntityArrow",
+    "MixinEntityThrowable"
   ]
 }

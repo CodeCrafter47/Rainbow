@@ -19,6 +19,7 @@ import PluginReference.MC_Location;
 import PluginReference.MC_MiscGriefType;
 import PluginReference.MC_Player;
 import PluginReference.MC_PotionEffectType;
+import PluginReference.MC_Projectile;
 import PluginReference.MC_Server;
 import PluginReference.MC_Sign;
 import PluginReference.MC_Skeleton;
@@ -26,9 +27,6 @@ import PluginReference.PluginBase;
 import PluginReference.PluginInfo;
 import PluginReference.RainbowUtils;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -724,7 +722,7 @@ public class MyPlugin extends PluginBase {
 
         String logMsg = String.format("onAttemptEntityDamage: %s %s by %s for %.2f @ %s", entName, dmgType.toString(), strAttacker, amt, ent.getLocation().toString());
         // Commenting out echo since it is annoyingly often.  Uncomment if you need to experiment...
-        System.out.println("EventSamplePlugin -- " + logMsg);
+        //System.out.println("EventSamplePlugin -- " + logMsg);
 
         if (ToggleDamage) {
             ei.isCancelled = true;
@@ -844,6 +842,9 @@ public class MyPlugin extends PluginBase {
         // commented out since spammy...
         //String logMsg = String.format("onAttemptEntitySpawn: %s @ %s", ent.getType().toString(), ent.getLocation().toString());
         //System.out.println("EventSamplePlugin -- " + logMsg);
+        if (ent instanceof MC_Projectile) {
+            System.out.printf("Projectile %s spawned by %s\n", ent, ((MC_Projectile) ent).getProjectileSource());
+        }
         if (ToggleSpawn) {
             ei.isCancelled = true;
         }
@@ -1076,7 +1077,8 @@ public class MyPlugin extends PluginBase {
             ei.isCancelled = true;
             System.out.println("-- Cancelled Dispense");
         }
-
     }
+
+
 
 }
