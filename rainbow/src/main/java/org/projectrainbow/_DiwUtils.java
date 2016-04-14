@@ -1,5 +1,6 @@
 package org.projectrainbow;
 
+import PluginReference.BlockHelper;
 import PluginReference.ChatColor;
 import PluginReference.MC_ArmorStand;
 import PluginReference.MC_Entity;
@@ -7,9 +8,13 @@ import PluginReference.MC_FloatTriplet;
 import PluginReference.MC_Player;
 import PluginReference.MC_World;
 import PluginReference.RainbowUtils;
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableMap;
 import joebkt._SerializableLocation;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.src.Block;
 import net.minecraft.src.BlockPos;
 import net.minecraft.src.Entity;
 import net.minecraft.src.EntityAgeable;
@@ -38,6 +43,7 @@ import net.minecraft.src.ICommandSender;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.ServerCommandManager;
+import net.minecraft.src.StatCollector;
 import net.minecraft.src.WorldServer;
 import net.minecraft.src.xr;
 import net.minecraft.src.xz;
@@ -79,6 +85,7 @@ import org.projectrainbow.commands._CmdWorth;
 import org.projectrainbow.interfaces.IMixinICommandSender;
 import org.projectrainbow.plugins.PluginManager;
 
+import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -94,7 +101,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarEntry;
@@ -288,6 +297,41 @@ public class _DiwUtils {
 
     public static void Startup() {
         _DiwUtils.MC_VERSION_STRING = getMinecraftServer().getMinecraftVersion();
+
+        // Setup BlockHelper
+        ImmutableMap.Builder<Integer, String> mapBlockNames = ImmutableMap.builder();
+        for (Block block : Block.blockRegistry) {
+            mapBlockNames.put(Block.getIdFromBlock(block), Block.blockRegistry.getNameForObject(block).getResourcePath());
+        }
+        BlockHelper.mapBlockNames = mapBlockNames.build();
+
+        ImmutableMap.Builder<String, String> mapItemNames = ImmutableMap.builder();
+        ImmutableMap.Builder<Integer, Integer> mapNumSubtypes = ImmutableMap.builder();
+        Set<String> subtypes = new HashSet<String>();
+        for (Item item : Item.itemRegistry) {
+            int id = Item.getIdFromItem(item);
+            if (item.getHasSubtypes()) {
+                for (int i = 0; i < 16; i++) {
+                    if (id == 162 && i > 1) {
+                        continue;
+                    }
+                    ItemStack itemStack = new ItemStack(item, 1, i);
+                    String localizedName = StatCollector.translateToLocal(item.getItemStackDisplayName(itemStack));
+                    if (!subtypes.contains(localizedName)) {
+                        mapItemNames.put("" + id + ":" + i, localizedName);
+                        subtypes.add(localizedName);
+                    }
+                }
+                mapNumSubtypes.put(id, subtypes.size());
+                subtypes.clear();
+            } else {
+                String localizedName = item.getItemStackDisplayName(new ItemStack(item));
+                mapItemNames.put("" + id + ":0", localizedName);
+                mapNumSubtypes.put(id, 1);
+            }
+        }
+        BlockHelper.mapItemNames = mapItemNames.build();
+        BlockHelper.mapNumSubtypes = mapNumSubtypes.build();
 
         System.out.println("\nInitializing 'Baked In' server goodies...");
         System.out.println("---------------------------------------------------------------");
