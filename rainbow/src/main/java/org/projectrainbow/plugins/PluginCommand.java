@@ -9,11 +9,11 @@ import net.minecraft.src.CommandBase;
 import net.minecraft.src.CommandException;
 import net.minecraft.src.ICommandSender;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-// todo catch exceptions
 public class PluginCommand extends CommandBase {
     private final MC_Command delegate;
 
@@ -23,31 +23,60 @@ public class PluginCommand extends CommandBase {
 
     @Override
     public String getCommandName() {
-        return delegate.getCommandName();
+        try {
+            return delegate.getCommandName();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return toString();
+        }
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return delegate.getHelpLine(sender instanceof MC_Player ? (MC_Player) sender : null);
+        try {
+            return delegate.getHelpLine(sender instanceof MC_Player ? (MC_Player) sender : null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     @Override
     public void processCommand(MinecraftServer minecraftServer, ICommandSender sender, String[] args) throws CommandException {
-        delegate.handleCommand(sender instanceof MC_Player ? (MC_Player) sender : null, args);
+        try {
+            delegate.handleCommand(sender instanceof MC_Player ? (MC_Player) sender : null, args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public List<String> getCommandAliases() {
-        return Objects.firstNonNull(delegate.getAliases(), Collections.<String>emptyList());
+        try {
+            return Objects.firstNonNull(delegate.getAliases(), Collections.<String>emptyList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<String>();
+        }
     }
 
     @Override
     public boolean canCommandSenderUseCommand(MinecraftServer minecraftServer, ICommandSender sender) {
-        return delegate.hasPermissionToUse(sender instanceof MC_Player ? (MC_Player) sender : null);
+        try {
+            return delegate.hasPermissionToUse(sender instanceof MC_Player ? (MC_Player) sender : null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
     public List<String> addTabCompletionOptions(MinecraftServer minecraftServer, ICommandSender sender, String[] args, BlockPos blockPos) {
-        return Objects.firstNonNull(delegate.getTabCompletionList(sender instanceof MC_Player ? (MC_Player) sender : null, args), Collections.<String>emptyList());
+        try {
+            return Objects.firstNonNull(delegate.getTabCompletionList(sender instanceof MC_Player ? (MC_Player) sender : null, args), Collections.<String>emptyList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<String>();
+        }
     }
 }
