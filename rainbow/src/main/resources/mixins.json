@@ -74,6 +74,9 @@
     "MixinTileEntityNote",
     "MixinEntityArrow",
     "MixinEntityThrowable",
-    "MixinEntityTNTPrimed"
+    "MixinEntityTNTPrimed",
+    "MixinContainerPlayer",
+    "MixinContainerWorkbench",
+    "MixinSlot"
   ]
 }

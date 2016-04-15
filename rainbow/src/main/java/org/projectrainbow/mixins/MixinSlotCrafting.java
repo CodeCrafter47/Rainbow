@@ -20,4 +20,9 @@ public class MixinSlotCrafting {
     private void onItemCrafted(EntityPlayer var1, ItemStack var2, CallbackInfo callbackInfo) {
         Hooks.onItemCrafted((MC_Player) var1, Objects.firstNonNull((MC_ItemStack) (Object) var2, EmptyItemStack.getInstance()));
     }
+
+    @Inject(method = "onPickupFromSlot", at = @At("RETURN"))
+    private void onItemCrafted2(EntityPlayer var1, ItemStack var2, CallbackInfo callbackInfo) {
+        ((MC_Player) var1).updateInventory();
+    }
 }

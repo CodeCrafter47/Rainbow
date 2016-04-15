@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+// todo catch exceptions
 public class PluginCommand extends CommandBase {
     private final MC_Command delegate;
 

@@ -14,11 +14,15 @@ import PluginReference.MC_WorldSettings;
 import PluginReference.PluginInfo;
 import com.google.common.collect.Lists;
 import net.minecraft.src.Block;
+import net.minecraft.src.CraftingManager;
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.IRecipe;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.ServerCommandManager;
+import net.minecraft.src.ShapedRecipes;
+import net.minecraft.src.ShapelessRecipes;
 import org.projectrainbow.commands._CmdPerm;
 import org.projectrainbow.interfaces.IMixinMinecraftServer;
 import org.projectrainbow.interfaces.IMixinNBTBase;
@@ -28,6 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -351,5 +356,27 @@ public class ServerWrapper implements MC_Server {
     @Override
     public MC_Block getBlock(int id, int subtype) {
         return new BlockWrapper(Block.getBlockById(id).getStateFromMeta(subtype));
+    }
+
+    @Override
+    public void addRecipe(MC_ItemStack result, Object... ingredients) {
+        CraftingManager.getInstance().addRecipe((ItemStack) (Object) result, ingredients);
+        // sort recipes
+        Collections.sort(CraftingManager.getInstance().getRecipeList(), new Comparator<IRecipe>() {
+            public int compare(IRecipe var1, IRecipe var2) {
+                return var1 instanceof ShapelessRecipes && var2 instanceof ShapedRecipes ?1:(var2 instanceof ShapelessRecipes && var1 instanceof ShapedRecipes?-1:(var2.getRecipeSize() < var1.getRecipeSize()?-1:(var2.getRecipeSize() > var1.getRecipeSize()?1:0)));
+            }
+        });
+    }
+
+    @Override
+    public void addShapelessRecipe(MC_ItemStack result, MC_ItemStack... ingredients) {
+        CraftingManager.getInstance().addShapelessRecipe((ItemStack) (Object) result, (Object[]) ingredients);
+        // sort recipes
+        Collections.sort(CraftingManager.getInstance().getRecipeList(), new Comparator<IRecipe>() {
+            public int compare(IRecipe var1, IRecipe var2) {
+                return var1 instanceof ShapelessRecipes && var2 instanceof ShapedRecipes ?1:(var2 instanceof ShapelessRecipes && var1 instanceof ShapedRecipes?-1:(var2.getRecipeSize() < var1.getRecipeSize()?-1:(var2.getRecipeSize() > var1.getRecipeSize()?1:0)));
+            }
+        });
     }
 }
