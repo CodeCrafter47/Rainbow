@@ -719,4 +719,9 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
     public void onCompassTargetUpdated(MC_Location location) {
         compassTarget = location;
     }
+
+    @Override
+    public byte[] serialize() {
+        throw new IllegalStateException("Player entities cannot be serialized.");
+    }
 }

@@ -318,6 +318,16 @@ public interface MC_Entity
      * @param ent Entity to set as rider
      */ 		
 	public void removeRider(MC_Entity ent);
+
+    /**
+     * Serialize an entity to a byte array. Use MC_World.spawnEntity() to create
+     * spawn the entity.
+     *
+     * If you use this on a player an IllegalStateException is thrown.
+     *
+     * @return Byte array representation of the entity.
+     */
+	byte[] serialize();
 	
 }
 

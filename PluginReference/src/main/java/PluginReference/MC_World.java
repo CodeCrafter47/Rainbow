@@ -276,6 +276,15 @@ public interface MC_World
 	 * @return The note block or null if there is none
      */
 	MC_NoteBlock getNoteBlockAt(MC_Location location);
+
+    /**
+     * Create an entity given raw byte data
+     *
+     * @param loc Location at which the entity should be spawned.
+     * @param rawEntityData Raw data from calling .serialize() on MC_Entity
+     * @return MC_Entity object
+     */
+    MC_Entity spawnEntity(MC_Location loc, byte[] rawEntityData);
 	
 }
 

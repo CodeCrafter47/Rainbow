@@ -27,11 +27,13 @@ import net.minecraft.src.ChunkProviderServer;
 import net.minecraft.src.CommandGameRule;
 import net.minecraft.src.Entity;
 import net.minecraft.src.EntityItem;
+import net.minecraft.src.EntityList;
 import net.minecraft.src.EnumFacing;
 import net.minecraft.src.IBlockState;
 import net.minecraft.src.ISaveHandler;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Material;
+import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.Profiler;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
@@ -45,12 +47,15 @@ import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.PluginHelper;
 import org.projectrainbow.ServerWrapper;
 import org.projectrainbow._DiwUtils;
+import org.projectrainbow.interfaces.IMixinNBTBase;
 import org.projectrainbow.interfaces.IMixinWorldServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
@@ -236,6 +241,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
             if (name != null) {
                 entity.setCustomNameTag(name);
             }
+            entity.forceSpawn = true;
 
             if (!spawnEntityInWorld(entity)) {
                 return null;
@@ -335,5 +341,31 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
     @Override
     public int getClientDimension() {
         return getDimension();
+    }
+
+    @Override
+    public MC_Entity spawnEntity(MC_Location loc, byte[] rawEntityData) {
+        try {
+            if (rawEntityData.length == 0) {
+                return null;
+            }
+            NBTTagCompound compound = new NBTTagCompound();
+            ByteArrayInputStream bis = new ByteArrayInputStream(rawEntityData);
+            DataInputStream dis = new DataInputStream(bis);
+
+            ((IMixinNBTBase) compound).read1(dis);
+            bis.close();
+
+            Entity entity = EntityList.createEntityFromNBT(compound, this);
+            entity.setPositionAndRotation(loc.x, loc.y, loc.z, loc.yaw, loc.pitch);
+            entity.forceSpawn = true;
+
+            if (spawnEntityInWorld(entity)) {
+                return (MC_Entity) entity;
+            }
+        } catch (Exception var6) {
+            var6.printStackTrace();
+        }
+        return null;
     }
 }

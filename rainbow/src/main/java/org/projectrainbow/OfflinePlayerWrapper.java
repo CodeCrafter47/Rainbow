@@ -382,4 +382,9 @@ public class OfflinePlayerWrapper implements MC_Player {
     public void removeRider(MC_Entity ent) {
 
     }
+
+    @Override
+    public byte[] serialize() {
+        return null;
+    }
 }

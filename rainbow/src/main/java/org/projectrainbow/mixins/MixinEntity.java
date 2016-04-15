@@ -21,6 +21,8 @@ import net.minecraft.src.Entity;
 import net.minecraft.src.EntityList;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.IBlockState;
+import net.minecraft.src.ItemStack;
+import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.OutboundPacketRespawn;
 import net.minecraft.src.OutboundPacketSetExperience;
 import net.minecraft.src.OutboundPacketSpawnPosition;
@@ -29,6 +31,7 @@ import net.minecraft.src.WorldServer;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
 import org.projectrainbow._DiwUtils;
+import org.projectrainbow.interfaces.IMixinNBTBase;
 import org.projectrainbow.interfaces.IMixinWorldServer;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
@@ -41,6 +44,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -438,6 +443,29 @@ public abstract class MixinEntity implements MC_Entity {
     @Override
     public void teleport(MC_Location loc, boolean safe) {
         teleport(_DiwUtils.getMinecraftServer().worldServerForDimension(loc.dimension), loc.x, loc.y, loc.z, loc.yaw, loc.pitch, safe);
+    }
+
+    @Override
+    public byte[] serialize() {
+        NBTTagCompound data = new NBTTagCompound();
+        ((Entity) (Object) this).writeToNBT(data);
+        data.setString("id", EntityList.getEntityString((Entity) (Object) this));
+        data.removeTag("UUIDMost");
+        data.removeTag("UUIDLeast");
+        data.removeTag("Dimension");
+
+        try {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            DataOutputStream dos = new DataOutputStream(os);
+
+            ((IMixinNBTBase) data).write1(dos);
+            dos.flush();
+            dos.close();
+            return os.toByteArray();
+        } catch (Exception var5) {
+            var5.printStackTrace();
+            return new byte[0];
+        }
     }
 
     public void teleport(WorldServer world, double x, double y, double z) {
