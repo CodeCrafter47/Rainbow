@@ -6,8 +6,6 @@ import PluginReference.ChatColor;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_Player;
 
-import static PluginExample.MyPlugin.server;
-
 public class CmdDrop2 extends CmdBase {
     public CmdDrop2() {
         super("drop2", "Test drops");

@@ -9,14 +9,14 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(EntityOzelot.class)
 public abstract class MixinEntityOcelot implements MC_Ocelot {
     @Shadow
-    public abstract int dh();
+    public abstract int di();
 
     @Shadow
     public abstract void l(int var1);
 
     @Override
     public MC_OcelotType getCatType() {
-        int idx = dh();
+        int idx = di();
 
         return idx == 0
                 ? MC_OcelotType.WILD

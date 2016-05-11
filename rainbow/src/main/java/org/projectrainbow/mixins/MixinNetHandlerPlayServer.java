@@ -27,6 +27,7 @@ import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagList;
 import net.minecraft.src.NBTTagString;
 import net.minecraft.src.NetHandlerPlayServer;
+import net.minecraft.src.OutboundPacketBlockChange;
 import net.minecraft.src.OutboundPacketPlayerPosLook;
 import net.minecraft.src.OutboundPacketSpawnPosition;
 import net.minecraft.src.Packet;
@@ -35,7 +36,6 @@ import net.minecraft.src.TileEntity;
 import net.minecraft.src.TileEntitySign;
 import net.minecraft.src.Vec3;
 import net.minecraft.src.WorldServer;
-import net.minecraft.src.fu;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.projectrainbow.EmptyItemStack;
@@ -97,7 +97,7 @@ public class MixinNetHandlerPlayServer {
             MC_EventInfo ei = new MC_EventInfo();
             Hooks.onAttemptBlockBreak((MC_Player) playerEntity, new MC_Location(blockPos.getX(), blockPos.getY(), blockPos.getZ(), playerEntity.dimension), ei);
             if (ei.isCancelled) {
-                playerEntity.playerNetServerHandler.sendPacket(new fu(worldServer, blockPos)); // OutboundPacketBlockChange
+                playerEntity.playerNetServerHandler.sendPacket(new OutboundPacketBlockChange(worldServer, blockPos));
                 callback.cancel();
             }
         }
@@ -112,7 +112,7 @@ public class MixinNetHandlerPlayServer {
         if (ei.isCancelled) {
             for (BlockPos pos : BlockPos.getAllInBox(blockPos.add(-1, -1, -1), blockPos.add(1, 1, 1))) {
                 if (pos.getY() < 0 || pos.getY() > 255) continue;
-                this.playerEntity.playerNetServerHandler.sendPacket(new fu(worldServer, pos)); // OutboundPacketBlockChange
+                this.playerEntity.playerNetServerHandler.sendPacket(new OutboundPacketBlockChange(worldServer, pos));
             }
             callback.cancel();
         } else {

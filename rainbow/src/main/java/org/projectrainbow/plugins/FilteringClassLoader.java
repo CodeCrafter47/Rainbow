@@ -1,12 +1,6 @@
 package org.projectrainbow.plugins;
 
-import sun.misc.CompoundEnumeration;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.util.Collections;
-import java.util.Enumeration;
 
 public class FilteringClassLoader extends ClassLoader {
     public FilteringClassLoader(ClassLoader delegate) {

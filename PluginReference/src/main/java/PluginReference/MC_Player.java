@@ -2,7 +2,6 @@ package PluginReference;
 
 import java.net.SocketAddress;
 import java.util.List;
-import java.util.UUID;
 
 /** 
  * Represents a Minecraft player

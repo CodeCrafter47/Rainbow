@@ -19,8 +19,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BlockPistonBase.class)
 public class MixinBlockPiston {
 
-    @Inject(method = "onBlockEventReceived", at = @At("HEAD"), cancellable = true)
-    private void onPistonEvent(World var1, BlockPos var2, IBlockState state, int var4, int var5, CallbackInfoReturnable<Boolean> callbackInfo) {
+    @Inject(method = "a(Lnet/minecraft/src/IBlockState;Lnet/minecraft/src/World;Lnet/minecraft/src/BlockPos;II)Z", at = @At("HEAD"), cancellable = true)
+    private void onPistonEvent(IBlockState state, World var1, BlockPos var2, int var4, int var5, CallbackInfoReturnable<Boolean> callbackInfo) {
         MC_DirectionNESWUD direction = PluginHelper.directionMap.get(state.getValue(aks.H));
         MC_EventInfo ei = new MC_EventInfo();
         MC_Location loc = new MC_Location(var2.getX(), var2.getY(), var2.getZ(), ((MC_World)var1).getDimension());

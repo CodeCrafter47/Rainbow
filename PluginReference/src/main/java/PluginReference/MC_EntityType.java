@@ -1,7 +1,5 @@
 package PluginReference;
 
-import static PluginReference.MC_HangingEntityType.LEASH_KNOT;
-
 /**
  * Entity Type
  */ 			

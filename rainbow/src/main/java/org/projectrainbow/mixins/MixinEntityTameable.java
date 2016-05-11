@@ -4,7 +4,6 @@ import PluginReference.MC_AnimalTameable;
 import PluginReference.MC_Player;
 import net.minecraft.src.EntityLivingBase;
 import net.minecraft.src.EntityTameable;
-import org.projectrainbow.ServerWrapper;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Intrinsic;

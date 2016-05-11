@@ -35,7 +35,7 @@ public class MixinNetHandlerLoginServer {
         }
     }
 
-    @Redirect(method = "a(Lnet/minecraft/src/js;)V", at = @At(value = "INVOKE", target = "net.minecraft.server.MinecraftServer.isServerInOnlineMode()Z"))
+    @Redirect(method = "a(Lnet/minecraft/src/jt;)V", at = @At(value = "INVOKE", target = "net.minecraft.server.MinecraftServer.isServerInOnlineMode()Z"))
     private boolean simulateOfflineMode(MinecraftServer server) {
         return !_DiwUtils.BungeeCord && server.isServerInOnlineMode();
     }

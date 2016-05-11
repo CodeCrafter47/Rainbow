@@ -24,8 +24,6 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Map;
 
-import static org.projectrainbow.launch.Bootstrap.args;
-
 @Mixin(CommandHandler.class)
 public class MixinCommandHandler {
 

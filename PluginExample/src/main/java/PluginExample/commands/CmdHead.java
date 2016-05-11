@@ -3,8 +3,6 @@ package PluginExample.commands;
 import PluginExample.CmdBase;
 import PluginExample.MyPlugin;
 import PluginReference.ChatColor;
-import PluginReference.MC_Command;
-import PluginReference.MC_CommandSenderInfo;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_ItemType;
 import PluginReference.MC_Player;

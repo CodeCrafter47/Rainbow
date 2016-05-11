@@ -11,7 +11,6 @@ import org.projectrainbow._EconomyManager;
 import org.projectrainbow._UUIDMapper;
 
 import java.util.List;
-import java.util.UUID;
 
 
 public class _CmdPay implements MC_Command {

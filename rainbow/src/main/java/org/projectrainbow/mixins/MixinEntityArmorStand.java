@@ -35,7 +35,7 @@ public abstract class MixinEntityArmorStand extends MixinEntityLivingBase implem
 
     @Shadow
     @Final
-    private ItemStack[] bx;
+    private ItemStack[] by;
     @Shadow
     @Final
     private ItemStack[] contents;
@@ -135,12 +135,12 @@ public abstract class MixinEntityArmorStand extends MixinEntityLivingBase implem
 
     @Override
     public List<MC_ItemStack> getArmor() {
-        return PluginHelper.invArrayToList(bx);
+        return PluginHelper.invArrayToList(by);
     }
 
     @Override
     public void setArmor(List<MC_ItemStack> var1) {
-        PluginHelper.updateInv(bx, var1);
+        PluginHelper.updateInv(by, var1);
     }
 
     @Override

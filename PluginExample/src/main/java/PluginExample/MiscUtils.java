@@ -1,14 +1,10 @@
 package PluginExample;
 
 import PluginReference.BlockHelper;
-import PluginReference.ChatColor;
 import PluginReference.MC_ItemStack;
-import PluginReference.MC_Player;
-import PluginReference.RainbowUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 public class MiscUtils {

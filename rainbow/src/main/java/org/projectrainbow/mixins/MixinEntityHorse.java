@@ -22,7 +22,7 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
     public abstract void a(wm var1);
 
     @Shadow
-    public abstract wm cZ();
+    public abstract wm da();
 
     @Shadow
     public abstract void setHorseType(int var1);
@@ -49,7 +49,7 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
     public abstract void setTemper(int var1);
 
     @Shadow
-    public abstract UUID dh();
+    public abstract UUID di();
 
     @Shadow
     public abstract void b(UUID var1);
@@ -64,7 +64,7 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
 
     @Intrinsic
     public MC_HorseType api$getHorseType() {
-        switch (cZ()) {
+        switch (da()) {
             case HORSE:
                 return MC_HorseType.HORSE;
             case DONKEY:
@@ -138,7 +138,7 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
     }
 
     public String getOwnerUUID() {
-        return dh().toString();
+        return di().toString();
     }
 
     public void setOwnerUUID(String strUUID) {

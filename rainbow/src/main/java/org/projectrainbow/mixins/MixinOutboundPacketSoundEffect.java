@@ -1,15 +1,15 @@
 package org.projectrainbow.mixins;
 
-import net.minecraft.src.hz;
-import net.minecraft.src.nf;
+import net.minecraft.src.OutboundPacketSoundEffect;
+import net.minecraft.src.SoundEffect;
 import org.projectrainbow.interfaces.IMixinOutboundPacketSoundEffect;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(hz.class)
+@Mixin(OutboundPacketSoundEffect.class)
 public class MixinOutboundPacketSoundEffect implements IMixinOutboundPacketSoundEffect {
     @Shadow
-    private nf a;
+    private SoundEffect a;
     @Shadow
     private int c;
     @Shadow
@@ -34,6 +34,6 @@ public class MixinOutboundPacketSoundEffect implements IMixinOutboundPacketSound
 
     @Override
     public String getSoundName() {
-        return nf.a.getNameForObject(a).getResourcePath();
+        return SoundEffect.a.getNameForObject(a).getResourcePath();
     }
 }

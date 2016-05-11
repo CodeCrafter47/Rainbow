@@ -33,6 +33,7 @@ import net.minecraft.src.Entity;
 import net.minecraft.src.EntityMinecartContainer;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
+import net.minecraft.src.EnumSoundCategory;
 import net.minecraft.src.IChatComponent;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.InventoryEnderChest;
@@ -41,18 +42,17 @@ import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NBTTagList;
 import net.minecraft.src.NetHandlerPlayServer;
+import net.minecraft.src.OutboundPacketChat;
 import net.minecraft.src.OutboundPacketRespawn;
 import net.minecraft.src.OutboundPacketSetExperience;
+import net.minecraft.src.OutboundPacketSoundEffect;
 import net.minecraft.src.OutboundPacketSpawnPosition;
 import net.minecraft.src.ResourceLocation;
 import net.minecraft.src.ServerConfigurationManager;
+import net.minecraft.src.SoundEffect;
 import net.minecraft.src.TileEntityChest;
 import net.minecraft.src.WorldServer;
 import net.minecraft.src.WorldSettings;
-import net.minecraft.src.fy;
-import net.minecraft.src.hz;
-import net.minecraft.src.nf;
-import net.minecraft.src.nh;
 import net.minecraft.src.qe;
 import net.minecraft.src.qg;
 import org.projectrainbow.BlockWrapper;
@@ -92,9 +92,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static net.minecraft.src.ng.ca;
-import static net.minecraft.src.ng.hy;
 
 @Mixin(EntityPlayerMP.class)
 public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements IMixinEntityPlayerMP, MC_Player {
@@ -450,7 +447,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public void sendMessage(String var1) {
-        playerNetServerHandler.sendPacket(new fy(new ChatComponentText(var1)));
+        playerNetServerHandler.sendPacket(new OutboundPacketChat(new ChatComponentText(var1)));
     }
 
     @Override
@@ -672,12 +669,12 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public void playSound(String var1, float var2, float var3) {
-        nf object = nf.a.getObject(new ResourceLocation(var1));
+        SoundEffect object = SoundEffect.a.getObject(new ResourceLocation(var1));
         if (object == null) {
             System.err.println("Sound " + var1 + " does not exist.");
             return;
         }
-        playerNetServerHandler.sendPacket(new hz(object, nh.AMBIENT, posX, posY, posZ, var2, var3));
+        playerNetServerHandler.sendPacket(new OutboundPacketSoundEffect(object, EnumSoundCategory.AMBIENT, posX, posY, posZ, var2, var3));
     }
 
     @Override

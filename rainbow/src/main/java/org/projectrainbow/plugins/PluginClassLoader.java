@@ -1,7 +1,6 @@
 package org.projectrainbow.plugins;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.appender.SyslogAppender;
 
 import java.io.File;
 import java.net.MalformedURLException;

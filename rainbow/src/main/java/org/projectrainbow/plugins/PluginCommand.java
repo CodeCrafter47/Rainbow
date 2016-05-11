@@ -10,7 +10,6 @@ import net.minecraft.src.CommandException;
 import net.minecraft.src.ICommandSender;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 

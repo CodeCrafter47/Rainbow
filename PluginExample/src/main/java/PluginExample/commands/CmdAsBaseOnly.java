@@ -4,7 +4,6 @@ import PluginExample.CmdBase;
 import PluginReference.ChatColor;
 import PluginReference.MC_ArmorStand;
 import PluginReference.MC_Entity;
-import PluginReference.MC_Location;
 import PluginReference.MC_Player;
 
 public class CmdAsBaseOnly extends CmdBase {

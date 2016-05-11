@@ -8,7 +8,6 @@ import PluginReference.MC_Player;
 import joebkt._SerializableLocation;
 import org.projectrainbow._HomeUtils;
 
-import java.util.Iterator;
 import java.util.List;
 
 

@@ -2,7 +2,6 @@ package PluginExample.commands;
 
 import PluginExample.CmdBase;
 import PluginReference.ChatColor;
-import PluginReference.MC_Location;
 import PluginReference.MC_Player;
 
 public class CmdHero extends CmdBase {

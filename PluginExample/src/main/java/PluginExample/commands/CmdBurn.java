@@ -2,10 +2,7 @@ package PluginExample.commands;
 
 import PluginExample.CmdBase;
 import PluginReference.ChatColor;
-import PluginReference.MC_ItemStack;
 import PluginReference.MC_Player;
-
-import static PluginExample.MyPlugin.server;
 
 public class CmdBurn extends CmdBase {
     public CmdBurn() {

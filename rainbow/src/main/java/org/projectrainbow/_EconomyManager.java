@@ -4,7 +4,6 @@ package org.projectrainbow;
 import PluginReference.ChatColor;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_Player;
-import com.google.common.base.Objects;
 import com.google.common.io.Files;
 
 import java.io.BufferedInputStream;
@@ -14,7 +13,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;

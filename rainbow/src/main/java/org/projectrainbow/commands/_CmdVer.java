@@ -9,7 +9,6 @@ import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.launch.Bootstrap;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

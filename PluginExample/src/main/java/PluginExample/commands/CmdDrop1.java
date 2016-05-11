@@ -4,10 +4,7 @@ import PluginExample.CmdBase;
 import PluginExample.MyPlugin;
 import PluginReference.ChatColor;
 import PluginReference.MC_ItemStack;
-import PluginReference.MC_Location;
 import PluginReference.MC_Player;
-
-import static PluginExample.MyPlugin.server;
 
 public class CmdDrop1 extends CmdBase {
     public CmdDrop1() {

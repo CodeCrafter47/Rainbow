@@ -12,15 +12,15 @@ import java.util.List;
 public abstract class MixinEntityLiving extends MixinEntityLivingBase{
 
     @Shadow
-    private ItemStack[] bw;
+    private ItemStack[] bx;
 
     @Override
     public List getArmor() {
-        return PluginHelper.invArrayToList(bw);
+        return PluginHelper.invArrayToList(bx);
     }
 
     @Override
     public void setArmor(List var1) {
-        PluginHelper.updateInv(bw, var1);
+        PluginHelper.updateInv(bx, var1);
     }
 }

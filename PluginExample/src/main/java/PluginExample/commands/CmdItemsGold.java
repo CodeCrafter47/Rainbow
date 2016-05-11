@@ -7,7 +7,6 @@ import PluginReference.MC_Entity;
 import PluginReference.MC_ItemEntity;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_ItemType;
-import PluginReference.MC_Location;
 import PluginReference.MC_Player;
 
 public class CmdItemsGold extends CmdBase {

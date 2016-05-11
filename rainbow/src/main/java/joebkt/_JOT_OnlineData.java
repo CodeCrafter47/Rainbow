@@ -5,8 +5,6 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static javax.swing.text.html.HTML.Tag.UL;
-
 
 public class _JOT_OnlineData implements Serializable {
     public static final long serialVersionUID = -367870289683918476L;
