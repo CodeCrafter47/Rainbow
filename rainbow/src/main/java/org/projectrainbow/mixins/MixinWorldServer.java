@@ -58,6 +58,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -329,7 +330,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
 
     @Override
     public List<MC_Chunk> getLoadedChunks() {
-        return (List<MC_Chunk>) (Object) ((ChunkProviderServer) v).a();
+        return (List<MC_Chunk>) new ArrayList(((ChunkProviderServer) v).a());
     }
 
     @Override
