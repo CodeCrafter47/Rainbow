@@ -3,7 +3,7 @@ package PluginReference;
 /** 
  * Represents a Minecraft Enderman
  */ 			
-public interface MC_Enderman extends MC_Entity
+public interface MC_Enderman extends MC_LivingEntity
 {
 	 /** 
      * Get carried block

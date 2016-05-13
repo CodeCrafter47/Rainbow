@@ -6,7 +6,7 @@ import java.util.List;
 /** 
  * Represents a Minecraft player
  */ 			
-public interface MC_Player extends MC_Entity
+public interface MC_Player extends MC_LivingEntity
 {
 	public String getIPAddress();
 

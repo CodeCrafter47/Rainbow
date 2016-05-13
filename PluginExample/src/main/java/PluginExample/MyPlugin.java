@@ -8,6 +8,7 @@ import PluginExample.commands.CmdASPose;
 import PluginExample.commands.CmdArrows;
 import PluginExample.commands.CmdAsArmsOnly;
 import PluginExample.commands.CmdAsBaseOnly;
+import PluginExample.commands.CmdAttributeTest;
 import PluginExample.commands.CmdBiome;
 import PluginExample.commands.CmdBurn;
 import PluginExample.commands.CmdCarry;
@@ -136,6 +137,7 @@ public class MyPlugin extends PluginBase {
         server.registerCommand(new CmdTestSpawn());
         server.registerCommand(new CmdWalkSpeed());
         server.registerCommand(new CmdWorlds());
+        server.registerCommand(new CmdAttributeTest());
     }
 
     public void onShutdown() {

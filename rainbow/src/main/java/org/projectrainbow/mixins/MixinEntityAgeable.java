@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(EntityAgeable.class)
-public abstract class MixinEntityAgeable extends MixinEntity implements MC_EntityAgeable {
+public abstract class MixinEntityAgeable extends MixinEntityLiving implements MC_EntityAgeable {
 
     @Shadow
     public abstract void setGrowingAge(int var1);

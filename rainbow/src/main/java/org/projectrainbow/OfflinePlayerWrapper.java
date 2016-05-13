@@ -1,6 +1,8 @@
 package org.projectrainbow;
 
 
+import PluginReference.MC_Attribute;
+import PluginReference.MC_AttributeType;
 import PluginReference.MC_DamageType;
 import PluginReference.MC_Entity;
 import PluginReference.MC_EntityType;
@@ -385,6 +387,11 @@ public class OfflinePlayerWrapper implements MC_Player {
 
     @Override
     public byte[] serialize() {
+        return null;
+    }
+
+    @Override
+    public MC_Attribute getAttribute(MC_AttributeType type) {
         return null;
     }
 }

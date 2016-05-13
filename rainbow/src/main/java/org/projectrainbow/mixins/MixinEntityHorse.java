@@ -1,11 +1,16 @@
 package org.projectrainbow.mixins;
 
+import PluginReference.MC_Attribute;
+import PluginReference.MC_AttributeType;
 import PluginReference.MC_Horse;
 import PluginReference.MC_HorseType;
 import PluginReference.MC_HorseVariant;
 import PluginReference.MC_Player;
 import net.minecraft.src.EntityHorse;
+import net.minecraft.src.IAttribute;
+import net.minecraft.src.RangedAttribute;
 import net.minecraft.src.wm;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Intrinsic;
@@ -53,6 +58,10 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
 
     @Shadow
     public abstract void b(UUID var1);
+
+    @Shadow
+    @Final
+    private static IAttribute horseJumpStrength;
 
     public void setOwner(MC_Player plr) {
         if (plr == null) {
@@ -143,5 +152,13 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
 
     public void setOwnerUUID(String strUUID) {
         b(UUID.fromString(strUUID));
+    }
+
+    @Override
+    public MC_Attribute getAttribute(MC_AttributeType type) {
+        if (type == MC_AttributeType.HORSE_JUMP_STRENGTH) {
+            return (MC_Attribute) getEntityAttribute(horseJumpStrength);
+        }
+        return super.getAttribute(type);
     }
 }

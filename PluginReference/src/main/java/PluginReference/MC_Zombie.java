@@ -3,7 +3,7 @@ package PluginReference;
 /** 
  * Represents a Minecraft Zombie
  */ 			
-public interface MC_Zombie extends MC_Entity
+public interface MC_Zombie extends MC_LivingEntity
 {
 	 /** 
      * Check if a Villager zombie

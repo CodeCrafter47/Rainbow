@@ -2,7 +2,6 @@
   "minVersion": "0.4.7-SNAPSHOT",
   "required": "true",
   "package": "org.projectrainbow.mixins",
-  "refmap": "mixin.refmap.srg",
   "mixins": [
     "MixinICommandSender",
     "MixinDedicatedServer",
@@ -77,6 +76,8 @@
     "MixinEntityTNTPrimed",
     "MixinContainerPlayer",
     "MixinContainerWorkbench",
-    "MixinSlot"
+    "MixinSlot",
+    "MixinModifiableAttributeInstance",
+    "MixinAttributeModifier"
   ]
 }

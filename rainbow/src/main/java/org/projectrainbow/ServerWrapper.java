@@ -1,6 +1,7 @@
 package org.projectrainbow;
 
 
+import PluginReference.MC_AttributeModifier;
 import PluginReference.MC_Block;
 import PluginReference.MC_Command;
 import PluginReference.MC_CommandSenderInfo;
@@ -13,6 +14,7 @@ import PluginReference.MC_World;
 import PluginReference.MC_WorldSettings;
 import PluginReference.PluginInfo;
 import com.google.common.collect.Lists;
+import net.minecraft.src.AttributeModifier;
 import net.minecraft.src.Block;
 import net.minecraft.src.CraftingManager;
 import net.minecraft.src.EntityPlayer;
@@ -378,5 +380,32 @@ public class ServerWrapper implements MC_Server {
                 return var1 instanceof ShapelessRecipes && var2 instanceof ShapedRecipes ?1:(var2 instanceof ShapelessRecipes && var1 instanceof ShapedRecipes?-1:(var2.getRecipeSize() < var1.getRecipeSize()?-1:(var2.getRecipeSize() > var1.getRecipeSize()?1:0)));
             }
         });
+    }
+
+    /**
+     * Factory method to create an attribute modifier with a random unique uuid.
+     *
+     * @param name     the name of the attribute modifier
+     * @param operator the operator to use
+     * @param value    the value of the modifier
+     * @return the created attribute modifier
+     */
+    @Override
+    public MC_AttributeModifier createAttributeModifier(String name, MC_AttributeModifier.Operator operator, double value) {
+        return createAttributeModifier(UUID.randomUUID(), name, operator, value);
+    }
+
+    /**
+     * Factory method to create an attribute modifier using a given uuid.
+     *
+     * @param uuid     the uuid to use
+     * @param name     the name of the attribute modifier
+     * @param operator the operator to use
+     * @param value    the value of the modifier
+     * @return the created attribute modifier
+     */
+    @Override
+    public MC_AttributeModifier createAttributeModifier(UUID uuid, String name, MC_AttributeModifier.Operator operator, double value) {
+        return (MC_AttributeModifier) new AttributeModifier(uuid, name, value, PluginHelper.operatorMap.get(operator));
     }
 }

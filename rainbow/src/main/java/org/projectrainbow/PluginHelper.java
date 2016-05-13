@@ -1,6 +1,8 @@
 package org.projectrainbow;
 
 import PluginReference.BlockHelper;
+import PluginReference.MC_AttributeModifier;
+import PluginReference.MC_AttributeType;
 import PluginReference.MC_Block;
 import PluginReference.MC_DamageType;
 import PluginReference.MC_DirectionNESWUD;
@@ -57,6 +59,7 @@ import net.minecraft.src.EntityOzelot;
 import net.minecraft.src.EntityPainting;
 import net.minecraft.src.EntityPig;
 import net.minecraft.src.EntityPigZombie;
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.EntityPotion;
 import net.minecraft.src.EntityRabbit;
@@ -84,9 +87,11 @@ import net.minecraft.src.EntityXPOrb;
 import net.minecraft.src.EntityZombie;
 import net.minecraft.src.EnumFacing;
 import net.minecraft.src.EnumHand;
+import net.minecraft.src.IAttribute;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Potion;
 import net.minecraft.src.PotionEffect;
+import net.minecraft.src.SharedMonsterAttributes;
 import net.minecraft.src.WorldSettings;
 import net.minecraft.src.rm;
 import net.minecraft.src.ya;
@@ -105,6 +110,8 @@ public class PluginHelper {
     public static BiMap<Short, MC_EnchantmentType> enchantmentMap = HashBiMap.create();
     public static BiMap<BiomeGenBase, MC_WorldBiomeType> biomeMap = HashBiMap.create();
     public static BiMap<EnumHand, MC_Hand> handMap = HashBiMap.create();
+    public static BiMap<MC_AttributeType, IAttribute> attributeMap = HashBiMap.create();
+    public static BiMap<MC_AttributeModifier.Operator, Integer> operatorMap = HashBiMap.create();
 
     public static MC_EntityType getEntityType(Class<? extends Entity> clazz) {
         if (EntityPlayerMP.class.isAssignableFrom(clazz)) {
@@ -360,6 +367,20 @@ public class PluginHelper {
 
         handMap.put(EnumHand.MAIN_HAND, MC_Hand.MAIN_HAND);
         handMap.put(EnumHand.OFF_HAND, MC_Hand.OFF_HAND);
+
+        attributeMap.put(MC_AttributeType.ARMOR, SharedMonsterAttributes.g);
+        attributeMap.put(MC_AttributeType.ARMOR_TOUGHNESS, SharedMonsterAttributes.h);
+        attributeMap.put(MC_AttributeType.ATTACK_DAMAGE, SharedMonsterAttributes.attackDamage);
+        attributeMap.put(MC_AttributeType.FOLLOW_RANGE, SharedMonsterAttributes.followRange);
+        attributeMap.put(MC_AttributeType.KNOCKBACK_RESISTANCE, SharedMonsterAttributes.knockbackResistance);
+        attributeMap.put(MC_AttributeType.MAX_HEALTH, SharedMonsterAttributes.maxHealth);
+        attributeMap.put(MC_AttributeType.MOVEMENT_SPEED, SharedMonsterAttributes.movementSpeed);
+        attributeMap.put(MC_AttributeType.PLAYER_ATTACK_SPEED, SharedMonsterAttributes.f);
+        attributeMap.put(MC_AttributeType.PLAYER_LUCK, SharedMonsterAttributes.i);
+
+        operatorMap.put(MC_AttributeModifier.Operator.ADD_CONSTANT, 0);
+        operatorMap.put(MC_AttributeModifier.Operator.ADD_SCALAR_BASE, 1);
+        operatorMap.put(MC_AttributeModifier.Operator.ADD_SCALAR, 2);
     }
 
     public static MC_Block getBlockFromName(String blockName) {

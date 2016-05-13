@@ -1,13 +1,18 @@
 package org.projectrainbow.mixins;
 
+import PluginReference.MC_Attribute;
+import PluginReference.MC_AttributeType;
 import PluginReference.MC_DamageType;
 import PluginReference.MC_Entity;
 import PluginReference.MC_EventInfo;
+import PluginReference.MC_LivingEntity;
 import PluginReference.MC_Player;
 import PluginReference.MC_PotionEffect;
 import net.minecraft.src.DamageSource;
 import net.minecraft.src.EntityLivingBase;
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.IAttribute;
+import net.minecraft.src.IAttributeInstance;
 import net.minecraft.src.Potion;
 import net.minecraft.src.PotionEffect;
 import net.minecraft.src.SharedMonsterAttributes;
@@ -33,7 +38,7 @@ import java.util.Map;
 
 @Mixin(EntityLivingBase.class)
 @Implements(@Interface(iface = MC_Entity.class, prefix = "api$"))
-public abstract class MixinEntityLivingBase extends MixinEntity {
+public abstract class MixinEntityLivingBase extends MixinEntity implements MC_LivingEntity {
     @Shadow
     protected EntityPlayer attackingPlayer;
     @Shadow
@@ -77,6 +82,9 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
 
     @Shadow
     protected abstract float applyPotionDamageCalculations(DamageSource var1, float var2);
+
+    @Shadow
+    public abstract IAttributeInstance getEntityAttribute(IAttribute var1);
 
     @Inject(method = "attackEntityFrom", at = @At("HEAD"), cancellable = true)
     private void onAttacked(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> callbackInfo) {
@@ -193,5 +201,11 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
                 this.onChangedPotionEffect(var2, true);
             }
         }
+    }
+
+    @Override
+    public MC_Attribute getAttribute(MC_AttributeType type) {
+        IAttribute attribute = PluginHelper.attributeMap.get(type);
+        return attribute == null ? null : (MC_Attribute) getEntityAttribute(attribute);
     }
 }
