@@ -9,6 +9,7 @@ import PluginReference.MC_Player;
 import PluginReference.MC_World;
 import PluginReference.RainbowUtils;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.io.Files;
 import joebkt._SerializableLocation;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.server.MinecraftServer;
@@ -33,6 +34,7 @@ import net.minecraft.src.EntitySquid;
 import net.minecraft.src.EntityThrowable;
 import net.minecraft.src.EntityXPOrb;
 import net.minecraft.src.EnumDimension;
+import net.minecraft.src.ICommand;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
@@ -95,6 +97,9 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -143,6 +148,7 @@ public class _DiwUtils {
     public static boolean NotifyAdminDisconnects = true;
     public static int MaxNearbyEntities = 250;
     public static long g_standFunIdx = 0L;
+    public static List<String> g_removedCommand = new LinkedList<String>();
 
     public static MinecraftServer getMinecraftServer() {
         return minecraftServer;
@@ -391,6 +397,18 @@ public class _DiwUtils {
         ServerWrapper.getInstance().registerCommand(new _CmdWarp());
         ServerWrapper.getInstance().registerCommand(new _CmdWorth());
 
+        ReadRestrictedCommands();
+        Map<String, ICommand> commandMap = getMinecraftServer().getCommandManager().getCommands();
+        for (String cmd : g_removedCommand) {
+            ICommand command = commandMap.get(cmd);
+            if (command != null) {
+                commandMap.remove(command.getCommandName());
+                for (String alias : command.getCommandAliases()) {
+                    commandMap.remove(alias);
+                }
+            }
+        }
+
         // load plugins
         pluginManager.enable();
 
@@ -433,6 +451,46 @@ public class _DiwUtils {
         Hooks.onShutdown();
         _JOT_OnlineTimeUtils.HandleShutdown();
         SaveStuffs();
+    }
+
+    public static void ReadRestrictedCommands() {
+        EnsureDirectory(RainbowDataDirectory);
+        String oldFilename = "RemoveCommands.txt";
+        String newFilename = RainbowDataDirectory + oldFilename;
+
+        try {
+            File strRestricted = new File(oldFilename);
+
+            if (strRestricted.exists()) {
+                Files.move(strRestricted, new File(newFilename));
+            }
+
+            if ((new File(newFilename)).exists()) {
+                BufferedReader br = new BufferedReader(
+                        new FileReader(newFilename));
+
+                String line;
+
+                while ((line = br.readLine()) != null) {
+                    line = line.trim();
+                    if (line.length() >= 2 && !line.startsWith(";")) {
+                        if (line.startsWith("/")) {
+                            line = line.substring(1);
+                        }
+
+                        g_removedCommand.add(line.toLowerCase());
+                    }
+                }
+            }
+        } catch (Exception var5) {
+            var5.printStackTrace();
+        }
+
+        if (g_removedCommand.size() > 0) {
+            String strRestricted1 = GetCommaList(g_removedCommand);
+
+            System.out.println("Restricting Commands: " + strRestricted1);
+        }
     }
 
     public static void LoadRainbowProperties() {
