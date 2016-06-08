@@ -2,10 +2,9 @@ package PluginReference;
 
 /**
  * Entity Type
- */ 			
-public enum MC_EntityType
-{
-	UNSPECIFIED,
+ */
+public enum MC_EntityType {
+    UNSPECIFIED,
 	PLAYER,
 
 	// Normal Mobs
@@ -75,5 +74,8 @@ public enum MC_EntityType
 	SHULKER_BULLET,
 	AREA_EFFECT_CLOUD,
     SPECTRAL_ARROW,
-    DRAGON_FIREBALL
+    DRAGON_FIREBALL,
+
+    // Added in 1.10
+    POLAR_BEAR
 }

@@ -31,6 +31,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static org.projectrainbow.launch.Bootstrap.args;
+
 @Mixin(CommandHandler.class)
 public class MixinCommandHandler {
 
@@ -88,7 +90,7 @@ public class MixinCommandHandler {
     }
 
     @Redirect(method = "tryExecute", at = @At(value = "INVOKE", target = "warn", remap = false))
-    private void onExceptionIgnoreOldLog(Logger logger, String message) {
+    private void onExceptionIgnoreOldLog(Logger logger, String message, Object... args) {
 
     }
 

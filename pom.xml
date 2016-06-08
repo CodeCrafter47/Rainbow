@@ -7,7 +7,7 @@
     <groupId>org.projectrainbow</groupId>
     <artifactId>rainbow-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.9.4-SNAPSHOT</version>
+    <version>1.10-SNAPSHOT</version>
     <modules>
         <module>install-dependencies</module>
         <module>rainbow</module>
@@ -20,7 +20,7 @@
         <maven.compiler.target>1.6</maven.compiler.target>
         <maven.compiler.source>1.6</maven.compiler.source>
         <build.number>unknown</build.number>
-        <minecraft.version>1.9.4</minecraft.version>
+        <minecraft.version>1.10</minecraft.version>
     </properties>
 
     <profiles>
@@ -65,53 +65,4 @@
         </pluginRepository>
     </pluginRepositories>
 
-    <build>
-        <plugins>
-            <!--
-            <plugin>
-                <groupId>com.googlecode.maven-download-plugin</groupId>
-                <artifactId>download-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <id>download-minecraft-server</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>https://s3.amazonaws.com/Minecraft.Download/versions/${minecraft.version}/minecraft_server.${minecraft.version}.jar</url>
-                            <unpack>false</unpack>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <md5>4d4c91aa60ea19720fdbb961ee995675</md5>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.5.2</version>
-                <executions>
-                    <execution>
-                        <id>install-minecraft-server</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <configuration>
-                            <groupId>com.mojang</groupId>
-                            <artifactId>minecraft-server</artifactId>
-                            <version>${minecraft.version}</version>
-                            <packaging>jar</packaging>
-                            <file>${project.build.directory}/lib/minecraft_server.${minecraft.version}.jar</file>
-                            <createChecksum>true</createChecksum>
-                            <generatePom>true</generatePom>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
-        </plugins>
-    </build>
 </project>

@@ -74,9 +74,9 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
     protected abstract boolean isChunkLoaded(int x, int z, boolean ignored);
 
     @Redirect(method = "canAddEntity", at = @At(value = "INVOKE", target = "warn", remap = false))
-    private void doLogWarning(Logger logger, String message) {
+    private void doLogWarning(Logger logger, String message, Object... args) {
         if (_DiwUtils.DoHideAnnoyingDefaultServerOutput == false) {
-            logger.warn(message);
+            logger.warn(message, args);
         }
     }
 

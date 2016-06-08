@@ -54,7 +54,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.WorldSettings;
+import net.minecraft.world.GameType;
 import org.projectrainbow.BlockWrapper;
 import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
@@ -131,7 +131,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
     public abstract void setSpectatingEntity(Entity var1);
 
     @Shadow
-    public abstract void setGameType(WorldSettings.GameType var1);
+    public abstract void setGameType(GameType var1);
 
     /*
      * add teleport helper methods
@@ -290,7 +290,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Inject(method = "attackTargetEntityWithCurrentItem", at = @At("HEAD"), cancellable = true)
     private void onAttackEntity(Entity target, CallbackInfo callbackInfo) {
-        if (interactionManager.getGameType() != WorldSettings.GameType.SPECTATOR) {
+        if (interactionManager.getGameType() != GameType.SPECTATOR) {
             MC_EventInfo ei = new MC_EventInfo();
             Hooks.onAttemptAttackEntity(this, (MC_Entity) target, ei);
             if (ei.isCancelled) {

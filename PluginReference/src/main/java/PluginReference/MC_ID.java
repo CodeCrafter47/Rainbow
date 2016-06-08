@@ -218,6 +218,11 @@ public final class MC_ID
 	public static final int BLOCK_REPEATING_COMMAND_BLOCK = 210;
 	public static final int BLOCK_CHAIN_COMMAND_BLOCK = 211;
 	public static final int BLOCK_FROSTED_ICE = 212;
+	public static final int BLOCK_MAGMA = 213;
+	public static final int BLOCK_NETHER_WART_BLOCK = 214;
+	public static final int BLOCK_RED_NETHER_BRICK = 215;
+	public static final int BLOCK_BONE_BLOCK = 216;
+	public static final int BLOCK_STRUCTURE_VOID = 217;
 	public static final int BLOCK_STRUCTURE_BLOCK = 255;
 	public static final int ITEM_IRON_SHOVEL = 256;
 	public static final int ITEM_IRON_PICKAXE = 257;

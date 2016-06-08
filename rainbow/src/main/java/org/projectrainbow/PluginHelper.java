@@ -87,16 +87,15 @@ import net.minecraft.entity.projectile.EntitySpectralArrow;
 import net.minecraft.entity.projectile.EntityTippedArrow;
 import net.minecraft.entity.projectile.EntityWitherSkull;
 import net.minecraft.init.MobEffects;
-import net.minecraft.init.PotionTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionType;
+import net.minecraft.src.wj;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.WorldSettings;
+import net.minecraft.world.GameType;
 import net.minecraft.world.biome.Biome;
 
 import java.util.ArrayList;
@@ -107,7 +106,7 @@ import java.util.Map;
 public class PluginHelper {
     public static BiMap<EnumFacing, MC_DirectionNESWUD> directionMap = HashBiMap.create();
     public static BiMap<MC_GameRuleType, String> gameRuleMap = HashBiMap.create();
-    public static BiMap<WorldSettings.GameType, MC_GameMode> gamemodeMap = HashBiMap.create();
+    public static BiMap<GameType, MC_GameMode> gamemodeMap = HashBiMap.create();
     public static BiMap<Class<? extends Entity>, MC_EntityType> entityMap = HashBiMap.create();
     public static BiMap<Potion, MC_PotionEffectType> potionMap = HashBiMap.create();
     public static BiMap<Short, MC_EnchantmentType> enchantmentMap = HashBiMap.create();
@@ -181,11 +180,11 @@ public class PluginHelper {
         gameRuleMap.put(MC_GameRuleType.SPECTATORS_GENERATE_CHUNKS, "spectatorsGenerateChunks");
         gameRuleMap.put(MC_GameRuleType.DISABLE_ELYTRA_MOVEMENT_CHECK, "disableElytraMovementCheck");
 
-        gamemodeMap.put(WorldSettings.GameType.NOT_SET, MC_GameMode.UNKNOWN);
-        gamemodeMap.put(WorldSettings.GameType.SURVIVAL, MC_GameMode.SURVIVAL);
-        gamemodeMap.put(WorldSettings.GameType.CREATIVE, MC_GameMode.CREATIVE);
-        gamemodeMap.put(WorldSettings.GameType.ADVENTURE, MC_GameMode.ADVENTURE);
-        gamemodeMap.put(WorldSettings.GameType.SPECTATOR, MC_GameMode.SPECTATOR);
+        gamemodeMap.put(GameType.NOT_SET, MC_GameMode.UNKNOWN);
+        gamemodeMap.put(GameType.SURVIVAL, MC_GameMode.SURVIVAL);
+        gamemodeMap.put(GameType.CREATIVE, MC_GameMode.CREATIVE);
+        gamemodeMap.put(GameType.ADVENTURE, MC_GameMode.ADVENTURE);
+        gamemodeMap.put(GameType.SPECTATOR, MC_GameMode.SPECTATOR);
 
         entityMap.put(EntityItem.class, MC_EntityType.ITEM);
         entityMap.put(EntityXPOrb.class, MC_EntityType.XP_ORB);
@@ -248,6 +247,7 @@ public class PluginHelper {
         entityMap.put(EntityPainting.class, MC_EntityType.PAINTING);
         entityMap.put(EntityLeashKnot.class, MC_EntityType.LEASH_KNOT);
         entityMap.put(EntityLightningBolt.class, MC_EntityType.LIGHTNING_BOLT);
+        entityMap.put(wj.class, MC_EntityType.POLAR_BEAR);
 
         potionMap.put(MobEffects.SPEED, MC_PotionEffectType.SPEED);
         potionMap.put(MobEffects.SLOWNESS, MC_PotionEffectType.SLOWNESS);
@@ -506,6 +506,10 @@ public class PluginHelper {
             return MC_DamageType.STARVE;
         } else if (damageSource == DamageSource.wither) {
             return MC_DamageType.WITHER;
+        } else if (damageSource == DamageSource.dragonBreath) {
+            return MC_DamageType.DRAGON_BREATH;
+        } else if (damageSource == DamageSource.hotFloor) {
+            return MC_DamageType.HOT_FLOOR;
         } else {
             if (damageSource.getDamageType() != null) {
                 if (damageSource.getDamageType().equalsIgnoreCase("mob")) {
@@ -554,77 +558,34 @@ public class PluginHelper {
     }
 
     public static DamageSource unwrap(MC_DamageType cause) {
-        return cause == null
-                ? DamageSource.generic
-                : (cause == MC_DamageType.ANVIL
-                ? DamageSource.anvil
-                : (cause == MC_DamageType.CACTUS
-                ? DamageSource.cactus
-                : (cause == MC_DamageType.DROWN
-                ? DamageSource.drown
-                : (cause == MC_DamageType.FALL
-                ? DamageSource.fall
-                : (cause
-                == MC_DamageType.FALLING_BLOCK
-                ? DamageSource.fallingBlock
-                : (cause
-                == MC_DamageType.GENERIC
-                ? DamageSource.generic
-                : (cause
-                == MC_DamageType.IN_FIRE
-                ? DamageSource.inFire
-                : (cause
-                == MC_DamageType.IN_WALL
-                ? DamageSource.inWall
-                : (cause
-                == MC_DamageType.LAVA
-                ? DamageSource.lava
-                : (cause
-                == MC_DamageType.LIGHTING_BOLT
-                ? DamageSource.lightningBolt
-                : (cause
-                == MC_DamageType.MAGIC
-                ? DamageSource.magic
-                : (cause
-                == MC_DamageType.ON_FIRE
-                ? DamageSource.onFire
-                : (cause
-                == MC_DamageType.OUT_OF_WORLD
-                ? DamageSource.outOfWorld
-                : (cause
-                == MC_DamageType.STARVE
-                ? DamageSource.starve
-                : (cause
-                == MC_DamageType.WITHER
-                ? DamageSource.wither
-                : (cause
-                == MC_DamageType.MOB
-                ? DamageSource.causeMobDamage(null)
-                : (cause
-                == MC_DamageType.PLAYER
-                ? DamageSource.causePlayerDamage(null)
-                : (cause
-                == MC_DamageType.ARROW
-                ? DamageSource.causeArrowDamage(null, null)
-                : (cause
-                == MC_DamageType.FIREBALL
-                ? DamageSource.causeFireballDamage(null, null)
-                : (cause
-                == MC_DamageType.THROWN
-                ? DamageSource.causeThrownDamage(null, null)
-                : (cause
-                == MC_DamageType.INDIRECT_MAGIC
-                ? DamageSource.causeIndirectMagicDamage(null, null)
-                : (cause
-                == MC_DamageType.THORNS
-                ? DamageSource.causeThornsDamage(null)
-                : (cause
-                == MC_DamageType.EXPLOSION
-                ? DamageSource.causeExplosionDamage((EntityLivingBase) null)
-                : (cause
-                == MC_DamageType.EXPLOSION_PLAYER
-                ? DamageSource.causeExplosionDamage((Explosion) null)
-                : DamageSource.generic))))))))))))))))))))))));
+        if (cause == null) return DamageSource.generic;
+        else if (cause == MC_DamageType.ANVIL) return DamageSource.anvil;
+        else if (cause == MC_DamageType.CACTUS) return DamageSource.cactus;
+        else if (cause == MC_DamageType.DROWN) return DamageSource.drown;
+        else if (cause == MC_DamageType.FALL) return DamageSource.fall;
+        else if (cause == MC_DamageType.FALLING_BLOCK) return DamageSource.fallingBlock;
+        else if (cause == MC_DamageType.GENERIC) return DamageSource.generic;
+        else if (cause == MC_DamageType.IN_FIRE) return DamageSource.inFire;
+        else if (cause == MC_DamageType.IN_WALL) return DamageSource.inWall;
+        else if (cause == MC_DamageType.LAVA) return DamageSource.lava;
+        else if (cause == MC_DamageType.LIGHTING_BOLT) return DamageSource.lightningBolt;
+        else if (cause == MC_DamageType.MAGIC) return DamageSource.magic;
+        else if (cause == MC_DamageType.ON_FIRE) return DamageSource.onFire;
+        else if (cause == MC_DamageType.OUT_OF_WORLD) return DamageSource.outOfWorld;
+        else if (cause == MC_DamageType.STARVE) return DamageSource.starve;
+        else if (cause == MC_DamageType.WITHER) return DamageSource.wither;
+        else if (cause == MC_DamageType.DRAGON_BREATH) return DamageSource.dragonBreath;
+        else if (cause == MC_DamageType.HOT_FLOOR) return DamageSource.hotFloor;
+        else if (cause == MC_DamageType.MOB) return DamageSource.causeMobDamage(null);
+        else if (cause == MC_DamageType.PLAYER) return DamageSource.causePlayerDamage(null);
+        else if (cause == MC_DamageType.ARROW) return DamageSource.causeArrowDamage(null, null);
+        else if (cause == MC_DamageType.FIREBALL) return DamageSource.causeFireballDamage(null, null);
+        else if (cause == MC_DamageType.THROWN) return DamageSource.causeThrownDamage(null, null);
+        else if (cause == MC_DamageType.INDIRECT_MAGIC) return DamageSource.causeIndirectMagicDamage(null, null);
+        else if (cause == MC_DamageType.THORNS) return DamageSource.causeThornsDamage(null);
+        else if (cause == MC_DamageType.EXPLOSION) return DamageSource.causeExplosionDamage((EntityLivingBase) null);
+        else if (cause == MC_DamageType.EXPLOSION_PLAYER) return DamageSource.causeExplosionDamage((Explosion) null);
+        else return DamageSource.generic;
 
     }
 }

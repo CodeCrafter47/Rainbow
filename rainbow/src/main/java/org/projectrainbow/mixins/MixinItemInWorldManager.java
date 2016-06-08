@@ -22,6 +22,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
+import net.minecraft.world.GameType;
 import org.apache.logging.log4j.LogManager;
 import org.projectrainbow.BlockWrapper;
 import org.projectrainbow.EmptyItemStack;
@@ -46,7 +47,7 @@ public class MixinItemInWorldManager {
     public EntityPlayerMP thisPlayerMP;
 
     @Shadow
-    private WorldSettings.GameType gameType;
+    private GameType gameType;
 
     @Inject(method = "tryHarvestBlock", at = @At(value = "INVOKE", target = "net.minecraft.server.management.PlayerInteractionManager.removeBlock(Lnet/minecraft/util/math/BlockPos;)Z"))
     private void blockBreakHook(BlockPos blockPos, CallbackInfoReturnable<Boolean> callbackInfo) {

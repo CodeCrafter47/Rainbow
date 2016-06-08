@@ -74,9 +74,9 @@ public class MixinNetHandlerPlayServer {
     private Vec3d targetPos;
 
     @Redirect(method = "processPlayer", at = @At(value = "INVOKE", target = "warn", remap = false))
-    private void doLogWarning(Logger logger, String message) {
+    private void doLogWarning(Logger logger, String message, Object... args) {
         if (!message.contains("is sending move packets too frequently") || !_DiwUtils.DoHideAnnoyingDefaultServerOutput) {
-            logger.warn(message);
+            logger.warn(message, args);
         }
     }
 
@@ -87,7 +87,7 @@ public class MixinNetHandlerPlayServer {
     }
 
     @Redirect(method = "onDisconnect", at = @At(value = "INVOKE", target = "info", ordinal = 0, remap = false))
-    private void fixToString(Logger logger, String text, ITextComponent chatComponent) {
+    private void fixToString(Logger logger, String text, Object[] args, ITextComponent chatComponent) {
         logger.info(this.playerEntity.getName() + " lost connection: " + chatComponent.getUnformattedText());
     }
 

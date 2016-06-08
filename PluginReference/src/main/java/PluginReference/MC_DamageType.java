@@ -3,8 +3,7 @@ package PluginReference;
 /** 
  * Damage Types
  */ 			
-public enum MC_DamageType
-{
+public enum MC_DamageType {
 	UNSPECIFIED,
 	IN_FIRE,
 	LIGHTING_BOLT,
@@ -30,6 +29,7 @@ public enum MC_DamageType
 	INDIRECT_MAGIC,
 	THORNS,
 	EXPLOSION,
-	EXPLOSION_PLAYER
-	
+	EXPLOSION_PLAYER,
+	HOT_FLOOR,
+	DRAGON_BREATH
 }
