@@ -6,10 +6,9 @@ import PluginReference.MC_Horse;
 import PluginReference.MC_HorseType;
 import PluginReference.MC_HorseVariant;
 import PluginReference.MC_Player;
-import net.minecraft.src.EntityHorse;
-import net.minecraft.src.IAttribute;
-import net.minecraft.src.RangedAttribute;
-import net.minecraft.src.wm;
+import net.minecraft.entity.ai.attributes.IAttribute;
+import net.minecraft.entity.passive.EntityHorse;
+import net.minecraft.entity.passive.HorseType;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
@@ -24,16 +23,16 @@ import java.util.UUID;
 public abstract class MixinEntityHorse extends MixinEntityAnimal {
 
     @Shadow
-    public abstract void a(wm var1);
+    public abstract void setType(HorseType var1);
 
     @Shadow
-    public abstract wm da();
+    public abstract HorseType shadow$getType();
 
     @Shadow
-    public abstract void setHorseType(int var1);
+    public abstract void setHorseVariant(int var1);
 
     @Shadow
-    public abstract int getHorseType();
+    public abstract int shadow$getHorseVariant();
 
     @Shadow
     public abstract boolean isTame();
@@ -54,26 +53,26 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
     public abstract void setTemper(int var1);
 
     @Shadow
-    public abstract UUID di();
+    public abstract UUID getOwnerUniqueId();
 
     @Shadow
-    public abstract void b(UUID var1);
+    public abstract void setOwnerUniqueId(UUID var1);
 
     @Shadow
     @Final
-    private static IAttribute horseJumpStrength;
+    private static IAttribute JUMP_STRENGTH;
 
     public void setOwner(MC_Player plr) {
         if (plr == null) {
-            b(null);
+            setOwnerUniqueId(null);
             return;
         }
-        b(plr.getUUID());
+        setOwnerUniqueId(plr.getUUID());
     }
 
     @Intrinsic
     public MC_HorseType api$getHorseType() {
-        switch (da()) {
+        switch (shadow$getType()) {
             case HORSE:
                 return MC_HorseType.HORSE;
             case DONKEY:
@@ -91,19 +90,19 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
     public void setHorseType(MC_HorseType arg) {
         switch (arg) {
             case HORSE:
-                a(wm.HORSE);
+                setType(HorseType.HORSE);
                 break;
             case DONKEY:
-                a(wm.DONKEY);
+                setType(HorseType.DONKEY);
                 break;
             case MULE:
-                a(wm.MULE);
+                setType(HorseType.MULE);
                 break;
             case ZOMBIE:
-                a(wm.ZOMBIE);
+                setType(HorseType.ZOMBIE);
                 break;
             case SKELETON:
-                a(wm.SKELETON);
+                setType(HorseType.SKELETON);
                 break;
             case UNKNOWN:
                 break;
@@ -111,11 +110,11 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
     }
 
     public MC_HorseVariant getHorseVariant() {
-        return MC_HorseVariant.values()[getHorseType()];
+        return MC_HorseVariant.values()[shadow$getHorseVariant()];
     }
 
     public void setHorseVariant(MC_HorseVariant arg) {
-        setHorseType(arg.ordinal());
+        setHorseVariant(arg.ordinal());
     }
 
     public boolean hasChest() {
@@ -147,17 +146,17 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
     }
 
     public String getOwnerUUID() {
-        return di().toString();
+        return getOwnerUniqueId().toString();
     }
 
     public void setOwnerUUID(String strUUID) {
-        b(UUID.fromString(strUUID));
+        setOwnerUniqueId(UUID.fromString(strUUID));
     }
 
     @Override
     public MC_Attribute getAttribute(MC_AttributeType type) {
         if (type == MC_AttributeType.HORSE_JUMP_STRENGTH) {
-            return (MC_Attribute) getEntityAttribute(horseJumpStrength);
+            return (MC_Attribute) getEntityAttribute(JUMP_STRENGTH);
         }
         return super.getAttribute(type);
     }

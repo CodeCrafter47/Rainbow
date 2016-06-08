@@ -5,7 +5,7 @@ import PluginReference.ChatColor;
 import PluginReference.MC_Player;
 import com.google.common.io.Files;
 import joebkt._EmoteEntry;
-import net.minecraft.src.ICommandSender;
+import net.minecraft.command.ICommandSender;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

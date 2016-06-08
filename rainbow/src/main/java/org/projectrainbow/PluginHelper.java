@@ -18,83 +18,86 @@ import PluginReference.MC_WorldBiomeType;
 import com.google.common.base.Objects;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import net.minecraft.src.BiomeGenBase;
-import net.minecraft.src.Block;
-import net.minecraft.src.DamageSource;
-import net.minecraft.src.Entity;
-import net.minecraft.src.EntityAreaEffectCloud;
-import net.minecraft.src.EntityArmorStand;
-import net.minecraft.src.EntityBat;
-import net.minecraft.src.EntityBlaze;
-import net.minecraft.src.EntityBoat;
-import net.minecraft.src.EntityCaveSpider;
-import net.minecraft.src.EntityChicken;
-import net.minecraft.src.EntityCow;
-import net.minecraft.src.EntityCreeper;
-import net.minecraft.src.EntityDragon;
-import net.minecraft.src.EntityDragonFireball;
-import net.minecraft.src.EntityEgg;
-import net.minecraft.src.EntityEnderCrystal;
-import net.minecraft.src.EntityEnderEye;
-import net.minecraft.src.EntityEnderPearl;
-import net.minecraft.src.EntityEnderman;
-import net.minecraft.src.EntityEndermite;
-import net.minecraft.src.EntityExpBottle;
-import net.minecraft.src.EntityFallingBlock;
-import net.minecraft.src.EntityFireworkRocket;
-import net.minecraft.src.EntityFishHook;
-import net.minecraft.src.EntityGhast;
-import net.minecraft.src.EntityGiant;
-import net.minecraft.src.EntityGuardian;
-import net.minecraft.src.EntityHorse;
-import net.minecraft.src.EntityItem;
-import net.minecraft.src.EntityItemFrame;
-import net.minecraft.src.EntityLargeFireball;
-import net.minecraft.src.EntityLavaSlime;
-import net.minecraft.src.EntityLeashKnot;
-import net.minecraft.src.EntityMinecart;
-import net.minecraft.src.EntityMinecartEmpty;
-import net.minecraft.src.EntityMushroomCow;
-import net.minecraft.src.EntityOzelot;
-import net.minecraft.src.EntityPainting;
-import net.minecraft.src.EntityPig;
-import net.minecraft.src.EntityPigZombie;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.EntityPotion;
-import net.minecraft.src.EntityRabbit;
-import net.minecraft.src.EntitySheep;
-import net.minecraft.src.EntityShulker;
-import net.minecraft.src.EntityShulkerBullet;
-import net.minecraft.src.EntitySilverfish;
-import net.minecraft.src.EntitySkeleton;
-import net.minecraft.src.EntitySlime;
-import net.minecraft.src.EntitySmallFireball;
-import net.minecraft.src.EntitySnowball;
-import net.minecraft.src.EntitySnowman;
-import net.minecraft.src.EntitySpectralArrow;
-import net.minecraft.src.EntitySpider;
-import net.minecraft.src.EntitySquid;
-import net.minecraft.src.EntityTNTPrimed;
-import net.minecraft.src.EntityTippedArrow;
-import net.minecraft.src.EntityVillager;
-import net.minecraft.src.EntityVillagerGolem;
-import net.minecraft.src.EntityWitch;
-import net.minecraft.src.EntityWither;
-import net.minecraft.src.EntityWitherSkull;
-import net.minecraft.src.EntityWolf;
-import net.minecraft.src.EntityXPOrb;
-import net.minecraft.src.EntityZombie;
-import net.minecraft.src.EnumFacing;
-import net.minecraft.src.EnumHand;
-import net.minecraft.src.IAttribute;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Potion;
-import net.minecraft.src.PotionEffect;
-import net.minecraft.src.SharedMonsterAttributes;
-import net.minecraft.src.WorldSettings;
-import net.minecraft.src.rm;
-import net.minecraft.src.ya;
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityAreaEffectCloud;
+import net.minecraft.entity.EntityLeashKnot;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.IAttribute;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.EntityWither;
+import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.item.EntityBoat;
+import net.minecraft.entity.item.EntityEnderCrystal;
+import net.minecraft.entity.item.EntityEnderEye;
+import net.minecraft.entity.item.EntityEnderPearl;
+import net.minecraft.entity.item.EntityExpBottle;
+import net.minecraft.entity.item.EntityFallingBlock;
+import net.minecraft.entity.item.EntityFireworkRocket;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityItemFrame;
+import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.item.EntityMinecartEmpty;
+import net.minecraft.entity.item.EntityPainting;
+import net.minecraft.entity.item.EntityTNTPrimed;
+import net.minecraft.entity.item.EntityXPOrb;
+import net.minecraft.entity.monster.EntityBlaze;
+import net.minecraft.entity.monster.EntityCaveSpider;
+import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.EntityEnderman;
+import net.minecraft.entity.monster.EntityEndermite;
+import net.minecraft.entity.monster.EntityGhast;
+import net.minecraft.entity.monster.EntityGiantZombie;
+import net.minecraft.entity.monster.EntityGuardian;
+import net.minecraft.entity.monster.EntityIronGolem;
+import net.minecraft.entity.monster.EntityMagmaCube;
+import net.minecraft.entity.monster.EntityPigZombie;
+import net.minecraft.entity.monster.EntityShulker;
+import net.minecraft.entity.monster.EntitySilverfish;
+import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.EntitySlime;
+import net.minecraft.entity.monster.EntitySnowman;
+import net.minecraft.entity.monster.EntitySpider;
+import net.minecraft.entity.monster.EntityWitch;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.passive.EntityBat;
+import net.minecraft.entity.passive.EntityChicken;
+import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.passive.EntityHorse;
+import net.minecraft.entity.passive.EntityMooshroom;
+import net.minecraft.entity.passive.EntityOcelot;
+import net.minecraft.entity.passive.EntityPig;
+import net.minecraft.entity.passive.EntityRabbit;
+import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.EntitySquid;
+import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.projectile.EntityDragonFireball;
+import net.minecraft.entity.projectile.EntityEgg;
+import net.minecraft.entity.projectile.EntityFishHook;
+import net.minecraft.entity.projectile.EntityLargeFireball;
+import net.minecraft.entity.projectile.EntityPotion;
+import net.minecraft.entity.projectile.EntityShulkerBullet;
+import net.minecraft.entity.projectile.EntitySmallFireball;
+import net.minecraft.entity.projectile.EntitySnowball;
+import net.minecraft.entity.projectile.EntitySpectralArrow;
+import net.minecraft.entity.projectile.EntityTippedArrow;
+import net.minecraft.entity.projectile.EntityWitherSkull;
+import net.minecraft.init.MobEffects;
+import net.minecraft.init.PotionTypes;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionType;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.WorldSettings;
+import net.minecraft.world.biome.Biome;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -108,7 +111,7 @@ public class PluginHelper {
     public static BiMap<Class<? extends Entity>, MC_EntityType> entityMap = HashBiMap.create();
     public static BiMap<Potion, MC_PotionEffectType> potionMap = HashBiMap.create();
     public static BiMap<Short, MC_EnchantmentType> enchantmentMap = HashBiMap.create();
-    public static BiMap<BiomeGenBase, MC_WorldBiomeType> biomeMap = HashBiMap.create();
+    public static BiMap<Biome, MC_WorldBiomeType> biomeMap = HashBiMap.create();
     public static BiMap<EnumHand, MC_Hand> handMap = HashBiMap.create();
     public static BiMap<MC_AttributeType, IAttribute> attributeMap = HashBiMap.create();
     public static BiMap<MC_AttributeModifier.Operator, Integer> operatorMap = HashBiMap.create();
@@ -141,11 +144,11 @@ public class PluginHelper {
     }
 
     public static MC_PotionEffect wrap(PotionEffect potionEffect) {
-        MC_PotionEffectType type = potionMap.get(potionEffect.a());
+        MC_PotionEffectType type = potionMap.get(potionEffect.getPotion());
         type = Objects.firstNonNull(type, MC_PotionEffectType.UNSPECIFIED);
-        MC_PotionEffect mc_potionEffect = new MC_PotionEffect(type, potionEffect.getPotionID(), potionEffect.getDuration());
+        MC_PotionEffect mc_potionEffect = new MC_PotionEffect(type, potionEffect.getDuration(), potionEffect.getAmplifier());
         mc_potionEffect.ambient = potionEffect.getIsAmbient();
-        mc_potionEffect.showsParticles = potionEffect.getIsShowParticles();
+        mc_potionEffect.showsParticles = potionEffect.doesShowParticles();
         return mc_potionEffect;
     }
 
@@ -209,7 +212,7 @@ public class PluginHelper {
         entityMap.put(EntityCreeper.class, MC_EntityType.CREEPER);
         entityMap.put(EntitySkeleton.class, MC_EntityType.SKELETON);
         entityMap.put(EntitySpider.class, MC_EntityType.SPIDER);
-        entityMap.put(EntityGiant.class, MC_EntityType.GIANT);
+        entityMap.put(EntityGiantZombie.class, MC_EntityType.GIANT);
         entityMap.put(EntityZombie.class, MC_EntityType.ZOMBIE);
         entityMap.put(EntitySlime.class, MC_EntityType.SLIME);
         entityMap.put(EntityGhast.class, MC_EntityType.GHAST);
@@ -218,7 +221,7 @@ public class PluginHelper {
         entityMap.put(EntityCaveSpider.class, MC_EntityType.CAVE_SPIDER);
         entityMap.put(EntitySilverfish.class, MC_EntityType.SILVERFISH);
         entityMap.put(EntityBlaze.class, MC_EntityType.BLAZE);
-        entityMap.put(EntityLavaSlime.class, MC_EntityType.LAVA_SLIME);
+        entityMap.put(EntityMagmaCube.class, MC_EntityType.LAVA_SLIME);
         entityMap.put(EntityDragon.class, MC_EntityType.ENDERDRAGON);
         entityMap.put(EntityWither.class, MC_EntityType.WITHERBOSS);
         entityMap.put(EntityBat.class, MC_EntityType.BAT);
@@ -232,10 +235,10 @@ public class PluginHelper {
         entityMap.put(EntityChicken.class, MC_EntityType.CHICKEN);
         entityMap.put(EntitySquid.class, MC_EntityType.SQUID);
         entityMap.put(EntityWolf.class, MC_EntityType.WOLF);
-        entityMap.put(EntityMushroomCow.class, MC_EntityType.MUSHROOM_COW);
+        entityMap.put(EntityMooshroom.class, MC_EntityType.MUSHROOM_COW);
         entityMap.put(EntitySnowman.class, MC_EntityType.SNOWMAN);
-        entityMap.put(EntityOzelot.class, MC_EntityType.OCELOT);
-        entityMap.put(EntityVillagerGolem.class, MC_EntityType.VILLAGER_GOLEM);
+        entityMap.put(EntityOcelot.class, MC_EntityType.OCELOT);
+        entityMap.put(EntityIronGolem.class, MC_EntityType.VILLAGER_GOLEM);
         entityMap.put(EntityHorse.class, MC_EntityType.HORSE);
         entityMap.put(EntityRabbit.class, MC_EntityType.RABBIT);
         entityMap.put(EntityVillager.class, MC_EntityType.VILLAGER);
@@ -244,35 +247,35 @@ public class PluginHelper {
         entityMap.put(EntityItemFrame.class, MC_EntityType.ITEM_FRAME);
         entityMap.put(EntityPainting.class, MC_EntityType.PAINTING);
         entityMap.put(EntityLeashKnot.class, MC_EntityType.LEASH_KNOT);
-        entityMap.put(ya.class, MC_EntityType.LIGHTNING_BOLT);
+        entityMap.put(EntityLightningBolt.class, MC_EntityType.LIGHTNING_BOLT);
 
-        potionMap.put(rm.a, MC_PotionEffectType.SPEED);
-        potionMap.put(rm.b, MC_PotionEffectType.SLOWNESS);
-        potionMap.put(rm.c, MC_PotionEffectType.HASTE);
-        potionMap.put(rm.d, MC_PotionEffectType.MINING_FATIGUE);
-        potionMap.put(rm.e, MC_PotionEffectType.STRENGTH);
-        potionMap.put(rm.f, MC_PotionEffectType.INSTANT_HEALTH);
-        potionMap.put(rm.g, MC_PotionEffectType.INSTANT_DAMAGE);
-        potionMap.put(rm.h, MC_PotionEffectType.JUMP_BOOST);
-        potionMap.put(rm.i, MC_PotionEffectType.NAUSEA);
-        potionMap.put(rm.j, MC_PotionEffectType.REGENERATION);
-        potionMap.put(rm.k, MC_PotionEffectType.RESISTANCE);
-        potionMap.put(rm.l, MC_PotionEffectType.FIRE_RESISTANCE);
-        potionMap.put(rm.m, MC_PotionEffectType.WATER_BREATHING);
-        potionMap.put(rm.n, MC_PotionEffectType.INVISIBILITY);
-        potionMap.put(rm.o, MC_PotionEffectType.BLINDNESS);
-        potionMap.put(rm.p, MC_PotionEffectType.NIGHT_VISION);
-        potionMap.put(rm.q, MC_PotionEffectType.HUNGER);
-        potionMap.put(rm.r, MC_PotionEffectType.WEAKNESS);
-        potionMap.put(rm.s, MC_PotionEffectType.POISON);
-        potionMap.put(rm.t, MC_PotionEffectType.WITHER);
-        potionMap.put(rm.u, MC_PotionEffectType.HEALTH_BOOST);
-        potionMap.put(rm.v, MC_PotionEffectType.ABSORPTION);
-        potionMap.put(rm.w, MC_PotionEffectType.SATURATION);
-        potionMap.put(rm.x, MC_PotionEffectType.GLOWING);
-        potionMap.put(rm.y, MC_PotionEffectType.LEVITATION);
-        potionMap.put(rm.z, MC_PotionEffectType.LUCK);
-        potionMap.put(rm.A, MC_PotionEffectType.UNLUCK);
+        potionMap.put(MobEffects.SPEED, MC_PotionEffectType.SPEED);
+        potionMap.put(MobEffects.SLOWNESS, MC_PotionEffectType.SLOWNESS);
+        potionMap.put(MobEffects.HASTE, MC_PotionEffectType.HASTE);
+        potionMap.put(MobEffects.MINING_FATIGUE, MC_PotionEffectType.MINING_FATIGUE);
+        potionMap.put(MobEffects.STRENGTH, MC_PotionEffectType.STRENGTH);
+        potionMap.put(MobEffects.INSTANT_HEALTH, MC_PotionEffectType.INSTANT_HEALTH);
+        potionMap.put(MobEffects.INSTANT_DAMAGE, MC_PotionEffectType.INSTANT_DAMAGE);
+        potionMap.put(MobEffects.JUMP_BOOST, MC_PotionEffectType.JUMP_BOOST);
+        potionMap.put(MobEffects.NAUSEA, MC_PotionEffectType.NAUSEA);
+        potionMap.put(MobEffects.REGENERATION, MC_PotionEffectType.REGENERATION);
+        potionMap.put(MobEffects.RESISTANCE, MC_PotionEffectType.RESISTANCE);
+        potionMap.put(MobEffects.FIRE_RESISTANCE, MC_PotionEffectType.FIRE_RESISTANCE);
+        potionMap.put(MobEffects.WATER_BREATHING, MC_PotionEffectType.WATER_BREATHING);
+        potionMap.put(MobEffects.INVISIBILITY, MC_PotionEffectType.INVISIBILITY);
+        potionMap.put(MobEffects.BLINDNESS, MC_PotionEffectType.BLINDNESS);
+        potionMap.put(MobEffects.NIGHT_VISION, MC_PotionEffectType.NIGHT_VISION);
+        potionMap.put(MobEffects.HUNGER, MC_PotionEffectType.HUNGER);
+        potionMap.put(MobEffects.WEAKNESS, MC_PotionEffectType.WEAKNESS);
+        potionMap.put(MobEffects.POISON, MC_PotionEffectType.POISON);
+        potionMap.put(MobEffects.WITHER, MC_PotionEffectType.WITHER);
+        potionMap.put(MobEffects.HEALTH_BOOST, MC_PotionEffectType.HEALTH_BOOST);
+        potionMap.put(MobEffects.ABSORPTION, MC_PotionEffectType.ABSORPTION);
+        potionMap.put(MobEffects.SATURATION, MC_PotionEffectType.SATURATION);
+        potionMap.put(MobEffects.GLOWING, MC_PotionEffectType.GLOWING);
+        potionMap.put(MobEffects.LEVITATION, MC_PotionEffectType.LEVITATION);
+        potionMap.put(MobEffects.LUCK, MC_PotionEffectType.LUCK);
+        potionMap.put(MobEffects.UNLUCK, MC_PotionEffectType.UNLUCK);
 
         enchantmentMap.put((short) 0, MC_EnchantmentType.PROTECTION);
         enchantmentMap.put((short) 1, MC_EnchantmentType.FIRE_PROTECTION);
@@ -302,81 +305,81 @@ public class PluginHelper {
         enchantmentMap.put((short) 62, MC_EnchantmentType.LURE);
         enchantmentMap.put((short) 70, MC_EnchantmentType.MENDING);
 
-        biomeMap.put(BiomeGenBase.getBiome(0), MC_WorldBiomeType.OCEAN);
-        biomeMap.put(BiomeGenBase.getBiome(1), MC_WorldBiomeType.PLAINS);
-        biomeMap.put(BiomeGenBase.getBiome(2), MC_WorldBiomeType.DESERT);
-        biomeMap.put(BiomeGenBase.getBiome(3), MC_WorldBiomeType.EXTREME_HILLS);
-        biomeMap.put(BiomeGenBase.getBiome(4), MC_WorldBiomeType.FOREST);
-        biomeMap.put(BiomeGenBase.getBiome(5), MC_WorldBiomeType.TAIGA);
-        biomeMap.put(BiomeGenBase.getBiome(6), MC_WorldBiomeType.SWAMPLAND);
-        biomeMap.put(BiomeGenBase.getBiome(7), MC_WorldBiomeType.RIVER);
-        biomeMap.put(BiomeGenBase.getBiome(8), MC_WorldBiomeType.HELL);
-        biomeMap.put(BiomeGenBase.getBiome(9), MC_WorldBiomeType.THE_END);
-        biomeMap.put(BiomeGenBase.getBiome(10), MC_WorldBiomeType.FROZEN_OCEAN);
-        biomeMap.put(BiomeGenBase.getBiome(11), MC_WorldBiomeType.FROZEN_RIVER);
-        biomeMap.put(BiomeGenBase.getBiome(12), MC_WorldBiomeType.ICE_PLAINS);
-        biomeMap.put(BiomeGenBase.getBiome(13), MC_WorldBiomeType.ICE_MOUNTAINS);
-        biomeMap.put(BiomeGenBase.getBiome(14), MC_WorldBiomeType.MUSHROOM_ISLAND);
-        biomeMap.put(BiomeGenBase.getBiome(15), MC_WorldBiomeType.MUSHROOM_ISLAND_SHORE);
-        biomeMap.put(BiomeGenBase.getBiome(16), MC_WorldBiomeType.BEACH);
-        biomeMap.put(BiomeGenBase.getBiome(17), MC_WorldBiomeType.DESERT_HILLS);
-        biomeMap.put(BiomeGenBase.getBiome(18), MC_WorldBiomeType.FOREST_HILLS);
-        biomeMap.put(BiomeGenBase.getBiome(19), MC_WorldBiomeType.TAIGA_HILLS);
-        biomeMap.put(BiomeGenBase.getBiome(20), MC_WorldBiomeType.EXTREME_HILLS_EDGE);
-        biomeMap.put(BiomeGenBase.getBiome(21), MC_WorldBiomeType.JUNGLE);
-        biomeMap.put(BiomeGenBase.getBiome(22), MC_WorldBiomeType.JUNGLE_HILLS);
-        biomeMap.put(BiomeGenBase.getBiome(23), MC_WorldBiomeType.JUNGLE_EDGE);
-        biomeMap.put(BiomeGenBase.getBiome(24), MC_WorldBiomeType.DEEP_OCEAN);
-        biomeMap.put(BiomeGenBase.getBiome(25), MC_WorldBiomeType.STONE_BEACH);
-        biomeMap.put(BiomeGenBase.getBiome(26), MC_WorldBiomeType.COLD_BEACH);
-        biomeMap.put(BiomeGenBase.getBiome(27), MC_WorldBiomeType.BIRCH_FOREST);
-        biomeMap.put(BiomeGenBase.getBiome(28), MC_WorldBiomeType.BIRCH_FOREST_HILLS);
-        biomeMap.put(BiomeGenBase.getBiome(29), MC_WorldBiomeType.ROOFED_FOREST);
-        biomeMap.put(BiomeGenBase.getBiome(30), MC_WorldBiomeType.COLD_TAIGA);
-        biomeMap.put(BiomeGenBase.getBiome(31), MC_WorldBiomeType.COLD_TAIGA_HILLS);
-        biomeMap.put(BiomeGenBase.getBiome(32), MC_WorldBiomeType.MEGA_TAIGA);
-        biomeMap.put(BiomeGenBase.getBiome(33), MC_WorldBiomeType.MEGA_TAIGA_HILLS);
-        biomeMap.put(BiomeGenBase.getBiome(34), MC_WorldBiomeType.EXTREME_HILLS_PLUS);
-        biomeMap.put(BiomeGenBase.getBiome(35), MC_WorldBiomeType.SAVANNA);
-        biomeMap.put(BiomeGenBase.getBiome(36), MC_WorldBiomeType.SAVANNA_PLATEAU);
-        biomeMap.put(BiomeGenBase.getBiome(37), MC_WorldBiomeType.MESA);
-        biomeMap.put(BiomeGenBase.getBiome(38), MC_WorldBiomeType.MESA_PLATEAU_F);
-        biomeMap.put(BiomeGenBase.getBiome(39), MC_WorldBiomeType.MESA_PLATEAU);
-        biomeMap.put(BiomeGenBase.getBiome(127), MC_WorldBiomeType.VOID);
-        biomeMap.put(BiomeGenBase.getBiome(129), MC_WorldBiomeType.SUNFLOWER_PLAINS);
-        biomeMap.put(BiomeGenBase.getBiome(130), MC_WorldBiomeType.DESERT_M);
-        biomeMap.put(BiomeGenBase.getBiome(131), MC_WorldBiomeType.EXTREME_HILLS_M);
-        biomeMap.put(BiomeGenBase.getBiome(132), MC_WorldBiomeType.FLOWER_FOREST);
-        biomeMap.put(BiomeGenBase.getBiome(133), MC_WorldBiomeType.TAIGA_M);
-        biomeMap.put(BiomeGenBase.getBiome(134), MC_WorldBiomeType.SWAMPLAND_M);
-        biomeMap.put(BiomeGenBase.getBiome(140), MC_WorldBiomeType.ICE_PLAINS_SPIKES);
-        biomeMap.put(BiomeGenBase.getBiome(149), MC_WorldBiomeType.JUNGLE_M);
-        biomeMap.put(BiomeGenBase.getBiome(151), MC_WorldBiomeType.JUNGLE_EDGE_M);
-        biomeMap.put(BiomeGenBase.getBiome(155), MC_WorldBiomeType.BIRCH_FOREST_M);
-        biomeMap.put(BiomeGenBase.getBiome(156), MC_WorldBiomeType.BIRCH_FOREST_HILLS_M);
-        biomeMap.put(BiomeGenBase.getBiome(157), MC_WorldBiomeType.ROOFED_FOREST_M);
-        biomeMap.put(BiomeGenBase.getBiome(158), MC_WorldBiomeType.COLD_TAIGA_M);
-        biomeMap.put(BiomeGenBase.getBiome(160), MC_WorldBiomeType.MEGA_SPRUCE_TAIGA);
-        biomeMap.put(BiomeGenBase.getBiome(161), MC_WorldBiomeType.REDWOOD_TAIGA_HILLS_M);
-        biomeMap.put(BiomeGenBase.getBiome(162), MC_WorldBiomeType.EXTREME_HILLS_PLUS_M);
-        biomeMap.put(BiomeGenBase.getBiome(163), MC_WorldBiomeType.SAVANNA_M);
-        biomeMap.put(BiomeGenBase.getBiome(164), MC_WorldBiomeType.SAVANNA_PLATEAU_M);
-        biomeMap.put(BiomeGenBase.getBiome(165), MC_WorldBiomeType.MESA_M);
-        biomeMap.put(BiomeGenBase.getBiome(166), MC_WorldBiomeType.MESA_PLATEAU_F_M);
-        biomeMap.put(BiomeGenBase.getBiome(167), MC_WorldBiomeType.MESA_PLATEAU_M);
+        biomeMap.put(Biome.getBiome(0), MC_WorldBiomeType.OCEAN);
+        biomeMap.put(Biome.getBiome(1), MC_WorldBiomeType.PLAINS);
+        biomeMap.put(Biome.getBiome(2), MC_WorldBiomeType.DESERT);
+        biomeMap.put(Biome.getBiome(3), MC_WorldBiomeType.EXTREME_HILLS);
+        biomeMap.put(Biome.getBiome(4), MC_WorldBiomeType.FOREST);
+        biomeMap.put(Biome.getBiome(5), MC_WorldBiomeType.TAIGA);
+        biomeMap.put(Biome.getBiome(6), MC_WorldBiomeType.SWAMPLAND);
+        biomeMap.put(Biome.getBiome(7), MC_WorldBiomeType.RIVER);
+        biomeMap.put(Biome.getBiome(8), MC_WorldBiomeType.HELL);
+        biomeMap.put(Biome.getBiome(9), MC_WorldBiomeType.THE_END);
+        biomeMap.put(Biome.getBiome(10), MC_WorldBiomeType.FROZEN_OCEAN);
+        biomeMap.put(Biome.getBiome(11), MC_WorldBiomeType.FROZEN_RIVER);
+        biomeMap.put(Biome.getBiome(12), MC_WorldBiomeType.ICE_PLAINS);
+        biomeMap.put(Biome.getBiome(13), MC_WorldBiomeType.ICE_MOUNTAINS);
+        biomeMap.put(Biome.getBiome(14), MC_WorldBiomeType.MUSHROOM_ISLAND);
+        biomeMap.put(Biome.getBiome(15), MC_WorldBiomeType.MUSHROOM_ISLAND_SHORE);
+        biomeMap.put(Biome.getBiome(16), MC_WorldBiomeType.BEACH);
+        biomeMap.put(Biome.getBiome(17), MC_WorldBiomeType.DESERT_HILLS);
+        biomeMap.put(Biome.getBiome(18), MC_WorldBiomeType.FOREST_HILLS);
+        biomeMap.put(Biome.getBiome(19), MC_WorldBiomeType.TAIGA_HILLS);
+        biomeMap.put(Biome.getBiome(20), MC_WorldBiomeType.EXTREME_HILLS_EDGE);
+        biomeMap.put(Biome.getBiome(21), MC_WorldBiomeType.JUNGLE);
+        biomeMap.put(Biome.getBiome(22), MC_WorldBiomeType.JUNGLE_HILLS);
+        biomeMap.put(Biome.getBiome(23), MC_WorldBiomeType.JUNGLE_EDGE);
+        biomeMap.put(Biome.getBiome(24), MC_WorldBiomeType.DEEP_OCEAN);
+        biomeMap.put(Biome.getBiome(25), MC_WorldBiomeType.STONE_BEACH);
+        biomeMap.put(Biome.getBiome(26), MC_WorldBiomeType.COLD_BEACH);
+        biomeMap.put(Biome.getBiome(27), MC_WorldBiomeType.BIRCH_FOREST);
+        biomeMap.put(Biome.getBiome(28), MC_WorldBiomeType.BIRCH_FOREST_HILLS);
+        biomeMap.put(Biome.getBiome(29), MC_WorldBiomeType.ROOFED_FOREST);
+        biomeMap.put(Biome.getBiome(30), MC_WorldBiomeType.COLD_TAIGA);
+        biomeMap.put(Biome.getBiome(31), MC_WorldBiomeType.COLD_TAIGA_HILLS);
+        biomeMap.put(Biome.getBiome(32), MC_WorldBiomeType.MEGA_TAIGA);
+        biomeMap.put(Biome.getBiome(33), MC_WorldBiomeType.MEGA_TAIGA_HILLS);
+        biomeMap.put(Biome.getBiome(34), MC_WorldBiomeType.EXTREME_HILLS_PLUS);
+        biomeMap.put(Biome.getBiome(35), MC_WorldBiomeType.SAVANNA);
+        biomeMap.put(Biome.getBiome(36), MC_WorldBiomeType.SAVANNA_PLATEAU);
+        biomeMap.put(Biome.getBiome(37), MC_WorldBiomeType.MESA);
+        biomeMap.put(Biome.getBiome(38), MC_WorldBiomeType.MESA_PLATEAU_F);
+        biomeMap.put(Biome.getBiome(39), MC_WorldBiomeType.MESA_PLATEAU);
+        biomeMap.put(Biome.getBiome(127), MC_WorldBiomeType.VOID);
+        biomeMap.put(Biome.getBiome(129), MC_WorldBiomeType.SUNFLOWER_PLAINS);
+        biomeMap.put(Biome.getBiome(130), MC_WorldBiomeType.DESERT_M);
+        biomeMap.put(Biome.getBiome(131), MC_WorldBiomeType.EXTREME_HILLS_M);
+        biomeMap.put(Biome.getBiome(132), MC_WorldBiomeType.FLOWER_FOREST);
+        biomeMap.put(Biome.getBiome(133), MC_WorldBiomeType.TAIGA_M);
+        biomeMap.put(Biome.getBiome(134), MC_WorldBiomeType.SWAMPLAND_M);
+        biomeMap.put(Biome.getBiome(140), MC_WorldBiomeType.ICE_PLAINS_SPIKES);
+        biomeMap.put(Biome.getBiome(149), MC_WorldBiomeType.JUNGLE_M);
+        biomeMap.put(Biome.getBiome(151), MC_WorldBiomeType.JUNGLE_EDGE_M);
+        biomeMap.put(Biome.getBiome(155), MC_WorldBiomeType.BIRCH_FOREST_M);
+        biomeMap.put(Biome.getBiome(156), MC_WorldBiomeType.BIRCH_FOREST_HILLS_M);
+        biomeMap.put(Biome.getBiome(157), MC_WorldBiomeType.ROOFED_FOREST_M);
+        biomeMap.put(Biome.getBiome(158), MC_WorldBiomeType.COLD_TAIGA_M);
+        biomeMap.put(Biome.getBiome(160), MC_WorldBiomeType.MEGA_SPRUCE_TAIGA);
+        biomeMap.put(Biome.getBiome(161), MC_WorldBiomeType.REDWOOD_TAIGA_HILLS_M);
+        biomeMap.put(Biome.getBiome(162), MC_WorldBiomeType.EXTREME_HILLS_PLUS_M);
+        biomeMap.put(Biome.getBiome(163), MC_WorldBiomeType.SAVANNA_M);
+        biomeMap.put(Biome.getBiome(164), MC_WorldBiomeType.SAVANNA_PLATEAU_M);
+        biomeMap.put(Biome.getBiome(165), MC_WorldBiomeType.MESA_M);
+        biomeMap.put(Biome.getBiome(166), MC_WorldBiomeType.MESA_PLATEAU_F_M);
+        biomeMap.put(Biome.getBiome(167), MC_WorldBiomeType.MESA_PLATEAU_M);
 
         handMap.put(EnumHand.MAIN_HAND, MC_Hand.MAIN_HAND);
         handMap.put(EnumHand.OFF_HAND, MC_Hand.OFF_HAND);
 
-        attributeMap.put(MC_AttributeType.ARMOR, SharedMonsterAttributes.g);
-        attributeMap.put(MC_AttributeType.ARMOR_TOUGHNESS, SharedMonsterAttributes.h);
-        attributeMap.put(MC_AttributeType.ATTACK_DAMAGE, SharedMonsterAttributes.attackDamage);
-        attributeMap.put(MC_AttributeType.FOLLOW_RANGE, SharedMonsterAttributes.followRange);
-        attributeMap.put(MC_AttributeType.KNOCKBACK_RESISTANCE, SharedMonsterAttributes.knockbackResistance);
-        attributeMap.put(MC_AttributeType.MAX_HEALTH, SharedMonsterAttributes.maxHealth);
-        attributeMap.put(MC_AttributeType.MOVEMENT_SPEED, SharedMonsterAttributes.movementSpeed);
-        attributeMap.put(MC_AttributeType.PLAYER_ATTACK_SPEED, SharedMonsterAttributes.f);
-        attributeMap.put(MC_AttributeType.PLAYER_LUCK, SharedMonsterAttributes.i);
+        attributeMap.put(MC_AttributeType.ARMOR, SharedMonsterAttributes.ARMOR);
+        attributeMap.put(MC_AttributeType.ARMOR_TOUGHNESS, SharedMonsterAttributes.ARMOR_TOUGHNESS);
+        attributeMap.put(MC_AttributeType.ATTACK_DAMAGE, SharedMonsterAttributes.ATTACK_DAMAGE);
+        attributeMap.put(MC_AttributeType.FOLLOW_RANGE, SharedMonsterAttributes.FOLLOW_RANGE);
+        attributeMap.put(MC_AttributeType.KNOCKBACK_RESISTANCE, SharedMonsterAttributes.KNOCKBACK_RESISTANCE);
+        attributeMap.put(MC_AttributeType.MAX_HEALTH, SharedMonsterAttributes.MAX_HEALTH);
+        attributeMap.put(MC_AttributeType.MOVEMENT_SPEED, SharedMonsterAttributes.MOVEMENT_SPEED);
+        attributeMap.put(MC_AttributeType.PLAYER_ATTACK_SPEED, SharedMonsterAttributes.ATTACK_SPEED);
+        attributeMap.put(MC_AttributeType.PLAYER_LUCK, SharedMonsterAttributes.LUCK);
 
         operatorMap.put(MC_AttributeModifier.Operator.ADD_CONSTANT, 0);
         operatorMap.put(MC_AttributeModifier.Operator.ADD_SCALAR_BASE, 1);
@@ -483,7 +486,7 @@ public class PluginHelper {
             return MC_DamageType.FALL;
         } else if (damageSource == DamageSource.fallingBlock) {
             return MC_DamageType.FALLING_BLOCK;
-        } else if (damageSource == DamageSource.p) {
+        } else if (damageSource == DamageSource.generic) {
             return MC_DamageType.GENERIC;
         } else if (damageSource == DamageSource.inFire) {
             return MC_DamageType.IN_FIRE;
@@ -497,11 +500,11 @@ public class PluginHelper {
             return MC_DamageType.MAGIC;
         } else if (damageSource == DamageSource.onFire) {
             return MC_DamageType.ON_FIRE;
-        } else if (damageSource == DamageSource.generic) {
+        } else if (damageSource == DamageSource.outOfWorld) {
             return MC_DamageType.OUT_OF_WORLD;
         } else if (damageSource == DamageSource.starve) {
             return MC_DamageType.STARVE;
-        } else if (damageSource == DamageSource.anvil) {
+        } else if (damageSource == DamageSource.wither) {
             return MC_DamageType.WITHER;
         } else {
             if (damageSource.getDamageType() != null) {
@@ -552,9 +555,9 @@ public class PluginHelper {
 
     public static DamageSource unwrap(MC_DamageType cause) {
         return cause == null
-                ? DamageSource.magic
+                ? DamageSource.generic
                 : (cause == MC_DamageType.ANVIL
-                ? DamageSource.fallingBlock
+                ? DamageSource.anvil
                 : (cause == MC_DamageType.CACTUS
                 ? DamageSource.cactus
                 : (cause == MC_DamageType.DROWN
@@ -563,10 +566,10 @@ public class PluginHelper {
                 ? DamageSource.fall
                 : (cause
                 == MC_DamageType.FALLING_BLOCK
-                ? DamageSource.p
+                ? DamageSource.fallingBlock
                 : (cause
                 == MC_DamageType.GENERIC
-                ? DamageSource.magic
+                ? DamageSource.generic
                 : (cause
                 == MC_DamageType.IN_FIRE
                 ? DamageSource.inFire
@@ -581,19 +584,19 @@ public class PluginHelper {
                 ? DamageSource.lightningBolt
                 : (cause
                 == MC_DamageType.MAGIC
-                ? DamageSource.wither
+                ? DamageSource.magic
                 : (cause
                 == MC_DamageType.ON_FIRE
                 ? DamageSource.onFire
                 : (cause
                 == MC_DamageType.OUT_OF_WORLD
-                ? DamageSource.generic
+                ? DamageSource.outOfWorld
                 : (cause
                 == MC_DamageType.STARVE
                 ? DamageSource.starve
                 : (cause
                 == MC_DamageType.WITHER
-                ? DamageSource.anvil
+                ? DamageSource.wither
                 : (cause
                 == MC_DamageType.MOB
                 ? DamageSource.causeMobDamage(null)
@@ -617,10 +620,10 @@ public class PluginHelper {
                 ? DamageSource.causeThornsDamage(null)
                 : (cause
                 == MC_DamageType.EXPLOSION
-                ? DamageSource.setExplosionSource(null)
+                ? DamageSource.causeExplosionDamage((EntityLivingBase) null)
                 : (cause
                 == MC_DamageType.EXPLOSION_PLAYER
-                ? DamageSource.b(null)
+                ? DamageSource.causeExplosionDamage((Explosion) null)
                 : DamageSource.generic))))))))))))))))))))))));
 
     }

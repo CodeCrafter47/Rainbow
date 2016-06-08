@@ -4,8 +4,9 @@ package org.projectrainbow.commands;
 import PluginReference.ChatColor;
 import PluginReference.MC_Command;
 import PluginReference.MC_Player;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.InventoryEnderChest;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.InventoryEnderChest;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +35,7 @@ public class _CmdEnderchest implements MC_Command {
 
         InventoryEnderChest ender = p.getInventoryEnderChest();
 
-        p.a(ender);
+        p.displayGUIChest(ender);
     }
 
     @Override

@@ -2,8 +2,8 @@ package org.projectrainbow.mixins;
 
 import PluginReference.MC_Entity;
 import PluginReference.MC_PrimedTNT;
-import net.minecraft.src.EntityLivingBase;
-import net.minecraft.src.EntityTNTPrimed;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityTNTPrimed;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 

@@ -1,10 +1,10 @@
 package org.projectrainbow.mixins;
 
-import net.minecraft.src.BiomeGenBase;
-import net.minecraft.src.Block;
-import net.minecraft.src.ChunkPrimer;
-import net.minecraft.src.IBlockState;
-import net.minecraft.src.World;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.chunk.ChunkPrimer;
 import org.projectrainbow.GeneratedColumnWrapper;
 import org.projectrainbow.Hooks;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,8 +14,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Random;
 
-@Mixin(BiomeGenBase.class)
-public class MixinBiomeGenBase {
+@Mixin(Biome.class)
+public class MixinBiome {
 
     @Inject(method = "generateBiomeTerrain", at = @At("HEAD"), cancellable = true)
     private void onChunkGen(World var1, Random var2, ChunkPrimer var3, int xCoord, int zCoord, double var6, CallbackInfo callbackInfo) {

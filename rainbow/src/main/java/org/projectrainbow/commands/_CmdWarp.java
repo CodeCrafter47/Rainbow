@@ -5,7 +5,7 @@ import PluginReference.ChatColor;
 import PluginReference.MC_Command;
 import PluginReference.MC_Location;
 import PluginReference.MC_Player;
-import net.minecraft.src.ICommandSender;
+import net.minecraft.command.ICommandSender;
 import org.projectrainbow._DiwUtils;
 import joebkt._SerializableLocation;
 import org.projectrainbow._WarpManager;

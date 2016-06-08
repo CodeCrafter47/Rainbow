@@ -2,8 +2,8 @@ package org.projectrainbow.mixins;
 
 import PluginReference.MC_Block;
 import PluginReference.MC_Enderman;
-import net.minecraft.src.EntityEnderman;
-import net.minecraft.src.IBlockState;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.monster.EntityEnderman;
 import org.projectrainbow.BlockWrapper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

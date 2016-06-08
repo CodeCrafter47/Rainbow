@@ -96,7 +96,7 @@
         <dependency>
             <groupId>org.spongepowered</groupId>
             <artifactId>mixin</artifactId>
-            <version>0.5.3-SNAPSHOT</version>
+            <version>0.5.6-SNAPSHOT</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>
@@ -239,7 +239,7 @@
             <plugin>
                 <groupId>net.md-5</groupId>
                 <artifactId>specialsource-maven-plugin</artifactId>
-                <version>1.2.1-CodeCrafter47-4-SNAPSHOT</version>
+                <version>1.2.1-CodeCrafter47-5-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>reobfuscate</id>

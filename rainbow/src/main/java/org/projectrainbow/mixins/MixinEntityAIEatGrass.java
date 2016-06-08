@@ -4,9 +4,9 @@ import PluginReference.MC_Entity;
 import PluginReference.MC_EventInfo;
 import PluginReference.MC_Location;
 import PluginReference.MC_MiscGriefType;
-import net.minecraft.src.BlockPos;
-import net.minecraft.src.EntityAIEatGrass;
-import net.minecraft.src.EntityLiving;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.ai.EntityAIEatGrass;
+import net.minecraft.util.math.BlockPos;
 import org.projectrainbow.Hooks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -20,8 +20,8 @@ public class MixinEntityAIEatGrass {
     @Shadow
     private EntityLiving grassEaterEntity;
 
-    @Inject(method = "updateTask", at = @At(value = "INVOKE", target = "net.minecraft.src.World.destroyBlock(Lnet/minecraft/src/BlockPos;Z)Z"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    private void grief(CallbackInfo callbackInfo, BlockPos pos) {
+    @Inject(method = "updateTask", at = @At(value = "INVOKE", target = "net.minecraft.world.World.destroyBlock(Lnet/minecraft/util/math/BlockPos;Z)Z"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    private void grief0(CallbackInfo callbackInfo, BlockPos pos) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptEntityMiscGrief((MC_Entity) grassEaterEntity, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), grassEaterEntity.dimension), MC_MiscGriefType.SHEEP_GRAZING_GRASS, ei);
         if (ei.isCancelled) {
@@ -29,8 +29,8 @@ public class MixinEntityAIEatGrass {
         }
     }
 
-    @Inject(method = "updateTask", at = @At(value = "INVOKE", target = "net.minecraft.src.Block.getIdFromBlock(Lnet/minecraft/src/Block;)I"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    private void grief(CallbackInfo callbackInfo, BlockPos pos0, BlockPos pos) {
+    @Inject(method = "updateTask", at = @At(value = "INVOKE", target = "net.minecraft.block.Block.getIdFromBlock(Lnet/minecraft/block/Block;)I"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    private void grief1(CallbackInfo callbackInfo, BlockPos pos0, BlockPos pos) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptEntityMiscGrief((MC_Entity) grassEaterEntity, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), grassEaterEntity.dimension), MC_MiscGriefType.SHEEP_GRAZING_GRASS, ei);
         if (ei.isCancelled) {

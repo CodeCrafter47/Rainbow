@@ -1,7 +1,7 @@
 package org.projectrainbow.mixins;
 
 import PluginReference.MC_Zombie;
-import net.minecraft.src.EntityZombie;
+import net.minecraft.entity.monster.EntityZombie;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Intrinsic;

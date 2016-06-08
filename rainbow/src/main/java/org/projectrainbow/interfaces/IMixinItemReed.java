@@ -1,6 +1,6 @@
 package org.projectrainbow.interfaces;
 
-import net.minecraft.src.Block;
+import net.minecraft.block.Block;
 
 public interface IMixinItemReed {
 

@@ -1,7 +1,7 @@
 package org.projectrainbow.mixins;
 
 import PluginReference.MC_AttributeModifier;
-import net.minecraft.src.AttributeModifier;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import org.projectrainbow.PluginHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

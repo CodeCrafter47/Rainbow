@@ -3,11 +3,11 @@ package org.projectrainbow.commands;
 import PluginReference.MC_Player;
 import PluginReference.RainbowUtils;
 import com.google.common.io.Files;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandManager;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.CommandBase;
-import net.minecraft.src.CommandException;
-import net.minecraft.src.ICommandManager;
-import net.minecraft.src.ICommandSender;
 import org.projectrainbow._ColorHelper;
 import joebkt._CronData;
 import org.projectrainbow._DiwUtils;
@@ -41,7 +41,7 @@ public class _CmdCron extends CommandBase {
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(MinecraftServer minecraftServer, ICommandSender cs) {
+    public boolean checkPermission(MinecraftServer minecraftServer, ICommandSender cs) {
         return (!(cs instanceof MC_Player)) || ((MC_Player) cs).hasPermission("rainbow.cron");
     }
 
@@ -143,7 +143,7 @@ public class _CmdCron extends CommandBase {
     }
 
     @Override
-    public void processCommand(MinecraftServer minecraftServer, ICommandSender cs, String[] args) throws CommandException {
+    public void execute(MinecraftServer minecraftServer, ICommandSender cs, String[] args) throws CommandException {
         if (args.length >= 1 && args[0].equalsIgnoreCase("add")) {
             if (args.length < 4) {
                 _DiwUtils.reply(cs, _ColorHelper.RED + "Usage: /cron add " + _ColorHelper.YELLOW + "MyLoop " + _ColorHelper.WHITE + "60s " + _ColorHelper.GOLD + "/give @a cake");

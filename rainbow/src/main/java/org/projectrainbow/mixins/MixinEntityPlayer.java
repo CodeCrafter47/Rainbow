@@ -5,14 +5,14 @@ import PluginReference.MC_ItemStack;
 import PluginReference.MC_Player;
 import com.google.common.base.Objects;
 import com.mojang.authlib.GameProfile;
-import net.minecraft.src.BlockPos;
-import net.minecraft.src.Container;
-import net.minecraft.src.EntityItem;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.FoodStats;
-import net.minecraft.src.InventoryPlayer;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.PlayerCapabilities;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerCapabilities;
+import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.FoodStats;
+import net.minecraft.util.math.BlockPos;
 import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
@@ -73,7 +73,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
      * To do this the first call to getName() is intercepted and if we have a colored
      * name for that player we return it. Otherwise we return the result of getName().
      */
-    @Redirect(method = "getDisplayName", at = @At(value = "INVOKE", target = "net.minecraft.src.EntityPlayer.getName()Ljava/lang/String;", ordinal = 0))
+    @Redirect(method = "getDisplayName", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.EntityPlayer.getName()Ljava/lang/String;", ordinal = 0))
     public String hook_getName(EntityPlayer player) {
         String s = _CmdNameColor.ColorNameDict.get(player.getUniqueID().toString());
         if (s == null) {
@@ -85,7 +85,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
         return player.getName();
     }
 
-    @Inject(method = "dropItem", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "dropItem(Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/item/EntityItem;", at = @At("HEAD"), cancellable = true)
     private void onItemDropped(ItemStack var1, boolean var2, boolean var3, CallbackInfoReturnable<EntityItem> callbackInfo) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptItemDrop((MC_Player) this, Objects.firstNonNull((MC_ItemStack) (Object) var1, EmptyItemStack.getInstance()), ei);

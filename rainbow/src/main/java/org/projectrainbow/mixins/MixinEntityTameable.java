@@ -2,8 +2,8 @@ package org.projectrainbow.mixins;
 
 import PluginReference.MC_AnimalTameable;
 import PluginReference.MC_Player;
-import net.minecraft.src.EntityLivingBase;
-import net.minecraft.src.EntityTameable;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityTameable;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Intrinsic;
@@ -29,13 +29,13 @@ public abstract class MixinEntityTameable extends MixinEntityAnimal implements M
     public abstract void setSitting(boolean var1);
 
     @Shadow
-    public abstract UUID b();
+    public abstract UUID getOwnerId();
 
     @Shadow
-    public abstract void b(UUID var1);
+    public abstract void setOwnerId(UUID var1);
 
     @Shadow
-    public abstract EntityLivingBase getOwnerEntity();
+    public abstract EntityLivingBase shadow$getOwner();
 
     @Shadow
     protected abstract void playTameEffect(boolean var1);
@@ -62,12 +62,12 @@ public abstract class MixinEntityTameable extends MixinEntityAnimal implements M
 
     @Override
     public String getUUIDOfOwner() {
-        return b().toString();
+        return getOwnerId().toString();
     }
 
     @Override
     public void setUUIDOfOwner(String uuid) {
-        b(UUID.fromString(uuid));
+        setOwnerId(UUID.fromString(uuid));
     }
 
     @Override
@@ -77,7 +77,7 @@ public abstract class MixinEntityTameable extends MixinEntityAnimal implements M
 
     @Override
     public MC_Player getOwner() {
-        return (MC_Player) getOwnerEntity();
+        return (MC_Player) shadow$getOwner();
     }
 
     @Override

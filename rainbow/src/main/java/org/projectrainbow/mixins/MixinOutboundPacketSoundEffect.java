@@ -1,39 +1,39 @@
 package org.projectrainbow.mixins;
 
-import net.minecraft.src.OutboundPacketSoundEffect;
-import net.minecraft.src.SoundEffect;
+import net.minecraft.network.play.server.SPacketSoundEffect;
+import net.minecraft.util.SoundEvent;
 import org.projectrainbow.interfaces.IMixinOutboundPacketSoundEffect;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(OutboundPacketSoundEffect.class)
+@Mixin(SPacketSoundEffect.class)
 public class MixinOutboundPacketSoundEffect implements IMixinOutboundPacketSoundEffect {
     @Shadow
-    private SoundEffect a;
+    private SoundEvent sound;
     @Shadow
-    private int c;
+    private int posX;
     @Shadow
-    private int d;
+    private int posY;
     @Shadow
-    private int e;
+    private int posZ;
 
     @Override
     public int getX() {
-        return c;
+        return posX;
     }
 
     @Override
     public int getY() {
-        return d;
+        return posY;
     }
 
     @Override
     public int getZ() {
-        return e;
+        return posZ;
     }
 
     @Override
     public String getSoundName() {
-        return SoundEffect.a.getNameForObject(a).getResourcePath();
+        return SoundEvent.REGISTRY.getNameForObject(sound).getResourcePath();
     }
 }

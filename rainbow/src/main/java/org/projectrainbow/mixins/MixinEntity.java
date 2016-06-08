@@ -13,16 +13,16 @@ import PluginReference.MC_World;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
-import net.minecraft.src.AxisAlignedBB;
-import net.minecraft.src.BlockPos;
-import net.minecraft.src.DamageSource;
-import net.minecraft.src.Entity;
-import net.minecraft.src.EntityList;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.IBlockState;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.World;
-import net.minecraft.src.WorldServer;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
 import org.projectrainbow._DiwUtils;
@@ -118,14 +118,14 @@ public abstract class MixinEntity implements MC_Entity {
     @Shadow
     public abstract boolean isEntityInvulnerable(DamageSource var1);
 
-    @Shadow(prefix = "isSneaking$")
-    public abstract boolean isSneaking$aK();
+    @Shadow
+    public abstract boolean shadow$isSneaking();
 
-    @Shadow(prefix = "isInvisible$")
-    public abstract boolean isInvisible$aN();
+    @Shadow
+    public abstract boolean shadow$isInvisible();
 
-    @Shadow(prefix = "startRiding$")
-    public abstract boolean startRiding$m(Entity var1);
+    @Shadow
+    public abstract boolean shadow$startRiding(Entity var1);
 
     @Shadow
     public abstract String getName();
@@ -142,14 +142,14 @@ public abstract class MixinEntity implements MC_Entity {
     @Shadow
     public abstract int getEntityId();
 
-    @Shadow(prefix = "getRiddenEntity$")
-    public abstract Entity getRiddenEntity$getRider();
+    @Shadow
+    public abstract Entity getRidingEntity();
 
     @Shadow
     public abstract void setPosition(double var1, double var3, double var5);
 
     @Shadow
-    public abstract void stopRiding();
+    public abstract void dismountRidingEntity();
 
     protected void setInvulnerable(boolean value) {
         invulnerable = value;
@@ -157,12 +157,12 @@ public abstract class MixinEntity implements MC_Entity {
 
     private float waterFallDistance = 0;
 
-    @Inject(method = "handleWaterMovement", at = @At(value = "FIELD", target = "net.minecraft.src.Entity.fallDistance:F"))
+    @Inject(method = "handleWaterMovement", at = @At(value = "FIELD", target = "net.minecraft.entity.Entity.fallDistance:F"))
     private void onWaterEntered(CallbackInfoReturnable<Boolean> callbackInfo) {
         waterFallDistance = fallDistance;
     }
 
-    @Inject(method = "a(DZLnet/minecraft/src/IBlockState;Lnet/minecraft/src/BlockPos;)V", at = @At("HEAD"))
+    @Inject(method = "updateFallState", at = @At("HEAD"))
     protected void a(double var1, boolean onGround, IBlockState var4, BlockPos var5, CallbackInfo callbackInfo) {
         if (onGround && fallDistance > 0) {
             Hooks.onFallComplete(this, this.fallDistance, new MC_Location(var5.getX(), var5.getY(), var5.getZ(), dimension), inWater);
@@ -172,7 +172,7 @@ public abstract class MixinEntity implements MC_Entity {
         }
     }
 
-    @Redirect(method = "applyEntityCollision", at = @At(value = "INVOKE", target = "net.minecraft.src.Entity.addVelocity(DDD)V"))
+    @Redirect(method = "applyEntityCollision", at = @At(value = "INVOKE", target = "net.minecraft.entity.Entity.addVelocity(DDD)V"))
     void onEntityPushed(Entity pushedEntity, double xVelocity, double yVelocity, double zVelocity, Entity other) {
         MC_Entity entity = pushedEntity == other ? this : (MC_Entity) other;
         MC_EventInfo ei = new MC_EventInfo();
@@ -211,7 +211,7 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Override
     public MC_Entity getVehicle() {
-        return (MC_Entity) getRiddenEntity$getRider();
+        return (MC_Entity) getRidingEntity();
     }
 
     @Override
@@ -224,20 +224,20 @@ public abstract class MixinEntity implements MC_Entity {
         if (var1 == null) {
             MC_Entity rider = getRider();
             if (rider != null) {
-                ((Entity) rider).stopRiding();
+                ((Entity) rider).dismountRidingEntity();
             }
             return;
         }
-        ((Entity) var1).m((Entity) (Object) this);
+        ((Entity) var1).startRiding((Entity) (Object) this);
     }
 
     @Override
     public void setVehicle(MC_Entity var1) {
         if (var1 == null) {
-            ((Entity) (Object) this).stopRiding();
+            ((Entity) (Object) this).dismountRidingEntity();
             return;
         }
-        startRiding$m((Entity) var1);
+        shadow$startRiding((Entity) var1);
     }
 
     @Override
@@ -376,12 +376,12 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Override
     public boolean isSneaking() {
-        return isSneaking$aK();
+        return shadow$isSneaking();
     }
 
     @Override
     public boolean isInvisible() {
-        return isInvisible$aN();
+        return shadow$isInvisible();
     }
 
     @Intrinsic
@@ -416,12 +416,12 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Override
     public void addRider(MC_Entity ent) {
-        ((Entity) ent).m((Entity) (Object) this);
+        ((Entity) ent).startRiding((Entity) (Object) this);
     }
 
     @Override
     public void removeRider(MC_Entity ent) {
-        ((Entity)ent).stopRiding();
+        ((Entity)ent).dismountRidingEntity();
     }
 
     @Override
@@ -471,28 +471,29 @@ public abstract class MixinEntity implements MC_Entity {
     }
 
     public void teleport(WorldServer world, double x, double y, double z, float yaw, float pitch, boolean safe) {
-        stopRiding();
+        dismountRidingEntity();
         for (Entity passenger : getPassengers()) {
-            passenger.stopRiding();
+            passenger.dismountRidingEntity();
         }
         if (world != worldObj) {
             final WorldServer fromWorld = (WorldServer) worldObj;
             final WorldServer toWorld = world;
 
-            fromWorld.removePlayerEntityDangerously((EntityPlayerMP) (Object) this);
+            fromWorld.removeEntityDangerously((EntityPlayerMP) (Object) this);
             dimension = ((MC_World) toWorld).getDimension();
             setPositionAndRotation(x, y, z, yaw, pitch);
 
-            toWorld.z().loadChunk((int) posX >> 4, (int) posZ >> 4);
+            toWorld.getChunkProvider().loadChunk((int) posX >> 4, (int) posZ >> 4);
 
-            while(safe && !toWorld.getCollidingBoundingBoxes((Entity) (Object) this, this.getEntityBoundingBox()).isEmpty() && this.posY < 255.0D) {
+            while(safe && !toWorld.getCollisionBoxes((Entity) (Object) this, this.getEntityBoundingBox()).isEmpty() && this.posY < 255.0D) {
                 this.setPosition(this.posX, this.posY + 1.0D, this.posZ);
             }
 
+            this.setWorld(toWorld);
             toWorld.spawnEntityInWorld((Entity) (Object) this);
 
-            fromWorld.m(); // resetUpdateEntityTick
-            toWorld.m();
+            fromWorld.resetUpdateEntityTick();
+            toWorld.resetUpdateEntityTick();
         } else {
             setPositionAndRotation(x, y, z, yaw, pitch);
         }

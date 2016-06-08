@@ -11,50 +11,50 @@ import PluginReference.MC_Server;
 import PluginReference.MC_World;
 import com.google.common.base.Objects;
 import com.google.common.io.Files;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityMinecartContainer;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.AnimalChest;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerBeacon;
+import net.minecraft.inventory.ContainerBrewingStand;
+import net.minecraft.inventory.ContainerChest;
+import net.minecraft.inventory.ContainerDispenser;
+import net.minecraft.inventory.ContainerEnchantment;
+import net.minecraft.inventory.ContainerFurnace;
+import net.minecraft.inventory.ContainerHopper;
+import net.minecraft.inventory.ContainerHorseInventory;
+import net.minecraft.inventory.ContainerMerchant;
+import net.minecraft.inventory.ContainerPlayer;
+import net.minecraft.inventory.ContainerRepair;
+import net.minecraft.inventory.ContainerWorkbench;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryEnderChest;
+import net.minecraft.inventory.InventoryLargeChest;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.network.play.server.SPacketChat;
+import net.minecraft.network.play.server.SPacketRespawn;
+import net.minecraft.network.play.server.SPacketSetExperience;
+import net.minecraft.network.play.server.SPacketSoundEffect;
+import net.minecraft.network.play.server.SPacketSpawnPosition;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.AnimalChest;
-import net.minecraft.src.BlockPos;
-import net.minecraft.src.ChatComponentText;
-import net.minecraft.src.Container;
-import net.minecraft.src.ContainerBeacon;
-import net.minecraft.src.ContainerBrewingStand;
-import net.minecraft.src.ContainerChest;
-import net.minecraft.src.ContainerDispenser;
-import net.minecraft.src.ContainerEnchantment;
-import net.minecraft.src.ContainerFurnace;
-import net.minecraft.src.ContainerHopper;
-import net.minecraft.src.ContainerHorseInventory;
-import net.minecraft.src.ContainerMerchant;
-import net.minecraft.src.ContainerPlayer;
-import net.minecraft.src.ContainerRepair;
-import net.minecraft.src.ContainerWorkbench;
-import net.minecraft.src.DamageSource;
-import net.minecraft.src.Entity;
-import net.minecraft.src.EntityMinecartContainer;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.EnumSoundCategory;
-import net.minecraft.src.IChatComponent;
-import net.minecraft.src.ICommandSender;
-import net.minecraft.src.InventoryEnderChest;
-import net.minecraft.src.ItemInWorldManager;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.NBTTagList;
-import net.minecraft.src.NetHandlerPlayServer;
-import net.minecraft.src.OutboundPacketChat;
-import net.minecraft.src.OutboundPacketRespawn;
-import net.minecraft.src.OutboundPacketSetExperience;
-import net.minecraft.src.OutboundPacketSoundEffect;
-import net.minecraft.src.OutboundPacketSpawnPosition;
-import net.minecraft.src.ResourceLocation;
-import net.minecraft.src.ServerConfigurationManager;
-import net.minecraft.src.SoundEffect;
-import net.minecraft.src.TileEntityChest;
-import net.minecraft.src.WorldServer;
-import net.minecraft.src.WorldSettings;
-import net.minecraft.src.qe;
-import net.minecraft.src.qg;
+import net.minecraft.server.management.PlayerInteractionManager;
+import net.minecraft.server.management.PlayerList;
+import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.WorldSettings;
 import org.projectrainbow.BlockWrapper;
 import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
@@ -106,11 +106,11 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
      * @Shadow allows us to access field of the target class.
      */
     @Shadow
-    public NetHandlerPlayServer playerNetServerHandler;
+    public NetHandlerPlayServer connection;
 
     @Shadow
     @Final
-    public ItemInWorldManager theItemInWorldManager;
+    public PlayerInteractionManager interactionManager;
 
     @Shadow
     private int lastExperience;
@@ -147,9 +147,9 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
     }
 
     public void teleport(WorldServer world, double x, double y, double z, float yaw, float pitch, boolean safe) {
-        stopRiding();
+        dismountRidingEntity();
         for (Entity passenger : getPassengers()) {
-            passenger.stopRiding();
+            passenger.dismountRidingEntity();
         }
         // Close open containers
         if (openContainer != ((EntityPlayerMP) (Object) this).inventoryContainer) {
@@ -160,16 +160,16 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
             final WorldServer fromWorld = (WorldServer) worldObj;
             final WorldServer toWorld = world;
             fromWorld.getEntityTracker().removePlayerFromTrackers((EntityPlayerMP) (Object) this);
-            fromWorld.getPlayerManager().removePlayer((EntityPlayerMP) (Object) this);
-            mcServer.getConfigurationManager().getPlayers().remove(this);
+            fromWorld.getPlayerChunkMap().removePlayer((EntityPlayerMP) (Object) this);
+            mcServer.getPlayerList().getPlayerList().remove(this);
             fromWorld.getEntityTracker().untrackEntity((EntityPlayerMP) (Object) this);
 
-            fromWorld.removePlayerEntityDangerously((EntityPlayerMP) (Object) this);
+            fromWorld.removeEntityDangerously((EntityPlayerMP) (Object) this);
             int currentDim = dimension;
             dimension = ((MC_World) toWorld).getDimension();
             setPositionAndRotation(x, y, z, yaw, pitch);
 
-            toWorld.z().loadChunk((int) posX >> 4, (int) posZ >> 4);
+            toWorld.getChunkProvider().loadChunk((int) posX >> 4, (int) posZ >> 4);
 
             EntityPlayerMP entityplayermp1 = (EntityPlayerMP) (Object) this;
 
@@ -177,34 +177,34 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
             int clientDimension = ((IMixinWorldServer)toWorld).getClientDimension();
             // Force vanilla client to refresh their chunk cache if same dimension
             if (((IMixinWorldServer)fromWorld).getClientDimension() == clientDimension) {
-                entityplayermp1.playerNetServerHandler.sendPacket(
-                        new OutboundPacketRespawn((byte) (clientDimension >= 0 ? -1 : 0), toWorld.getDifficulty(), toWorld.getWorldInfo().getTerrainType(),
-                                entityplayermp1.theItemInWorldManager.getGameType()));
+                entityplayermp1.connection.sendPacket(
+                        new SPacketRespawn((byte) (clientDimension >= 0 ? -1 : 0), toWorld.getDifficulty(), toWorld.getWorldInfo().getTerrainType(),
+                                entityplayermp1.interactionManager.getGameType()));
             }
 
-            entityplayermp1.playerNetServerHandler.sendPacket(new OutboundPacketRespawn(clientDimension, toWorld.getDifficulty(), toWorld.getWorldInfo().getTerrainType(), entityplayermp1.theItemInWorldManager.getGameType()));
+            entityplayermp1.connection.sendPacket(new SPacketRespawn(clientDimension, toWorld.getDifficulty(), toWorld.getWorldInfo().getTerrainType(), entityplayermp1.interactionManager.getGameType()));
             setWorld(toWorld);
             isDead = false;
-            while(safe && !toWorld.getCollidingBoundingBoxes((Entity) (Object) this, this.getEntityBoundingBox()).isEmpty() && this.posY < 255.0D) {
+            while(safe && !toWorld.getCollisionBoxes((Entity) (Object) this, this.getEntityBoundingBox()).isEmpty() && this.posY < 255.0D) {
                 this.setPosition(this.posX, this.posY + 1.0D, this.posZ);
             }
-            entityplayermp1.playerNetServerHandler.setPlayerLocation(entityplayermp1.posX, entityplayermp1.posY, entityplayermp1.posZ, entityplayermp1.rotationYaw, entityplayermp1.rotationPitch);
+            entityplayermp1.connection.setPlayerLocation(entityplayermp1.posX, entityplayermp1.posY, entityplayermp1.posZ, entityplayermp1.rotationYaw, entityplayermp1.rotationPitch);
             entityplayermp1.setSneaking(false);
             MC_Location compassTarget = getCompassTarget();
-            entityplayermp1.playerNetServerHandler.sendPacket(new OutboundPacketSpawnPosition(new BlockPos(compassTarget.getBlockX(), compassTarget.getBlockY(), compassTarget.getBlockZ())));
-            entityplayermp1.playerNetServerHandler.sendPacket(new OutboundPacketSetExperience(entityplayermp1.experience, entityplayermp1.experienceTotal, entityplayermp1.experienceLevel));
-            mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(entityplayermp1, toWorld);
-            toWorld.getPlayerManager().addPlayer(entityplayermp1);
+            entityplayermp1.connection.sendPacket(new SPacketSpawnPosition(new BlockPos(compassTarget.getBlockX(), compassTarget.getBlockY(), compassTarget.getBlockZ())));
+            entityplayermp1.connection.sendPacket(new SPacketSetExperience(entityplayermp1.experience, entityplayermp1.experienceTotal, entityplayermp1.experienceLevel));
+            mcServer.getPlayerList().updateTimeAndWeatherForPlayer(entityplayermp1, toWorld);
+            toWorld.getPlayerChunkMap().addPlayer(entityplayermp1);
             toWorld.spawnEntityInWorld(entityplayermp1);
-            mcServer.getConfigurationManager().getPlayers().add(entityplayermp1);
-            entityplayermp1.theItemInWorldManager.setWorld(toWorld);
+            mcServer.getPlayerList().getPlayerList().add(entityplayermp1);
+            entityplayermp1.interactionManager.setWorld(toWorld);
             entityplayermp1.sendContainerToPlayer(openContainer);
             entityplayermp1.setHealth(entityplayermp1.getHealth());
 
-            fromWorld.m(); // resetUpdateEntityTick
-            toWorld.m();
+            fromWorld.resetUpdateEntityTick();
+            toWorld.resetUpdateEntityTick();
         } else {
-            playerNetServerHandler.setPlayerLocation(x, y, z, yaw, pitch);
+            connection.setPlayerLocation(x, y, z, yaw, pitch);
         }
     }
 
@@ -272,14 +272,14 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
         }
     }
 
-    @Redirect(method = "onDeath", at = @At(value = "INVOKE", target = "net.minecraft.src.ServerConfigurationManager.sendChatMsg(Lnet/minecraft/src/IChatComponent;)V"))
-    private void onDeath(ServerConfigurationManager configurationManager, IChatComponent deathMsg, DamageSource damageSource) {
+    @Redirect(method = "onDeath", at = @At(value = "INVOKE", target = "net.minecraft.server.management.PlayerList.sendChatMsg(Lnet/minecraft/util/text/ITextComponent;)V"))
+    private void onDeath(PlayerList configurationManager, ITextComponent deathMsg, DamageSource damageSource) {
         MC_Player killer = damageSource.getEntity() instanceof MC_Player ? (MC_Player) damageSource.getEntity() : null;
-        Hooks.onPlayerDeath(this, killer, PluginHelper.wrap(damageSource), deathMsg.getUnformattedTextForChat());
+        Hooks.onPlayerDeath(this, killer, PluginHelper.wrap(damageSource), deathMsg.getUnformattedText());
         configurationManager.sendChatMsg(deathMsg);
     }
 
-    @Inject(method = "c(I)Lnet/minecraft/src/Entity;", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "changeDimension", at = @At("HEAD"), cancellable = true)
     private void handleChangeDimension(int newDimension, CallbackInfoReturnable<Entity> callbackInfo) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptPlayerChangeDimension(this, newDimension, ei);
@@ -290,7 +290,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Inject(method = "attackTargetEntityWithCurrentItem", at = @At("HEAD"), cancellable = true)
     private void onAttackEntity(Entity target, CallbackInfo callbackInfo) {
-        if (theItemInWorldManager.getGameType() != WorldSettings.GameType.SPECTATOR) {
+        if (interactionManager.getGameType() != WorldSettings.GameType.SPECTATOR) {
             MC_EventInfo ei = new MC_EventInfo();
             Hooks.onAttemptAttackEntity(this, (MC_Entity) target, ei);
             if (ei.isCancelled) {
@@ -299,8 +299,8 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
         }
     }
 
-    @Inject(method = "a(Lnet/minecraft/src/qg;)V", at = @At("HEAD"))
-    private void onContainerOpen(qg var1, CallbackInfo callbackInfo) {
+    @Inject(method = "displayGUIChest", at = @At("HEAD"))
+    private void onContainerOpen(IInventory var1, CallbackInfo callbackInfo) {
         List<MC_ItemStack> items = new ArrayList<MC_ItemStack>();
         for (int i = 0; i < var1.getSizeInventory(); i++) {
             ItemStack stack = var1.getStackInSlot(i);
@@ -341,19 +341,19 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
                 containerType = MC_ContainerType.BEACON;
             } else if (this.openContainer instanceof ContainerChest) {
                 ContainerChest chest = (ContainerChest) this.openContainer;
-                if (chest.e() != null) {
-                    if (chest.e() instanceof EntityMinecartContainer) {
+                if (chest.getLowerChestInventory() != null) {
+                    if (chest.getLowerChestInventory() instanceof EntityMinecartContainer) {
                         containerType = MC_ContainerType.MINECART_CHEST;
-                    } else if (chest.e() instanceof qe) {
+                    } else if (chest.getLowerChestInventory() instanceof InventoryLargeChest) {
                         containerType = MC_ContainerType.CHEST_DOUBLE;
-                    } else if (chest.e() instanceof InventoryEnderChest) {
+                    } else if (chest.getLowerChestInventory() instanceof InventoryEnderChest) {
                         containerType = MC_ContainerType.CHEST_ENDER;
-                    } else if (chest.e() instanceof AnimalChest) {
+                    } else if (chest.getLowerChestInventory() instanceof AnimalChest) {
                         containerType = MC_ContainerType.CHEST_HORSE;
-                    } else if (chest.e() instanceof _Backpack) {
+                    } else if (chest.getLowerChestInventory() instanceof _Backpack) {
                         containerType = MC_ContainerType.BACKPACK;
-                    } else if (chest.e() instanceof TileEntityChest) {
-                        TileEntityChest te = (TileEntityChest) chest.e();
+                    } else if (chest.getLowerChestInventory() instanceof TileEntityChest) {
+                        TileEntityChest te = (TileEntityChest) chest.getLowerChestInventory();
                         int subType = te.getBlockMetadata();
 
                         containerType = MC_ContainerType.CHEST_SINGLE;
@@ -377,12 +377,12 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
         Hooks.onContainerClosed(this, containerType);
     }
 
-    @Inject(method = "trySleep", at = @At(value = "INVOKE", target = "net.minecraft.src.EntityPlayerMP.getServerForPlayer()Lnet/minecraft/src/WorldServer;"))
+    @Inject(method = "trySleep", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.EntityPlayerMP.getServerWorld()Lnet/minecraft/world/WorldServer;"))
     private void startSleeping(BlockPos bed, CallbackInfoReturnable callbackInfo) {
         Hooks.onPlayerBedEnter(this, new BlockWrapper(worldObj.getBlockState(bed)), new MC_Location(bed.getX(), bed.getY(), bed.getZ(), dimension));
     }
 
-    @Inject(method = "wakeUpPlayer", at = @At(value = "INVOKE", target = "net.minecraft.src.EntityPlayerMP.getServerForPlayer()Lnet/minecraft/src/WorldServer;"))
+    @Inject(method = "wakeUpPlayer", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.EntityPlayerMP.getServerWorld()Lnet/minecraft/world/WorldServer;"))
     private void finishSleeping(boolean a, boolean b, boolean c, CallbackInfo callbackInfo) {
         Hooks.onPlayerBedLeave(this, new BlockWrapper(worldObj.getBlockState(playerLocation)), new MC_Location(playerLocation.getX(), playerLocation.getY(), playerLocation.getZ(), dimension));
     }
@@ -442,12 +442,12 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public String getIPAddress() {
-        return playerNetServerHandler.getNetworkManager().getRemoteAddress().toString();
+        return connection.getNetworkManager().getRemoteAddress().toString();
     }
 
     @Override
     public void sendMessage(String var1) {
-        playerNetServerHandler.sendPacket(new OutboundPacketChat(new ChatComponentText(var1)));
+        connection.sendPacket(new SPacketChat(new TextComponentString(var1)));
     }
 
     @Override
@@ -462,12 +462,12 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public boolean isOp() {
-        return _DiwUtils.getMinecraftServer().getConfigurationManager().canSendCommands(getGameProfile());
+        return _DiwUtils.getMinecraftServer().getPlayerList().canSendCommands(getGameProfile());
     }
 
     @Override
     public MC_GameMode getGameMode() {
-        return PluginHelper.gamemodeMap.get(theItemInWorldManager.getGameType());
+        return PluginHelper.gamemodeMap.get(interactionManager.getGameType());
     }
 
     @Override
@@ -508,12 +508,12 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public MC_ItemStack getItemInOffHand() {
-        return Objects.firstNonNull((MC_ItemStack) (Object) inventory.c[0], EmptyItemStack.getInstance());
+        return Objects.firstNonNull((MC_ItemStack) (Object) inventory.offHandInventory[0], EmptyItemStack.getInstance());
     }
 
     @Override
     public void setItemInOffHand(MC_ItemStack item) {
-        inventory.c[0] = item instanceof EmptyItemStack ? null : (ItemStack) (Object) item;
+        inventory.offHandInventory[0] = item instanceof EmptyItemStack ? null : (ItemStack) (Object) item;
     }
 
     @Override
@@ -643,8 +643,8 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public void setCompassTarget(MC_Location var1) {
-        OutboundPacketSpawnPosition packet = new OutboundPacketSpawnPosition(new BlockPos(var1.getBlockX(), var1.getBlockY(), var1.getBlockZ()));
-        playerNetServerHandler.sendPacket(packet);
+        SPacketSpawnPosition packet = new SPacketSpawnPosition(new BlockPos(var1.getBlockX(), var1.getBlockY(), var1.getBlockZ()));
+        connection.sendPacket(packet);
         compassTarget = var1;
     }
 
@@ -669,12 +669,12 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public void playSound(String var1, float var2, float var3) {
-        SoundEffect object = SoundEffect.a.getObject(new ResourceLocation(var1));
+        SoundEvent object = SoundEvent.REGISTRY.getObject(new ResourceLocation(var1));
         if (object == null) {
             System.err.println("Sound " + var1 + " does not exist.");
             return;
         }
-        playerNetServerHandler.sendPacket(new OutboundPacketSoundEffect(object, EnumSoundCategory.AMBIENT, posX, posY, posZ, var2, var3));
+        connection.sendPacket(new SPacketSoundEffect(object, SoundCategory.AMBIENT, posX, posY, posZ, var2, var3));
     }
 
     @Override
@@ -689,12 +689,12 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public void kick(String var1) {
-        playerNetServerHandler.kickPlayerFromServer(var1);
+        connection.kickPlayerFromServer(var1);
     }
 
     @Override
     public SocketAddress getSocketAddress() {
-        return playerNetServerHandler.getNetworkManager().getRemoteAddress();
+        return connection.getNetworkManager().getRemoteAddress();
     }
 
     @Override

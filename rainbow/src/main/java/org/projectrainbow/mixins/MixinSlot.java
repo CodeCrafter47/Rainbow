@@ -1,7 +1,7 @@
 package org.projectrainbow.mixins;
 
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Slot;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;

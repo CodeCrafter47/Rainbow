@@ -3,7 +3,7 @@ package org.projectrainbow.commands;
 
 import PluginReference.MC_Command;
 import PluginReference.MC_Player;
-import net.minecraft.src.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import org.projectrainbow._Announcer;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class _CmdAnnouncer implements MC_Command {
 
     @Override
     public String getHelpLine(MC_Player plr) {
-        return EnumChatFormatting.LIGHT_PURPLE + "/announcer" + EnumChatFormatting.WHITE
+        return TextFormatting.LIGHT_PURPLE + "/announcer" + TextFormatting.WHITE
                 + " --- Announcer!";
     }
 

@@ -1,11 +1,11 @@
 package org.projectrainbow;
 
 import PluginReference.RainbowUtils;
-import net.minecraft.src.Entity;
-import net.minecraft.src.EntityList;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.WorldServer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.WorldServer;
 import org.projectrainbow.interfaces.IMixinICommandSender;
 
 import java.util.ArrayList;

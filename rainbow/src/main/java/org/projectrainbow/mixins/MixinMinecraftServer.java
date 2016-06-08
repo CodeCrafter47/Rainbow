@@ -2,12 +2,12 @@ package org.projectrainbow.mixins;
 
 import PluginReference.ChatColor;
 import PluginReference.MC_Player;
+import net.minecraft.network.ServerStatusResponse;
+import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.ChatComponentText;
-import net.minecraft.src.IChatComponent;
-import net.minecraft.src.Profiler;
-import net.minecraft.src.ServerConfigurationManager;
-import net.minecraft.src.ServerStatusResponse;
+import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.projectrainbow.Hooks;
@@ -33,7 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     @Shadow
     @Final
-    private static Logger logger;
+    private static Logger LOG;
     @Shadow
     private int tickCounter;
 
@@ -42,25 +42,25 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     public Profiler theProfiler;
 
     @Shadow
-    private ServerConfigurationManager serverConfigManager;
+    private PlayerList playerList;
     private int g_restartCountdown;
 
     @Shadow
     protected abstract void saveAllWorlds(boolean b);
 
     @Shadow
-    public abstract void a(ServerStatusResponse var1);
+    public abstract void applyServerIconToResponse(ServerStatusResponse var1);
 
     @Shadow
     @Final
-    private ServerStatusResponse q;
+    private ServerStatusResponse statusResponse;
     @Shadow
     private String motd;
 
     int g_secondTick;
 
-    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "net.minecraft.src.ServerConfigurationManager.saveAllPlayerData()V"))
-    void cancelMojangAutosave1(ServerConfigurationManager serverConfigManager) {
+    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "net.minecraft.server.management.PlayerList.saveAllPlayerData()V"))
+    void cancelMojangAutosave1(PlayerList serverConfigManager) {
 
     }
 
@@ -103,7 +103,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
             this.DumpDiwMemInfo();
             System.out.println("----------------------------------\n");
             this.theProfiler.startSection("save");
-            this.serverConfigManager.saveAllPlayerData();
+            this.playerList.saveAllPlayerData();
             this.saveAllWorlds(true);
             this.theProfiler.endSection();
             System.out.println("==============================================================");
@@ -198,14 +198,14 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
         _DiwUtils.Shutdown();
     }
 
-    @ModifyArg(method = "a(Lnet/minecraft/src/ServerStatusResponse;)V", at = @At(value = "INVOKE", target = "net.minecraft.server.MinecraftServer.getFile(Ljava/lang/String;)Ljava/io/File;"))
+    @ModifyArg(method = "applyServerIconToResponse", at = @At(value = "INVOKE", target = "net.minecraft.server.MinecraftServer.getFile(Ljava/lang/String;)Ljava/io/File;"))
     private String setServerIcon(String old) {
         return ServerWrapper.serverIconFileName;
     }
 
     @Overwrite
-    public void addChatMessage(IChatComponent var1) {
-        logger.info(_ColorHelper.stripColor(var1.getUnformattedText()));
+    public void addChatMessage(ITextComponent var1) {
+        LOG.info(_ColorHelper.stripColor(var1.getUnformattedText()));
     }
 
     @Overwrite
@@ -215,11 +215,11 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
     @Override
     public void onServerIconUpdated() {
-        this.a(this.q);
+        this.applyServerIconToResponse(this.statusResponse);
     }
 
     @Override
     public void onMotdUpdated() {
-        this.q.a(new ChatComponentText(this.motd));
+        this.statusResponse.setServerDescription(new TextComponentString(this.motd));
     }
 }

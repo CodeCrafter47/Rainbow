@@ -3,8 +3,8 @@ package org.projectrainbow;
 import PluginReference.MC_Location;
 import PluginReference.MC_World;
 import com.google.common.base.Function;
-import net.minecraft.src.BlockPos;
-import net.minecraft.src.World;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class LocationTransformer implements Function<BlockPos, MC_Location> {
 

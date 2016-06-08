@@ -4,9 +4,9 @@ import PluginReference.MC_Attribute;
 import PluginReference.MC_AttributeModifier;
 import PluginReference.MC_AttributeType;
 import com.google.common.base.Objects;
-import net.minecraft.src.AttributeModifier;
-import net.minecraft.src.IAttributeInstance;
-import net.minecraft.src.ModifiableAttributeInstance;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import org.projectrainbow.PluginHelper;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
@@ -60,7 +60,7 @@ public abstract class MixinModifiableAttributeInstance implements IAttributeInst
      * @return an immutable collection of the modifiers
      */
     public Collection<? extends MC_AttributeModifier> api$getModifiers() {
-        return (Collection<? extends MC_AttributeModifier>) (Collection) c();
+        return (Collection<? extends MC_AttributeModifier>) (Collection) getModifiers();
     }
 
     /**

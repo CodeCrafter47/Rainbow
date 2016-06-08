@@ -30,7 +30,7 @@
     "MixinEntityHanging",
     "MixinEntityItemFrame",
     "MixinAttemptEntityDamageEvent",
-    "MixinBiomeGenBase",
+    "MixinBiome",
     "MixinBlockPiston",
     "MixinBlockDynamicLiquid",
     "MixinOutboundPacketSpawnPosition",

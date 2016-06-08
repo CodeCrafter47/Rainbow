@@ -14,17 +14,18 @@ import PluginReference.MC_World;
 import PluginReference.MC_WorldSettings;
 import PluginReference.PluginInfo;
 import com.google.common.collect.Lists;
-import net.minecraft.src.AttributeModifier;
-import net.minecraft.src.Block;
-import net.minecraft.src.CraftingManager;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.IRecipe;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.ServerCommandManager;
-import net.minecraft.src.ShapedRecipes;
-import net.minecraft.src.ShapelessRecipes;
+import net.minecraft.block.Block;
+import net.minecraft.command.ServerCommandManager;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.nbt.NBTTagCompound;
 import org.projectrainbow.commands._CmdPerm;
 import org.projectrainbow.interfaces.IMixinMinecraftServer;
 import org.projectrainbow.interfaces.IMixinNBTBase;
@@ -60,7 +61,7 @@ public class ServerWrapper implements MC_Server {
     }
 
     public List<MC_Player> getPlayers() {
-        return (List<MC_Player>) (Object) new ArrayList<net.minecraft.src.EntityPlayerMP>(_DiwUtils.getMinecraftServer().getConfigurationManager().getPlayers());
+        return (List<MC_Player>) (Object) new ArrayList<EntityPlayerMP>(_DiwUtils.getMinecraftServer().getPlayerList().getPlayerList());
     }
 
     public void executeCommand(String cmd) {
@@ -215,7 +216,7 @@ public class ServerWrapper implements MC_Server {
             if (pName.length() <= 0) {
                 return null;
             } else {
-                for (Object oPlayer : _DiwUtils.getMinecraftServer().getConfigurationManager().getPlayers()) {
+                for (Object oPlayer : _DiwUtils.getMinecraftServer().getPlayerList().getPlayerList()) {
                     MC_Player player = (MC_Player) oPlayer;
 
                     if (pName.equalsIgnoreCase(player.getName())) {
@@ -240,7 +241,7 @@ public class ServerWrapper implements MC_Server {
         }
 
         arg = arg.toLowerCase().trim();
-        Iterator var4 = _DiwUtils.getMinecraftServer().getConfigurationManager().getPlayers().iterator();
+        Iterator var4 = _DiwUtils.getMinecraftServer().getPlayerList().getPlayerList().iterator();
 
         while (var4.hasNext()) {
             Object oPlayer = var4.next();

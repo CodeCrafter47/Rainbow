@@ -7,35 +7,35 @@ import PluginReference.MC_Location;
 import PluginReference.MC_Player;
 import PluginReference.MC_Sign;
 import com.google.common.base.Objects;
-import net.minecraft.src.BlockPos;
-import net.minecraft.src.Entity;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.EnumChatFormatting;
-import net.minecraft.src.EnumFacing;
-import net.minecraft.src.EnumHand;
-import net.minecraft.src.IBlockState;
-import net.minecraft.src.IChatComponent;
-import net.minecraft.src.InboundPacketChatMessage;
-import net.minecraft.src.InboundPacketCustomPayload;
-import net.minecraft.src.InboundPacketPlayer;
-import net.minecraft.src.InboundPacketPlayerBlockPlacement;
-import net.minecraft.src.InboundPacketPlayerDigging;
-import net.minecraft.src.InboundPacketUpdateSign;
-import net.minecraft.src.InboundPacketUseEntity;
-import net.minecraft.src.InboundPacketUseItem;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagList;
-import net.minecraft.src.NBTTagString;
-import net.minecraft.src.NetHandlerPlayServer;
-import net.minecraft.src.OutboundPacketBlockChange;
-import net.minecraft.src.OutboundPacketPlayerPosLook;
-import net.minecraft.src.OutboundPacketSpawnPosition;
-import net.minecraft.src.Packet;
-import net.minecraft.src.PacketBuffer;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.TileEntitySign;
-import net.minecraft.src.Vec3;
-import net.minecraft.src.WorldServer;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.network.Packet;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.client.CPacketChatMessage;
+import net.minecraft.network.play.client.CPacketCustomPayload;
+import net.minecraft.network.play.client.CPacketPlayer;
+import net.minecraft.network.play.client.CPacketPlayerDigging;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
+import net.minecraft.network.play.client.CPacketUpdateSign;
+import net.minecraft.network.play.client.CPacketUseEntity;
+import net.minecraft.network.play.server.SPacketBlockChange;
+import net.minecraft.network.play.server.SPacketPlayerPosLook;
+import net.minecraft.network.play.server.SPacketSpawnPosition;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.projectrainbow.EmptyItemStack;
@@ -69,9 +69,9 @@ public class MixinNetHandlerPlayServer {
     @Shadow
     public EntityPlayerMP playerEntity;
     @Shadow
-    private int z;
+    private int teleportId;
     @Shadow
-    private Vec3 y;
+    private Vec3d targetPos;
 
     @Redirect(method = "processPlayer", at = @At(value = "INVOKE", target = "warn", remap = false))
     private void doLogWarning(Logger logger, String message) {
@@ -81,30 +81,30 @@ public class MixinNetHandlerPlayServer {
     }
 
     @Inject(method = "onDisconnect", at = @At("HEAD"))
-    private void onDisconnect(IChatComponent var1, CallbackInfo callback) {
+    private void onDisconnect(ITextComponent var1, CallbackInfo callback) {
         _JOT_OnlineTimeUtils.HandlePlayerLogout(playerEntity.getName(), playerEntity.getUniqueID());
         Hooks.onPlayerLogout(playerEntity.getName(), playerEntity.getUniqueID());
     }
 
     @Redirect(method = "onDisconnect", at = @At(value = "INVOKE", target = "info", ordinal = 0, remap = false))
-    private void fixToString(Logger logger, String text, IChatComponent chatComponent) {
+    private void fixToString(Logger logger, String text, ITextComponent chatComponent) {
         logger.info(this.playerEntity.getName() + " lost connection: " + chatComponent.getUnformattedText());
     }
 
-    @Inject(method = "a(Lnet/minecraft/src/InboundPacketPlayerDigging;)V", at = @At(value = "INVOKE", target = "net.minecraft.src.EntityPlayerMP.markPlayerActive()V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void onPacketPlayerDigging(InboundPacketPlayerDigging packet, CallbackInfo callback, WorldServer worldServer, BlockPos blockPos) {
-        if (packet.c().equals(InboundPacketPlayerDigging.Action.START_DESTROY_BLOCK)) {
+    @Inject(method = "processPlayerDigging", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.EntityPlayerMP.markPlayerActive()V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    private void onPacketPlayerDigging(CPacketPlayerDigging packet, CallbackInfo callback, WorldServer worldServer, BlockPos blockPos) {
+        if (packet.getAction().equals(CPacketPlayerDigging.Action.START_DESTROY_BLOCK)) {
             MC_EventInfo ei = new MC_EventInfo();
             Hooks.onAttemptBlockBreak((MC_Player) playerEntity, new MC_Location(blockPos.getX(), blockPos.getY(), blockPos.getZ(), playerEntity.dimension), ei);
             if (ei.isCancelled) {
-                playerEntity.playerNetServerHandler.sendPacket(new OutboundPacketBlockChange(worldServer, blockPos));
+                playerEntity.connection.sendPacket(new SPacketBlockChange(worldServer, blockPos));
                 callback.cancel();
             }
         }
     }
 
-    @Inject(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE", target = "net.minecraft.src.EntityPlayerMP.markPlayerActive()V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void onPacketPlayerBlockPlacement(InboundPacketPlayerBlockPlacement packet, CallbackInfo callback, WorldServer worldServer,
+    @Inject(method = "processRightClickBlock", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.EntityPlayerMP.markPlayerActive()V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    private void processRightClickBlock(CPacketPlayerTryUseItemOnBlock packet, CallbackInfo callback, WorldServer worldServer,
                                               EnumHand hand, ItemStack itemStack, BlockPos blockPos,
                                               EnumFacing clickedFace) {
         MC_EventInfo ei = new MC_EventInfo();
@@ -112,7 +112,7 @@ public class MixinNetHandlerPlayServer {
         if (ei.isCancelled) {
             for (BlockPos pos : BlockPos.getAllInBox(blockPos.add(-1, -1, -1), blockPos.add(1, 1, 1))) {
                 if (pos.getY() < 0 || pos.getY() > 255) continue;
-                this.playerEntity.playerNetServerHandler.sendPacket(new OutboundPacketBlockChange(worldServer, pos));
+                this.playerEntity.connection.sendPacket(new SPacketBlockChange(worldServer, pos));
             }
             callback.cancel();
         } else {
@@ -120,8 +120,8 @@ public class MixinNetHandlerPlayServer {
         }
     }
 
-    @Inject(method = "a(Lnet/minecraft/src/InboundPacketUseItem;)V", at = @At(value = "INVOKE", target = "net.minecraft.src.EntityPlayerMP.markPlayerActive()V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    public void onRightClickAir(InboundPacketUseItem packet, CallbackInfo callbackInfo, WorldServer world, EnumHand hand, ItemStack itemStack) {
+    @Inject(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.EntityPlayerMP.markPlayerActive()V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    public void onRightClickAir(CPacketPlayerTryUseItem packet, CallbackInfo callbackInfo, WorldServer world, EnumHand hand, ItemStack itemStack) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptItemUse((MC_Player) playerEntity, Objects.firstNonNull((MC_ItemStack) (Object) itemStack, EmptyItemStack.getInstance()), ei);
         if (ei.isCancelled) {
@@ -129,8 +129,8 @@ public class MixinNetHandlerPlayServer {
         }
     }
 
-    @Inject(method = "processChatMessage", at = @At(value = "INVOKE", target = "net.minecraft.src.EntityPlayerMP.markPlayerActive()V"), cancellable = true)
-    public void onChat(InboundPacketChatMessage packet, CallbackInfo callbackInfo) {
+    @Inject(method = "processChatMessage", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.EntityPlayerMP.markPlayerActive()V"), cancellable = true)
+    public void onChat(CPacketChatMessage packet, CallbackInfo callbackInfo) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onPlayerInput((MC_Player) playerEntity, packet.getMessage(), ei);
         if (ei.isCancelled) {
@@ -174,7 +174,7 @@ public class MixinNetHandlerPlayServer {
         }
     }
 
-    @ModifyVariable(method = "processChatMessage", at = @At(value = "INVOKE", target = "startsWith"))
+    @ModifyVariable(method = "processChatMessage", at = @At(value = "INVOKE", target = "startsWith", remap = false))
     private String chatColor(String message) {
         if (message.startsWith("/") && !message.startsWith("/w") && !message.startsWith("/whisper") && !message.startsWith("/msg"))
             return message;
@@ -192,33 +192,33 @@ public class MixinNetHandlerPlayServer {
     }
 
     @Inject(method = "setPlayerLocation(DDDFFLjava/util/Set;)V", at = @At("HEAD"), cancellable = true)
-    private void hookTeleport(double x, double y, double z, float yaw, float pitch, Set<OutboundPacketPlayerPosLook.EnumFlags> flags, CallbackInfo callbackInfo) {
-        double dx = flags.contains(OutboundPacketPlayerPosLook.EnumFlags.X) ? x : playerEntity.posX - x;
-        double dy = flags.contains(OutboundPacketPlayerPosLook.EnumFlags.Y) ? y : playerEntity.posY - y;
-        double dz = flags.contains(OutboundPacketPlayerPosLook.EnumFlags.Z) ? z : playerEntity.posZ - z;
-        float finalYaw = flags.contains(OutboundPacketPlayerPosLook.EnumFlags.Y_ROT) ? yaw + playerEntity.rotationYaw : yaw;
-        float finalPitch = flags.contains(OutboundPacketPlayerPosLook.EnumFlags.X_ROT) ? pitch + playerEntity.rotationPitch : pitch;
+    private void hookTeleport(double x, double y, double z, float yaw, float pitch, Set<SPacketPlayerPosLook.EnumFlags> flags, CallbackInfo callbackInfo) {
+        double dx = flags.contains(SPacketPlayerPosLook.EnumFlags.X) ? x : playerEntity.posX - x;
+        double dy = flags.contains(SPacketPlayerPosLook.EnumFlags.Y) ? y : playerEntity.posY - y;
+        double dz = flags.contains(SPacketPlayerPosLook.EnumFlags.Z) ? z : playerEntity.posZ - z;
+        float finalYaw = flags.contains(SPacketPlayerPosLook.EnumFlags.Y_ROT) ? yaw + playerEntity.rotationYaw : yaw;
+        float finalPitch = flags.contains(SPacketPlayerPosLook.EnumFlags.X_ROT) ? pitch + playerEntity.rotationPitch : pitch;
         // teleport
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptPlayerTeleport((MC_Player) playerEntity, new MC_Location(playerEntity.posX + dx, playerEntity.posY + dy, playerEntity.posZ + dz, playerEntity.dimension, finalYaw, finalPitch), ei);
         if (ei.isCancelled) {
             callbackInfo.cancel();
 
-            if (++this.z == 2147483647) {
-                this.z = 0;
+            if (++this.teleportId == 2147483647) {
+                this.teleportId = 0;
             }
 
-            playerEntity.playerNetServerHandler.sendPacket(new OutboundPacketPlayerPosLook(playerEntity.posX, playerEntity.posY, playerEntity.posZ, playerEntity.rotationYaw, playerEntity.rotationPitch, Collections.<OutboundPacketPlayerPosLook.EnumFlags>emptySet(), this.z));
+            playerEntity.connection.sendPacket(new SPacketPlayerPosLook(playerEntity.posX, playerEntity.posY, playerEntity.posZ, playerEntity.rotationYaw, playerEntity.rotationPitch, Collections.<SPacketPlayerPosLook.EnumFlags>emptySet(), this.teleportId));
         }
     }
 
-    @Inject(method = "processPlayer", at = @At(value = "FIELD", target = "net.minecraft.src.NetHandlerPlayServer.serverController:Lnet/minecraft/server/MinecraftServer;", ordinal = 0), cancellable = true)
-    private void onPlayerMove(InboundPacketPlayer packet, CallbackInfo callbackInfo) {
-        double x = packet.a(this.playerEntity.posX);
-        double y = packet.b(this.playerEntity.posY);
-        double z = packet.c(this.playerEntity.posZ);
-        float yaw = packet.a(this.playerEntity.rotationYaw);
-        float pitch = packet.b(this.playerEntity.rotationPitch);
+    @Inject(method = "processPlayer", at = @At(value = "FIELD", target = "net.minecraft.network.NetHandlerPlayServer.serverController:Lnet/minecraft/server/MinecraftServer;", ordinal = 0), cancellable = true)
+    private void onPlayerMove(CPacketPlayer packet, CallbackInfo callbackInfo) {
+        double x = packet.getX(this.playerEntity.posX);
+        double y = packet.getY(this.playerEntity.posY);
+        double z = packet.getZ(this.playerEntity.posZ);
+        float yaw = packet.getYaw(this.playerEntity.rotationYaw);
+        float pitch = packet.getPitch(this.playerEntity.rotationPitch);
         double oldX = this.playerEntity.posX;
         double oldY = this.playerEntity.posY;
         double oldZ = this.playerEntity.posZ;
@@ -236,8 +236,8 @@ public class MixinNetHandlerPlayServer {
             Hooks.onAttemptPlayerMove(player, from, to, ei);
 
             if (ei.isCancelled) {
-                this.y = new Vec3(oldX, oldY, oldZ);
-                playerEntity.playerNetServerHandler.sendPacket(new OutboundPacketPlayerPosLook(oldX, oldY, oldZ, oldYaw, oldPitch, Collections.<OutboundPacketPlayerPosLook.EnumFlags>emptySet(), ++this.z));
+                this.targetPos = new Vec3d(oldX, oldY, oldZ);
+                playerEntity.connection.sendPacket(new SPacketPlayerPosLook(oldX, oldY, oldZ, oldYaw, oldPitch, Collections.<SPacketPlayerPosLook.EnumFlags>emptySet(), ++this.teleportId));
                 callbackInfo.cancel();
             }
         }
@@ -245,7 +245,7 @@ public class MixinNetHandlerPlayServer {
 
     @Inject(method = "sendPacket", at = @At("HEAD"), cancellable = true)
     private void onPacketSent(final Packet<?> argPacket, CallbackInfo callbackInfo) {
-        if (argPacket instanceof OutboundPacketSpawnPosition) {
+        if (argPacket instanceof SPacketSpawnPosition) {
             BlockPos pos = ((IMixinOutboundPacketSpawnPosition) argPacket).getPos();
 
             ((IMixinEntityPlayerMP) playerEntity).onCompassTargetUpdated(new MC_Location(
@@ -269,18 +269,18 @@ public class MixinNetHandlerPlayServer {
         }
     }
 
-    @Redirect(method = "processUpdateSign", at = @At(value = "INVOKE", target = "net.minecraft.src.EnumChatFormatting.a(Ljava/lang/String;)Ljava/lang/String;"))
+    @Redirect(method = "processUpdateSign", at = @At(value = "INVOKE", target = "net.minecraft.util.text.TextFormatting.getTextWithoutFormattingCodes(Ljava/lang/String;)Ljava/lang/String;"))
     private String stripColorCodes(String s) {
         if (((MC_Player) playerEntity).hasPermission("rainbow.signcolor")) {
             return s;
         } else {
-            return EnumChatFormatting.a(s);
+            return TextFormatting.getTextWithoutFormattingCodes(s);
         }
     }
 
-    @Inject(method = "processUpdateSign", at = @At(value = "INVOKE", target = "net.minecraft.src.InboundPacketUpdateSign.b()[Ljava/lang/String;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    private void onChangingSign(InboundPacketUpdateSign packet, CallbackInfo callbackInfo, WorldServer var2, BlockPos pos, IBlockState var4, TileEntity var5, TileEntitySign sign) {
-        String[] newLines = packet.b();
+    @Inject(method = "processUpdateSign", at = @At(value = "INVOKE", target = "net.minecraft.network.play.client.CPacketUpdateSign.getLines()[Ljava/lang/String;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    private void onChangingSign(CPacketUpdateSign packet, CallbackInfo callbackInfo, WorldServer var2, BlockPos pos, IBlockState var4, TileEntity var5, TileEntitySign sign) {
+        String[] newLines = packet.getLines();
         MC_Player player = (MC_Player) playerEntity;
 
         if (player.hasPermission("rainbow.signcolor")) {
@@ -334,15 +334,15 @@ public class MixinNetHandlerPlayServer {
         }
     }
 
-    @Inject(method = "processUpdateSign", at = @At(value = "INVOKE", target = "net.minecraft.src.TileEntitySign.markDirty()V"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void onChangedSign(InboundPacketUpdateSign packet, CallbackInfo callbackInfo, WorldServer var2, BlockPos pos, IBlockState var4, TileEntity var5, TileEntitySign sign) {
+    @Inject(method = "processUpdateSign", at = @At(value = "INVOKE", target = "net.minecraft.tileentity.TileEntitySign.markDirty()V"), locals = LocalCapture.CAPTURE_FAILHARD)
+    private void onChangedSign(CPacketUpdateSign packet, CallbackInfo callbackInfo, WorldServer var2, BlockPos pos, IBlockState var4, TileEntity var5, TileEntitySign sign) {
         MC_Location location = new MC_Location(pos.getX(), pos.getY(), pos.getZ(), playerEntity.dimension);
 
         Hooks.onSignChanged((MC_Player) playerEntity, (MC_Sign) sign, location);
     }
 
-    @Inject(method = "processVanilla250Packet", at = @At(value = "INVOKE", target = "net.minecraft.src.ItemStack.setTagInfo(Ljava/lang/String;Lnet/minecraft/src/NBTBase;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void onBookChange(InboundPacketCustomPayload packet, CallbackInfo callbackInfo, String var2, PacketBuffer var3, ItemStack newBook, ItemStack oldBook) {
+    @Inject(method = "processCustomPayload", at = @At(value = "INVOKE", target = "net.minecraft.item.ItemStack.setTagInfo(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    private void onBookChange(CPacketCustomPayload packet, CallbackInfo callbackInfo, String var2, PacketBuffer var3, ItemStack newBook, ItemStack oldBook) {
         NBTTagList tagList = newBook.getTagCompound().getTagList("pages", 8);
         ArrayList<String> pages = new ArrayList<String>();
         for (int j = 0; j < tagList.tagCount(); j++) {
@@ -365,8 +365,8 @@ public class MixinNetHandlerPlayServer {
         newBook.setTagInfo("pages", tagList);
     }
 
-    @Inject(method = "processVanilla250Packet", at = @At(value = "INVOKE", target = "net.minecraft.src.ItemStack.setTagInfo(Ljava/lang/String;Lnet/minecraft/src/NBTBase;)V", ordinal = 3), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void onBookSign(InboundPacketCustomPayload packet, CallbackInfo callbackInfo, String var2, PacketBuffer var3, ItemStack newBook, ItemStack oldBook) {
+    @Inject(method = "processCustomPayload", at = @At(value = "INVOKE", target = "net.minecraft.item.ItemStack.setTagInfo(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;)V", ordinal = 3), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    private void onBookSign(CPacketCustomPayload packet, CallbackInfo callbackInfo, String var2, PacketBuffer var3, ItemStack newBook, ItemStack oldBook) {
         NBTTagList tagList = newBook.getTagCompound().getTagList("pages", 8);
         ArrayList<String> pages = new ArrayList<String>();
         pages.add(oldBook.getTagCompound().getString("author"));
@@ -396,9 +396,9 @@ public class MixinNetHandlerPlayServer {
         newBook.setTagInfo("pages", tagList);
     }
 
-    @Inject(method = "processUseEntity", at = @At(value = "INVOKE", target = "net.minecraft.src.EntityPlayerMP.markPlayerActive()V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void onEntityInteract(InboundPacketUseEntity var1, CallbackInfo callbackInfo, WorldServer world, Entity target) {
-        if (var1.getAction() == InboundPacketUseEntity.Action.INTERACT || var1.getAction() == InboundPacketUseEntity.Action.INTERACT_AT) {
+    @Inject(method = "processUseEntity", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.EntityPlayerMP.markPlayerActive()V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    private void onEntityInteract(CPacketUseEntity var1, CallbackInfo callbackInfo, WorldServer world, Entity target) {
+        if (var1.getAction() == CPacketUseEntity.Action.INTERACT || var1.getAction() == CPacketUseEntity.Action.INTERACT_AT) {
             MC_EventInfo ei = new MC_EventInfo();
             Hooks.onAttemptEntityInteract((MC_Player) playerEntity, (MC_Entity) target, ei);
             if (ei.isCancelled) {

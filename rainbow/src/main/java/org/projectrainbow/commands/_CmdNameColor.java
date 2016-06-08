@@ -2,11 +2,11 @@ package org.projectrainbow.commands;
 
 import PluginReference.MC_Player;
 import com.google.common.io.Files;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.CommandBase;
-import net.minecraft.src.CommandException;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ICommandSender;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.interfaces.IMixinICommandSender;
@@ -20,7 +20,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class _CmdNameColor extends CommandBase{
+public class _CmdNameColor extends CommandBase {
     public static ConcurrentHashMap<String, String> ColorNameDict;
     public static String m_DataFilename;
 
@@ -30,7 +30,7 @@ public class _CmdNameColor extends CommandBase{
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(MinecraftServer minecraftServer, ICommandSender iCommandSender) {
+    public boolean checkPermission(MinecraftServer minecraftServer, ICommandSender iCommandSender) {
         return (!(iCommandSender instanceof MC_Player)) || ((MC_Player) iCommandSender).hasPermission("rainbow.namecolor");
     }
 
@@ -94,7 +94,7 @@ public class _CmdNameColor extends CommandBase{
     }
 
     @Override
-    public void processCommand(MinecraftServer server, final ICommandSender cs, final String[] args) throws CommandException {
+    public void execute(MinecraftServer server, final ICommandSender cs, final String[] args) throws CommandException {
         EntityPlayer p = null;
         if (!(cs instanceof EntityPlayer)) {
             System.out.println("--- Only for players!");

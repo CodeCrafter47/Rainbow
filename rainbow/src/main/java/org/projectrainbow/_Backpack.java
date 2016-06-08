@@ -1,9 +1,9 @@
 package org.projectrainbow;
 
-import net.minecraft.src.InventoryBasic;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.NBTTagList;
+import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
 public class _Backpack extends InventoryBasic {
 

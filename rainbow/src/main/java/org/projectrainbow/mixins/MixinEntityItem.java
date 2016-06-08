@@ -5,9 +5,9 @@ import PluginReference.MC_ItemEntity;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_Player;
 import com.google.common.base.Objects;
-import net.minecraft.src.EntityItem;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ItemStack;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,7 +37,7 @@ public abstract class MixinEntityItem implements MC_ItemEntity {
     @Shadow
     public abstract void setThrower(String var1);
 
-    @Inject(method = "onCollideWithPlayer", at = @At(value = "INVOKE", target = "net.minecraft.src.InventoryPlayer.addItemStackToInventory(Lnet/minecraft/src/ItemStack;)Z"), cancellable = true)
+    @Inject(method = "onCollideWithPlayer", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.InventoryPlayer.addItemStackToInventory(Lnet/minecraft/item/ItemStack;)Z"), cancellable = true)
     private void onPickup(EntityPlayer player, CallbackInfo callbackInfo) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptItemPickup((MC_Player) player, getItemStack(), false, ei);

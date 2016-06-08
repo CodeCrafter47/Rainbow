@@ -1,7 +1,7 @@
 package org.projectrainbow.mixins;
 
 import PluginReference.MC_Animal;
-import net.minecraft.src.EntityAnimal;
+import net.minecraft.entity.passive.EntityAnimal;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(EntityAnimal.class)

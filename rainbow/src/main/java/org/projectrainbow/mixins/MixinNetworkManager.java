@@ -1,7 +1,7 @@
 package org.projectrainbow.mixins;
 
 import com.mojang.authlib.properties.Property;
-import net.minecraft.src.NetworkManager;
+import net.minecraft.network.NetworkManager;
 import org.projectrainbow.interfaces.IBungeeDataStorage;
 import org.spongepowered.asm.mixin.Mixin;
 

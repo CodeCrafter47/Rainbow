@@ -6,7 +6,7 @@ import PluginReference.MC_Player;
 import com.google.common.io.Files;
 import joebkt._JOT_OnlineData;
 import joebkt._JOT_OnlineTimeEntry;
-import net.minecraft.src.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayer;
 import org.projectrainbow.commands._CmdDiw;
 
 import java.io.BufferedInputStream;

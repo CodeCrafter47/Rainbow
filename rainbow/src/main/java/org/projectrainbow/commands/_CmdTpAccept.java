@@ -5,7 +5,7 @@ import PluginReference.ChatColor;
 import PluginReference.MC_Command;
 import PluginReference.MC_Location;
 import PluginReference.MC_Player;
-import net.minecraft.src.CommandBase;
+import net.minecraft.command.CommandBase;
 import org.projectrainbow._DiwUtils;
 
 import java.util.Collections;

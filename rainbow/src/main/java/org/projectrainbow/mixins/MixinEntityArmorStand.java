@@ -9,13 +9,13 @@ import PluginReference.MC_ItemStack;
 import PluginReference.MC_Player;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import net.minecraft.src.DamageSource;
-import net.minecraft.src.EntityArmorStand;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EnumHand;
-import net.minecraft.src.ItemSlot;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Rotations;
+import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.Rotations;
 import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
@@ -35,10 +35,10 @@ public abstract class MixinEntityArmorStand extends MixinEntityLivingBase implem
 
     @Shadow
     @Final
-    private ItemStack[] by;
+    private ItemStack[] handItems;
     @Shadow
     @Final
-    private ItemStack[] contents;
+    private ItemStack[] armorItems;
     @Shadow
     private Rotations headRotation;
     @Shadow
@@ -53,7 +53,7 @@ public abstract class MixinEntityArmorStand extends MixinEntityLivingBase implem
     private Rotations rightLegRotation;
 
     @Shadow
-    abstract void p(boolean var1);
+    abstract void setNoBasePlate(boolean var1);
 
     @Shadow
     public abstract boolean hasNoBasePlate();
@@ -100,8 +100,8 @@ public abstract class MixinEntityArmorStand extends MixinEntityLivingBase implem
         }
     }
 
-    @Inject(method = "a(Lnet/minecraft/src/EntityPlayer;Lnet/minecraft/src/ItemSlot;Lnet/minecraft/src/ItemStack;Lnet/minecraft/src/EnumHand;)V", at = @At("HEAD"), cancellable = true)
-    private void onArmorStandInteract(EntityPlayer var1, ItemSlot var2, ItemStack var3, EnumHand var4, CallbackInfo callbackInfo) {
+    @Inject(method = "swapItem", at = @At("HEAD"), cancellable = true)
+    private void onArmorStandInteract(EntityPlayer var1, EntityEquipmentSlot var2, ItemStack var3, EnumHand var4, CallbackInfo callbackInfo) {
         MC_ArmorStandActionType type = MC_ArmorStandActionType.UNSPECIFIED;
 
         switch (var2) {
@@ -135,12 +135,12 @@ public abstract class MixinEntityArmorStand extends MixinEntityLivingBase implem
 
     @Override
     public List<MC_ItemStack> getArmor() {
-        return PluginHelper.invArrayToList(by);
+        return PluginHelper.invArrayToList(armorItems);
     }
 
     @Override
     public void setArmor(List<MC_ItemStack> var1) {
-        PluginHelper.updateInv(by, var1);
+        PluginHelper.updateInv(armorItems, var1);
     }
 
     @Override
@@ -160,7 +160,7 @@ public abstract class MixinEntityArmorStand extends MixinEntityLivingBase implem
 
     @Override
     public void setHasBase(boolean flag) {
-        p(!flag);
+        setNoBasePlate(!flag);
     }
 
     @Override
@@ -189,12 +189,12 @@ public abstract class MixinEntityArmorStand extends MixinEntityLivingBase implem
 
     @Override
     public MC_ItemStack getItemInHand() {
-        return Objects.firstNonNull((MC_ItemStack) (Object) contents[0], EmptyItemStack.getInstance());
+        return Objects.firstNonNull((MC_ItemStack) (Object) handItems[0], EmptyItemStack.getInstance());
     }
 
     @Override
     public void setItemInHand(MC_ItemStack item) {
-        contents[0] = item instanceof EmptyItemStack ? null : (ItemStack) (Object) item;
+        handItems[0] = item instanceof EmptyItemStack ? null : (ItemStack) (Object) item;
     }
 
     private MC_FloatTriplet wrap(Rotations rotations) {

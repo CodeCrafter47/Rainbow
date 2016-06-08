@@ -2,8 +2,8 @@ package org.projectrainbow.mixins;
 
 import PluginReference.MC_EventInfo;
 import PluginReference.MC_Player;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityXPOrb;
+import net.minecraft.entity.item.EntityXPOrb;
+import net.minecraft.entity.player.EntityPlayer;
 import org.projectrainbow.Hooks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

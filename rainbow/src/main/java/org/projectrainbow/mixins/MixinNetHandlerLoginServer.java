@@ -2,9 +2,9 @@ package org.projectrainbow.mixins;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.NetHandlerLoginServer;
-import net.minecraft.src.NetworkManager;
+import net.minecraft.server.network.NetHandlerLoginServer;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.interfaces.IBungeeDataStorage;
 import org.spongepowered.asm.mixin.Final;
@@ -35,7 +35,7 @@ public class MixinNetHandlerLoginServer {
         }
     }
 
-    @Redirect(method = "a(Lnet/minecraft/src/jt;)V", at = @At(value = "INVOKE", target = "net.minecraft.server.MinecraftServer.isServerInOnlineMode()Z"))
+    @Redirect(method = "processLoginStart", at = @At(value = "INVOKE", target = "net.minecraft.server.MinecraftServer.isServerInOnlineMode()Z"))
     private boolean simulateOfflineMode(MinecraftServer server) {
         return !_DiwUtils.BungeeCord && server.isServerInOnlineMode();
     }

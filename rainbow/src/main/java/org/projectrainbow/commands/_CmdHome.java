@@ -1,13 +1,13 @@
 package org.projectrainbow.commands;
 
 import PluginReference.MC_Player;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.CommandBase;
-import net.minecraft.src.CommandException;
-import net.minecraft.src.Entity;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.ICommandSender;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._HomeUtils;
 import joebkt._SerializableLocation;
@@ -22,7 +22,7 @@ public class _CmdHome extends CommandBase
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(MinecraftServer minecraftServer, ICommandSender iCommandSender) {
+    public boolean checkPermission(MinecraftServer minecraftServer, ICommandSender iCommandSender) {
         return (!(iCommandSender instanceof MC_Player)) || ((MC_Player) iCommandSender).hasPermission("rainbow.home");
     }
 
@@ -32,7 +32,7 @@ public class _CmdHome extends CommandBase
     }
 
     @Override
-    public void processCommand(MinecraftServer minecraftServer, ICommandSender cs, String[] args) throws CommandException {
+    public void execute(MinecraftServer minecraftServer, ICommandSender cs, String[] args) throws CommandException {
         if (!(cs instanceof EntityPlayer)) {
             System.out.println("Only for players.");
             return;
@@ -49,15 +49,15 @@ public class _CmdHome extends CommandBase
             return;
         }
         try {
-            p.stopRiding();
+            p.dismountRidingEntity();
             for (Entity entity : p.getPassengers()) {
-                entity.stopRiding();
+                entity.dismountRidingEntity();
             }
         }
         catch (Exception exc) {
             System.out.println("Home Step 1 SetVehicle EXC: " + exc.getMessage());
         }
-        ((IMixinEntityPlayerMP)p).teleport(p.getServerForPlayer(), sloc.x, sloc.y, sloc.z, sloc.yaw, sloc.pitch);
+        ((IMixinEntityPlayerMP)p).teleport(p.getServerWorld(), sloc.x, sloc.y, sloc.z, sloc.yaw, sloc.pitch);
         ((IMixinICommandSender)p).sendMessage(String.valueOf(_ColorHelper.GREEN) + "You teleport home to " + _ColorHelper.WHITE + sloc.toString());
     }
 }

@@ -2,8 +2,8 @@ package org.projectrainbow.mixins;
 
 import PluginReference.MC_Entity;
 import PluginReference.MC_EventInfo;
-import net.minecraft.src.DamageSource;
-import net.minecraft.src.EntityEnderCrystal;
+import net.minecraft.entity.item.EntityEnderCrystal;
+import net.minecraft.util.DamageSource;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
 import org.spongepowered.asm.mixin.Mixin;

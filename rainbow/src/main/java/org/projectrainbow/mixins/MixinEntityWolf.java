@@ -1,7 +1,7 @@
 package org.projectrainbow.mixins;
 
 import PluginReference.MC_Wolf;
-import net.minecraft.src.EntityWolf;
+import net.minecraft.entity.passive.EntityWolf;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Intrinsic;

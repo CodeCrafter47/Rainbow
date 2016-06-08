@@ -2,8 +2,8 @@ package org.projectrainbow;
 
 
 import PluginReference.MC_Block;
-import net.minecraft.src.Block;
-import net.minecraft.src.IBlockState;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 
 
 public class BlockWrapper implements MC_Block {
@@ -29,11 +29,11 @@ public class BlockWrapper implements MC_Block {
     }
 
     public boolean isLiquid() {
-        return this.m_blockObject.q(m_blockState).isLiquid(); // getMaterial
+        return this.m_blockObject.getMaterial(m_blockState).isLiquid();
     }
 
     public boolean isSolid() {
-        return this.m_blockObject.q(m_blockState).isSolid(); // getMaterial
+        return this.m_blockObject.getMaterial(m_blockState).isSolid();
     }
 
     public void setSubtype(int idx) {

@@ -2,17 +2,16 @@ package org.projectrainbow.mixins;
 
 import PluginReference.MC_CommandSenderInfo;
 import PluginReference.MC_CommandSenderType;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.ChatComponentTranslation;
-import net.minecraft.src.CommandBlockLogic;
-import net.minecraft.src.CommandHandler;
-import net.minecraft.src.Entity;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ICommand;
-import net.minecraft.src.ICommandSender;
-import net.minecraft.src.RConConsoleSource;
+import net.minecraft.tileentity.CommandBlockBaseLogic;
+import net.minecraft.util.text.TextComponentTranslation;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,7 +43,7 @@ public class MixinCommandHandler {
         commandMap = new LinkedHashMap<String, ICommand>();
     }
 
-    @Redirect(method = "executeCommand", at = @At(value = "INVOKE", target = "get"))
+    @Redirect(method = "executeCommand", at = @At(value = "INVOKE", target = "get", remap = false))
     private Object caseInsensitiveMapGet(Map map, Object key) {
         Object o = map.get(key);
         if (o == null && key instanceof String) {
@@ -65,7 +64,7 @@ public class MixinCommandHandler {
         newInfo.senderType = MC_CommandSenderType.UNSPECIFIED;
         if (sender instanceof EntityPlayer) {
             newInfo.senderType = MC_CommandSenderType.PLAYER;
-        } else if (sender instanceof CommandBlockLogic) {
+        } else if (sender instanceof CommandBlockBaseLogic) {
             newInfo.senderType = MC_CommandSenderType.COMMANDBLOCK;
         } else if (sender instanceof MinecraftServer) {
             newInfo.senderType = MC_CommandSenderType.CONSOLE;
@@ -84,7 +83,7 @@ public class MixinCommandHandler {
     }
 
     @Inject(method = "tryExecute", at = @At(value = "INVOKE", target = "warn", remap = false), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void onExceptionPrintStackTrace(ICommandSender sender, String[] args, ICommand command, String commandLine, CallbackInfoReturnable<Boolean> callbackInfo, Throwable throwable, ChatComponentTranslation errorMessageSentToPlayer) {
+    private void onExceptionPrintStackTrace(ICommandSender sender, String[] args, ICommand command, String commandLine, CallbackInfoReturnable<Boolean> callbackInfo, Throwable throwable, TextComponentTranslation errorMessageSentToPlayer) {
         LogManager.getLogger().log(Level.WARN, "Couldn\'t process command: \'" + commandLine + "\'", throwable);
     }
 
@@ -93,7 +92,7 @@ public class MixinCommandHandler {
 
     }
 
-    @Redirect(method = "getPossibleCommands", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "net.minecraft.src.CommandHandler.commandSet:Ljava/util/Set;"))
+    @Redirect(method = "getPossibleCommands", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "net.minecraft.command.CommandHandler.commandSet:Ljava/util/Set;"))
     private Set<ICommand> getCommandSet(CommandHandler self) {
         return Sets.newHashSet(commandMap.values());
     }

@@ -4,11 +4,11 @@ import PluginReference.MC_Entity;
 import PluginReference.MC_EventInfo;
 import PluginReference.MC_Location;
 import PluginReference.MC_MiscGriefType;
-import net.minecraft.src.Block;
-import net.minecraft.src.BlockPos;
-import net.minecraft.src.EntityRabbit;
-import net.minecraft.src.IBlockState;
-import net.minecraft.src.World;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.passive.EntityRabbit;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.projectrainbow.Hooks;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,16 +18,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(targets = "net.minecraft.src.EntityRabbit$AIRaidFarm")
+@Mixin(targets = "net.minecraft.entity.passive.EntityRabbit$AIRaidFarm")
 public class MixinRabbitAIRaidFarm {
     @Shadow
     @Final
-    private EntityRabbit c;
+    private EntityRabbit rabbit;
 
-    @Inject(method = "updateTask()V", at = @At(value = "INVOKE", target = "net.minecraft.src.IBlockState.getValue(Lnet/minecraft/src/IProperty;)Ljava/lang/Comparable;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "updateTask()V", at = @At(value = "INVOKE", target = "net.minecraft.block.state.IBlockState.getValue(Lnet/minecraft/block/properties/IProperty;)Ljava/lang/Comparable;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void grief(CallbackInfo callbackInfo, World w, BlockPos pos, IBlockState var3, Block var4) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptEntityMiscGrief((MC_Entity) c, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), c.dimension), MC_MiscGriefType.RABBIT_EATS_CARROT, ei);
+        Hooks.onAttemptEntityMiscGrief((MC_Entity) rabbit, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), rabbit.dimension), MC_MiscGriefType.RABBIT_EATS_CARROT, ei);
         if (ei.isCancelled) {
             callbackInfo.cancel();
         }

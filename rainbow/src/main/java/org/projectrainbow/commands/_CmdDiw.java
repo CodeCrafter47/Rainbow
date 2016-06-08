@@ -2,15 +2,15 @@ package org.projectrainbow.commands;
 
 import PluginReference.MC_Player;
 import PluginReference.RainbowUtils;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandManager;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.BlockPos;
-import net.minecraft.src.Blocks;
-import net.minecraft.src.CommandBase;
-import net.minecraft.src.CommandException;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.ICommandManager;
-import net.minecraft.src.ICommandSender;
+import net.minecraft.util.math.BlockPos;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.interfaces.IMixinICommandSender;
@@ -32,7 +32,7 @@ public class _CmdDiw extends CommandBase {
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(MinecraftServer minecraftServer, ICommandSender cs) {
+    public boolean checkPermission(MinecraftServer minecraftServer, ICommandSender cs) {
         return (!(cs instanceof MC_Player)) || ((MC_Player) cs).hasPermission("rainbow.diw");
     }
 
@@ -45,9 +45,9 @@ public class _CmdDiw extends CommandBase {
             for (int dz = -1 * radius; dz <= radius; ++dz) {
                 for (int dy = -4; dy < 0; ++dy) {
                     if (dy >= -1) {
-                        p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.grass.getDefaultState(), 3);
+                        p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.GRASS.getDefaultState(), 3);
                     } else {
-                        p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.dirt.getDefaultState(), 3);
+                        p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.DIRT.getDefaultState(), 3);
                     }
                 }
             }
@@ -63,16 +63,16 @@ public class _CmdDiw extends CommandBase {
 
         for (int dx = -1 * radius; dx <= radius; ++dx) {
             int dy = 0;
-            p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + radius), Blocks.cobblestone_wall.getDefaultState(), 3);
+            p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + radius), Blocks.COBBLESTONE_WALL.getDefaultState(), 3);
             int dz = -1 * radius;
-            p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.cobblestone_wall.getDefaultState(), 3);
+            p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.COBBLESTONE_WALL.getDefaultState(), 3);
         }
 
         for (int dz = -1 * radius; dz <= radius; ++dz) {
             int dy = 0;
-            p.getEntityWorld().setBlockState(new BlockPos(x + radius, y + dy, z + dz), Blocks.cobblestone_wall.getDefaultState(), 3);
+            p.getEntityWorld().setBlockState(new BlockPos(x + radius, y + dy, z + dz), Blocks.COBBLESTONE_WALL.getDefaultState(), 3);
             int dx = -1 * radius;
-            p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.cobblestone_wall.getDefaultState(), 3);
+            p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.COBBLESTONE_WALL.getDefaultState(), 3);
         }
 
         ((IMixinICommandSender) p).sendMessage(_ColorHelper.GREEN + "Wall set around you! " + _ColorHelper.AQUA + "Radius: " + radius);
@@ -87,7 +87,7 @@ public class _CmdDiw extends CommandBase {
         for (int dx = -1 * radius; dx <= radius; ++dx) {
             for (int dz = -1 * radius; dz <= radius; ++dz) {
                 for (int dy = 0; y + dy < maxHeight; ++dy) {
-                    p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.air.getDefaultState(), 3);
+                    p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.AIR.getDefaultState(), 3);
                 }
             }
         }
@@ -165,7 +165,7 @@ public class _CmdDiw extends CommandBase {
     }
 
     @Override
-    public void processCommand(MinecraftServer minecraftServer, ICommandSender cs, String[] args) throws CommandException {
+    public void execute(MinecraftServer minecraftServer, ICommandSender cs, String[] args) throws CommandException {
         EntityPlayerMP p = null;
         if (cs instanceof EntityPlayerMP) {
             p = (EntityPlayerMP) cs;

@@ -11,38 +11,40 @@ import PluginReference.RainbowUtils;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import joebkt._SerializableLocation;
+import net.minecraft.block.Block;
+import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.ServerCommandManager;
+import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.EntityAreaEffectCloud;
+import net.minecraft.entity.EntityHanging;
+import net.minecraft.entity.effect.EntityWeatherEffect;
+import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.item.EntityBoat;
+import net.minecraft.entity.item.EntityEnderCrystal;
+import net.minecraft.entity.item.EntityEnderEye;
+import net.minecraft.entity.item.EntityFallingBlock;
+import net.minecraft.entity.item.EntityFireworkRocket;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.item.EntityXPOrb;
+import net.minecraft.entity.passive.EntityAmbientCreature;
+import net.minecraft.entity.passive.EntitySquid;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.projectile.EntityFishHook;
+import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.Block;
-import net.minecraft.src.BlockPos;
-import net.minecraft.src.EntityAgeable;
-import net.minecraft.src.EntityAmbientCreature;
-import net.minecraft.src.EntityAreaEffectCloud;
-import net.minecraft.src.EntityArmorStand;
-import net.minecraft.src.EntityArrow;
-import net.minecraft.src.EntityBoat;
-import net.minecraft.src.EntityEnderCrystal;
-import net.minecraft.src.EntityEnderEye;
-import net.minecraft.src.EntityFallingBlock;
-import net.minecraft.src.EntityFireworkRocket;
-import net.minecraft.src.EntityFishHook;
-import net.minecraft.src.EntityItem;
-import net.minecraft.src.EntityMinecart;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.EntitySquid;
-import net.minecraft.src.EntityThrowable;
-import net.minecraft.src.EntityXPOrb;
-import net.minecraft.src.EnumDimension;
-import net.minecraft.src.ICommand;
-import net.minecraft.src.ICommandSender;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.ServerCommandManager;
-import net.minecraft.src.StatCollector;
-import net.minecraft.src.WorldServer;
-import net.minecraft.src.xr;
-import net.minecraft.src.xz;
+import net.minecraft.server.gui.StatsComponent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.translation.LanguageMap;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.LogManager;
 import org.projectrainbow.commands._CmdAnnouncer;
 import org.projectrainbow.commands._CmdBal;
@@ -174,7 +176,7 @@ public class _DiwUtils {
     public static boolean IsOp(final ICommandSender cs) {
         if (cs instanceof EntityPlayer) {
             final EntityPlayer plr = (EntityPlayer) cs;
-            return getMinecraftServer().getConfigurationManager().canSendCommands(plr.getGameProfile());
+            return getMinecraftServer().getPlayerList().canSendCommands(plr.getGameProfile());
         }
         return true;
     }
@@ -298,15 +300,15 @@ public class _DiwUtils {
 
         // Setup BlockHelper
         ImmutableMap.Builder<Integer, String> mapBlockNames = ImmutableMap.builder();
-        for (Block block : Block.blockRegistry) {
-            mapBlockNames.put(Block.getIdFromBlock(block), Block.blockRegistry.getNameForObject(block).getResourcePath());
+        for (Block block : Block.REGISTRY) {
+            mapBlockNames.put(Block.getIdFromBlock(block), Block.REGISTRY.getNameForObject(block).getResourcePath());
         }
         BlockHelper.mapBlockNames = mapBlockNames.build();
 
         ImmutableMap.Builder<String, String> mapItemNames = ImmutableMap.builder();
         ImmutableMap.Builder<Integer, Integer> mapNumSubtypes = ImmutableMap.builder();
         Set<String> subtypes = new HashSet<String>();
-        for (Item item : Item.itemRegistry) {
+        for (Item item : Item.REGISTRY) {
             int id = Item.getIdFromItem(item);
             if (item.getHasSubtypes()) {
                 for (int i = 0; i < 16; i++) {
@@ -314,7 +316,7 @@ public class _DiwUtils {
                         continue;
                     }
                     ItemStack itemStack = new ItemStack(item, 1, i);
-                    String localizedName = StatCollector.translateToLocal(item.getItemStackDisplayName(itemStack));
+                    String localizedName = I18n.translateToLocal(item.getItemStackDisplayName(itemStack));
                     if (!subtypes.contains(localizedName)) {
                         mapItemNames.put("" + id + ":" + i, localizedName);
                         subtypes.add(localizedName);
@@ -1169,7 +1171,7 @@ public class _DiwUtils {
     }
 
     public static void MessageAllPlayers(String msg) {
-        for (EntityPlayerMP p : getMinecraftServer().getConfigurationManager().getPlayers()) {
+        for (EntityPlayerMP p : getMinecraftServer().getPlayerList().getPlayerList()) {
             ((IMixinICommandSender) p).sendMessage(msg);
         }
     }
@@ -2127,7 +2129,7 @@ public class _DiwUtils {
             for (int i = 0; i < worlds.length; ++i) {
                 WorldServer world = worlds[i];
 
-                if (world.provider.getDimension() == EnumDimension.OVERWORLD) {
+                if (world.provider.getDimensionType() == DimensionType.OVERWORLD) {
                     for (MC_Entity entity : ((MC_World) world).getEntities()) {
                         if (entity instanceof MC_ArmorStand) {
                             int x = entity.getLocation().getBlockX();
@@ -2180,9 +2182,9 @@ public class _DiwUtils {
 
             if (!(entity instanceof EntityBoat)
                     && !(entity instanceof EntityFallingBlock)
-                    && !(entity instanceof xr) // EntityHanging
+                    && !(entity instanceof EntityHanging)
                     && !(entity instanceof EntityFishHook)
-                    && !(entity instanceof xz) // EntityWeatherEffect
+                    && !(entity instanceof EntityWeatherEffect)
                     && !(entity instanceof EntityMinecart)
                     && !(entity instanceof EntityThrowable)
                     && !(entity instanceof EntityArrow)

@@ -1,6 +1,6 @@
 package org.projectrainbow.mixins;
 
-import net.minecraft.src.Bootstrap;
+import net.minecraft.init.Bootstrap;
 import org.apache.logging.log4j.Logger;
 import org.projectrainbow.util.LoggingErrorStream;
 import org.projectrainbow.util.LoggingPrintStream;

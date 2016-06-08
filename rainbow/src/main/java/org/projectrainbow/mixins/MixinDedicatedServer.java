@@ -1,11 +1,11 @@
 package org.projectrainbow.mixins;
 
 import PluginReference.MC_EventInfo;
+import net.minecraft.command.ICommandManager;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.DedicatedServer;
-import net.minecraft.src.ICommandManager;
-import net.minecraft.src.ICommandSender;
-import net.minecraft.src.PropertyManager;
+import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.dedicated.PropertyManager;
 import org.projectrainbow.Hooks;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.launch.Bootstrap;
@@ -49,7 +49,7 @@ public class MixinDedicatedServer {
         System.out.println("Rainbow Mod " + Bootstrap.minecraftVersion + "#" + Bootstrap.buildNumber);
     }
 
-    @Redirect(method = "startServer", at = @At(value = "INVOKE", target = "net.minecraft.src.PropertyManager.getStringProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"))
+    @Redirect(method = "startServer", at = @At(value = "INVOKE", target = "net.minecraft.server.dedicated.PropertyManager.getStringProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"))
     String defaultMotd(PropertyManager propertyManager, String key, String defaultValue) {
         if (key.equals("motd")) {
             defaultValue = _DiwUtils.DefaultMOTD;
@@ -84,7 +84,7 @@ public class MixinDedicatedServer {
     public void setGuiEnabled() {
     }
 
-    @Redirect(method = "executePendingCommands", at = @At(value = "INVOKE", target = "net.minecraft.src.ICommandManager.executeCommand(Lnet/minecraft/src/ICommandSender;Ljava/lang/String;)I"))
+    @Redirect(method = "executePendingCommands", at = @At(value = "INVOKE", target = "net.minecraft.command.ICommandManager.executeCommand(Lnet/minecraft/command/ICommandSender;Ljava/lang/String;)I"))
     private int onCommand(ICommandManager commandManager, ICommandSender commandSender, String command) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onConsoleInput(command, ei);

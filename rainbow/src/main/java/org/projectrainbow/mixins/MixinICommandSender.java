@@ -1,22 +1,22 @@
 package org.projectrainbow.mixins;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.Entity;
+import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.ChatComponentText;
-import net.minecraft.src.CommandBlockLogic;
-import net.minecraft.src.Entity;
-import net.minecraft.src.ICommandSender;
-import net.minecraft.src.RConConsoleSource;
+import net.minecraft.tileentity.CommandBlockBaseLogic;
+import net.minecraft.util.text.TextComponentString;
 import org.projectrainbow.interfaces.IMixinICommandSender;
 import org.spongepowered.asm.mixin.Mixin;
 
 // add to all subclasses of ICommandSender
-@Mixin({Entity.class, MinecraftServer.class, RConConsoleSource.class, CommandBlockLogic.class})
+@Mixin({Entity.class, MinecraftServer.class, RConConsoleSource.class, CommandBlockBaseLogic.class})
 public abstract class MixinICommandSender implements IMixinICommandSender {
 
     /*
      * Add a useful helper method
      */
     public void sendMessage(String legacyText) {
-        ((ICommandSender)this).addChatMessage(new ChatComponentText(legacyText));
+        ((ICommandSender)this).addChatMessage(new TextComponentString(legacyText));
     }
 }

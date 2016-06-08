@@ -4,12 +4,12 @@ import PluginReference.MC_Entity;
 import PluginReference.MC_EventInfo;
 import PluginReference.MC_Location;
 import PluginReference.MC_MiscGriefType;
-import net.minecraft.src.Block;
-import net.minecraft.src.BlockPos;
-import net.minecraft.src.EntityAIHarvestFarmland;
-import net.minecraft.src.EntityVillager;
-import net.minecraft.src.IBlockState;
-import net.minecraft.src.World;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.ai.EntityAIHarvestFarmland;
+import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.projectrainbow.Hooks;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +25,7 @@ public class MixinEntityAIHarvestFarmland {
     @Final
     private EntityVillager theVillager;
 
-    @Inject(method = "updateTask", at = @At(value = "INVOKE", target = "net.minecraft.src.World.destroyBlock(Lnet/minecraft/src/BlockPos;Z)Z"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "updateTask", at = @At(value = "INVOKE", target = "net.minecraft.world.World.destroyBlock(Lnet/minecraft/util/math/BlockPos;Z)Z"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void grief(CallbackInfo callbackInfo, World w, BlockPos pos, IBlockState state, Block block) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptEntityMiscGrief((MC_Entity) theVillager, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), theVillager.dimension), MC_MiscGriefType.VILLAGER_HARVEST, ei);
@@ -34,7 +34,7 @@ public class MixinEntityAIHarvestFarmland {
         }
     }
 
-    @Inject(method = "updateTask", at = @At(value = "FIELD", target = "net.minecraft.src.EntityAIHarvestFarmland.theVillager:Lnet/minecraft/src/EntityVillager;", ordinal = 3), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "updateTask", at = @At(value = "FIELD", target = "net.minecraft.entity.ai.EntityAIHarvestFarmland.theVillager:Lnet/minecraft/entity/passive/EntityVillager;", ordinal = 3), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void grief2(CallbackInfo callbackInfo, World w, BlockPos pos, IBlockState state, Block block) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptEntityMiscGrief((MC_Entity) theVillager, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), theVillager.dimension), MC_MiscGriefType.VILLAGER_PLANT_SEEDS, ei);

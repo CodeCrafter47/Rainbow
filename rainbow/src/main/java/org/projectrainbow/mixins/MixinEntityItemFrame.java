@@ -4,11 +4,11 @@ import PluginReference.MC_Entity;
 import PluginReference.MC_EventInfo;
 import PluginReference.MC_ItemFrameActionType;
 import PluginReference.MC_Player;
-import net.minecraft.src.DamageSource;
-import net.minecraft.src.EntityItemFrame;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EnumHand;
-import net.minecraft.src.ItemStack;
+import net.minecraft.entity.item.EntityItemFrame;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
 import org.projectrainbow.Hooks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -38,7 +38,7 @@ public abstract class MixinEntityItemFrame extends MixinEntityHanging{
         }
     }
 
-    @Inject(method = "interactFirst", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "processInitialInteract", at = @At("HEAD"), cancellable = true)
     private void onInteract(EntityPlayer var1, ItemStack var2, EnumHand var3, CallbackInfoReturnable<Boolean> callbackInfo) {
         MC_ItemFrameActionType type;
         if (getDisplayedItem() == null && var2 != null) {

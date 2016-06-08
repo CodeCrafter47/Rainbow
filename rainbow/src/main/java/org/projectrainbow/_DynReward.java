@@ -7,7 +7,7 @@ import PluginReference.MC_Player;
 import com.google.common.io.Files;
 import joebkt._DynRewardInfo;
 import joebkt._SerializableLocation;
-import net.minecraft.src.Item;
+import net.minecraft.item.Item;
 
 import java.io.File;
 import java.io.FileInputStream;

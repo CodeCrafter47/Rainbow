@@ -2,11 +2,11 @@ package org.projectrainbow.mixins;
 
 import PluginReference.MC_Instrument;
 import PluginReference.MC_NoteBlock;
-import net.minecraft.src.BlockPos;
-import net.minecraft.src.Blocks;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.TileEntityNote;
-import net.minecraft.src.World;
+import net.minecraft.init.Blocks;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityNote;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -43,6 +43,6 @@ public abstract class MixinTileEntityNote extends TileEntity implements MC_NoteB
         if (note < 0 || note > 24) {
             throw new IllegalArgumentException("Note must be between 0 and 24");
         }
-        getWorld().addBlockEvent(getPos(), Blocks.noteblock, instrument.ordinal(), note);
+        getWorld().addBlockEvent(getPos(), Blocks.NOTEBLOCK, instrument.ordinal(), note);
     }
 }

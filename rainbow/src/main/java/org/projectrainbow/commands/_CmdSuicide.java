@@ -1,11 +1,11 @@
 package org.projectrainbow.commands;
 
 import PluginReference.MC_Player;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.CommandBase;
-import net.minecraft.src.CommandException;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ICommandSender;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.interfaces.IMixinICommandSender;
@@ -17,7 +17,7 @@ public class _CmdSuicide extends CommandBase {
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(MinecraftServer minecraftServer, ICommandSender iCommandSender) {
+    public boolean checkPermission(MinecraftServer minecraftServer, ICommandSender iCommandSender) {
         return (!(iCommandSender instanceof MC_Player)) || ((MC_Player) iCommandSender).hasPermission("rainbow.suicide");
     }
 
@@ -27,7 +27,7 @@ public class _CmdSuicide extends CommandBase {
     }
 
     @Override
-    public void processCommand(MinecraftServer minecraftServer, ICommandSender cs, String[] strings) throws CommandException {
+    public void execute(MinecraftServer minecraftServer, ICommandSender cs, String[] strings) throws CommandException {
         EntityPlayer p = null;
         if (!(cs instanceof EntityPlayer)) {
             System.out.println("--- Only for players!");

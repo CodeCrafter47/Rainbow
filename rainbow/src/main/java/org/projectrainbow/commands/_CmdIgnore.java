@@ -5,7 +5,7 @@ import PluginReference.ChatColor;
 import PluginReference.MC_Command;
 import PluginReference.MC_Player;
 import com.google.common.io.Files;
-import net.minecraft.src.CommandBase;
+import net.minecraft.command.CommandBase;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow._JOT_OnlineTimeUtils;
 

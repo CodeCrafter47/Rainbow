@@ -2,7 +2,7 @@ package org.projectrainbow.mixins;
 
 import PluginReference.MC_Skeleton;
 import PluginReference.MC_SkeletonType;
-import net.minecraft.src.EntitySkeleton;
+import net.minecraft.entity.monster.EntitySkeleton;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;

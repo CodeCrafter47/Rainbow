@@ -1,7 +1,7 @@
 package org.projectrainbow.interfaces;
 
 import PluginReference.MC_Location;
-import net.minecraft.src.WorldServer;
+import net.minecraft.world.WorldServer;
 import org.projectrainbow._Backpack;
 
 public interface IMixinEntityPlayerMP {

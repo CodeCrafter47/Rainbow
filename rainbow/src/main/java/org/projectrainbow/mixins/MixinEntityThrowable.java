@@ -2,8 +2,8 @@ package org.projectrainbow.mixins;
 
 import PluginReference.MC_Entity;
 import PluginReference.MC_Projectile;
-import net.minecraft.src.EntityLivingBase;
-import net.minecraft.src.EntityThrowable;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.projectile.EntityThrowable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 

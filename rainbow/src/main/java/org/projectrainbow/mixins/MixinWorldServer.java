@@ -16,30 +16,30 @@ import PluginReference.MC_Sign;
 import PluginReference.MC_World;
 import PluginReference.MC_WorldBiomeType;
 import com.google.common.base.Objects;
-import net.minecraft.src.BiomeGenBase;
-import net.minecraft.src.Block;
-import net.minecraft.src.BlockDirectional;
-import net.minecraft.src.BlockPos;
-import net.minecraft.src.BlockStandingSign;
-import net.minecraft.src.Blocks;
-import net.minecraft.src.Chunk;
-import net.minecraft.src.ChunkProviderServer;
-import net.minecraft.src.CommandGameRule;
-import net.minecraft.src.Entity;
-import net.minecraft.src.EntityItem;
-import net.minecraft.src.EntityList;
-import net.minecraft.src.EnumFacing;
-import net.minecraft.src.IBlockState;
-import net.minecraft.src.ISaveHandler;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Material;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.Profiler;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.World;
-import net.minecraft.src.WorldInfo;
-import net.minecraft.src.WorldProvider;
-import net.minecraft.src.WorldServer;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockDirectional;
+import net.minecraft.block.BlockStandingSign;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.command.CommandGameRule;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.profiler.Profiler;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkProviderServer;
+import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.storage.WorldInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.projectrainbow.BlockWrapper;
@@ -73,7 +73,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
     @Shadow
     protected abstract boolean isChunkLoaded(int x, int z, boolean ignored);
 
-    @Redirect(method = "i(Lnet/minecraft/src/Entity;)Z", at = @At(value = "INVOKE", target = "warn", remap = false))
+    @Redirect(method = "canAddEntity", at = @At(value = "INVOKE", target = "warn", remap = false))
     private void doLogWarning(Logger logger, String message) {
         if (_DiwUtils.DoHideAnnoyingDefaultServerOutput == false) {
             logger.warn(message);
@@ -164,13 +164,13 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
         BlockPos coords = new BlockPos(x, y, z);
         IBlockState bs = getBlockState(coords);
         Block bo = bs.getBlock();
-        Material mat = bo.q(bs);
+        Material mat = bo.getMaterial(bs);
 
-        if (mat == Material.air) {
+        if (mat == Material.AIR) {
             return false;
         } else {
             bo.dropBlockAsItem(this, coords, bs, toolOptional == null ? 0 : toolOptional.getEnchantmentLevel(MC_EnchantmentType.FORTUNE));
-            setBlockState(coords, Blocks.air.getDefaultState(), 3);
+            setBlockState(coords, Blocks.AIR.getDefaultState(), 3);
             return true;
         }
     }
@@ -183,7 +183,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
 
     @Override
     public String getName() {
-        return super.getWorldInfo().getWorldName() + provider.getDimension().getInternalNameSuffix();
+        return super.getWorldInfo().getWorldName() + provider.getDimensionType().getSuffix();
     }
 
     @Override
@@ -193,14 +193,14 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
 
     @Override
     public boolean getGameRuleBool(MC_GameRuleType var1) {
-        return getGameRules().getGameRuleBooleanValue(PluginHelper.gameRuleMap.get(var1));
+        return getGameRules().getBoolean(PluginHelper.gameRuleMap.get(var1));
     }
 
     @Override
     public void setGameRule(MC_GameRuleType var1, boolean var2) {
         String rule = PluginHelper.gameRuleMap.get(var1);
         getGameRules().setOrCreateGameRule(rule, "" + var2);
-        CommandGameRule.a(getGameRules(), rule, _DiwUtils.getMinecraftServer());
+        CommandGameRule.notifyGameRuleChange(getGameRules(), rule, _DiwUtils.getMinecraftServer());
     }
 
     @Override
@@ -274,7 +274,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
 
     @Override
     public int getDimension() {
-        return provider.getDimension().getDimensionId();
+        return provider.getDimensionType().getId();
     }
 
     @Override
@@ -299,7 +299,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
 
     @Override
     public MC_WorldBiomeType getBiomeTypeAt(int x, int z) {
-        BiomeGenBase biomeGenBase = getBiomeGenForCoords(new BlockPos(x, 0, z));
+        Biome biomeGenBase = getBiome(new BlockPos(x, 0, z));
 
         return Objects.firstNonNull(PluginHelper.biomeMap.get(biomeGenBase), MC_WorldBiomeType.UNSPECIFIED);
     }
@@ -309,13 +309,13 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
         if (var3 == null || var3 == MC_WorldBiomeType.UNSPECIFIED) {
             return;
         }
-        BiomeGenBase biomeGenBase = PluginHelper.biomeMap.inverse().get(var3);
+        Biome biomeGenBase = PluginHelper.biomeMap.inverse().get(var3);
         BlockPos blockPos = new BlockPos(x, 0, z);
         Chunk var2 = this.getChunkFromBlockCoords(blockPos);
         int xInChunk = x & 15;
         int zInChunk = z & 15;
 
-        var2.getBiomeArray()[zInChunk << 4 | xInChunk] = (byte) BiomeGenBase.a(biomeGenBase);
+        var2.getBiomeArray()[zInChunk << 4 | xInChunk] = (byte) Biome.getIdForBiome(biomeGenBase);
     }
 
     @Override
@@ -330,7 +330,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
 
     @Override
     public List<MC_Chunk> getLoadedChunks() {
-        return (List<MC_Chunk>) new ArrayList(((ChunkProviderServer) v).a());
+        return (List<MC_Chunk>) new ArrayList(((ChunkProviderServer) super.chunkProvider).getLoadedChunks());
     }
 
     @Override

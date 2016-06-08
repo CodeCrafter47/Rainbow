@@ -4,10 +4,10 @@ import PluginReference.MC_EventInfo;
 import PluginReference.MC_Location;
 import PluginReference.MC_Player;
 import com.mojang.authlib.GameProfile;
-import net.minecraft.src.BlockPos;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.ServerConfigurationManager;
-import net.minecraft.src.WorldServer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldServer;
 import org.projectrainbow.Hooks;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow._JOT_OnlineTimeUtils;
@@ -25,7 +25,7 @@ import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Mixin(ServerConfigurationManager.class)
+@Mixin(PlayerList.class)
 public class MixinServerConfigurationManager {
     private Map<String, Long> lastConnectTime = new ConcurrentHashMap<String, Long>();
 
@@ -43,13 +43,13 @@ public class MixinServerConfigurationManager {
         Hooks.onPlayerRespawn((MC_Player) callback.getReturnValue());
     }
 
-    @Redirect(method = "recreatePlayerEntity", at = @At(value = "INVOKE", target = "net.minecraft.src.WorldServer.getSpawnPoint()Lnet/minecraft/src/BlockPos;"))
+    @Redirect(method = "recreatePlayerEntity", at = @At(value = "INVOKE", target = "net.minecraft.world.WorldServer.getSpawnPoint()Lnet/minecraft/util/math/BlockPos;"))
     private BlockPos onRespawnSendCompassTarget(WorldServer worldServer, EntityPlayerMP oldPlayer, int dimension, boolean fromEnd){
         MC_Location compassTarget = ((MC_Player) oldPlayer).getCompassTarget();
         return new BlockPos(compassTarget.getBlockX(), compassTarget.getBlockY(), compassTarget.getBlockZ());
     }
 
-    @ModifyArg(method = "removeAllPlayers", at = @At(value = "INVOKE", target = "Lnet/minecraft/src/NetHandlerPlayServer;kickPlayerFromServer(Ljava/lang/String;)V"))
+    @ModifyArg(method = "removeAllPlayers", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetHandlerPlayServer;kickPlayerFromServer(Ljava/lang/String;)V"))
     String getCustomShutdownMessage(String oldShutdownMessage) {
         return _DiwUtils.CustomShutdownMessage;
     }

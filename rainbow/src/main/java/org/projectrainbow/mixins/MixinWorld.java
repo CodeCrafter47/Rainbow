@@ -2,10 +2,10 @@ package org.projectrainbow.mixins;
 
 import PluginReference.MC_Entity;
 import PluginReference.MC_EventInfo;
-import net.minecraft.src.Entity;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.World;
-import net.minecraft.src.on;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import org.projectrainbow.Hooks;
 import org.projectrainbow._DiwUtils;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,8 +24,8 @@ public abstract class MixinWorld {
     @Inject(method = "spawnEntityInWorld", at = @At("HEAD"), cancellable = true)
     private void onEntitySpawned(Entity entity, CallbackInfoReturnable<Boolean> callbackInfo) {
 
-        int var2 = on.c(entity.posX / 16.0D); // MathHelper.floor_double
-        int var3 = on.c(entity.posZ / 16.0D);
+        int var2 = MathHelper.floor_double(entity.posX / 16.0D); // MathHelper.floor_double
+        int var3 = MathHelper.floor_double(entity.posZ / 16.0D);
         boolean var4 = entity.forceSpawn;
         if(entity instanceof EntityPlayer) {
             var4 = true;

@@ -2,21 +2,21 @@ package org.projectrainbow.mixins;
 
 import PluginReference.MC_Ocelot;
 import PluginReference.MC_OcelotType;
-import net.minecraft.src.EntityOzelot;
+import net.minecraft.entity.passive.EntityOcelot;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(EntityOzelot.class)
+@Mixin(EntityOcelot.class)
 public abstract class MixinEntityOcelot implements MC_Ocelot {
     @Shadow
-    public abstract int di();
+    public abstract int getTameSkin();
 
     @Shadow
-    public abstract void l(int var1);
+    public abstract void setTameSkin(int var1);
 
     @Override
     public MC_OcelotType getCatType() {
-        int idx = di();
+        int idx = getTameSkin();
 
         return idx == 0
                 ? MC_OcelotType.WILD
@@ -32,19 +32,19 @@ public abstract class MixinEntityOcelot implements MC_Ocelot {
     @Override
     public void setCatType(MC_OcelotType catType) {
         if (catType == MC_OcelotType.WILD) {
-            l(0);
+            setTameSkin(0);
         }
 
         if (catType == MC_OcelotType.BLACK) {
-            l(1);
+            setTameSkin(1);
         }
 
         if (catType == MC_OcelotType.RED) {
-            l(2);
+            setTameSkin(2);
         }
 
         if (catType == MC_OcelotType.SIAMESE) {
-            l(3);
+            setTameSkin(3);
         }
     }
 }

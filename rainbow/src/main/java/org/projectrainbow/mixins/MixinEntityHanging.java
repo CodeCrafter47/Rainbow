@@ -4,11 +4,11 @@ import PluginReference.MC_Entity;
 import PluginReference.MC_EventInfo;
 import PluginReference.MC_HangingEntityType;
 import PluginReference.MC_Player;
-import net.minecraft.src.DamageSource;
-import net.minecraft.src.EntityItemFrame;
-import net.minecraft.src.EntityLeashKnot;
-import net.minecraft.src.EntityPainting;
-import net.minecraft.src.xr;
+import net.minecraft.entity.EntityHanging;
+import net.minecraft.entity.EntityLeashKnot;
+import net.minecraft.entity.item.EntityItemFrame;
+import net.minecraft.entity.item.EntityPainting;
+import net.minecraft.util.DamageSource;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(xr.class)
+@Mixin(EntityHanging.class)
 public abstract class MixinEntityHanging extends MixinEntity {
 
     @Inject(method = "attackEntityFrom", at = @At("HEAD"), cancellable = true)

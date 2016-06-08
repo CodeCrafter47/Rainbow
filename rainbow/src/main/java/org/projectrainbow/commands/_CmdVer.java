@@ -1,10 +1,10 @@
 package org.projectrainbow.commands;
 
 import PluginReference.MC_Player;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.CommandBase;
-import net.minecraft.src.CommandException;
-import net.minecraft.src.ICommandSender;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.launch.Bootstrap;
@@ -25,7 +25,7 @@ public class _CmdVer extends CommandBase
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(MinecraftServer minecraftServer, ICommandSender sender) {
+    public boolean checkPermission(MinecraftServer minecraftServer, ICommandSender sender) {
         return (!(sender instanceof MC_Player)) || ((MC_Player) sender).hasPermission("rainbow.version");
     }
 
@@ -35,7 +35,7 @@ public class _CmdVer extends CommandBase
     }
 
     @Override
-    public void processCommand(MinecraftServer minecraftServer, ICommandSender cs, String[] strings) throws CommandException {
+    public void execute(MinecraftServer minecraftServer, ICommandSender cs, String[] strings) throws CommandException {
         _DiwUtils.reply(cs, String.valueOf(_ColorHelper.AQUA) + "Rainbow Server Mod: " + _ColorHelper.LIGHT_PURPLE + "Version " + _DiwUtils.MC_VERSION_STRING + " Build " + Bootstrap.buildNumber);
     }
 }

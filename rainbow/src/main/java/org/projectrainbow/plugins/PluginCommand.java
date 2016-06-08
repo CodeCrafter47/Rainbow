@@ -3,11 +3,11 @@ package org.projectrainbow.plugins;
 import PluginReference.MC_Command;
 import PluginReference.MC_Player;
 import com.google.common.base.Objects;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.BlockPos;
-import net.minecraft.src.CommandBase;
-import net.minecraft.src.CommandException;
-import net.minecraft.src.ICommandSender;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +41,7 @@ public class PluginCommand extends CommandBase {
     }
 
     @Override
-    public void processCommand(MinecraftServer minecraftServer, ICommandSender sender, String[] args) throws CommandException {
+    public void execute(MinecraftServer minecraftServer, ICommandSender sender, String[] args) throws CommandException {
         try {
             delegate.handleCommand(sender instanceof MC_Player ? (MC_Player) sender : null, args);
         } catch (Exception e) {
@@ -60,7 +60,7 @@ public class PluginCommand extends CommandBase {
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(MinecraftServer minecraftServer, ICommandSender sender) {
+    public boolean checkPermission(MinecraftServer minecraftServer, ICommandSender sender) {
         try {
             return delegate.hasPermissionToUse(sender instanceof MC_Player ? (MC_Player) sender : null);
         } catch (Exception e) {
@@ -70,7 +70,7 @@ public class PluginCommand extends CommandBase {
     }
 
     @Override
-    public List<String> addTabCompletionOptions(MinecraftServer minecraftServer, ICommandSender sender, String[] args, BlockPos blockPos) {
+    public List<String> getTabCompletionOptions(MinecraftServer minecraftServer, ICommandSender sender, String[] args, BlockPos blockPos) {
         try {
             return Objects.firstNonNull(delegate.getTabCompletionList(sender instanceof MC_Player ? (MC_Player) sender : null, args), Collections.<String>emptyList());
         } catch (Exception e) {

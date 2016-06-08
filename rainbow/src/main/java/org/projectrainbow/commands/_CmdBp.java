@@ -1,11 +1,11 @@
 package org.projectrainbow.commands;
 
 import PluginReference.MC_Player;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.CommandBase;
-import net.minecraft.src.CommandException;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ICommandSender;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow.interfaces.IMixinEntityPlayerMP;
 
@@ -24,7 +24,7 @@ public class _CmdBp extends CommandBase {
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(MinecraftServer minecraftServer, ICommandSender iCommandSender) {
+    public boolean checkPermission(MinecraftServer minecraftServer, ICommandSender iCommandSender) {
         return (!(iCommandSender instanceof MC_Player)) || ((MC_Player) iCommandSender).hasPermission("rainbow.bp");
     }
 
@@ -34,11 +34,11 @@ public class _CmdBp extends CommandBase {
     }
 
     @Override
-    public void processCommand(MinecraftServer minecraftServer, ICommandSender cs, String[] strings) throws CommandException {
+    public void execute(MinecraftServer minecraftServer, ICommandSender cs, String[] strings) throws CommandException {
         EntityPlayer p = null;
         if (cs instanceof EntityPlayer) {
             p = (EntityPlayer) cs;
-            p.a(((IMixinEntityPlayerMP) p).getBackpack());
+            p.displayGUIChest(((IMixinEntityPlayerMP) p).getBackpack());
         } else {
             System.out.println("--- Only for players!");
         }

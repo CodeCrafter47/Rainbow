@@ -3,12 +3,11 @@ package org.projectrainbow.mixins;
 import java.io.DataInput;
 import java.io.DataOutput;
 
-import net.minecraft.src.NBTBase;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTSizeTracker;
 import org.projectrainbow.interfaces.IMixinNBTBase;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-
-import net.minecraft.src.NBTSizeTracker;
 
 @Mixin(NBTBase.class)
 public abstract class MixinNBTBase implements IMixinNBTBase {
