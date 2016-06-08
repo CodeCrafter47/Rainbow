@@ -34,7 +34,11 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,6 +58,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -62,6 +67,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Mixin(NetHandlerPlayServer.class)
 public class MixinNetHandlerPlayServer {
@@ -182,6 +189,40 @@ public class MixinNetHandlerPlayServer {
             return _DiwUtils.TranslateChatString(message, ((MC_Player) playerEntity).isOp());
         }
         return message;
+    }
+
+    private static final  Pattern patternLink = Pattern.compile("(?<=(\\W|^))(?:(https?)://)?([-\\w_\\.]{2,}\\.[a-z]{2,8})(/\\S*)?(?=(\\W|$))", Pattern.CASE_INSENSITIVE);
+
+    @ModifyArg(method = "processChatMessage", at = @At(value = "INVOKE", target = "net.minecraft.server.management.PlayerList.sendChatMsgImpl(Lnet/minecraft/util/text/ITextComponent;Z)V"))
+    private ITextComponent onChatSent(ITextComponent message) {
+
+        TextComponentTranslation t = (TextComponentTranslation) message;
+        ITextComponent player = (ITextComponent) t.getFormatArgs()[0];
+        String msg = (String) t.getFormatArgs()[1];
+
+        TextComponentString result = new TextComponentString("");
+        result.appendSibling(new TextComponentString("<"));
+        result.appendSibling(player);
+        result.appendSibling(new TextComponentString("> "));
+
+        Matcher matcher = patternLink.matcher(msg);
+        while (matcher.find()) {
+            StringBuffer buffer = new StringBuffer();
+            matcher.appendReplacement(buffer, "");
+            result.appendSibling(new TextComponentString(buffer.toString()));
+
+            String link = matcher.group();
+            if (!link.startsWith("http://") && !link.startsWith("https://")) {
+                link = "http://" + link;
+            }
+            result.appendSibling(new TextComponentString(matcher.group()).setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link))));
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        matcher.appendTail(buffer);
+        result.appendSibling(new TextComponentString(buffer.toString()));
+
+        return result;
     }
 
     @Inject(method = "handleSlashCommand", at = @At("HEAD"))
