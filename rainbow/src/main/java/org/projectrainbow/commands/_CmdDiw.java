@@ -18,6 +18,7 @@ import org.projectrainbow.interfaces.IMixinPlayerCapabilities;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.Collections;
@@ -158,7 +159,7 @@ public class _CmdDiw extends CommandBase {
 
     public void ShowUsage(ICommandSender cs) {
         _DiwUtils.reply(cs, _ColorHelper.RED + "Usage: /diw [option]");
-        String[] arrCmds = new String[]{"save", "speed", "flyspeed", "walkspeed", "mem", "skyclear", "setgrass", "border", "echo", "script"};
+        String[] arrCmds = new String[]{"save", "speed", "flyspeed", "walkspeed", "mem", "skyclear", "setgrass", "border", "echo", "script", "loadBanList"};
         List<String> cmds = Arrays.asList(arrCmds);
         Collections.sort(cmds);
         _DiwUtils.reply(cs, _ColorHelper.WHITE + "Options: " + RainbowUtils.RainbowStringList(cmds));
@@ -173,6 +174,15 @@ public class _CmdDiw extends CommandBase {
 
         if (args.length <= 0) {
             this.ShowUsage(cs);
+        } else if (args[0].equalsIgnoreCase("loadBanList")) {
+            try {
+                minecraftServer.getPlayerList().getBannedPlayers().readSavedFile();
+                minecraftServer.getPlayerList().getBannedIPs().readSavedFile();
+                _DiwUtils.reply(cs, _ColorHelper.GREEN + "Ban list reloaded.");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                _DiwUtils.reply(cs, _ColorHelper.RED + "Internal error: " + e.getMessage());
+            }
         } else if (args[0].equalsIgnoreCase("save")) {
             _DiwUtils.SaveStuffs();
             _DiwUtils.reply(cs, _ColorHelper.GREEN + "Rainbow data saved.");
