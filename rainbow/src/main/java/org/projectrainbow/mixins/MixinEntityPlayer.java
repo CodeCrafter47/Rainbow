@@ -13,9 +13,11 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameRules;
 import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
+import org.projectrainbow._DiwUtils;
 import org.projectrainbow.commands._CmdNameColor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -92,6 +94,21 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
         if (ei.isCancelled) {
             callbackInfo.setReturnValue(null);
         }
+    }
+
+    @Redirect(method = "onDeath", at = @At(value = "INVOKE", target = "net.minecraft.world.GameRules.getBoolean(Ljava/lang/String;)Z"))
+    private boolean onDeath(GameRules gameRules, String key) {
+        return "keepInventory".equals(key) && _DiwUtils.OpsKeepInventory && ((MC_Player)this).isOp() || gameRules.getBoolean(key);
+    }
+
+    @Redirect(method = "getExperiencePoints", at = @At(value = "INVOKE", target = "net.minecraft.world.GameRules.getBoolean(Ljava/lang/String;)Z"))
+    private boolean getExperiencePoints(GameRules gameRules, String key) {
+        return "keepInventory".equals(key) && _DiwUtils.OpsKeepInventory && ((MC_Player)this).isOp() || gameRules.getBoolean(key);
+    }
+
+    @Redirect(method = "clonePlayer", at = @At(value = "INVOKE", target = "net.minecraft.world.GameRules.getBoolean(Ljava/lang/String;)Z"))
+    private boolean clonePlayer(GameRules gameRules, String key) {
+        return "keepInventory".equals(key) && _DiwUtils.OpsKeepInventory && ((MC_Player)this).isOp() || gameRules.getBoolean(key);
     }
 
     @Override

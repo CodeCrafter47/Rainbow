@@ -53,6 +53,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.GameType;
 import org.projectrainbow.BlockWrapper;
@@ -277,6 +278,11 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
         MC_Player killer = damageSource.getEntity() instanceof MC_Player ? (MC_Player) damageSource.getEntity() : null;
         Hooks.onPlayerDeath(this, killer, PluginHelper.wrap(damageSource), deathMsg.getUnformattedText());
         configurationManager.sendChatMsg(deathMsg);
+    }
+
+    @Redirect(method = "onDeath", at = @At(value = "INVOKE", target = "net.minecraft.world.GameRules.getBoolean(Ljava/lang/String;)Z"))
+    private boolean onDeath(GameRules gameRules, String key) {
+        return "keepInventory".equals(key) && _DiwUtils.OpsKeepInventory && isOp() || gameRules.getBoolean(key);
     }
 
     @Inject(method = "changeDimension", at = @At("HEAD"), cancellable = true)

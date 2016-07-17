@@ -147,7 +147,7 @@ public class _DiwUtils {
     public static int ReconnectDelaySeconds = 3;
     public static boolean ArmorStandsDance = true;
     public static boolean OpsKeepInventory = true;
-    public static boolean NotifyAdminDisconnects = true;
+    public static boolean NotifyAdminDisconnects = true; // todo does nothing
     public static int MaxNearbyEntities = 250;
     public static long g_standFunIdx = 0L;
     public static List<String> g_removedCommand = new LinkedList<String>();
