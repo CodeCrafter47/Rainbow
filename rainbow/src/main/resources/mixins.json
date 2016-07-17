@@ -78,6 +78,7 @@
     "MixinContainerWorkbench",
     "MixinSlot",
     "MixinModifiableAttributeInstance",
-    "MixinAttributeModifier"
+    "MixinAttributeModifier",
+    "MixinUserList"
   ]
 }
