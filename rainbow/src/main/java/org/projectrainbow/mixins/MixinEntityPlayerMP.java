@@ -1,14 +1,6 @@
 package org.projectrainbow.mixins;
 
-import PluginReference.MC_ContainerType;
-import PluginReference.MC_Entity;
-import PluginReference.MC_EventInfo;
-import PluginReference.MC_GameMode;
-import PluginReference.MC_ItemStack;
-import PluginReference.MC_Location;
-import PluginReference.MC_Player;
-import PluginReference.MC_Server;
-import PluginReference.MC_World;
+import PluginReference.*;
 import com.google.common.base.Objects;
 import com.google.common.io.Files;
 import net.minecraft.command.ICommandSender;
@@ -16,32 +8,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecartContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.AnimalChest;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerBeacon;
-import net.minecraft.inventory.ContainerBrewingStand;
-import net.minecraft.inventory.ContainerChest;
-import net.minecraft.inventory.ContainerDispenser;
-import net.minecraft.inventory.ContainerEnchantment;
-import net.minecraft.inventory.ContainerFurnace;
-import net.minecraft.inventory.ContainerHopper;
-import net.minecraft.inventory.ContainerHorseInventory;
-import net.minecraft.inventory.ContainerMerchant;
-import net.minecraft.inventory.ContainerPlayer;
-import net.minecraft.inventory.ContainerRepair;
-import net.minecraft.inventory.ContainerWorkbench;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryEnderChest;
-import net.minecraft.inventory.InventoryLargeChest;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.network.play.server.SPacketChat;
-import net.minecraft.network.play.server.SPacketRespawn;
-import net.minecraft.network.play.server.SPacketSetExperience;
-import net.minecraft.network.play.server.SPacketSoundEffect;
-import net.minecraft.network.play.server.SPacketSpawnPosition;
+import net.minecraft.network.play.server.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.server.management.PlayerList;
@@ -54,23 +26,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.GameRules;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.GameType;
-import org.projectrainbow.BlockWrapper;
-import org.projectrainbow.EmptyItemStack;
-import org.projectrainbow.Hooks;
-import org.projectrainbow.PluginHelper;
-import org.projectrainbow.ServerWrapper;
-import org.projectrainbow._Backpack;
-import org.projectrainbow._DiwUtils;
-import org.projectrainbow._EconomyManager;
-import org.projectrainbow._PermMgr;
-import org.projectrainbow.interfaces.IMixinContainerDispenser;
-import org.projectrainbow.interfaces.IMixinContainerHopper;
-import org.projectrainbow.interfaces.IMixinEntityPlayerMP;
-import org.projectrainbow.interfaces.IMixinNBTBase;
-import org.projectrainbow.interfaces.IMixinPlayerCapabilities;
-import org.projectrainbow.interfaces.IMixinWorldServer;
+import net.minecraft.world.WorldServer;
+import org.projectrainbow.*;
+import org.projectrainbow.interfaces.*;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -80,14 +39,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -175,9 +127,9 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
             EntityPlayerMP entityplayermp1 = (EntityPlayerMP) (Object) this;
 
             // Support vanilla clients going into custom dimensions
-            int clientDimension = ((IMixinWorldServer)toWorld).getClientDimension();
+            int clientDimension = ((IMixinWorldServer) toWorld).getClientDimension();
             // Force vanilla client to refresh their chunk cache if same dimension
-            if (((IMixinWorldServer)fromWorld).getClientDimension() == clientDimension) {
+            if (((IMixinWorldServer) fromWorld).getClientDimension() == clientDimension) {
                 entityplayermp1.connection.sendPacket(
                         new SPacketRespawn((byte) (clientDimension >= 0 ? -1 : 0), toWorld.getDifficulty(), toWorld.getWorldInfo().getTerrainType(),
                                 entityplayermp1.interactionManager.getGameType()));
@@ -186,7 +138,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
             entityplayermp1.connection.sendPacket(new SPacketRespawn(clientDimension, toWorld.getDifficulty(), toWorld.getWorldInfo().getTerrainType(), entityplayermp1.interactionManager.getGameType()));
             setWorld(toWorld);
             isDead = false;
-            while(safe && !toWorld.getCollisionBoxes((Entity) (Object) this, this.getEntityBoundingBox()).isEmpty() && this.posY < 255.0D) {
+            while (safe && !toWorld.getCollisionBoxes((Entity) (Object) this, this.getEntityBoundingBox()).isEmpty() && this.posY < 255.0D) {
                 this.setPosition(this.posX, this.posY + 1.0D, this.posZ);
             }
             entityplayermp1.connection.setPlayerLocation(entityplayermp1.posX, entityplayermp1.posY, entityplayermp1.posZ, entityplayermp1.rotationYaw, entityplayermp1.rotationPitch);
@@ -328,7 +280,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
                 containerType = MC_ContainerType.FURNACE;
             } else if (this.openContainer instanceof ContainerHopper) {
                 containerType = MC_ContainerType.HOPPER;
-                if (((IMixinContainerHopper)this.openContainer).isMinecart()) {
+                if (((IMixinContainerHopper) this.openContainer).isMinecart()) {
                     containerType = MC_ContainerType.MINECART_HOPPER;
                 }
             } else if (this.openContainer instanceof ContainerPlayer) {
@@ -370,7 +322,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
                 }
             } else if (this.openContainer instanceof ContainerDispenser) {
                 containerType = MC_ContainerType.DISPENSER;
-                if (((IMixinContainerDispenser)this.openContainer).isDropper()) {
+                if (((IMixinContainerDispenser) this.openContainer).isDropper()) {
                     containerType = MC_ContainerType.DROPPER;
                 }
             } else if (this.openContainer instanceof ContainerHorseInventory) {
@@ -405,7 +357,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
     @Inject(method = "clonePlayer", at = @At("HEAD"))
     private void clone(EntityPlayer entityPlayer, boolean b, CallbackInfo callbackInfo) {
         this.backpack = ((IMixinEntityPlayerMP) entityPlayer).getBackpack();
-        this.compassTarget = ((MC_Player)entityPlayer).getCompassTarget();
+        this.compassTarget = ((MC_Player) entityPlayer).getCompassTarget();
     }
 
     @Override
@@ -726,5 +678,13 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
     @Override
     public byte[] serialize() {
         throw new IllegalStateException("Player entities cannot be serialized.");
+    }
+
+    @Override
+    public void setPlayerListHeaderFooter(String header, String footer) {
+        SPacketPlayerListHeaderFooter packet = new SPacketPlayerListHeaderFooter();
+        ((IMixinSPacketPlayerListHeaderFooter) packet).setHeader(new TextComponentString(header));
+        ((IMixinSPacketPlayerListHeaderFooter) packet).setFooter(new TextComponentString(footer));
+        connection.sendPacket(packet);
     }
 }

@@ -394,4 +394,9 @@ public class OfflinePlayerWrapper implements MC_Player {
     public MC_Attribute getAttribute(MC_AttributeType type) {
         return null;
     }
+
+    @Override
+    public void setPlayerListHeaderFooter(String header, String footer) {
+
+    }
 }

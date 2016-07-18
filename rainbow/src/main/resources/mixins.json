@@ -79,6 +79,7 @@
     "MixinSlot",
     "MixinModifiableAttributeInstance",
     "MixinAttributeModifier",
-    "MixinUserList"
+    "MixinUserList",
+    "MixinSPacketPlayerListHeaderFooter"
   ]
 }

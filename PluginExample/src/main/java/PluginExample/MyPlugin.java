@@ -168,6 +168,12 @@ public class MyPlugin extends PluginBase {
         }
     }
 
+    @Override
+    public void onPlayerJoin(MC_Player plr) {
+        plr.setPlayerListHeaderFooter(ChatColor.GOLD + "Welcome " + RainbowUtils.RainbowString(plr.getName()),
+                ChatColor.AQUA + "This server is running\nRainbow v" + ChatColor.YELLOW + server.getRainbowVersion());
+    }
+
     // Event handler: onTick...
     static long lastProcessedMS = 0;
     public ConcurrentHashMap<String, String> lastInfoMap = new ConcurrentHashMap<String, String>();

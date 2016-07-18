@@ -337,6 +337,14 @@ public interface MC_Player extends MC_LivingEntity
      * @param item Item
      */ 		
 	public void setItemInOffHand(MC_ItemStack item);
+
+	/**
+	 * Set the header and footer of the player list (tab overlay). The header and footer arguments are provided as
+	 * plain text and may contain legacy color codes.
+	 * @param header the header
+	 * @param footer the footer
+     */
+	void setPlayerListHeaderFooter(String header, String footer);
 	
 }
 
