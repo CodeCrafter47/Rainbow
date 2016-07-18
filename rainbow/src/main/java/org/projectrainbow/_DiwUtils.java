@@ -138,16 +138,13 @@ public class _DiwUtils {
     public static boolean BungeeCord = false;
     public static boolean DoPaydays = true;
     public static boolean DoWeather = true;
-    public static boolean DoCheatDetect = true; // todo DoCheatDetect
     public static boolean DoReconnectDelay = true;
-    public static boolean DoRedstoneClockLimit = false; // todo DoRedstoneClockLimit
     public static boolean DoSavingWorldNotice = true;
     public static int PayDayMinutes = 30;
     public static int janitorInterval = 900;
     public static int ReconnectDelaySeconds = 3;
     public static boolean ArmorStandsDance = true;
     public static boolean OpsKeepInventory = true;
-    public static boolean NotifyAdminDisconnects = true; // todo does nothing
     public static int MaxNearbyEntities = 250;
     public static long g_standFunIdx = 0L;
     public static List<String> g_removedCommand = new LinkedList<String>();
@@ -542,16 +539,8 @@ public class _DiwUtils {
                             DoSpamKick = isStringTrue(sides[1]);
                         }
 
-                        if (sides[0].equalsIgnoreCase("anticheat")) {
-                            DoCheatDetect = isStringTrue(sides[1]);
-                        }
-
                         if (sides[0].equalsIgnoreCase("reconnect_delay")) {
                             DoReconnectDelay = isStringTrue(sides[1]);
-                        }
-
-                        if (sides[0].equalsIgnoreCase("redstone_clock_limit")) {
-                            DoRedstoneClockLimit = isStringTrue(sides[1]);
                         }
 
                         if (sides[0].equalsIgnoreCase("autosave_notice")) {
@@ -584,10 +573,6 @@ public class _DiwUtils {
 
                         if (sides[0].equalsIgnoreCase("ops_keep_inventory")) {
                             OpsKeepInventory = isStringTrue(sides[1]);
-                        }
-
-                        if (sides[0].equalsIgnoreCase("notify_admins_disconnect")) {
-                            NotifyAdminDisconnects = isStringTrue(sides[1]);
                         }
 
                         if (sides[0].equalsIgnoreCase("notify_admins_censor")) {
@@ -652,9 +637,6 @@ public class _DiwUtils {
                             new Object[]{"Announcer", "" + _Announcer.IsEnabled}));
             bw.write(
                     String.format(fmt,
-                            new Object[]{"AntiCheat", "" + DoCheatDetect}));
-            bw.write(
-                    String.format(fmt,
                             new Object[]{"autosave_minutes", "" + AutoSaveMinutes}));
             bw.write(
                     String.format(fmt,
@@ -684,11 +666,6 @@ public class _DiwUtils {
             bw.write(
                     String.format(fmt,
                             new Object[]{
-                                    "redstone_clock_limit",
-                                    "" + DoRedstoneClockLimit}));
-            bw.write(
-                    String.format(fmt,
-                            new Object[]{
                                     "welcome_new_players",
                                     "" + DoWelcomeNewPlayers}));
             bw.write(
@@ -697,11 +674,6 @@ public class _DiwUtils {
             bw.write(
                     String.format(fmt,
                             new Object[]{"ops_keep_inventory", "" + OpsKeepInventory}));
-            bw.write(
-                    String.format(fmt,
-                            new Object[]{
-                                    "notify_admins_disconnect",
-                                    "" + NotifyAdminDisconnects}));
             bw.write(
                     String.format(fmt,
                             new Object[]{
