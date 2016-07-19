@@ -65,7 +65,7 @@ public class _Janitor {
                     int secX = Math.abs(mobX) / sectionSize * (mobX < 0 ? -1 : 1);
                     int secY = Math.abs(mobY) / sectionSize * (mobY < 0 ? -1 : 1);
                     int secZ = Math.abs(mobZ) / sectionSize * (mobZ < 0 ? -1 : 1);
-                    String key = String.format("%d %d %d %d", ent.dimension, secX, secY, secZ);
+                    String key = String.format("%d %d %d %d %s", ent.dimension, secX, secY, secZ, mobName);
                     Integer hits = sectionHit.get(key);
                     if (hits == null) {
                         hits = 1;
