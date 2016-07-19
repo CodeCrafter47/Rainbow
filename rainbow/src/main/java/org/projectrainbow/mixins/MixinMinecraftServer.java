@@ -10,6 +10,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.ServerWrapper;
 import org.projectrainbow._Announcer;
@@ -31,6 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftServer.class)
 public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
+    private static final Marker CHAT_MARKER = MarkerManager.getMarker("CHAT");
     @Shadow
     @Final
     private static Logger LOG;
@@ -205,7 +208,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
     @Overwrite
     public void addChatMessage(ITextComponent var1) {
-        LOG.info(_ColorHelper.stripColor(var1.getUnformattedText()));
+        LOG.info(CHAT_MARKER, _ColorHelper.stripColor(var1.getUnformattedText()));
     }
 
     @Overwrite
