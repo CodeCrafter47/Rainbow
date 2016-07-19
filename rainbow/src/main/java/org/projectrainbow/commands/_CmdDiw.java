@@ -13,6 +13,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
+import org.projectrainbow._Janitor;
 import org.projectrainbow.interfaces.IMixinICommandSender;
 import org.projectrainbow.interfaces.IMixinPlayerCapabilities;
 
@@ -159,7 +160,7 @@ public class _CmdDiw extends CommandBase {
 
     public void ShowUsage(ICommandSender cs) {
         _DiwUtils.reply(cs, _ColorHelper.RED + "Usage: /diw [option]");
-        String[] arrCmds = new String[]{"save", "speed", "flyspeed", "walkspeed", "mem", "skyclear", "setgrass", "border", "echo", "script", "loadBanList"};
+        String[] arrCmds = new String[]{"save", "speed", "flyspeed", "walkspeed", "mem", "skyclear", "setgrass", "border", "echo", "script", "loadBanList", "clean"};
         List<String> cmds = Arrays.asList(arrCmds);
         Collections.sort(cmds);
         _DiwUtils.reply(cs, _ColorHelper.WHITE + "Options: " + RainbowUtils.RainbowStringList(cmds));
@@ -256,28 +257,45 @@ public class _CmdDiw extends CommandBase {
                 msg = _DiwUtils.TranslateColorString(msg, true);
                 _DiwUtils.MessageAllPlayers(msg);
             }
-        } else if (!args[0].equalsIgnoreCase("mem") && !args[0].equalsIgnoreCase("jc")) {
-            if (args[0].equalsIgnoreCase("script")) {
-                if (args.length <= 1) {
-                    _DiwUtils.reply(cs, _ColorHelper.RED + "Usage: " + _ColorHelper.LIGHT_PURPLE + "/diw script " + _ColorHelper.GOLD + "Filename" + _ColorHelper.DARK_AQUA + " [Parm1] [Parm2] ...");
-                } else {
-                    String fname = _DiwUtils.RainbowDataDirectory + "Scripts" + File.separator + args[1];
-                    if (!fname.endsWith(".txt")) {
-                        fname = fname + ".txt";
-                    }
-
-                    File f = new File(fname);
-                    if (!f.exists()) {
-                        _DiwUtils.reply(cs, _ColorHelper.RED + "File not found: " + _ColorHelper.YELLOW + fname);
-                    } else {
-                        this.HandleScript(p, fname, args);
-                    }
-                }
+        } else if (args[0].equalsIgnoreCase("script")) {
+            if (args.length <= 1) {
+                _DiwUtils.reply(cs, _ColorHelper.RED + "Usage: " + _ColorHelper.LIGHT_PURPLE + "/diw script " + _ColorHelper.GOLD + "Filename" + _ColorHelper.DARK_AQUA + " [Parm1] [Parm2] ...");
             } else {
-                _DiwUtils.reply(cs, _ColorHelper.RED + "Unknown Option: " + _ColorHelper.AQUA + args[0]);
-                this.ShowUsage(cs);
+                String fname = _DiwUtils.RainbowDataDirectory + "Scripts" + File.separator + args[1];
+                if (!fname.endsWith(".txt")) {
+                    fname = fname + ".txt";
+                }
+
+                File f = new File(fname);
+                if (!f.exists()) {
+                    _DiwUtils.reply(cs, _ColorHelper.RED + "File not found: " + _ColorHelper.YELLOW + fname);
+                } else {
+                    this.HandleScript(p, fname, args);
+                }
             }
-        } else {
+        } else if (args[0].equals("clean")) {
+            if (args.length == 1) {
+                _Janitor.DoMobClean(p, true,
+                        (String[]) null);
+            }
+
+            if (args.length == 2) {
+                String var35 = args[1].trim();
+                if (var35.equalsIgnoreCase("evil")) {
+                    _Janitor.DoMobClean(p, true,
+                            new String[] {
+                                    "Zombie",
+                                    "Skeleton", "BatEntity", "Enderman",
+                                    "Witch", "Spider", "MagmaCube",
+                                    "Creeper", "Ghast", "ZombiePigman",
+                                    "Silverfish", "Slime", "CaveSpider",
+                                    "Blaze"});
+                } else {
+                    _Janitor.DoMobClean(p, true,
+                            new String[] { var35});
+                }
+            }
+        } else if (args[0].equalsIgnoreCase("mem") || args[0].equalsIgnoreCase("jc")) {
             Runtime rt = Runtime.getRuntime();
             double maxGig = (double) ((float) rt.maxMemory() / 1.07374182E9F);
             double allocGig = (double) ((float) rt.totalMemory() / 1.07374182E9F);
@@ -300,6 +318,9 @@ public class _CmdDiw extends CommandBase {
             String uptime = _DiwUtils.TimeDeltaString(System.currentTimeMillis() - _DiwUtils.ServerStartTime);
             _DiwUtils.reply(cs, prefix + "Uptime" + _ColorHelper.DARK_GRAY + RainbowUtils.TextAlignTrailerPerfect("Uptime", labelLen) + _ColorHelper.AQUA + uptime);
             _DiwUtils.reply(cs, prefix + "RAM Usage" + _ColorHelper.DARK_GRAY + RainbowUtils.TextAlignTrailerPerfect("RAM Usage", labelLen) + usageClr + String.format(usageClr + "%.1fperc %s " + _ColorHelper.GRAY + "(%.1f of %.1f GB)", usagePerc, usageMsg, allocGig - freeGig, maxGig));
+        } else {
+            _DiwUtils.reply(cs, _ColorHelper.RED + "Unknown Option: " + _ColorHelper.AQUA + args[0]);
+            this.ShowUsage(cs);
         }
     }
 }
