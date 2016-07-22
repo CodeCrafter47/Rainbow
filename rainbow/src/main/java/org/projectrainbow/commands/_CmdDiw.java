@@ -26,8 +26,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class _CmdDiw extends CommandBase {
-    public static long ServerStartTime = 0L;
-
     @Override
     public String getCommandName() {
         return "diw";

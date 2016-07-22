@@ -22,6 +22,7 @@ import java.util.UUID;
 
 
 public class _JOT_OnlineTimeUtils {
+    private final static long ServerStartTime = System.currentTimeMillis();
 
     public static String DataFilename = "PlayerOnlineTime.dat";
     public static _JOT_OnlineData Data = new _JOT_OnlineData();
@@ -169,7 +170,7 @@ public class _JOT_OnlineTimeUtils {
 
     public static long GetTotalOnlineTime(_JOT_OnlineTimeEntry entry) {
         if (entry.msLastLogin > entry.msLastLogout
-                && entry.msLastLogin >= _CmdDiw.ServerStartTime) {
+                && entry.msLastLogin >= ServerStartTime) {
             long msNowOnline = System.currentTimeMillis() - entry.msLastLogin;
 
             return entry.msTotal + msNowOnline;
