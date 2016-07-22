@@ -1,5 +1,5 @@
 
-"C:\Program Files\Java\jre7\bin\java.exe" -Xmx4000m -Xincgc -jar Rainbow.jar nogui
+java -Xmx4000m -Xincgc -jar Rainbow.jar nogui
 
 @echo.
 @echo ..........................................
