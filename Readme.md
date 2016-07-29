@@ -6,6 +6,11 @@ Rainbow++ is a fork of the Ranbow server.
 Website <http://rainbowplusplus.ml>
 Builds  <http://rainbowplusplus.ml/download/>
 
+If the links above don't work use these:
+
+http://rainbowplusplus.createaforum.com/
+http://rainbowplusplus.createaforum.com/download/
+
 Rainbow
 =======
 
