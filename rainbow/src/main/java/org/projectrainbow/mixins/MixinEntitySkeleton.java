@@ -3,7 +3,7 @@ package org.projectrainbow.mixins;
 import PluginReference.MC_Skeleton;
 import PluginReference.MC_SkeletonType;
 import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.src.ze;
+import net.minecraft.entity.monster.SkeletonType;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,13 +14,13 @@ import org.spongepowered.asm.mixin.Shadow;
 public abstract class MixinEntitySkeleton {
 
     @Shadow
-    public abstract ze df();
+    public abstract SkeletonType getSkeletonType();
 
     @Shadow
-    public abstract void a(ze var1);
+    public abstract void setSkeletonType(SkeletonType var1);
 
     public MC_SkeletonType api$getSkeletonType() {
-        switch (df()) {
+        switch (getSkeletonType()) {
             case WITHER:
                 return MC_SkeletonType.WITHER_SKELETON;
             case STRAY:
@@ -35,13 +35,13 @@ public abstract class MixinEntitySkeleton {
         switch (argType) {
             case UNSPECIFIED:
             case SKELETON:
-                a(ze.NORMAL);
+                setSkeletonType(SkeletonType.NORMAL);
                 break;
             case WITHER_SKELETON:
-                a(ze.WITHER);
+                setSkeletonType(SkeletonType.WITHER);
                 break;
             case STRAY:
-                a(ze.STRAY);
+                setSkeletonType(SkeletonType.STRAY);
                 break;
         }
     }

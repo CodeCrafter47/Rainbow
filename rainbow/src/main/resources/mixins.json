@@ -80,6 +80,7 @@
     "MixinModifiableAttributeInstance",
     "MixinAttributeModifier",
     "MixinUserList",
-    "MixinSPacketPlayerListHeaderFooter"
+    "MixinSPacketPlayerListHeaderFooter",
+    "MixinCPacketHandshake"
   ]
 }
