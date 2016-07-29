@@ -57,7 +57,7 @@ public class Bootstrap {
                         }
                         jarFile.close();
                     } catch (Throwable th) {
-                        logger.error("Failed to load tweaker file " + file, th);
+                        logger.error("Failed to load file: " + file, th);
                     }
                 }
             }
