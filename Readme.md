@@ -1,3 +1,11 @@
+RainbowPlusPlus
+======
+
+Rainbow++ is a fork of the Ranbow server.
+
+Website <http://rainbowplusplus.ml>
+Builds  <http://rainbowplusplus.ml/download/>
+
 Rainbow
 =======
 
