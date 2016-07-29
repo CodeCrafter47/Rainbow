@@ -44,7 +44,7 @@ public class ServerTweaker implements ITweaker {
 
             File serverJar = new File(cache, "minecraft_server." + Bootstrap.minecraftVersion + ".jar");
             if (!serverJar.exists()) {
-                Bootstrap.logger.info("Downloading minecraft server. Please wait.");
+                Bootstrap.logger.info("Downloading minecraft-server.jar Please wait.");
                 try {
                     URL url = new URL("https://s3.amazonaws.com/Minecraft.Download/versions/" + Bootstrap.minecraftVersion + "/minecraft_server." + Bootstrap.minecraftVersion + ".jar");
                     InputStream in = url.openStream();
@@ -52,9 +52,9 @@ public class ServerTweaker implements ITweaker {
                     ByteStreams.copy(in, out);
                     in.close();
                     out.close();
-                    Bootstrap.logger.info("Downloaded minecraft server. Starting.");
+                    Bootstrap.logger.info("Downloaded minecraft-server.jar Starting.");
                 } catch (IOException ex) {
-                    Bootstrap.logger.error("Failed to download minecraft server.", ex);
+                    Bootstrap.logger.error("Failed to download minecraft-server.jar", ex);
                     System.exit(-1);
                 }
             }
@@ -62,7 +62,7 @@ public class ServerTweaker implements ITweaker {
             try {
                 Launch.classLoader.addURL(serverJar.toURI().toURL());
             } catch (MalformedURLException ex) {
-                Bootstrap.logger.error("Failed to add minecraft server to classpath.", ex);
+                Bootstrap.logger.error("Failed to add minecraft-server.jar to classpath.", ex);
                 System.exit(-1);
             }
         }
