@@ -27,6 +27,7 @@ public class _ColorHelper {
     public static String RESET;
 
     static {
+        // NOTE: when compiling if COlOR_CHAR gives errors copy and paste the line form GitHub 
         _ColorHelper.COLOR_CHAR = '§';
         _ColorHelper.ColorPrefix = String.valueOf(_ColorHelper.COLOR_CHAR);
         _ColorHelper.BLACK = String.valueOf(_ColorHelper.ColorPrefix) + "0";
