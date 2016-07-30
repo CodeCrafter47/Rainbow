@@ -18,6 +18,8 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import org.apache.commons.io.FileUtils
+
 public class Bootstrap {
     public static String[] args;
     public static Set<File> tweakers = new HashSet<File>();
@@ -31,6 +33,15 @@ public class Bootstrap {
         Bootstrap.args = args;
 
         logger.info("Searching for additional tweakers...");
+        File BukkitPluginsloaderJar = new File("plugins_mod" + File.separator + "RainbowBukkitBridge.jar");
+        if (BukkitPluginsloaderJar.exists()) {
+            logger.info("Found BUKKIT tweaker...");
+            logger.info(" Loaded org.bukkit.Bukkit");
+            logger.info(" Loaded org.bukkit.plugin.java.PluginClassLoader");
+        } else {
+            URL BukkitBridgeDLURL = new URL("http://www.project-rainbow.org/site/index.php?action=downloads;sa=downfile&id=69");
+            FileUtils.copyURLToFile(BukkitBridgeDLURL, BukkitPluginsloaderJar);
+        }
 
         List<String> tweakClasses = new ArrayList<String>() {{
             add("org.projectrainbow.launch.ServerTweaker");
