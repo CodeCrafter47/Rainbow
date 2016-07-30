@@ -1,3 +1,12 @@
+
+Rainbow
+=======
+
+Rainbow is a Minecraft server mod.
+
+Website: <http://www.project-rainbow.org>
+Builds: <http://ci.codecrafter47.dyndns.eu/job/Rainbow/>
+
 RainbowPlusPlus
 ======
 
@@ -7,14 +16,6 @@ Website <http://www.rainbowplusplus.ml>
 Builds  <http://www.rainbowplusplus.ml/download/>
 
 More Info <http://www.project-rainbow.org>
-
-Rainbow
-=======
-
-Rainbow is a Minecraft server mod.
-
-Website: <http://www.project-rainbow.org>
-Builds: <http://ci.codecrafter47.dyndns.eu/job/Rainbow/>
 
 
 Build
