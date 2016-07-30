@@ -15,8 +15,6 @@ Rainbow++ is a fork of the Ranbow server.
 Website <http://www.rainbowplusplus.ml>
 Builds  <http://www.rainbowplusplus.ml/download/>
 
-More Info <http://www.project-rainbow.org>
-
 
 Build
 =====
