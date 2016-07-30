@@ -33,7 +33,7 @@ public class Bootstrap {
         Bootstrap.args = args;
 
         logger.info("Searching for additional tweakers...");
-        File BukkitPluginsloaderJar = new File("plugins_mod" + File.separator + "RainbowBukkitBridge.jar");
+        File BukkitPluginsloaderJar = new File("plugins_mod" + File.separator + "PluginBukkitBridge.jar");
         if (BukkitPluginsloaderJar.exists()) {
             logger.info("Found BUKKIT tweaker...");
             logger.info(" Loaded org.bukkit.Bukkit");
