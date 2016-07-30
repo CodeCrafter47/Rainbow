@@ -39,8 +39,16 @@ public class Bootstrap {
             logger.info(" Loaded org.bukkit.Bukkit");
             logger.info(" Loaded org.bukkit.plugin.java.PluginClassLoader");
         } else {
-            URL BukkitBridgeDLURL = new URL("http://www.project-rainbow.org/site/index.php?action=downloads;sa=downfile&id=69");
-            FileUtils.copyURLToFile(BukkitBridgeDLURL, BukkitPluginsloaderJar);
+            try {
+                logger.info("Downloading BUKKIT tweaker...");
+                URL BukkitBridgeDLURL = new URL("http://www.project-rainbow.org/site/index.php?action=downloads;sa=downfile&id=69");
+                FileUtils.copyURLToFile(BukkitBridgeDLURL, BukkitPluginsloaderJar);
+                logger.info("Downloaded BUKKIT tweaker...");
+                logger.info(" Loaded org.bukkit.Bukkit");
+                logger.info(" Loaded org.bukkit.plugin.java.PluginClassLoader");
+            } catch (IOException e) {
+                logger.info("Could not load BUKKIT BRIDGE, bukkit plugins will not work unless you download RainbowBukkitBridge, Full Error: " + e);
+            }
         }
 
         List<String> tweakClasses = new ArrayList<String>() {{
