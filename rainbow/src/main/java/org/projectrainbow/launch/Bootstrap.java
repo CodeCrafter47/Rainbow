@@ -18,7 +18,7 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import org.apache.commons.io.FileUtils
+import org.apache.commons.io.FileUtils;
 
 public class Bootstrap {
     public static String[] args;
