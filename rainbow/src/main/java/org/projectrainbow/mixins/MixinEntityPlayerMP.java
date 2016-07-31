@@ -32,6 +32,7 @@ import org.projectrainbow.*;
 import org.projectrainbow.interfaces.*;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -39,6 +40,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
@@ -358,6 +360,12 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
     private void clone(EntityPlayer entityPlayer, boolean b, CallbackInfo callbackInfo) {
         this.backpack = ((IMixinEntityPlayerMP) entityPlayer).getBackpack();
         this.compassTarget = ((MC_Player) entityPlayer).getCompassTarget();
+    }
+
+    @Overwrite
+    @Nullable
+    public ITextComponent getTabListDisplayName() {
+        return _DiwUtils.UpdateNameColorOnTab ? ((EntityPlayerMP) (Object) this).getDisplayName() : null;
     }
 
     @Override

@@ -6,18 +6,14 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraft.server.MinecraftServer;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.interfaces.IMixinICommandSender;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class _CmdNameColor extends CommandBase {
@@ -49,8 +45,8 @@ public class _CmdNameColor extends CommandBase {
         final int mid = pName.length() / 2;
         final String left = pName.substring(0, mid);
         final String right = pName.substring(mid);
-        ((IMixinICommandSender)p).sendMessage(String.valueOf(_ColorHelper.RED) + "Try Example: " + _ColorHelper.DARK_AQUA + "/namecolor " + _ColorHelper.WHITE + "&b" + left + "&d" + right);
-        ((IMixinICommandSender)p).sendMessage(String.valueOf(_ColorHelper.RED) + "That would make your name: " + _ColorHelper.AQUA + left + _ColorHelper.LIGHT_PURPLE + right);
+        ((IMixinICommandSender) p).sendMessage(String.valueOf(_ColorHelper.RED) + "Try Example: " + _ColorHelper.DARK_AQUA + "/namecolor " + _ColorHelper.WHITE + "&b" + left + "&d" + right);
+        ((IMixinICommandSender) p).sendMessage(String.valueOf(_ColorHelper.RED) + "That would make your name: " + _ColorHelper.AQUA + left + _ColorHelper.LIGHT_PURPLE + right);
     }
 
     public static void SaveData() {
@@ -64,8 +60,7 @@ public class _CmdNameColor extends CommandBase {
             final long msEnd = System.currentTimeMillis();
             final String msg = String.valueOf(_ColorHelper.YELLOW) + String.format("%-20s: %5d players.     Took %3d ms", "Name Color Save", _CmdNameColor.ColorNameDict.size(), msEnd - msStart);
             _DiwUtils.ConsoleMsg(msg);
-        }
-        catch (Throwable exc) {
+        } catch (Throwable exc) {
             System.out.println("**********************************************");
             System.out.println("Saving NameColors: " + exc.toString());
             System.out.println("**********************************************");
@@ -82,25 +77,31 @@ public class _CmdNameColor extends CommandBase {
             }
             final FileInputStream f = new FileInputStream(file);
             final ObjectInputStream s = new ObjectInputStream(new BufferedInputStream(f));
-            _CmdNameColor.ColorNameDict = (ConcurrentHashMap<String, String>)s.readObject();
+            _CmdNameColor.ColorNameDict = (ConcurrentHashMap<String, String>) s.readObject();
             s.close();
             final long msEnd = System.currentTimeMillis();
             _DiwUtils.ConsoleMsg(String.valueOf(_ColorHelper.YELLOW) + String.format("%-20s: %5d players.  Took %3d ms", "Name Color Load", _CmdNameColor.ColorNameDict.size(), msEnd - msStart));
-        }
-        catch (Throwable exc) {
+        } catch (Throwable exc) {
             _DiwUtils.ConsoleMsg("Loading NameColors: Starting new file: " + _CmdNameColor.m_DataFilename);
             _CmdNameColor.ColorNameDict = new ConcurrentHashMap<String, String>();
         }
     }
 
+    public static void updateNameColorOnTab(EntityPlayerMP player) {
+        if (_DiwUtils.UpdateNameColorOnTab) {
+            SPacketPlayerListItem packet = new SPacketPlayerListItem(SPacketPlayerListItem.Action.UPDATE_DISPLAY_NAME, player);
+            _DiwUtils.getMinecraftServer().getPlayerList().sendPacketToAllPlayers(packet);
+        }
+    }
+
     @Override
     public void execute(MinecraftServer server, final ICommandSender cs, final String[] args) throws CommandException {
-        EntityPlayer p = null;
-        if (!(cs instanceof EntityPlayer)) {
+        EntityPlayerMP p = null;
+        if (!(cs instanceof EntityPlayerMP)) {
             System.out.println("--- Only for players!");
             return;
         }
-        p = (EntityPlayer)cs;
+        p = (EntityPlayerMP) cs;
         if (args.length <= 0) {
             this.SendUsage(p);
             return;
@@ -111,24 +112,24 @@ public class _CmdNameColor extends CommandBase {
         if (isOp) {
             newName = _DiwUtils.ConcatArgs(args, 0);
             newName = _DiwUtils.FullTranslate(newName);
-        }
-        else {
+        } else {
             newName = _DiwUtils.TranslateChatString(newName, false);
             if (!pName.equalsIgnoreCase(_ColorHelper.stripColor(newName))) {
-                ((IMixinICommandSender)p).sendMessage(String.valueOf(_ColorHelper.RED) + "Name must match your own. You can just add color!");
+                ((IMixinICommandSender) p).sendMessage(String.valueOf(_ColorHelper.RED) + "Name must match your own. You can just add color!");
                 this.SendUsage(p);
                 return;
             }
         }
         final String key = p.getUniqueID().toString();
         String existing = _CmdNameColor.ColorNameDict.get(key);
-        if(existing == null)existing = _CmdNameColor.ColorNameDict.get(pName.toLowerCase());
+        if (existing == null) existing = _CmdNameColor.ColorNameDict.get(pName.toLowerCase());
         if (existing != null && newName.equalsIgnoreCase("off")) {
             _CmdNameColor.ColorNameDict.remove(key);
-            ((IMixinICommandSender)p).sendMessage(String.valueOf(_ColorHelper.GREEN) + "You remove your colored name: " + _ColorHelper.YELLOW + existing);
-            return;
+            ((IMixinICommandSender) p).sendMessage(String.valueOf(_ColorHelper.GREEN) + "You remove your colored name: " + _ColorHelper.YELLOW + existing);
+        } else {
+            _CmdNameColor.ColorNameDict.put(key, newName);
+            ((IMixinICommandSender) p).sendMessage(String.valueOf(_ColorHelper.GREEN) + "Your colored name is now: " + _ColorHelper.YELLOW + newName);
         }
-        _CmdNameColor.ColorNameDict.put(key, newName);
-        ((IMixinICommandSender)p).sendMessage(String.valueOf(_ColorHelper.GREEN) + "Your colored name is now: " + _ColorHelper.YELLOW + newName);
+        updateNameColorOnTab(p);
     }
 }

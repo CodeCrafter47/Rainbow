@@ -9,6 +9,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.entity.player.EntityPlayer;
 import org.projectrainbow._DiwUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -92,7 +93,10 @@ public class _CmdRide implements MC_Command {
                                     ChatColor.RED
                                             + "That target has not enabled riding.");
                         } else {
-                            plr.setVehicle(tgtEnt);
+                            ArrayList<MC_Entity> passengers = new ArrayList<MC_Entity>(plr.getRiders());
+                            for (MC_Entity passenger : passengers) {
+                                plr.removeRider(passenger);
+                            }
                             tgtEnt.setRider(plr);
                             plr.sendMessage(
                                     ChatColor.GREEN + "You are now riding "
