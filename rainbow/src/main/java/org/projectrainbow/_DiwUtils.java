@@ -148,6 +148,7 @@ public class _DiwUtils {
     public static int MaxNearbyEntities = 250;
     public static long g_standFunIdx = 0L;
     public static List<String> g_removedCommand = new LinkedList<String>();
+    public static boolean UpdateNameColorOnTab = false;
 
     public static MinecraftServer getMinecraftServer() {
         return minecraftServer;
@@ -605,6 +606,10 @@ public class _DiwUtils {
                                                                 PayDayAmount)}));
                             }
                         }
+
+                        if (sides[0].equalsIgnoreCase("update_namecolor_on_tab")) {
+                            UpdateNameColorOnTab = isStringTrue(sides[1]);
+                        }
                     }
                 }
             }
@@ -683,9 +688,8 @@ public class _DiwUtils {
                     String.format(fmt,
                             new Object[]{
                                     "max_nearby_entities", "" + MaxNearbyEntities}));
-            bw.write(
-                    String.format(fmt,
-                            new Object[]{"bungeecord", Boolean.valueOf(BungeeCord)}));
+            bw.write(String.format(fmt, new Object[]{"bungeecord", Boolean.valueOf(BungeeCord)}));
+            bw.write(String.format(fmt, "update_namecolor_on_tab", UpdateNameColorOnTab));
             bw.close();
         } catch (Exception var3) {
             ConsoleMsg("Failed to save: " + RainbowPropertiesFilename);

@@ -20,8 +20,11 @@ import PluginReference.MC_Player;
 import PluginReference.MC_PotionEffectType;
 import PluginReference.MC_Sign;
 import PluginReference.PluginInfo;
+import net.minecraft.entity.player.EntityPlayerMP;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.projectrainbow.commands._CmdNameColor;
+import org.projectrainbow.mixins.MixinEntityPlayerMP;
 
 import java.net.InetAddress;
 import java.util.List;
