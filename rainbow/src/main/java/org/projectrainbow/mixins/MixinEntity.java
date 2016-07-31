@@ -27,11 +27,7 @@ import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.interfaces.IMixinNBTBase;
-import org.spongepowered.asm.mixin.Implements;
-import org.spongepowered.asm.mixin.Interface;
-import org.spongepowered.asm.mixin.Intrinsic;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -374,13 +370,13 @@ public abstract class MixinEntity implements MC_Entity {
         setDead();
     }
 
-    @Override
-    public boolean isSneaking() {
+    @Intrinsic
+    public boolean api$isSneaking() {
         return shadow$isSneaking();
     }
 
-    @Override
-    public boolean isInvisible() {
+    @Intrinsic
+    public boolean api$isInvisible() {
         return shadow$isInvisible();
     }
 

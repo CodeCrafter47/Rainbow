@@ -10,6 +10,7 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import org.projectrainbow.PluginHelper;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
+import org.spongepowered.asm.mixin.Intrinsic;
 import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.Collection;
@@ -32,6 +33,7 @@ public abstract class MixinModifiableAttributeInstance implements IAttributeInst
      *
      * @return the base value
      */
+    @Intrinsic
     public double api$getBaseValue() {
         return getBaseValue();
     }
@@ -41,6 +43,7 @@ public abstract class MixinModifiableAttributeInstance implements IAttributeInst
      *
      * @param baseValue the new base value
      */
+    @Intrinsic
     public void api$setBaseValue(double baseValue) {
         setBaseValue(baseValue);
     }
@@ -59,6 +62,7 @@ public abstract class MixinModifiableAttributeInstance implements IAttributeInst
      *
      * @return an immutable collection of the modifiers
      */
+    @Intrinsic
     public Collection<? extends MC_AttributeModifier> api$getModifiers() {
         return (Collection<? extends MC_AttributeModifier>) (Collection) getModifiers();
     }
