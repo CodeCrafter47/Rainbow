@@ -21,6 +21,7 @@ import java.util.jar.Manifest;
 import org.apache.commons.io.FileUtils;
 
 //RainbowPlusPlus, start
+import java.io.FileNotFoundException;
 import ml.rainbowplusplus.utils.ConfigEditer;
 //RainbowPlusPlus, end
 
@@ -30,6 +31,7 @@ public class Bootstrap {
 
     public final static String minecraftVersion;
     public final static String buildNumber;
+    public final static boolean EnableRainbowPlusPlus = true;
 
     public static Logger logger = LogManager.getLogger("Minecraft");
 
