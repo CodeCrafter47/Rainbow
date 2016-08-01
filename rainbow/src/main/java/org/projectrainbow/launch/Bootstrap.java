@@ -35,6 +35,17 @@ public class Bootstrap {
     public static Logger logger = LogManager.getLogger("Minecraft");
 
 
+    //RainbowPlusPlus, start
+    public static boolean autoDownloadBukkitBridge() {
+        	boolean t = false;
+       		try {
+         		t = ConfigEditer.viewProp("BukkitBridge.properties", "autodownload").contains("true");
+         	} catch (FileNotFoundException e) {
+             		e.printStackTrace();
+         	}
+        	 return t;
+     	}
+    //RainbowPlusPlus, end
 
     public static void main(String[] args) {
         Bootstrap.args = args;
@@ -44,19 +55,13 @@ public class Bootstrap {
         //RainbowPlusPlus, start
         File BukkitBridgeProp = new File("BukkitBridge.properties");
         if (!BukkitBridgeProp.exists()) {
+            try {
        	    URL BukkitBridgePropDownload = new URL("https://raw.githubusercontent.com/rainbowplusplus/RainbowPlusPlus/master/BukkitBridge.properties");
             FileUtils.copyURLToFile(BukkitBridgePropDownload, BukkitBridgeProp);
+            } catch (IOException e) {
+                logger.info("[RainbowPlusPlus] Can't download BukkitBridge.properties");
+            }
         }
-        
-        public static boolean autoDownloadBukkitBridge() {
-        	boolean t = false;
-       		try {
-         		t = ConfigEditer.viewProp("BukkitBridge.properties", "autodownload").contains("true");
-         	} catch (FileNotFoundException e) {
-             		e.printStackTrace();
-         	}
-        	 return t;
-     	}
 
         if (autoDownloadBukkitBridge() == true) {
         File BukkitPluginsloaderJar = new File("plugins_mod" + File.separator + "PluginBukkitBridge.jar");
