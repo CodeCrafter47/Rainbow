@@ -20,6 +20,10 @@ import java.util.jar.Manifest;
 
 import org.apache.commons.io.FileUtils;
 
+//RainbowPlusPlus, start
+import ml.rainbowplusplus.utils.ConfigEditer;
+//RainbowPlusPlus, end
+
 public class Bootstrap {
     public static String[] args;
     public static Set<File> tweakers = new HashSet<File>();
@@ -33,6 +37,8 @@ public class Bootstrap {
         Bootstrap.args = args;
 
         logger.info("Searching for additional tweakers...");
+        
+        //RainbowPlusPlus, start
         File BukkitPluginsloaderJar = new File("plugins_mod" + File.separator + "PluginBukkitBridge.jar");
         if (BukkitPluginsloaderJar.exists()) {
             logger.info("Found BUKKIT tweaker...");
@@ -50,6 +56,15 @@ public class Bootstrap {
                 logger.info("Could not load BUKKIT BRIDGE, bukkit plugins will not work unless you download RainbowBukkitBridge, Full Error: " + e);
             }
         }
+        //RainbowPlusPlus, end
+        
+        //RainbowPlusPlus, start
+        try {
+			ConfigEditer.changeProp("server.properties", "max-tick-time", "200000");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		//RainbowPlusPlus, end
 
         List<String> tweakClasses = new ArrayList<String>() {{
             add("org.projectrainbow.launch.ServerTweaker");
