@@ -175,4 +175,8 @@ public class _EconomyManager {
         }
 
     }
+    
+    public static void RunPayDay() {
+        DoPayDay();
+    }
 }

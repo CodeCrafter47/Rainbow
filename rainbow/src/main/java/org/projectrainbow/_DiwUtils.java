@@ -119,7 +119,7 @@ public class _DiwUtils {
     public static String MC_VERSION_STRING;
     public static String DiwModVersion = "112.1";
     public static double DiwModVersionNumeric = Double.parseDouble(DiwModVersion);
-    public static String MC_SERVER_MOD_NAME = "Rainbow";
+    public static String MC_SERVER_MOD_NAME = "RainbowPlusPlus";
     public static String RainbowDataDirectory = "RainbowData" + File.separator;
     public static long ServerStartTime = 0L;
     public static String DefaultMOTD = "§c§lA§6§l §e§lR§a§la§b§li§d§ln§c§lb§6§lo§e§lw§a§l §b§lS§d§le§c§lr§6§lv§e§le§a§lr\n§61.9.1 Fully Supported!";

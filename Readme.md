@@ -1,3 +1,4 @@
+
 Rainbow
 =======
 
@@ -5,6 +6,14 @@ Rainbow is a Minecraft server mod.
 
 Website: <http://www.project-rainbow.org>
 Builds: <http://ci.codecrafter47.dyndns.eu/job/Rainbow/>
+
+RainbowPlusPlus
+======
+
+Rainbow++ is a fork of the Ranbow server.
+
+Website <http://www.rainbowplusplus.ml>
+Builds  <http://www.rainbowplusplus.ml/download/>
 
 
 Build

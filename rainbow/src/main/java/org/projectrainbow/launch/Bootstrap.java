@@ -18,6 +18,13 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import org.apache.commons.io.FileUtils;
+
+//RainbowPlusPlus, start
+import java.io.FileNotFoundException;
+import ml.rainbowplusplus.utils.ConfigEditer;
+//RainbowPlusPlus, end
+
 public class Bootstrap {
     public static String[] args;
     public static Set<File> tweakers = new HashSet<File>();
@@ -27,10 +34,65 @@ public class Bootstrap {
 
     public static Logger logger = LogManager.getLogger("Minecraft");
 
+
+    //RainbowPlusPlus, start
+    public static boolean autoDownloadBukkitBridge() {
+        	boolean t = false;
+       		try {
+         		t = ConfigEditer.viewProp("BukkitBridge.properties", "autodownload").contains("true");
+         	} catch (FileNotFoundException e) {
+             		e.printStackTrace();
+         	}
+        	 return t;
+     	}
+    //RainbowPlusPlus, end
+
     public static void main(String[] args) {
         Bootstrap.args = args;
 
         logger.info("Searching for additional tweakers...");
+        
+        //RainbowPlusPlus, start
+        File BukkitBridgeProp = new File("BukkitBridge.properties");
+        if (!BukkitBridgeProp.exists()) {
+            try {
+       	    URL BukkitBridgePropDownload = new URL("https://raw.githubusercontent.com/rainbowplusplus/RainbowPlusPlus/master/BukkitBridge.properties");
+            FileUtils.copyURLToFile(BukkitBridgePropDownload, BukkitBridgeProp);
+            } catch (IOException e) {
+                logger.info("[RainbowPlusPlus] Can't download BukkitBridge.properties");
+            }
+        }
+
+        if (autoDownloadBukkitBridge() == true) {
+        File BukkitPluginsloaderJar = new File("plugins_mod" + File.separator + "PluginBukkitBridge.jar");
+        if (BukkitPluginsloaderJar.exists()) {
+            logger.info("Found BUKKIT tweaker...");
+            logger.info(" Loaded org.bukkit.Bukkit");
+            logger.info(" Loaded org.bukkit.plugin.java.PluginClassLoader");
+        } else {
+            try {
+                logger.info("Downloading BUKKIT tweaker...");
+                URL BukkitBridgeDLURL = new URL("http://www.project-rainbow.org/site/index.php?action=downloads;sa=downfile&id=69");
+                FileUtils.copyURLToFile(BukkitBridgeDLURL, BukkitPluginsloaderJar);
+                logger.info("Downloaded BUKKIT tweaker...");
+                logger.info(" Loaded org.bukkit.Bukkit");
+                logger.info(" Loaded org.bukkit.plugin.java.PluginClassLoader");
+            } catch (IOException e) {
+                logger.info("Could not load BUKKIT BRIDGE, bukkit plugins will not work unless you download RainbowBukkitBridge, Full Error: " + e);
+            }
+        }
+        } else {
+            logger.info("Autodownloading the Bukkit Bridge is disabled");
+        }
+        //RainbowPlusPlus, end
+        
+        //RainbowPlusPlus, start
+        try {
+			ConfigEditer.changeProp("server.properties", "max-tick-time", "200000");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		//RainbowPlusPlus, end
 
         List<String> tweakClasses = new ArrayList<String>() {{
             add("org.projectrainbow.launch.ServerTweaker");
@@ -57,7 +119,7 @@ public class Bootstrap {
                         }
                         jarFile.close();
                     } catch (Throwable th) {
-                        logger.error("Failed to load tweaker file " + file, th);
+                        logger.error("Failed to load file: " + file, th);
                     }
                 }
             }
