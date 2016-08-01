@@ -1,3 +1,5 @@
+package ml.rainbowplusplus.utils;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
