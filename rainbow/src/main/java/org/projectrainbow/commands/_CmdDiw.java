@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow._Janitor;
+import org.projectrainbow._UUIDMapper;
 import org.projectrainbow.interfaces.IMixinICommandSender;
 import org.projectrainbow.interfaces.IMixinPlayerCapabilities;
 
@@ -24,6 +25,9 @@ import java.io.FileReader;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
+
+import static org.projectrainbow.launch.Bootstrap.args;
 
 public class _CmdDiw extends CommandBase {
     @Override
@@ -158,7 +162,7 @@ public class _CmdDiw extends CommandBase {
 
     public void ShowUsage(ICommandSender cs) {
         _DiwUtils.reply(cs, _ColorHelper.RED + "Usage: /diw [option]");
-        String[] arrCmds = new String[]{"save", "speed", "flyspeed", "walkspeed", "mem", "skyclear", "setgrass", "border", "echo", "script", "loadBanList", "clean"};
+        String[] arrCmds = new String[]{"save", "speed", "flyspeed", "walkspeed", "mem", "skyclear", "setgrass", "border", "echo", "script", "loadBanList", "clean", "namecolor"};
         List<String> cmds = Arrays.asList(arrCmds);
         Collections.sort(cmds);
         _DiwUtils.reply(cs, _ColorHelper.WHITE + "Options: " + RainbowUtils.RainbowStringList(cmds));
@@ -181,6 +185,29 @@ public class _CmdDiw extends CommandBase {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 _DiwUtils.reply(cs, _ColorHelper.RED + "Internal error: " + e.getMessage());
+            }
+        } else if (args[0].equalsIgnoreCase("namecolor")) {
+            if (args.length < 3) {
+                _DiwUtils.reply(cs, _ColorHelper.RED + "Usage: /diw namecolor <User> <new nickname|off>");
+            } else {
+                UUID uuid = _UUIDMapper.getUUID(args[1]);
+                if (uuid == null) {
+                    _DiwUtils.reply(cs, _ColorHelper.RED + "Player not found.");
+                } else {
+                    String newName = _DiwUtils.ConcatArgs(args, 2);
+                    newName = _DiwUtils.FullTranslate(newName);
+                    if (newName.equalsIgnoreCase("off")) {
+                        _CmdNameColor.ColorNameDict.remove(uuid.toString());
+                        _DiwUtils.reply(cs, _ColorHelper.GREEN + "Remove colored name of " + args[1]);
+                    } else {
+                        _CmdNameColor.ColorNameDict.put(uuid.toString(), newName);
+                        _DiwUtils.reply(cs, _ColorHelper.GREEN + "Set colored name of " + args[1] + "to: " + _ColorHelper.YELLOW + newName);
+                    }
+                    EntityPlayerMP player = _DiwUtils.getMinecraftServer().getPlayerList().getPlayerByUUID(uuid);
+                    if (player != null) {
+                        _CmdNameColor.updateNameColorOnTab(player);
+                    }
+                }
             }
         } else if (args[0].equalsIgnoreCase("save")) {
             _DiwUtils.SaveStuffs();
