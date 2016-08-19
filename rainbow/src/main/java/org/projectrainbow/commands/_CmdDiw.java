@@ -198,10 +198,10 @@ public class _CmdDiw extends CommandBase {
                     newName = _DiwUtils.FullTranslate(newName);
                     if (newName.equalsIgnoreCase("off")) {
                         _CmdNameColor.ColorNameDict.remove(uuid.toString());
-                        _DiwUtils.reply(cs, _ColorHelper.GREEN + "Remove colored name of " + args[1]);
+                        _DiwUtils.reply(cs, _ColorHelper.GREEN + "Removed colored name of " + args[1]);
                     } else {
                         _CmdNameColor.ColorNameDict.put(uuid.toString(), newName);
-                        _DiwUtils.reply(cs, _ColorHelper.GREEN + "Set colored name of " + args[1] + "to: " + _ColorHelper.YELLOW + newName);
+                        _DiwUtils.reply(cs, _ColorHelper.GREEN + "Set colored name of " + args[1] + " to: " + _ColorHelper.YELLOW + newName);
                     }
                     EntityPlayerMP player = _DiwUtils.getMinecraftServer().getPlayerList().getPlayerByUUID(uuid);
                     if (player != null) {
