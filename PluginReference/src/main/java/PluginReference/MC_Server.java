@@ -377,9 +377,9 @@ public interface MC_Server {
     /**
      * Factory method to create an attribute modifier with a random unique uuid.
      *
-     * @param name the name of the attribute modifier
+     * @param name     the name of the attribute modifier
      * @param operator the operator to use
-     * @param value the value of the modifier
+     * @param value    the value of the modifier
      * @return the created attribute modifier
      */
     MC_AttributeModifier createAttributeModifier(String name, MC_AttributeModifier.Operator operator, double value);
@@ -387,12 +387,21 @@ public interface MC_Server {
     /**
      * Factory method to create an attribute modifier using a given uuid.
      *
-     * @param uuid the uuid to use
-     * @param name the name of the attribute modifier
+     * @param uuid     the uuid to use
+     * @param name     the name of the attribute modifier
      * @param operator the operator to use
-     * @param value the value of the modifier
+     * @param value    the value of the modifier
      * @return the created attribute modifier
      */
     MC_AttributeModifier createAttributeModifier(UUID uuid, String name, MC_AttributeModifier.Operator operator, double value);
+
+    /**
+     * Create an inventory for use as GUI.
+     *
+     * @param size  the size of the inventory, must be a multiple of 9
+     * @param title the title of the inventory
+     * @return the {@link MC_InventoryGUI} instance
+     */
+    MC_InventoryGUI createInventoryGUI(int size, String title);
 }
 

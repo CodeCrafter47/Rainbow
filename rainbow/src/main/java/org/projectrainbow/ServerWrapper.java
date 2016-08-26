@@ -1,18 +1,7 @@
 package org.projectrainbow;
 
 
-import PluginReference.MC_AttributeModifier;
-import PluginReference.MC_Block;
-import PluginReference.MC_Command;
-import PluginReference.MC_CommandSenderInfo;
-import PluginReference.MC_ItemStack;
-import PluginReference.MC_Player;
-import PluginReference.MC_PlayerPacketListener;
-import PluginReference.MC_Server;
-import PluginReference.MC_ServerPacketListener;
-import PluginReference.MC_World;
-import PluginReference.MC_WorldSettings;
-import PluginReference.PluginInfo;
+import PluginReference.*;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.command.ServerCommandManager;
@@ -408,5 +397,19 @@ public class ServerWrapper implements MC_Server {
     @Override
     public MC_AttributeModifier createAttributeModifier(UUID uuid, String name, MC_AttributeModifier.Operator operator, double value) {
         return (MC_AttributeModifier) new AttributeModifier(uuid, name, value, PluginHelper.operatorMap.get(operator));
+    }
+
+    @Override
+    public MC_InventoryGUI createInventoryGUI(int size, String title) {
+        if (size < 0) {
+            throw new IllegalArgumentException("size is negative");
+        }
+        if (size % 9 != 0) {
+            throw new IllegalArgumentException("size must be a multiple of 9");
+        }
+        if (title == null) {
+            throw new IllegalArgumentException("title is null");
+        }
+        return new GUIInventory(title, size);
     }
 }
