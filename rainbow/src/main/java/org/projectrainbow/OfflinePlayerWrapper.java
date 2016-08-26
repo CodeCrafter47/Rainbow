@@ -1,19 +1,7 @@
 package org.projectrainbow;
 
 
-import PluginReference.MC_Attribute;
-import PluginReference.MC_AttributeType;
-import PluginReference.MC_DamageType;
-import PluginReference.MC_Entity;
-import PluginReference.MC_EntityType;
-import PluginReference.MC_GameMode;
-import PluginReference.MC_ItemStack;
-import PluginReference.MC_Location;
-import PluginReference.MC_MotionData;
-import PluginReference.MC_Player;
-import PluginReference.MC_PotionEffect;
-import PluginReference.MC_Server;
-import PluginReference.MC_World;
+import PluginReference.*;
 import org.projectrainbow.commands._CmdNameColor;
 
 import java.net.SocketAddress;
@@ -397,6 +385,16 @@ public class OfflinePlayerWrapper implements MC_Player {
 
     @Override
     public void setPlayerListHeaderFooter(String header, String footer) {
+
+    }
+
+    @Override
+    public void displayInventoryGUI(MC_InventoryGUI gui) {
+
+    }
+
+    @Override
+    public void closeInventory() {
 
     }
 }

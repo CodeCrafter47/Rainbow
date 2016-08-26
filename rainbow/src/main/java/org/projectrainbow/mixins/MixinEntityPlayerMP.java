@@ -695,4 +695,14 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
         ((IMixinSPacketPlayerListHeaderFooter) packet).setFooter(new TextComponentString(footer));
         connection.sendPacket(packet);
     }
+
+    @Override
+    public void displayInventoryGUI(MC_InventoryGUI gui) {
+        ((EntityPlayerMP) (Object) this).displayGUIChest(((GUIInventory) gui));
+    }
+
+    @Override
+    public void closeInventory() {
+        ((EntityPlayerMP) (Object) this).closeScreen();
+    }
 }
