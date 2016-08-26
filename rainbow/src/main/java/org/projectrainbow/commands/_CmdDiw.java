@@ -163,7 +163,7 @@ public class _CmdDiw extends CommandBase {
 
     public void ShowUsage(ICommandSender cs) {
         _DiwUtils.reply(cs, _ColorHelper.RED + "Usage: /diw [option]");
-        String[] arrCmds = new String[]{"save", "speed", "flyspeed", "walkspeed", "mem", "skyclear", "setgrass", "border", "echo", "script", "loadBanList", "clean", "namecolor", "loadconfig"};
+        String[] arrCmds = new String[]{"save", "speed", "flyspeed", "walkspeed", "mem", "skyclear", "setgrass", "border", "echo", "script", "loadBanList", "clean", "namecolor", "loadconfig", "flow"};
         List<String> cmds = Arrays.asList(arrCmds);
         Collections.sort(cmds);
         _DiwUtils.reply(cs, _ColorHelper.WHITE + "Options: " + RainbowUtils.RainbowStringList(cmds));
@@ -210,6 +210,14 @@ public class _CmdDiw extends CommandBase {
                     }
                 }
             }
+        } else if (args[0].equalsIgnoreCase("flow")) {
+            _DiwUtils.BlockFlowOn = !_DiwUtils.BlockFlowOn;
+            _DiwUtils.reply(
+                    cs,
+                    ChatColor.GREEN
+                            + "Joe\'s BlockFlowOn: "
+                            + ChatColor.WHITE
+                            + _DiwUtils.BlockFlowOn);
         } else if (args[0].equalsIgnoreCase("loadconfig")) {
             _DiwUtils.LoadRainbowProperties();
             _DiwUtils.reply(cs,
