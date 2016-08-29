@@ -1,66 +1,44 @@
 package org.projectrainbow.mixins;
 
-import PluginReference.MC_Entity;
-import PluginReference.MC_EventInfo;
-import PluginReference.MC_ItemStack;
-import PluginReference.MC_Location;
-import PluginReference.MC_Player;
-import PluginReference.MC_Sign;
+import PluginReference.*;
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.CPacketChatMessage;
-import net.minecraft.network.play.client.CPacketCustomPayload;
-import net.minecraft.network.play.client.CPacketPlayer;
-import net.minecraft.network.play.client.CPacketPlayerDigging;
-import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
-import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
-import net.minecraft.network.play.client.CPacketUpdateSign;
-import net.minecraft.network.play.client.CPacketUseEntity;
+import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.server.SPacketBlockChange;
+import net.minecraft.network.play.server.SPacketConfirmTransaction;
 import net.minecraft.network.play.server.SPacketPlayerPosLook;
 import net.minecraft.network.play.server.SPacketSpawnPosition;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.IntHashMap;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.projectrainbow.EmptyItemStack;
-import org.projectrainbow.Hooks;
-import org.projectrainbow.PluginHelper;
-import org.projectrainbow._DiwUtils;
-import org.projectrainbow._DynReward;
-import org.projectrainbow._EmoteUtils;
-import org.projectrainbow._JOT_OnlineTimeUtils;
-import org.projectrainbow._JoeCommandStats;
+import org.projectrainbow.*;
 import org.projectrainbow.interfaces.IMixinEntityPlayerMP;
 import org.projectrainbow.interfaces.IMixinOutboundPacketSoundEffect;
 import org.projectrainbow.interfaces.IMixinOutboundPacketSpawnPosition;
 import org.projectrainbow.launch.Bootstrap;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -79,6 +57,10 @@ public class MixinNetHandlerPlayServer {
     private int teleportId;
     @Shadow
     private Vec3d targetPos;
+
+    @Shadow
+    @Final
+    private IntHashMap<Short> pendingTransactions;
 
     @Redirect(method = "processPlayer", at = @At(value = "INVOKE", target = "warn", remap = false))
     private void doLogWarning(Logger logger, String message, Object... args) {
@@ -112,8 +94,8 @@ public class MixinNetHandlerPlayServer {
 
     @Inject(method = "processRightClickBlock", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.EntityPlayerMP.markPlayerActive()V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void processRightClickBlock(CPacketPlayerTryUseItemOnBlock packet, CallbackInfo callback, WorldServer worldServer,
-                                              EnumHand hand, ItemStack itemStack, BlockPos blockPos,
-                                              EnumFacing clickedFace) {
+                                        EnumHand hand, ItemStack itemStack, BlockPos blockPos,
+                                        EnumFacing clickedFace) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptPlaceOrInteract((MC_Player) playerEntity, new MC_Location(blockPos.getX(), blockPos.getY(), blockPos.getZ(), playerEntity.dimension), PluginHelper.directionMap.get(clickedFace), PluginHelper.handMap.get(hand), ei);
         if (ei.isCancelled) {
@@ -191,7 +173,7 @@ public class MixinNetHandlerPlayServer {
         return message;
     }
 
-    private static final  Pattern patternLink = Pattern.compile("(?<=(\\W|^))(?:(https?)://)?([-\\w_\\.]{2,}\\.[a-z]{2,8})(/\\S*)?(?=(\\W|$))", Pattern.CASE_INSENSITIVE);
+    private static final Pattern patternLink = Pattern.compile("(?<=(\\W|^))(?:(https?)://)?([-\\w_\\.]{2,}\\.[a-z]{2,8})(/\\S*)?(?=(\\W|$))", Pattern.CASE_INSENSITIVE);
 
     @ModifyArg(method = "processChatMessage", at = @At(value = "INVOKE", target = "net.minecraft.server.management.PlayerList.sendChatMsgImpl(Lnet/minecraft/util/text/ITextComponent;Z)V"))
     private ITextComponent onChatSent(ITextComponent message) {
@@ -445,6 +427,29 @@ public class MixinNetHandlerPlayServer {
             if (ei.isCancelled) {
                 callbackInfo.cancel();
             }
+        }
+    }
+
+    @Inject(method = "processClickWindow", at = @At(value = "INVOKE", target = "net.minecraft.inventory.Container.slotClick(IILnet/minecraft/inventory/ClickType;Lnet/minecraft/entity/player/EntityPlayer;)Lnet/minecraft/item/ItemStack;"), cancellable = true)
+    private void onClickWindow(CPacketClickWindow packet, CallbackInfo ci) {
+        Container openContainer = playerEntity.openContainer;
+        if (openContainer instanceof GUIContainer) {
+            pendingTransactions.addKey(openContainer.windowId, Short.valueOf(packet.getActionNumber()));
+            playerEntity.connection.sendPacket(new SPacketConfirmTransaction(packet.getWindowId(), packet.getActionNumber(), false));
+            openContainer.setCanCraft(playerEntity, false);
+            openContainer.slotClick(packet.getSlotId(), packet.getUsedButton(), packet.getClickType(), playerEntity);
+            if (openContainer == playerEntity.openContainer) {
+                ArrayList<ItemStack> items = Lists.newArrayList();
+
+                for (int i = 0; i < this.playerEntity.openContainer.inventorySlots.size(); ++i) {
+                    ItemStack var5 = this.playerEntity.openContainer.inventorySlots.get(i).getStack();
+                    ItemStack var6 = var5 != null && var5.stackSize > 0 ? var5 : null;
+                    items.add(var6);
+                }
+
+                this.playerEntity.updateCraftingInventory(this.playerEntity.openContainer, items);
+            }
+            ci.cancel();
         }
     }
 }
