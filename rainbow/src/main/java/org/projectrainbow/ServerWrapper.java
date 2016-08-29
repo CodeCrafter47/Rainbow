@@ -170,6 +170,9 @@ public class ServerWrapper implements MC_Server {
 
     public MC_ItemStack createItemStack(int id, int count, int dmg) {
         Item item = Item.getItemById(id);
+        if (item == null) {
+            throw new IllegalArgumentException("An item with id " + id + " does not exist.");
+        }
         return (MC_ItemStack) (Object) new ItemStack(item, count, dmg);
     }
 
