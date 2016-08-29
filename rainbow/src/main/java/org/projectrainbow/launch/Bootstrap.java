@@ -23,6 +23,7 @@ import org.apache.commons.io.FileUtils;
 //RainbowPlusPlus, start
 import java.io.FileNotFoundException;
 import ml.rainbowplusplus.utils.ConfigEditer;
+import ml.rainbowplusplus.utils.RPPUtils;
 //RainbowPlusPlus, end
 
 public class Bootstrap {
@@ -64,23 +65,7 @@ public class Bootstrap {
         }
 
         if (autoDownloadBukkitBridge() == true) {
-        File BukkitPluginsloaderJar = new File("plugins_mod" + File.separator + "PluginBukkitBridge.jar");
-        if (BukkitPluginsloaderJar.exists()) {
-            logger.info("Found BUKKIT tweaker...");
-            logger.info(" Loaded org.bukkit.Bukkit");
-            logger.info(" Loaded org.bukkit.plugin.java.PluginClassLoader");
-        } else {
-            try {
-                logger.info("Downloading BUKKIT tweaker...");
-                URL BukkitBridgeDLURL = new URL("http://www.project-rainbow.org/site/index.php?action=downloads;sa=downfile&id=69");
-                FileUtils.copyURLToFile(BukkitBridgeDLURL, BukkitPluginsloaderJar);
-                logger.info("Downloaded BUKKIT tweaker...");
-                logger.info(" Loaded org.bukkit.Bukkit");
-                logger.info(" Loaded org.bukkit.plugin.java.PluginClassLoader");
-            } catch (IOException e) {
-                logger.info("Could not load BUKKIT BRIDGE, bukkit plugins will not work unless you download RainbowBukkitBridge, Full Error: " + e);
-            }
-        }
+        	RPPUtils.downloadBukkitBridge();
         } else {
             logger.info("Autodownloading the Bukkit Bridge is disabled");
         }
@@ -88,11 +73,11 @@ public class Bootstrap {
         
         //RainbowPlusPlus, start
         try {
-			ConfigEditer.changeProp("server.properties", "max-tick-time", "200000");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		//RainbowPlusPlus, end
+		ConfigEditer.changeProp("server.properties", "max-tick-time", "200000"); // Fixes crash bug
+	} catch (FileNotFoundException e) {
+		e.printStackTrace();
+	}
+	//RainbowPlusPlus, end
 
         List<String> tweakClasses = new ArrayList<String>() {{
             add("org.projectrainbow.launch.ServerTweaker");
