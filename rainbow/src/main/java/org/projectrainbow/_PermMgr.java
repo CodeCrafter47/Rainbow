@@ -101,6 +101,10 @@ public class _PermMgr {
             permData.put(key, map);
         }
     }
+    
+    public static void givePerm(UUID uuid, String perm) {
+        givePermission(uuid, perm);
+    }
 
     public static List<String> getPermissions(UUID uuid) {
         ArrayList<String> perms = new ArrayList<String>();
@@ -136,9 +140,21 @@ public class _PermMgr {
             }
         }
     }
+    
+    public static void takePerm(UUID uuid, String perm) {
+       takePermission(uuid, perm);
+    }
 
     public static boolean hasPermission(UUID uuid, String perm) {
         return hasPermission(uuid, perm, true);
+    }
+    
+    public static boolean hasPerm(UUID uuid, String perm) {
+        return hasPermission(uuid, perm, true);
+    }
+    
+    public static boolean hasPerm(UUID uuid, String perm, boolean checkAllGroup) {
+        return hasPermission(uuid, perm, checkAllGroup);
     }
 
     public static boolean hasPermission(UUID uuid, String perm, boolean checkAllGroup) {
