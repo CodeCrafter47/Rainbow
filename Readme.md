@@ -7,15 +7,6 @@ Rainbow is a Minecraft server mod.
 Website: <http://www.project-rainbow.org>
 Builds: <http://ci.codecrafter47.dyndns.eu/job/Rainbow/>
 
-RainbowPlusPlus
-======
-
-Rainbow++ is a fork of the Ranbow server.
-
-Website <http://www.rainbowplusplus.ml>
-Builds  <http://www.rainbowplusplus.ml/download/>
-
-
 Build
 =====
 
@@ -36,3 +27,11 @@ I recommend using IntelliJ. It has good maven support and its integrated decompi
 
 Before trying to import the project into the IDE I recommend building it from the
  command line the first time.
+
+RainbowPlusPlus
+======
+
+Rainbow++ is a fork of the Ranbow server.
+
+Website <http://www.rainbowplusplus.ml>
+Builds  <http://www.rainbowplusplus.ml/download/>RainbowPlusPlus
