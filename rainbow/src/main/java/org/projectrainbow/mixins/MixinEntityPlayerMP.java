@@ -705,4 +705,9 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
     public void closeInventory() {
         ((EntityPlayerMP) (Object) this).closeScreen();
     }
+
+    @Override
+    public void sendJsonMessage(String json) {
+        connection.sendPacket(new SPacketChat(TextComponentString.Serializer.jsonToComponent(json)));
+    }
 }
