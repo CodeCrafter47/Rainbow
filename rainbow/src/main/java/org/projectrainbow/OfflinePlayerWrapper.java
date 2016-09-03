@@ -30,6 +30,11 @@ public class OfflinePlayerWrapper implements MC_Player {
                 "DBG: Unsupported: sendMessage to OfflinePlayer");
     }
 
+    @Override
+    public void sendJsonMessage(String json) {
+        System.out.println("DBG: Unsupported: sendMessage to OfflinePlayer");
+    }
+
     public void executeCommand(String cmd) {
         System.out.println(
                 "DBG: Unsupported: executeCommand to OfflinePlayer");
