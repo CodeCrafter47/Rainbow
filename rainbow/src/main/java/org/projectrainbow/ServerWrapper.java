@@ -147,10 +147,6 @@ public class ServerWrapper implements MC_Server {
 
         return res;
     }
-    
-    public boolean hasPerm(String key, String perm) {
-        return hasPermission(key, perm);
-    }
 
     public MC_World getWorld(int idxDimension) {
         return (MC_World) _DiwUtils.getMinecraftServer().worldServerForDimension(idxDimension);
