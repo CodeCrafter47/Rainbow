@@ -19,6 +19,13 @@ public interface MC_Player extends MC_LivingEntity {
     public void sendMessage(String msg);
 
     /**
+     * Sends message to player
+     *
+     * @param json Message using Minecrafts json massage format.
+     */
+    public void sendJsonMessage(String json);
+
+    /**
      * Execute a command (as if user typed it)
      *
      * @param cmd Command to Execute
