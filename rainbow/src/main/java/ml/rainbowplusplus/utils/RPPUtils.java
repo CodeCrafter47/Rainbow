@@ -7,7 +7,7 @@ import org.apache.commons.io.FileUtils;
 import org.projectrainbow.launch.Bootstrap;
 
 public class RPPUtils {
-    File BukkitPluginsloaderJar = new File("plugins_mod" + File.separator + "PluginBukkitBridge.jar");
+    static File BukkitPluginsloaderJar = new File("plugins_mod" + File.separator + "PluginBukkitBridge.jar");
     public static void downloadBukkitBridge() {
     	// Why bukkit?
     	// Bukkit might be dead, 
