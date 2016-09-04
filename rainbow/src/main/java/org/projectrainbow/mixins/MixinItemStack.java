@@ -11,9 +11,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import org.projectrainbow.PluginHelper;
+import org.projectrainbow._DiwUtils;
 import org.projectrainbow.interfaces.IMixinNBTBase;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -48,6 +51,14 @@ public abstract class MixinItemStack implements MC_ItemStack {
 
     @Shadow
     public abstract boolean isItemEnchanted();
+
+    @ModifyArg(method = "setStackDisplayName", at = @At(value = "INVOKE", target = "net.minecraft.nbt.NBTTagCompound.setString(Ljava/lang/String;Ljava/lang/String;)V"), index = 1)
+    private String censorItemName(String name) {
+        if (_DiwUtils.DoCensor && _DiwUtils.HasBadLanguage(name)) {
+            return "Censored";
+        }
+        return name;
+    }
 
     @Override
     public String getFriendlyName() {
