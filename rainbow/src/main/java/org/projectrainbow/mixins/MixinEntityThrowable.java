@@ -11,10 +11,10 @@ import org.spongepowered.asm.mixin.Shadow;
 public abstract class MixinEntityThrowable extends MixinEntity implements MC_Projectile {
 
     @Shadow
-    private EntityLivingBase thrower;
+    public abstract EntityLivingBase getThrower();
 
     @Override
     public MC_Entity getProjectileSource() {
-        return (MC_Entity) thrower;
+        return (MC_Entity) getThrower();
     }
 }
