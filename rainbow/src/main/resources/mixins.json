@@ -81,6 +81,7 @@
     "MixinAttributeModifier",
     "MixinUserList",
     "MixinSPacketPlayerListHeaderFooter",
-    "MixinCPacketHandshake"
+    "MixinCPacketHandshake",
+    "MixinCommandMessage"
   ]
 }

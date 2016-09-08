@@ -14,10 +14,8 @@ import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.*;
-import net.minecraft.network.play.server.SPacketBlockChange;
-import net.minecraft.network.play.server.SPacketConfirmTransaction;
-import net.minecraft.network.play.server.SPacketPlayerPosLook;
-import net.minecraft.network.play.server.SPacketSpawnPosition;
+import net.minecraft.network.play.server.*;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.EnumFacing;
@@ -31,6 +29,7 @@ import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.projectrainbow.*;
+import org.projectrainbow.commands._CmdIgnore;
 import org.projectrainbow.interfaces.IMixinEntityPlayerMP;
 import org.projectrainbow.interfaces.IMixinOutboundPacketSoundEffect;
 import org.projectrainbow.interfaces.IMixinOutboundPacketSpawnPosition;
@@ -175,9 +174,8 @@ public class MixinNetHandlerPlayServer {
 
     private static final Pattern patternLink = Pattern.compile("(?<=(\\W|^))(?:(https?)://)?([-\\w_\\.]{2,}\\.[a-z]{2,8})(/\\S*)?(?=(\\W|$))", Pattern.CASE_INSENSITIVE);
 
-    @ModifyArg(method = "processChatMessage", at = @At(value = "INVOKE", target = "net.minecraft.server.management.PlayerList.sendChatMsgImpl(Lnet/minecraft/util/text/ITextComponent;Z)V"))
-    private ITextComponent onChatSent(ITextComponent message) {
-
+    @Redirect(method = "processChatMessage", at = @At(value = "INVOKE", target = "net.minecraft.server.management.PlayerList.sendChatMsgImpl(Lnet/minecraft/util/text/ITextComponent;Z)V"))
+    private void onChatSent(PlayerList playerList, ITextComponent message, boolean b) {
         TextComponentTranslation t = (TextComponentTranslation) message;
         ITextComponent player = (ITextComponent) t.getFormatArgs()[0];
         String msg = (String) t.getFormatArgs()[1];
@@ -204,7 +202,15 @@ public class MixinNetHandlerPlayServer {
         matcher.appendTail(buffer);
         result.appendSibling(new TextComponentString(buffer.toString()));
 
-        return result;
+        _DiwUtils.getMinecraftServer().addChatMessage(result);
+
+        SPacketChat packet = new SPacketChat(result, (byte) (b ? 1 : 0));
+        for (EntityPlayerMP receiver : playerList.getPlayerList()) {
+            if (!_CmdIgnore.IsIgnoring(receiver.getName(), playerEntity.getName())) {
+                receiver.connection.sendPacket(packet);
+            }
+        }
+
     }
 
     @Inject(method = "handleSlashCommand", at = @At("HEAD"))
