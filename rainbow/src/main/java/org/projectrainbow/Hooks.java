@@ -1,30 +1,8 @@
 package org.projectrainbow;
 
-import PluginReference.MC_ArmorStandActionType;
-import PluginReference.MC_Block;
-import PluginReference.MC_Container;
-import PluginReference.MC_ContainerType;
-import PluginReference.MC_DamageType;
-import PluginReference.MC_DirectionNESWUD;
-import PluginReference.MC_Entity;
-import PluginReference.MC_EventInfo;
-import PluginReference.MC_FloatTriplet;
-import PluginReference.MC_GeneratedColumn;
-import PluginReference.MC_Hand;
-import PluginReference.MC_HangingEntityType;
-import PluginReference.MC_ItemFrameActionType;
-import PluginReference.MC_ItemStack;
-import PluginReference.MC_Location;
-import PluginReference.MC_MiscGriefType;
-import PluginReference.MC_Player;
-import PluginReference.MC_PotionEffectType;
-import PluginReference.MC_Sign;
-import PluginReference.PluginInfo;
-import net.minecraft.entity.player.EntityPlayerMP;
+import PluginReference.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.projectrainbow.commands._CmdNameColor;
-import org.projectrainbow.mixins.MixinEntityPlayerMP;
 
 import java.net.InetAddress;
 import java.util.List;
@@ -595,6 +573,26 @@ public class Hooks {
         for (PluginInfo plugin : _DiwUtils.pluginManager.plugins) {
             try {
                 plugin.ref.onEntityPushed(entity, pushedEntity, velocity, ei);
+            } catch (Throwable th) {
+                logger.error("Failed to pass event to plugin " + plugin.name, th);
+            }
+        }
+    }
+
+    public static void onAttemptProjectileHitEntity(MC_Projectile projectile, MC_Entity entity, MC_Location hitLocation,  MC_EventInfo ei) {
+        for (PluginInfo plugin : _DiwUtils.pluginManager.plugins) {
+            try {
+                plugin.ref.onAttemptProjectileHitEntity(projectile, entity, hitLocation, ei);
+            } catch (Throwable th) {
+                logger.error("Failed to pass event to plugin " + plugin.name, th);
+            }
+        }
+    }
+
+    public static void onAttemptProjectileHitBlock(MC_Projectile projectile, MC_Location blockLocation, MC_DirectionNESWUD face, MC_Location hitLocation, MC_EventInfo ei) {
+        for (PluginInfo plugin : _DiwUtils.pluginManager.plugins) {
+            try {
+                plugin.ref.onAttemptProjectileHitBlock(projectile, blockLocation, face, hitLocation, ei);
             } catch (Throwable th) {
                 logger.error("Failed to pass event to plugin " + plugin.name, th);
             }

@@ -1083,6 +1083,15 @@ public class MyPlugin extends PluginBase {
         }
     }
 
+    @Override
+    public void onAttemptProjectileHitEntity(MC_Projectile projectile, MC_Entity entity, MC_Location hitLocation, MC_EventInfo ei) {
+        String logMsg = String.format("onAttemptProjectileHitEntity: %s hit %s @ %s", projectile.getName(), entity.getName(), hitLocation.toString());
+        System.out.println("EventSamplePlugin -- " + logMsg);
+    }
 
-
+    @Override
+    public void onAttemptProjectileHitBlock(MC_Projectile projectile, MC_Location blockLocation, MC_DirectionNESWUD blockFaceHit, MC_Location hitLocation, MC_EventInfo ei) {
+        String logMsg = String.format("onAttemptProjectileHitBlock: %s hit %s @ %s", projectile.getName(), blockLocation.toString(), hitLocation.toString());
+        System.out.println("EventSamplePlugin -- " + logMsg);
+    }
 }
