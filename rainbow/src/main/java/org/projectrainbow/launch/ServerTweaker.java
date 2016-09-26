@@ -4,22 +4,18 @@ import com.google.common.io.ByteStreams;
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
-import org.spongepowered.asm.launch.MixinTweakContainer;
+import org.spongepowered.asm.launch.platform.MixinContainer;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.util.JavaVersion;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
 public class ServerTweaker implements ITweaker {
     static {
-        MixinTweakContainer.agentClasses.remove("org.spongepowered.asm.launch.MixinLaunchAgentFML");
+        MixinContainer.agentClasses.remove("org.spongepowered.asm.launch.MixinLaunchAgentFML");
         if (JavaVersion.current() >= 1.7D) {
             // If running at least Java 7 set MixinCompatibilityLevel to Java 7,
             // so that the Mixin Processor doesn't throw an exception if it
