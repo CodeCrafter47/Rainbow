@@ -13,10 +13,7 @@ import org.projectrainbow._DiwUtils;
 import org.projectrainbow._JOT_OnlineTimeUtils;
 import org.projectrainbow._UUIDMapper;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -85,5 +82,10 @@ public class MixinServerConfigurationManager {
         } else {
             callbackInfo.setReturnValue(null);
         }
+    }
+
+    @ModifyConstant(method = "transferEntityToWorld", constant = @Constant(doubleValue = 8.0D))
+    private double injectNetherDistanceRatio(double ignored) {
+        return _DiwUtils.netherDistanceRatio;
     }
 }

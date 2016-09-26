@@ -149,6 +149,7 @@ public class _DiwUtils {
     public static long g_standFunIdx = 0L;
     public static List<String> g_removedCommand = new LinkedList<String>();
     public static boolean UpdateNameColorOnTab = false;
+    public static double netherDistanceRatio = 8.0D;
 
     public static MinecraftServer getMinecraftServer() {
         return minecraftServer;
@@ -610,6 +611,10 @@ public class _DiwUtils {
                         if (sides[0].equalsIgnoreCase("update_namecolor_on_tab")) {
                             UpdateNameColorOnTab = isStringTrue(sides[1]);
                         }
+
+                        if (sides[0].equalsIgnoreCase("nether_distance_ratio")) {
+                            netherDistanceRatio = getDoubleWithDefault(sides[1], 0.001, 8.0D);
+                        }
                     }
                 }
             }
@@ -690,6 +695,7 @@ public class _DiwUtils {
                                     "max_nearby_entities", "" + MaxNearbyEntities}));
             bw.write(String.format(fmt, new Object[]{"bungeecord", Boolean.valueOf(BungeeCord)}));
             bw.write(String.format(fmt, "update_namecolor_on_tab", UpdateNameColorOnTab));
+            bw.write(String.format(fmt, "nether_distance_ratio", netherDistanceRatio));
             bw.close();
         } catch (Exception var3) {
             ConsoleMsg("Failed to save: " + RainbowPropertiesFilename);
@@ -712,6 +718,22 @@ public class _DiwUtils {
             res = Integer.parseInt(str);
         } catch (Exception var5) {
             ;
+        }
+
+        if (res < minValidValue) {
+            res = argDefault;
+        }
+
+        return res;
+    }
+
+    public static double getDoubleWithDefault(String str, double minValidValue, double argDefault) {
+        double res;
+
+        try {
+            res = Double.parseDouble(str);
+        } catch (Exception var5) {
+            return argDefault;
         }
 
         if (res < minValidValue) {

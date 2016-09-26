@@ -239,7 +239,7 @@
             <plugin>
                 <groupId>net.md-5</groupId>
                 <artifactId>specialsource-maven-plugin</artifactId>
-                <version>1.2.1-CodeCrafter47-5-SNAPSHOT</version>
+                <version>1.2.1-CodeCrafter47-6-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>reobfuscate</id>

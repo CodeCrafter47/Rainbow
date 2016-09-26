@@ -28,9 +28,7 @@ import org.projectrainbow.PluginHelper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.interfaces.IMixinNBTBase;
 import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -177,6 +175,11 @@ public abstract class MixinEntity implements MC_Entity {
         if (!ei.isCancelled) {
             pushedEntity.addVelocity(velocity.x, velocity.y, velocity.z);
         }
+    }
+
+    @ModifyConstant(method = "changeDimension", constant = @Constant(doubleValue = 8.0D))
+    private double injectNetherDistanceRatio(double ignored) {
+        return _DiwUtils.netherDistanceRatio;
     }
 
     @Override
