@@ -150,6 +150,7 @@ public class _DiwUtils {
     public static List<String> g_removedCommand = new LinkedList<String>();
     public static boolean UpdateNameColorOnTab = false;
     public static double netherDistanceRatio = 8.0D;
+    public static long g_restartCountdown = -1L;
 
     public static MinecraftServer getMinecraftServer() {
         return minecraftServer;

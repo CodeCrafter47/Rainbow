@@ -359,6 +359,15 @@ public class _CmdDiw extends CommandBase {
             String uptime = _DiwUtils.TimeDeltaString(System.currentTimeMillis() - _DiwUtils.ServerStartTime);
             _DiwUtils.reply(cs, prefix + "Uptime" + _ColorHelper.DARK_GRAY + RainbowUtils.TextAlignTrailerPerfect("Uptime", labelLen) + _ColorHelper.AQUA + uptime);
             _DiwUtils.reply(cs, prefix + "RAM Usage" + _ColorHelper.DARK_GRAY + RainbowUtils.TextAlignTrailerPerfect("RAM Usage", labelLen) + usageClr + String.format(usageClr + "%.1fperc %s " + _ColorHelper.GRAY + "(%.1f of %.1f GB)", usagePerc, usageMsg, allocGig - freeGig, maxGig));
+        } else if (args[0].equalsIgnoreCase("autorestart")) {
+            if (_DiwUtils.g_restartCountdown >= 0L) {
+                _DiwUtils.reply(cs, ChatColor.GREEN + "Auto-Restart cancelled!");
+                _DiwUtils.g_restartCountdown = -1L;
+            } else {
+                _DiwUtils.reply(cs, ChatColor.GREEN + "Auto-Restart set for 70 seconds!");
+                _DiwUtils.g_restartCountdown = 70L;
+            }
+
         } else {
             _DiwUtils.reply(cs, _ColorHelper.RED + "Unknown Option: " + _ColorHelper.AQUA + args[0]);
             this.ShowUsage(cs);

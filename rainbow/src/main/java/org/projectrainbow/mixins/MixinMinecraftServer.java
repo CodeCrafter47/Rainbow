@@ -46,7 +46,6 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
     @Shadow
     private PlayerList playerList;
-    private int g_restartCountdown;
 
     @Shadow
     protected abstract void saveAllWorlds(boolean b);
@@ -166,30 +165,30 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
             System.out.println("----------------------------------\n");
         }
 
-        if (g_restartCountdown >= 0L) {
+        if (_DiwUtils.g_restartCountdown >= 0L) {
             String var5 = ChatColor.MAGIC + "|" + ChatColor.RESET + " "
                     + ChatColor.LIGHT_PURPLE + "[AUTO-RESTART] "
                     + ChatColor.MAGIC + "|" + ChatColor.RESET + " "
                     + ChatColor.AQUA;
-            --g_restartCountdown;
-            if (g_restartCountdown == 60L) {
+            --_DiwUtils.g_restartCountdown;
+            if (_DiwUtils.g_restartCountdown == 60L) {
                 _DiwUtils.MessageAllPlayers(
                         var5 + ChatColor.GREEN
                                 + "Server restart in 60 seconds...");
-            } else if (g_restartCountdown == 52L) {
+            } else if (_DiwUtils.g_restartCountdown == 52L) {
                 _DiwUtils.MessageAllPlayers(
                         var5 + "Don\'t panic, it will return quickly");
-            } else if (g_restartCountdown == 30L) {
+            } else if (_DiwUtils.g_restartCountdown == 30L) {
                 _DiwUtils.MessageAllPlayers(
                         var5 + ChatColor.WHITE + "Maybe a hug will help... "
                                 + ChatColor.RED + "\u2764");
-            } else if (g_restartCountdown == 10L) {
+            } else if (_DiwUtils.g_restartCountdown == 10L) {
                 _DiwUtils.MessageAllPlayers(
                         var5 + ChatColor.RED + "Restarting in 10 seconds...");
-            } else if (g_restartCountdown == 1L) {
+            } else if (_DiwUtils.g_restartCountdown == 1L) {
                 _DiwUtils.MessageAllPlayers(
                         var5 + ChatColor.DARK_RED + "Restarting...");
-            } else if (g_restartCountdown == 0L) {
+            } else if (_DiwUtils.g_restartCountdown == 0L) {
                 ServerWrapper.getInstance().executeCommand("stop");
             }
         }
