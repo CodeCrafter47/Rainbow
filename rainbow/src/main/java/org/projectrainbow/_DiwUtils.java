@@ -122,7 +122,7 @@ public class _DiwUtils {
     public static String MC_SERVER_MOD_NAME = "Rainbow";
     public static String RainbowDataDirectory = "RainbowData" + File.separator;
     public static long ServerStartTime = 0L;
-    public static String DefaultMOTD = "§c§lA§6§l §e§lR§a§la§b§li§d§ln§c§lb§6§lo§e§lw§a§l §b§lS§d§le§c§lr§6§lv§e§le§a§lr\n§61.9.1 Fully Supported!";
+    public static String DefaultMOTD = "§c§lA§6§l §e§lR§a§la§b§li§d§ln§c§lb§6§lo§e§lw§a§l §b§lS§d§le§c§lr§6§lv§e§le§a§lr\n§61.10.2 Fully Supported!";
     public static SimpleDateFormat shortDateFormat = new SimpleDateFormat("MM/dd/yyyy");
     public static boolean g_didLoadDataFiles = false;
     public static ConcurrentHashMap<String, Long> tooSoon = new ConcurrentHashMap<String, Long>();
