@@ -67,12 +67,12 @@
 
     <distributionManagement>
         <repository>
-            <id>deployment</id>
+            <id>codecrafter47-repo</id>
             <name>CodCrafter47 Releases</name>
             <url>http://nexus.codecrafter47.dyndns.eu/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>
-            <id>deployment</id>
+            <id>codecrafter47-repo</id>
             <name>CodeCrafter47 Snapshots</name>
             <url>http://nexus.codecrafter47.dyndns.eu/content/repositories/snapshots/</url>
         </snapshotRepository>
