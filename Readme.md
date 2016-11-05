@@ -1,4 +1,4 @@
-Rainbow
+![Rainbow](http://www.project-rainbow.org/site/MGalleryItem.php?id=18)
 =======
 
 Rainbow is a Minecraft server mod.
