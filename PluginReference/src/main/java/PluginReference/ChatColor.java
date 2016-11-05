@@ -52,4 +52,32 @@ public class ChatColor {
 		return sb.toString();		
 	}
 	
+	public static String translateAlternateColorCodes(String altColorChar, String textToTranslate) {
+        if(textToTranslate == null) textToTranslate = "";
+        
+		String translatedText = textToTraslate
+                                .replaceAll(altColorChar+"0", BLACK);
+                                .replaceAll(altColorChar+"1", DARK_BLUE);
+                                .replaceAll(altColorChar+"2", DARK_GREEN);
+                                .replaceAll(altColorChar+"3", DARK_AQUA);
+                                .replaceAll(altColorChar+"4", DARK_RED);
+                                .replaceAll(altColorChar+"5", DARK_PURPLE);
+                                .replaceAll(altColorChar+"6", GOLD);
+                                .replaceAll(altColorChar+"7", GRAY);
+                                .replaceAll(altColorChar+"8", DARK_GRAY);
+                                .replaceAll(altColorChar+"9", BLUE);
+                                .replaceAll(altColorChar+"a", GREEN);
+                                .replaceAll(altColorChar+"b", AQUA);
+                                .replaceAll(altColorChar+"c", RED);
+                                .replaceAll(altColorChar+"d", LIGHT_PURPLE);
+                                .replaceAll(altColorChar+"e", YELLOW);
+                                .replaceAll(altColorChar+"f", WHITE);
+                                .replaceAll(altColorChar+"k", MAGIC);
+                                .replaceAll(altColorChar+"l", BOLD);
+                                .replaceAll(altColorChar+"m", STRIKETHROUGH);
+                                .replaceAll(altColorChar+"n", UNDERLINE);
+                                .replaceAll(altColorChar+"o", ITALIC);
+                                .replaceAll(altColorChar+"r", RESET);
+		return translatedText;
+	}
 }
