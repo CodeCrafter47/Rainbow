@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class PluginCommand extends CommandBase {
-    private final MC_Command delegate;
+    public final MC_Command delegate;
 
     public PluginCommand(MC_Command delegate) {
         this.delegate = delegate;

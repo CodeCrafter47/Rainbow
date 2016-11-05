@@ -1,6 +1,7 @@
 package PluginReference;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -212,6 +213,13 @@ public interface MC_Server {
      * @param cmd Object implementing MC_Command
      */
     void registerCommand(MC_Command cmd);
+
+    /**
+     * Get a mutable map of all currently registered commands.
+     *
+     * @return the command map
+     */
+    Map<String, MC_Command> getCommandMap();
 
     /**
      * Check if online mode

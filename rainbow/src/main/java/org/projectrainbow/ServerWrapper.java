@@ -2,8 +2,11 @@ package org.projectrainbow;
 
 
 import PluginReference.*;
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,17 +22,12 @@ import org.projectrainbow.commands._CmdPerm;
 import org.projectrainbow.interfaces.IMixinMinecraftServer;
 import org.projectrainbow.interfaces.IMixinNBTBase;
 import org.projectrainbow.plugins.PluginCommand;
+import org.projectrainbow.util.WrappedMinecraftCommand;
 
+import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 public class ServerWrapper implements MC_Server {
@@ -223,6 +221,17 @@ public class ServerWrapper implements MC_Server {
 
     public void registerCommand(MC_Command argCmd) {
         ((ServerCommandManager) _DiwUtils.getMinecraftServer().getCommandManager()).registerCommand(new PluginCommand(argCmd));
+    }
+
+    @Override
+    public Map<String, MC_Command> getCommandMap() {
+        return Maps.transformValues(_DiwUtils.getMinecraftServer().getCommandManager().getCommands(), new Function<ICommand, MC_Command>() {
+            @Nullable
+            @Override
+            public MC_Command apply(@Nullable ICommand iCommand) {
+                return iCommand instanceof PluginCommand ? ((PluginCommand) iCommand).delegate : new WrappedMinecraftCommand(iCommand);
+            }
+        });
     }
 
     public List<String> getMatchingOnlinePlayerNames(String arg) {
