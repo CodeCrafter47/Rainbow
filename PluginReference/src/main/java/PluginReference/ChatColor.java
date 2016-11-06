@@ -5,7 +5,8 @@ package PluginReference;
  */ 			
 public class ChatColor {
 	public static String ColorPrefix   = "\u00A7";
-	public static String BLACK	   = ColorPrefix + "0";
+       public static char   ColorChar     = '\u00A7';
+	public static String BLACK	       = ColorPrefix + "0";
 	public static String DARK_BLUE 	   = ColorPrefix + "1";
 	public static String DARK_GREEN    = ColorPrefix + "2";
 	public static String DARK_AQUA 	   = ColorPrefix + "3";
@@ -27,6 +28,7 @@ public class ChatColor {
 	public static String UNDERLINE     = ColorPrefix + "n";
 	public static String ITALIC        = ColorPrefix + "o";
 	public static String RESET         = ColorPrefix + "r";
+        
 	
 	
 	public static String StripColor(String str) {
@@ -51,33 +53,16 @@ public class ChatColor {
 		}
 		return sb.toString();		
 	}
-	
-	public static String translateAlternateColorCodes(String altColorChar, String textToTranslate) {
-        if(textToTranslate == null) textToTranslate = "";
-        
-		String translatedText = textToTraslate
-                                .replaceAll(altColorChar+"0", BLACK);
-                                .replaceAll(altColorChar+"1", DARK_BLUE);
-                                .replaceAll(altColorChar+"2", DARK_GREEN);
-                                .replaceAll(altColorChar+"3", DARK_AQUA);
-                                .replaceAll(altColorChar+"4", DARK_RED);
-                                .replaceAll(altColorChar+"5", DARK_PURPLE);
-                                .replaceAll(altColorChar+"6", GOLD);
-                                .replaceAll(altColorChar+"7", GRAY);
-                                .replaceAll(altColorChar+"8", DARK_GRAY);
-                                .replaceAll(altColorChar+"9", BLUE);
-                                .replaceAll(altColorChar+"a", GREEN);
-                                .replaceAll(altColorChar+"b", AQUA);
-                                .replaceAll(altColorChar+"c", RED);
-                                .replaceAll(altColorChar+"d", LIGHT_PURPLE);
-                                .replaceAll(altColorChar+"e", YELLOW);
-                                .replaceAll(altColorChar+"f", WHITE);
-                                .replaceAll(altColorChar+"k", MAGIC);
-                                .replaceAll(altColorChar+"l", BOLD);
-                                .replaceAll(altColorChar+"m", STRIKETHROUGH);
-                                .replaceAll(altColorChar+"n", UNDERLINE);
-                                .replaceAll(altColorChar+"o", ITALIC);
-                                .replaceAll(altColorChar+"r", RESET);
-		return translatedText;
-	}
+    
+    public static String translateAlternateColorCodes(String altChar, String textToTranslate) {
+        char altColorChar = altChar.charAt(0);
+        char[] a = textToTranslate.toCharArray();
+        for (int b = 0; b < a.length - 1; b++) {
+            if (a[b] == altColorChar && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(a[b+1]) > -1) {
+                a[b] = ColorChar;
+                a[b+1] = Character.toLowerCase(a[b+1]);
+            }
+        }
+        return String.valueOf(a);
+    }
 }
