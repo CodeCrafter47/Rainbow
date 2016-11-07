@@ -5,7 +5,7 @@ package PluginReference;
  */ 			
 public class ChatColor {
 	public static String ColorPrefix   = "\u00A7";
-       public static char   ColorChar     = '\u00A7';
+        public static char   ColorChar     = '\u00A7';
 	public static String BLACK	   = ColorPrefix + "0";
 	public static String DARK_BLUE 	   = ColorPrefix + "1";
 	public static String DARK_GREEN    = ColorPrefix + "2";
