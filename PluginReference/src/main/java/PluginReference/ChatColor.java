@@ -6,7 +6,7 @@ package PluginReference;
 public class ChatColor {
 	public static String ColorPrefix   = "\u00A7";
        public static char   ColorChar     = '\u00A7';
-	public static String BLACK	       = ColorPrefix + "0";
+	public static String BLACK	   = ColorPrefix + "0";
 	public static String DARK_BLUE 	   = ColorPrefix + "1";
 	public static String DARK_GREEN    = ColorPrefix + "2";
 	public static String DARK_AQUA 	   = ColorPrefix + "3";
@@ -54,8 +54,7 @@ public class ChatColor {
 		return sb.toString();		
 	}
     
-    public static String translateAlternateColorCodes(String altChar, String textToTranslate) {
-        char altColorChar = altChar.charAt(0);
+    public static String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
         char[] a = textToTranslate.toCharArray();
         for (int b = 0; b < a.length - 1; b++) {
             if (a[b] == altColorChar && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(a[b+1]) > -1) {
