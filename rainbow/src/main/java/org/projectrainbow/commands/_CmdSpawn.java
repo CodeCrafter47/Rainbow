@@ -36,9 +36,9 @@ public class _CmdSpawn extends CommandBase {
             p = (EntityPlayerMP) cs;
             final WorldServer world = minecraftServer.worldServerForDimension(0);
             final BlockPos coords = world.getSpawnPoint();
-            final int x = coords.getX();
+            final int x = coords.getX() + 0.5;
             final int y = coords.getY();
-            final int z = coords.getZ();
+            final int z = coords.getZ() + 0.5;
             ((IMixinEntityPlayerMP) p).teleport(world, x, y, z, 0.0f, 0.0f);
             ((IMixinICommandSender) p).sendMessage(String.valueOf(_ColorHelper.GREEN) + "You travel to spawn!");
             return;
