@@ -17,7 +17,7 @@ public class RainbowUtils
 	 * Set the server instance. For internal use only. Should not be used by
 	 * plugins.
 	 * @param server the server instance
-     */
+         */
 	public static void setServer(MC_Server server) {
 		RainbowUtils.server = server;
 	}
@@ -25,16 +25,16 @@ public class RainbowUtils
 	/**
 	 * Get an instance of the MC_Server object.
 	 * @return the server
-     */
+         */
 	public static MC_Server getServer() {
 		return server;
 	}
-	 /** 
-     * Get a short description of a number of milliseconds.
-     * 
-     * @param ms Milliseconds
-     * @return String representation like 01m 23s if under 60 minutes, otherwise like 01h 23m
-     */ 			
+	/** 
+         * Get a short description of a number of milliseconds.
+         * 
+         * @param ms Milliseconds
+         * @return String representation like 01m 23s if under 60 minutes, otherwise like 01h 23m
+         */ 			
 	public static String TimeDeltaString_JustMinutesSecs(long ms) 
 	{
 		long totalSecs = ms / 1000;
@@ -51,11 +51,11 @@ public class RainbowUtils
 	}
 	
 	 /** 
-     * Get a comma separated list (sorted) from a collection of strings.
-     * 
-     * @param arr Array of Strings
-     * @return Comma separated list
-     */ 			
+          * Get a comma separated list (sorted) from a collection of strings.
+          * 
+          * @param arr Array of Strings
+          * @return Comma separated list
+          */ 			
 	public static String GetCommaList(Collection<String> arr)
 	{
 		if((arr == null) || (arr.size() <= 0)) return "";
@@ -63,12 +63,12 @@ public class RainbowUtils
 	}
 
 	 /** 
-     * Get a comma separated list from a collection of strings.
-     * 
-     * @param arr Array of Strings
-     * @param doSort option to sort
-     * @return Comma separated list
-     */ 			
+         * Get a comma separated list from a collection of strings.
+         * 
+        * @param arr Array of Strings
+        * @param doSort option to sort
+        * @return Comma separated list
+        */ 			
 	public static String GetCommaList(Collection<String> arr, boolean doSort)
 	{
 		ArrayList<String> list = new ArrayList<String>(arr);
@@ -83,11 +83,11 @@ public class RainbowUtils
 		return buf.toString();
 	}
 	 /** 
-     * Get a comma separated list from an array of strings.
-     * 
-     * @param args Array of Strings
-     * @return Comma separated list
-     */ 			
+          * Get a comma separated list from an array of strings.
+          * 
+          * @param args Array of Strings
+          * @return Comma separated list
+          */ 			
 	public static String GetCommaList(String[] args)
 	{
 		if(args == null) return "";
@@ -98,13 +98,13 @@ public class RainbowUtils
 
 
 	 /** 
-     * Concatenate a string array with spaces.
-     * For example if 2 strings "hello" and "world" passed in, result is "hello world".
-     * 
-     * @param args Array of Strings
-     * @param startIdx Starting Index
-     * @return Concatenated list with spaces
-     */ 			
+          * Concatenate a string array with spaces.
+          * For example if 2 strings "hello" and "world" passed in, result is "hello world".
+          * 
+          * @param args Array of Strings
+          * @param startIdx Starting Index
+          * @return Concatenated list with spaces
+          */ 			
 	public static String ConcatArgs(String[] args, int startIdx) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = startIdx; i < args.length; i++) {
@@ -119,13 +119,13 @@ public class RainbowUtils
 	
 	
 	 /** 
-     * Extracts an Integer 'argument' from a string with a space in between.
-     * For example, use on "/mycommand 123" to get "123".
-     * 
-     * @param msg String to parse
-     * @param defaultValue Default value if error obtaining
-     * @return Resulting Integer
-     */ 			
+          * Extracts an Integer 'argument' from a string with a space in between.
+          * For example, use on "/mycommand 123" to get "123".
+          * 
+          * @param msg String to parse
+          * @param defaultValue Default value if error obtaining
+          * @return Resulting Integer
+          */ 			
 	public static Integer GetIntegerArgument(String msg, Integer defaultValue)
 	{
 		int idxSpace = msg.indexOf(" ");
@@ -147,22 +147,22 @@ public class RainbowUtils
 	// Create a colorful rainbow string.  I.e.  RainbowString("Hello World")
 	// -------------------------------------------------------------------
 	 /** 
-     * Creates a rainbow colored string.
-     * 
-     * @param str String to convert to rainbow format
-     * @return Rainbow colored string
-     */ 			
+          * Creates a rainbow colored string.
+          * 
+          * @param str String to convert to rainbow format
+          * @return Rainbow colored string
+          */ 			
 	public static String RainbowString(String str) {
 		return RainbowString(str, "");
 	}
 
 	 /** 
-     * Creates a rainbow colored string (with options).
-     * 
-     * @param str String to convert to rainbow format
-     * @param ctl "b" for bold, "i" for italic, "u" for underline, or combination.
-     * @return Rainbow colored string
-     */ 			
+          * Creates a rainbow colored string (with options).
+          * 
+          * @param str String to convert to rainbow format
+          * @param ctl "b" for bold, "i" for italic, "u" for underline, or combination.
+          * @return Rainbow colored string
+          */ 			
 	public static String RainbowString(String str, String ctl) {
 		if (ctl.equalsIgnoreCase("x")) return str;
 
@@ -195,11 +195,11 @@ public class RainbowUtils
 
 	// Break input string into 'tokens' (individual strings)
 	 /** 
-     * Convert a space-separated string into an array of strings.
-     * 
-     * @param msg String separated by spaces
-     * @return String array of tokens in string.
-     */ 			
+          * Convert a space-separated string into an array of strings.
+          * 
+          * @param msg String separated by spaces
+          * @return String array of tokens in string.
+          */ 			
 	public static String[] GetTokens(String msg)
 	{
     	return msg.split("\\s+");
@@ -207,24 +207,24 @@ public class RainbowUtils
 
 	
 	 /** 
-     * Get a padded string such that when displayed by Minecraft's default font will align to a specified length.
-     * Useful for sending column output.
-     * 
-     * @param str String to align.
-     * @param padLen Length to pad
-     * @return Padded string
-     */ 			
+          * Get a padded string such that when displayed by Minecraft's default font will align to a specified length.
+          * Useful for sending column output.
+          * 
+          * @param str String to align.
+          * @param padLen Length to pad
+          * @return Padded string
+          */ 			
 	public static String TextLabel(String str, int padLen) {
 		return str + ChatColor.DARK_GRAY + TextAlignTrailerPerfect(str, padLen);
 	}
 
 	 /** 
-     * Constructs padded trailer used by TextLabel() for aligning text.
-     * 
-     * @param str String to align.
-     * @param padLen Length to pad
-     * @return Padded string
-     */ 			
+          * Constructs padded trailer used by TextLabel() for aligning text.
+          * 
+          * @param str String to align.
+          * @param padLen Length to pad
+          * @return Padded string
+          */ 			
 	public static String TextAlignTrailerPerfect(String str, int padLen) {
 		StringBuffer tgt = new StringBuffer();
 
@@ -265,12 +265,12 @@ public class RainbowUtils
 	
 
 	 /** 
-     * Calculate yaw angle needed for source location to face a target location.
-     * 
-     * @param src Source Location
-     * @param dest Destination Location
-     * @return Yaw angle for Source to Face Destination
-     */ 			
+          * Calculate yaw angle needed for source location to face a target location.
+          * 
+          * @param src Source Location
+          * @param dest Destination Location
+          * @return Yaw angle for Source to Face Destination
+          */ 			
 	public static float YawToFaceLocation(MC_Location src, MC_Location dest)
 	{
 		double dz = -(dest.x - src.x);
@@ -285,12 +285,12 @@ public class RainbowUtils
 	}
 
 	 /** 
-     * Calculate pitch angle needed for source location to face a target location.
-     * 
-     * @param src Source Location
-     * @param dest Destination Location
-     * @return Pitch angle for Source to Face Destination
-     */ 			
+          * Calculate pitch angle needed for source location to face a target location.
+          * 
+          * @param src Source Location
+          * @param dest Destination Location
+          * @return Pitch angle for Source to Face Destination
+          */ 			
 	public static float PitchToFaceLocation(MC_Location src, MC_Location dest)
 	{
 		double dz = -(dest.x - src.x);
@@ -305,11 +305,11 @@ public class RainbowUtils
 	}
 
 	 /** 
-     * Create a rainbow colored, comma separated list from an array of strings.
-     * 
-     * @param strings String array
-     * @return Rainbow colored, comma separated list.
-     */ 			
+          * Create a rainbow colored, comma separated list from an array of strings.
+          * 
+          * @param strings String array
+          * @return Rainbow colored, comma separated list.
+          */ 			
 	  public static String RainbowStringList(String[] strings)
 	  {
 		  return RainbowStringList(new ArrayList(Arrays.asList(strings)));
