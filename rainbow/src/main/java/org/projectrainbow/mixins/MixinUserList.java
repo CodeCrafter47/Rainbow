@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Map;
 
 // fixes https://bugs.mojang.com/browse/MC-84786
-// todo 1.11 check whether mojang fixed the issue
+// todo 1.12 check whether mojang fixed the issue
 @Mixin(UserList.class)
 public abstract class MixinUserList {
 

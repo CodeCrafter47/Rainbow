@@ -1,8 +1,6 @@
 package org.projectrainbow.mixins;
 
 import PluginReference.*;
-import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -21,6 +19,7 @@ import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IntHashMap;
+import net.minecraft.util.NullSafeList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.*;
@@ -37,7 +36,10 @@ import org.projectrainbow.launch.Bootstrap;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -111,7 +113,7 @@ public class MixinNetHandlerPlayServer {
     @Inject(method = "processPlayerBlockPlacement", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.EntityPlayerMP.markPlayerActive()V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     public void onRightClickAir(CPacketPlayerTryUseItem packet, CallbackInfo callbackInfo, WorldServer world, EnumHand hand, ItemStack itemStack) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptItemUse((MC_Player) playerEntity, Objects.firstNonNull((MC_ItemStack) (Object) itemStack, EmptyItemStack.getInstance()), ei);
+        Hooks.onAttemptItemUse((MC_Player) playerEntity, (MC_ItemStack) (Object) itemStack, ei);
         if (ei.isCancelled) {
             callbackInfo.cancel();
         }
@@ -440,20 +442,20 @@ public class MixinNetHandlerPlayServer {
     private void onClickWindow(CPacketClickWindow packet, CallbackInfo ci) {
         Container openContainer = playerEntity.openContainer;
         if (openContainer instanceof GUIContainer) {
-            pendingTransactions.addKey(openContainer.windowId, Short.valueOf(packet.getActionNumber()));
+            pendingTransactions.addKey(openContainer.windowId, packet.getActionNumber());
             playerEntity.connection.sendPacket(new SPacketConfirmTransaction(packet.getWindowId(), packet.getActionNumber(), false));
             openContainer.setCanCraft(playerEntity, false);
             openContainer.slotClick(packet.getSlotId(), packet.getUsedButton(), packet.getClickType(), playerEntity);
             if (openContainer == playerEntity.openContainer) {
-                ArrayList<ItemStack> items = Lists.newArrayList();
+                NullSafeList<ItemStack> var8 = NullSafeList.a();
 
-                for (int i = 0; i < this.playerEntity.openContainer.inventorySlots.size(); ++i) {
-                    ItemStack var5 = this.playerEntity.openContainer.inventorySlots.get(i).getStack();
-                    ItemStack var6 = var5 != null && var5.stackSize > 0 ? var5 : null;
-                    items.add(var6);
+                for (int var4 = 0; var4 < this.playerEntity.openContainer.inventoryItemStacks.size(); ++var4) {
+                    ItemStack var5 = this.playerEntity.openContainer.inventoryItemStacks.get(var4).getStack();
+                    ItemStack var6 = var5.isEmpty() ? ItemStack.EMPTY : var5;
+                    var8.add(var6);
                 }
 
-                this.playerEntity.updateCraftingInventory(this.playerEntity.openContainer, items);
+                this.playerEntity.a(this.playerEntity.openContainer, var8);
             }
             ci.cancel();
         }

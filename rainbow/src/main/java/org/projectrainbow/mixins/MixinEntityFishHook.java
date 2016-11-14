@@ -10,7 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.storage.loot.LootContext;
-import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -57,7 +56,7 @@ public abstract class MixinEntityFishHook {
     @Inject(method = "handleHookRetraction", at = @At(value = "NEW", args = "class=net.minecraft.entity.item.EntityItem", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void hook(CallbackInfoReturnable<Integer> callbackInfo, int var1, LootContext.Builder var2, Iterator var3, ItemStack var4) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptFishingReel((MC_Player) angler, Objects.firstNonNull((MC_ItemStack) (Object) var4, EmptyItemStack.getInstance()), null, false, ei);
+        Hooks.onAttemptFishingReel((MC_Player) angler, (MC_ItemStack) (Object) var4, null, false, ei);
         if (ei.isCancelled) {
             this.setDead();
             this.angler.fishEntity = null;

@@ -10,5 +10,6 @@ public enum MC_ArmorStandActionType
 	BODY,
 	LEGS,
 	FEET,
-	HELD_ITEM
+	HELD_ITEM,
+	OFFHAND_ITEM
 }

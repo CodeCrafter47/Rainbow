@@ -30,11 +30,8 @@
             </directory>
             <outputDirectory>/for_plugin_devs/</outputDirectory>
             <includes>
-                <include>PluginReference-*.jar</include>
+                <include>PluginReference-*-shaded.jar</include>
             </includes>
-            <excludes>
-                <exclude>PluginReference-*original.jar</exclude>
-            </excludes>
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/PluginExample/target

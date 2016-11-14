@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinItemMonsterPlacer {
 
     @Inject(method = "onItemUse", at = @At(value = "INVOKE", target = "net.minecraft.world.World.getTileEntity(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/tileentity/TileEntity;"), cancellable = true)
-    void onMobSpawnerClicked(ItemStack var1, EntityPlayer var2, World var3, BlockPos var4, EnumHand var5, EnumFacing var6, float var7, float var8, float var9, CallbackInfoReturnable<EnumActionResult> callbackInfo) {
+    void onMobSpawnerClicked(EntityPlayer var2, World var3, BlockPos var4, EnumHand var5, EnumFacing var6, float var7, float var8, float var9, CallbackInfoReturnable<EnumActionResult> callbackInfo) {
         if (!((MC_Player)var2).hasPermission("rainbow.changespawner")) {
             callbackInfo.setReturnValue(EnumActionResult.SUCCESS);
         }

@@ -29,7 +29,7 @@ public class GUIInventory extends InventoryBasic implements MC_InventoryGUI, IIn
 
     @Override
     public void setItemStackAt(int index, MC_ItemStack itemStack) {
-        setInventorySlotContents(index, itemStack == EmptyItemStack.getInstance() ? null : ((ItemStack) (Object) itemStack));
+        setInventorySlotContents(index, PluginHelper.getItemStack(itemStack));
     }
 
     public String getTitle() {

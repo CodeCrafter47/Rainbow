@@ -205,7 +205,7 @@ public abstract class MixinItemStack implements MC_ItemStack {
 
     @Override
     public MC_ItemStack getDuplicate() {
-        return (MC_ItemStack) (Object) ItemStack.copyItemStack((ItemStack) (Object) this);
+        return (MC_ItemStack) (Object) ((ItemStack) (Object) this).copy();
     }
 
     @Override

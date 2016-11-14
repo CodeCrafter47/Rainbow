@@ -7,8 +7,7 @@ import PluginReference.MC_HorseType;
 import PluginReference.MC_HorseVariant;
 import PluginReference.MC_Player;
 import net.minecraft.entity.ai.attributes.IAttribute;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.HorseType;
+import net.minecraft.entity.passive.*;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
@@ -23,19 +22,7 @@ import java.util.UUID;
 public abstract class MixinEntityHorse extends MixinEntityAnimal {
 
     @Shadow
-    public abstract void setType(HorseType var1);
-
-    @Shadow
-    public abstract HorseType shadow$getType();
-
-    @Shadow
-    public abstract void setHorseVariant(int var1);
-
-    @Shadow
-    public abstract int shadow$getHorseVariant();
-
-    @Shadow
-    public abstract boolean isTame();
+    protected abstract boolean isTame();
 
     @Shadow
     public abstract void setHorseTamed(boolean var1);
@@ -70,51 +57,40 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
         setOwnerUniqueId(plr.getUUID());
     }
 
-    @Intrinsic
     public MC_HorseType api$getHorseType() {
-        switch (shadow$getType()) {
-            case HORSE:
+        EntityHorse handle = (EntityHorse) (Object) this;
+        if (handle instanceof EntityHorseGeneric)
                 return MC_HorseType.HORSE;
-            case DONKEY:
+        if (handle instanceof EntityHorseDonkey)
                 return MC_HorseType.DONKEY;
-            case MULE:
+        if (handle instanceof EntityHorseMule)
                 return MC_HorseType.MULE;
-            case ZOMBIE:
+        if (handle instanceof EntityHorseZombie)
                 return MC_HorseType.ZOMBIE;
-            case SKELETON:
+        if (handle instanceof EntityHorseSkeleton)
                 return MC_HorseType.SKELETON;
-        }
+        if (handle instanceof EntityHorseLlama)
+            return MC_HorseType.LLAMA;
         return MC_HorseType.UNKNOWN;
     }
 
     public void setHorseType(MC_HorseType arg) {
-        switch (arg) {
-            case HORSE:
-                setType(HorseType.HORSE);
-                break;
-            case DONKEY:
-                setType(HorseType.DONKEY);
-                break;
-            case MULE:
-                setType(HorseType.MULE);
-                break;
-            case ZOMBIE:
-                setType(HorseType.ZOMBIE);
-                break;
-            case SKELETON:
-                setType(HorseType.SKELETON);
-                break;
-            case UNKNOWN:
-                break;
-        }
+        throw new UnsupportedOperationException("setHorseType no longer works");
     }
 
     public MC_HorseVariant getHorseVariant() {
-        return MC_HorseVariant.values()[shadow$getHorseVariant()];
+        EntityHorse handle = (EntityHorse) (Object) this;
+        if (handle instanceof EntityHorseGeneric) {
+            return MC_HorseVariant.values()[((EntityHorseGeneric) handle).df()];
+        }
+        return MC_HorseVariant.UNKNOWN;
     }
 
     public void setHorseVariant(MC_HorseVariant arg) {
-        setHorseVariant(arg.ordinal());
+        EntityHorse handle = (EntityHorse) (Object) this;
+        if (handle instanceof EntityHorseGeneric) {
+            ((EntityHorseGeneric) handle).o(arg.ordinal());
+        }
     }
 
     public boolean hasChest() {

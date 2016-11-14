@@ -3,46 +3,28 @@ package org.projectrainbow.mixins;
 import PluginReference.MC_Skeleton;
 import PluginReference.MC_SkeletonType;
 import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.SkeletonType;
-import org.spongepowered.asm.mixin.Implements;
-import org.spongepowered.asm.mixin.Interface;
+import net.minecraft.entity.monster.EntitySkeletonGeneric;
+import net.minecraft.entity.monster.EntitySkeletonStray;
+import net.minecraft.entity.monster.EntitySkeletonWither;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(EntitySkeleton.class)
-@Implements(@Interface(iface = MC_Skeleton.class, prefix = "api$"))
-public abstract class MixinEntitySkeleton {
+public abstract class MixinEntitySkeleton implements MC_Skeleton {
 
-    @Shadow
-    public abstract SkeletonType getSkeletonType();
-
-    @Shadow
-    public abstract void setSkeletonType(SkeletonType var1);
-
-    public MC_SkeletonType api$getSkeletonType() {
-        switch (getSkeletonType()) {
-            case WITHER:
-                return MC_SkeletonType.WITHER_SKELETON;
-            case STRAY:
-                return MC_SkeletonType.STRAY;
-            case NORMAL:
-            default:
-                return MC_SkeletonType.SKELETON;
-        }
+    @Override
+    public MC_SkeletonType getSkeletonType() {
+        EntitySkeleton handle = (EntitySkeleton) (Object) this;
+        if (handle instanceof EntitySkeletonWither)
+            return MC_SkeletonType.WITHER_SKELETON;
+        if (handle instanceof EntitySkeletonStray)
+            return MC_SkeletonType.STRAY;
+        if (handle instanceof EntitySkeletonGeneric)
+            return MC_SkeletonType.SKELETON;
+        return MC_SkeletonType.UNSPECIFIED;
     }
 
+    @Override
     public void setSkeletonType(MC_SkeletonType argType) {
-        switch (argType) {
-            case UNSPECIFIED:
-            case SKELETON:
-                setSkeletonType(SkeletonType.NORMAL);
-                break;
-            case WITHER_SKELETON:
-                setSkeletonType(SkeletonType.WITHER);
-                break;
-            case STRAY:
-                setSkeletonType(SkeletonType.STRAY);
-                break;
-        }
+        throw new UnsupportedOperationException("setSkeletonType no longer works");
     }
 }

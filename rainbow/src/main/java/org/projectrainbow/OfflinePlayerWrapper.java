@@ -2,6 +2,7 @@ package org.projectrainbow;
 
 
 import PluginReference.*;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.projectrainbow.commands._CmdNameColor;
 
 import java.net.SocketAddress;
@@ -32,6 +33,11 @@ public class OfflinePlayerWrapper implements MC_Player {
 
     @Override
     public void sendJsonMessage(String json) {
+        System.out.println("DBG: Unsupported: sendJsonMessage to OfflinePlayer");
+    }
+
+    @Override
+    public void sendMessage(BaseComponent... msg) {
         System.out.println("DBG: Unsupported: sendMessage to OfflinePlayer");
     }
 

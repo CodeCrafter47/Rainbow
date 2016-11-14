@@ -43,7 +43,6 @@ import net.minecraft.world.storage.WorldInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.projectrainbow.BlockWrapper;
-import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.PluginHelper;
 import org.projectrainbow.ServerWrapper;
 import org.projectrainbow._DiwUtils;
@@ -266,7 +265,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
         double var4 = (double) (rand.nextFloat() * v) + (double) (1.0F - v) * 0.5D;
         double var6 = (double) (rand.nextFloat() * v) + (double) (1.0F - v) * 0.5D;
         double var8 = (double) (rand.nextFloat() * v) + (double) (1.0F - v) * 0.5D;
-        EntityItem var10 = new EntityItem(this, var2.x + var4, var2.y + var6, var2.z + var8, var1 instanceof EmptyItemStack ? null : (ItemStack) (Object) var1);
+        EntityItem var10 = new EntityItem(this, var2.x + var4, var2.y + var6, var2.z + var8, PluginHelper.getItemStack(var1));
         var10.setDefaultPickupDelay();
         spawnEntityInWorld(var10);
         return (MC_Entity) var10;

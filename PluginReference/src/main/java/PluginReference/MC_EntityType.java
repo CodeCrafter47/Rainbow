@@ -77,5 +77,29 @@ public enum MC_EntityType {
     DRAGON_FIREBALL,
 
     // Added in 1.10
-    POLAR_BEAR
+    POLAR_BEAR,
+
+	// Added in 1.11
+    // Subtypes of previous entities that are now full entities
+    ZOMBIE_HORSE,
+    SKELETON_HORSE,
+    DONKEY,
+    MULE,
+    HUSK,
+    ZOMBIE_VILLAGER,
+    STRAY,
+    WHITHER_SKELETON,
+    ELDER_GUARDIAN,
+	MINECART_CHEST,
+	MINECART_FURNACE,
+	MINECART_TNT,
+	MINECART_HOPPER,
+	MINECART_SPAWNER,
+
+    // new entities
+    EVOCATION_FANGS,
+    EVOKER,
+    VEX,
+    LLAMA,
+    VINDICATOR
 }

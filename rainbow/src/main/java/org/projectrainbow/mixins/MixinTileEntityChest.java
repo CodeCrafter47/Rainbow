@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.util.NullSafeList;
 import org.projectrainbow.PluginHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -16,7 +17,7 @@ import java.util.List;
 @Mixin(TileEntityChest.class)
 public abstract class MixinTileEntityChest extends TileEntity implements MC_Chest {
     @Shadow
-    private ItemStack[] chestContents = new ItemStack[27];
+    private NullSafeList<ItemStack> chestContents;
     @Shadow
     public TileEntityChest adjacentChestZNeg;
     @Shadow
@@ -28,7 +29,7 @@ public abstract class MixinTileEntityChest extends TileEntity implements MC_Ches
 
     @Override
     public List<MC_ItemStack> getInventory() {
-        return PluginHelper.invArrayToList(chestContents);
+        return PluginHelper.copyInvList(chestContents);
     }
 
     @Override

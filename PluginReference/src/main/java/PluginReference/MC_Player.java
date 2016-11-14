@@ -1,5 +1,7 @@
 package PluginReference;
 
+import net.md_5.bungee.api.chat.BaseComponent;
+
 import java.net.SocketAddress;
 import java.util.List;
 
@@ -12,7 +14,7 @@ public interface MC_Player extends MC_LivingEntity {
     // Operations
 
     /**
-     * Sends message to player
+     * Sends a a message to player
      *
      * @param msg Message
      */
@@ -20,6 +22,13 @@ public interface MC_Player extends MC_LivingEntity {
 
     /**
      * Sends message to player
+     *
+     * @param msg Message
+     */
+    public void sendMessage(BaseComponent... msg);
+
+    /**
+     * Sends a message to player
      *
      * @param json Message using Minecrafts json massage format.
      */

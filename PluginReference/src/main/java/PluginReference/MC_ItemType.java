@@ -222,6 +222,23 @@ public class MC_ItemType {
 	public static final int RED_NETHER_BRICK = 215;
 	public static final int BONE_BLOCK = 216;
 	public static final int STRUCTURE_VOID = 217;
+	public static final int OBSERVER = 218;
+	public static final int SHULKER_BOX_WHITE = 219;
+	public static final int SHULKER_BOX_ORANGE = 220;
+	public static final int SHULKER_BOX_MAGENTA = 221;
+	public static final int SHULKER_BOX_LIGHT_BLUE = 222;
+	public static final int SHULKER_BOX_YELLOW = 223;
+	public static final int SHULKER_BOX_LIME = 224;
+	public static final int SHULKER_BOX_PINK = 225;
+	public static final int SHULKER_BOX_GRAY = 226;
+	public static final int SHULKER_BOX_SILVER = 227;
+	public static final int SHULKER_BOX_CYAN = 228;
+	public static final int SHULKER_BOX_PURPLE = 229;
+	public static final int SHULKER_BOX_BLUE = 230;
+	public static final int SHULKER_BOX_BROWN = 231;
+	public static final int SHULKER_BOX_GREEN = 232;
+	public static final int SHULKER_BOX_RED = 233;
+	public static final int SHULKER_BOX_BLACK = 234;
 	public static final int STRUCTURE_BLOCK = 255;
 	public static final int IRON_SHOVEL = 256;
 	public static final int IRON_PICKAXE = 257;
@@ -412,5 +429,20 @@ public class MC_ItemType {
 	public static final int JUNGLE_BOAT = 446;
 	public static final int ACACIA_BOAT = 447;
 	public static final int DARK_OAK_BOAT = 448;
+	public static final int TOTEM = 449;
+	public static final int SHULKER_SHELL = 450;
+
+	public static final int RECORD_13 = 2256;
+	public static final int RECORD_CAT = 2257;
+	public static final int RECORD_BLOCKS = 2258;
+	public static final int RECORD_CHIRP = 2259;
+	public static final int RECORD_FAR = 2260;
+	public static final int RECORD_MALL = 2261;
+	public static final int RECORD_MELLOHI = 2262;
+	public static final int RECORD_STAL = 2263;
+	public static final int RECORD_STRAD = 2264;
+	public static final int RECORD_WARD = 2265;
+	public static final int RECORD_11 = 2266;
+	public static final int RECORD_WAIT = 2267;
 
 }

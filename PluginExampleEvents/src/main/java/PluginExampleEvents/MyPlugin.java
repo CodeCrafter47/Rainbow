@@ -689,11 +689,6 @@ public class MyPlugin extends PluginBase {
         String entName = ent.getName();
         if (ent instanceof MC_Player) entName += " (Player)";
 
-        if (ent instanceof MC_Skeleton) {
-            MC_Skeleton skel = (MC_Skeleton) ent;
-            entName += "--- " + skel.getSkeletonType() + " ---";
-        }
-
         String logMsg = String.format("[%s @ %s] -- attacking -- [%s @ %s] : entName=%s",
                 plr.getName(), plr.getLocation().toString(),
                 ent.getType().toString(), ent.getLocation().toString(),

@@ -58,6 +58,20 @@ public interface MC_ArmorStand extends MC_Entity
      * 
      * @param item Item in hand
      */ 		
-	public void setItemInHand(MC_ItemStack item);	
+	public void setItemInHand(MC_ItemStack item);
+
+	/**
+	 * Get Item in off-hand
+	 *
+	 * @return Item in off-hand
+	 */
+	public MC_ItemStack getItemInOffHand();
+
+	/**
+	 * Sets item in off-hand
+	 *
+	 * @param item Item
+	 */
+	public void setItemInOffHand(MC_ItemStack item);
 	
 }

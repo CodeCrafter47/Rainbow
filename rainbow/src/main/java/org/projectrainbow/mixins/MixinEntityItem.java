@@ -4,12 +4,11 @@ import PluginReference.MC_EventInfo;
 import PluginReference.MC_ItemEntity;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_Player;
-import com.google.common.base.Objects;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
+import org.projectrainbow.PluginHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -48,12 +47,12 @@ public abstract class MixinEntityItem implements MC_ItemEntity {
 
     @Override
     public MC_ItemStack getItemStack() {
-        return Objects.firstNonNull((MC_ItemStack) (Object) getEntityItem(), EmptyItemStack.getInstance());
+        return (MC_ItemStack) (Object) getEntityItem();
     }
 
     @Override
     public void setItemStack(MC_ItemStack is) {
-        setEntityItemStack(is instanceof EmptyItemStack ? null : (ItemStack) (Object) is);
+        setEntityItemStack(PluginHelper.getItemStack(is));
     }
 
     @Override

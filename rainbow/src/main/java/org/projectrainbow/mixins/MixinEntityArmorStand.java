@@ -1,13 +1,6 @@
 package org.projectrainbow.mixins;
 
-import PluginReference.MC_ArmorStand;
-import PluginReference.MC_ArmorStandActionType;
-import PluginReference.MC_Entity;
-import PluginReference.MC_EventInfo;
-import PluginReference.MC_FloatTriplet;
-import PluginReference.MC_ItemStack;
-import PluginReference.MC_Player;
-import com.google.common.base.Objects;
+import PluginReference.*;
 import com.google.common.base.Preconditions;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,8 +8,8 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NullSafeList;
 import net.minecraft.util.math.Rotations;
-import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
 import org.spongepowered.asm.mixin.Final;
@@ -35,10 +28,10 @@ public abstract class MixinEntityArmorStand extends MixinEntityLivingBase implem
 
     @Shadow
     @Final
-    private ItemStack[] handItems;
+    private NullSafeList<ItemStack> handItems;
     @Shadow
     @Final
-    private ItemStack[] armorItems;
+    private NullSafeList<ItemStack> armorItems;
     @Shadow
     private Rotations headRotation;
     @Shadow
@@ -83,7 +76,6 @@ public abstract class MixinEntityArmorStand extends MixinEntityLivingBase implem
     public abstract void setRightLegRotation(Rotations var1);
 
 
-
     @Inject(method = "attackEntityFrom", at = @At("HEAD"), cancellable = true)
     private void onAttacked(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> callbackInfo) {
         m_rainbowAdjustedDamage = damage;
@@ -109,7 +101,7 @@ public abstract class MixinEntityArmorStand extends MixinEntityLivingBase implem
                 type = MC_ArmorStandActionType.HELD_ITEM;
                 break;
             case OFFHAND:
-                // todo add offhand to api
+                type = MC_ArmorStandActionType.OFFHAND_ITEM;
                 break;
             case FEET:
                 type = MC_ArmorStandActionType.FEET;
@@ -135,7 +127,7 @@ public abstract class MixinEntityArmorStand extends MixinEntityLivingBase implem
 
     @Override
     public List<MC_ItemStack> getArmor() {
-        return PluginHelper.invArrayToList(armorItems);
+        return PluginHelper.copyInvList(armorItems);
     }
 
     @Override
@@ -189,19 +181,29 @@ public abstract class MixinEntityArmorStand extends MixinEntityLivingBase implem
 
     @Override
     public MC_ItemStack getItemInHand() {
-        return Objects.firstNonNull((MC_ItemStack) (Object) handItems[0], EmptyItemStack.getInstance());
+        return (MC_ItemStack) (Object) handItems.get(0);
     }
 
     @Override
     public void setItemInHand(MC_ItemStack item) {
-        handItems[0] = item instanceof EmptyItemStack ? null : (ItemStack) (Object) item;
+        handItems.set(0, PluginHelper.getItemStack(item));
     }
 
-    private MC_FloatTriplet wrap(Rotations rotations) {
+    @Override
+    public MC_ItemStack getItemInOffHand() {
+        return (MC_ItemStack) (Object) handItems.get(1);
+    }
+
+    @Override
+    public void setItemInOffHand(MC_ItemStack item) {
+        handItems.set(1, PluginHelper.getItemStack(item));
+    }
+
+    private static MC_FloatTriplet wrap(Rotations rotations) {
         return new MC_FloatTriplet(rotations.getX(), rotations.getY(), rotations.getZ());
     }
 
-    private Rotations unwrap(MC_FloatTriplet floatTriplet) {
+    private static Rotations unwrap(MC_FloatTriplet floatTriplet) {
         return new Rotations(floatTriplet.x, floatTriplet.y, floatTriplet.z);
     }
 }

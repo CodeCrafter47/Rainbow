@@ -1,73 +1,20 @@
 package org.projectrainbow;
 
-import PluginReference.BlockHelper;
-import PluginReference.MC_AttributeModifier;
-import PluginReference.MC_AttributeType;
-import PluginReference.MC_Block;
-import PluginReference.MC_DamageType;
-import PluginReference.MC_DirectionNESWUD;
-import PluginReference.MC_EnchantmentType;
-import PluginReference.MC_EntityType;
-import PluginReference.MC_GameMode;
-import PluginReference.MC_GameRuleType;
-import PluginReference.MC_Hand;
-import PluginReference.MC_ItemStack;
-import PluginReference.MC_PotionEffect;
-import PluginReference.MC_PotionEffectType;
-import PluginReference.MC_WorldBiomeType;
+import PluginReference.*;
 import com.google.common.base.Objects;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityAreaEffectCloud;
-import net.minecraft.entity.EntityLeashKnot;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.item.EntityArmorStand;
-import net.minecraft.entity.item.EntityBoat;
-import net.minecraft.entity.item.EntityEnderCrystal;
-import net.minecraft.entity.item.EntityEnderEye;
-import net.minecraft.entity.item.EntityEnderPearl;
-import net.minecraft.entity.item.EntityExpBottle;
-import net.minecraft.entity.item.EntityFallingBlock;
-import net.minecraft.entity.item.EntityFireworkRocket;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.entity.item.EntityMinecartEmpty;
-import net.minecraft.entity.item.EntityPainting;
-import net.minecraft.entity.item.EntityTNTPrimed;
-import net.minecraft.entity.item.EntityXPOrb;
+import net.minecraft.entity.item.*;
 import net.minecraft.entity.monster.*;
-import net.minecraft.entity.passive.EntityBat;
-import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityMooshroom;
-import net.minecraft.entity.passive.EntityOcelot;
-import net.minecraft.entity.passive.EntityPig;
-import net.minecraft.entity.passive.EntityRabbit;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.passive.EntitySquid;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.projectile.EntityDragonFireball;
-import net.minecraft.entity.projectile.EntityEgg;
-import net.minecraft.entity.projectile.EntityFishHook;
-import net.minecraft.entity.projectile.EntityLargeFireball;
-import net.minecraft.entity.projectile.EntityPotion;
-import net.minecraft.entity.projectile.EntityShulkerBullet;
-import net.minecraft.entity.projectile.EntitySmallFireball;
-import net.minecraft.entity.projectile.EntitySnowball;
-import net.minecraft.entity.projectile.EntitySpectralArrow;
-import net.minecraft.entity.projectile.EntityTippedArrow;
-import net.minecraft.entity.projectile.EntityWitherSkull;
+import net.minecraft.entity.projectile.*;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -99,27 +46,29 @@ public class PluginHelper {
     public static MC_EntityType getEntityType(Class<? extends Entity> clazz) {
         if (EntityPlayerMP.class.isAssignableFrom(clazz)) {
             return MC_EntityType.PLAYER;
-        } else if (EntityMinecart.class.isAssignableFrom(clazz)) {
-            return MC_EntityType.MINECART;
         } else {
             return Objects.firstNonNull(entityMap.get(clazz), MC_EntityType.UNSPECIFIED);
         }
     }
 
-    public static List<MC_ItemStack> invArrayToList(ItemStack[] items) {
-        int size = items.length;
+    public static List<MC_ItemStack> copyInvList(List<ItemStack> items) {
+        int size = items.size();
         List<MC_ItemStack> list = new ArrayList<MC_ItemStack>();
         for (int i = 0; i < size; i++) {
-            ItemStack itemStack = items[i];
-            list.add(itemStack == null ? EmptyItemStack.getInstance() : (MC_ItemStack) (Object) itemStack);
+            ItemStack itemStack = items.get(i);
+            list.add((MC_ItemStack) (Object) itemStack);
         }
         return list;
     }
 
-    public static void updateInv(ItemStack[] inv, List<MC_ItemStack> items) {
-        int size = inv.length;
+    public static ItemStack getItemStack(MC_ItemStack itemStack) {
+        return (ItemStack) (itemStack == null ? ItemStack.EMPTY : itemStack);
+    }
+
+    public static void updateInv(List<ItemStack> inv, List<MC_ItemStack> items) {
+        int size = inv.size();
         for (int i = 0; i < size; i++) {
-            inv[i] = (ItemStack) (Object) (items.get(i) instanceof EmptyItemStack ? null : items.get(i));
+            inv.set(i, getItemStack(items.get(i)));
         }
     }
 
@@ -190,10 +139,14 @@ public class PluginHelper {
         entityMap.put(EntityBoat.class, MC_EntityType.BOAT);
         entityMap.put(EntityMinecartEmpty.class, MC_EntityType.MINECART);
         entityMap.put(EntityCreeper.class, MC_EntityType.CREEPER);
-        entityMap.put(EntitySkeleton.class, MC_EntityType.SKELETON);
+        entityMap.put(EntitySkeletonGeneric.class, MC_EntityType.SKELETON);
+        entityMap.put(EntitySkeletonWither.class, MC_EntityType.WHITHER_SKELETON);
+        entityMap.put(EntitySkeletonStray.class, MC_EntityType.STRAY);
         entityMap.put(EntitySpider.class, MC_EntityType.SPIDER);
         entityMap.put(EntityGiantZombie.class, MC_EntityType.GIANT);
         entityMap.put(EntityZombie.class, MC_EntityType.ZOMBIE);
+        entityMap.put(EntityHusk.class, MC_EntityType.HUSK);
+        entityMap.put(EntityZombieVillager.class, MC_EntityType.ZOMBIE_VILLAGER);
         entityMap.put(EntitySlime.class, MC_EntityType.SLIME);
         entityMap.put(EntityGhast.class, MC_EntityType.GHAST);
         entityMap.put(EntityPigZombie.class, MC_EntityType.PIG_ZOMBIE);
@@ -208,6 +161,7 @@ public class PluginHelper {
         entityMap.put(EntityWitch.class, MC_EntityType.WITCH);
         entityMap.put(EntityEndermite.class, MC_EntityType.ENDERMITE);
         entityMap.put(EntityGuardian.class, MC_EntityType.GUARDIAN);
+        entityMap.put(EntityElderGuardian.class, MC_EntityType.ELDER_GUARDIAN);
         entityMap.put(EntityShulker.class, MC_EntityType.SHULKER);
         entityMap.put(EntityPig.class, MC_EntityType.PIG);
         entityMap.put(EntitySheep.class, MC_EntityType.SHEEP);
@@ -219,7 +173,12 @@ public class PluginHelper {
         entityMap.put(EntitySnowman.class, MC_EntityType.SNOWMAN);
         entityMap.put(EntityOcelot.class, MC_EntityType.OCELOT);
         entityMap.put(EntityIronGolem.class, MC_EntityType.VILLAGER_GOLEM);
-        entityMap.put(EntityHorse.class, MC_EntityType.HORSE);
+        entityMap.put(EntityHorseGeneric.class, MC_EntityType.HORSE);
+        entityMap.put(EntityHorseZombie.class, MC_EntityType.ZOMBIE_HORSE);
+        entityMap.put(EntityHorseSkeleton.class, MC_EntityType.SKELETON_HORSE);
+        entityMap.put(EntityHorseDonkey.class, MC_EntityType.DONKEY);
+        entityMap.put(EntityHorseMule.class, MC_EntityType.MULE);
+        entityMap.put(EntityHorseLlama.class, MC_EntityType.LLAMA);
         entityMap.put(EntityRabbit.class, MC_EntityType.RABBIT);
         entityMap.put(EntityVillager.class, MC_EntityType.VILLAGER);
         entityMap.put(EntityEnderCrystal.class, MC_EntityType.ENDER_CRYSTAL);
@@ -229,6 +188,16 @@ public class PluginHelper {
         entityMap.put(EntityLeashKnot.class, MC_EntityType.LEASH_KNOT);
         entityMap.put(EntityLightningBolt.class, MC_EntityType.LIGHTNING_BOLT);
         entityMap.put(EntityPolarBear.class, MC_EntityType.POLAR_BEAR);
+        entityMap.put(EvocationFangs.class, MC_EntityType.EVOCATION_FANGS);
+        entityMap.put(EvocationIllager.class, MC_EntityType.EVOKER);
+        entityMap.put(EntityVex.class, MC_EntityType.VEX);
+        entityMap.put(EntityVindicationIllager.class, MC_EntityType.VINDICATOR);
+        entityMap.put(EntityMinecartEmpty.class, MC_EntityType.MINECART);
+        entityMap.put(EntityMinecartChest.class, MC_EntityType.MINECART_CHEST);
+        entityMap.put(EntityMinecartFurnace.class, MC_EntityType.MINECART_FURNACE);
+        entityMap.put(EntityMinecartTNT.class, MC_EntityType.MINECART_TNT);
+        entityMap.put(EntityMinecartHopper.class, MC_EntityType.MINECART_HOPPER);
+        entityMap.put(EntityMinecartMobSpawner.class, MC_EntityType.MINECART_SPAWNER);
 
         potionMap.put(MobEffects.SPEED, MC_PotionEffectType.SPEED);
         potionMap.put(MobEffects.SLOWNESS, MC_PotionEffectType.SLOWNESS);

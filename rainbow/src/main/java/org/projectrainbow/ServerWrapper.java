@@ -294,7 +294,7 @@ public class ServerWrapper implements MC_Server {
     public MC_ItemStack createItemStack(byte[] rawData) {
         try {
             if (rawData.length == 0) {
-                return EmptyItemStack.getInstance();
+                return (MC_ItemStack) (Object) ItemStack.EMPTY;
             }
             NBTTagCompound exc = new NBTTagCompound();
             ByteArrayInputStream bis = new ByteArrayInputStream(rawData);
@@ -302,12 +302,12 @@ public class ServerWrapper implements MC_Server {
 
             ((IMixinNBTBase) exc).read1(dis);
             bis.close();
-            ItemStack is = ItemStack.loadItemStackFromNBT(exc);
+            ItemStack is = new ItemStack(exc);
 
             return (MC_ItemStack) (Object) is;
         } catch (Exception var6) {
             var6.printStackTrace();
-            return EmptyItemStack.getInstance();
+            return (MC_ItemStack) (Object) ItemStack.EMPTY;
         }
     }
 

@@ -3,6 +3,8 @@ package org.projectrainbow.mixins;
 import PluginReference.*;
 import com.google.common.base.Objects;
 import com.google.common.io.Files;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecartContainer;
@@ -181,10 +183,10 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
                 for (int i = 0; i < nPackSize; ++i) {
                     ItemStack is = this.backpack.getStackInSlot(i);
                     if (is != null) {
-                        if (is.stackSize <= 0) {
-                            System.out.println("Backpack " + this.getName() + " had " + is.stackSize + " of Item ID " + is.getItem() + " -- removing");
+                        if (is.getStackSize() <= 0) {
+                            System.out.println("Backpack " + this.getName() + " had " + is.getStackSize() + " of Item ID " + is.getItem() + " -- removing");
                             is.setItemDamage(0);
-                            this.backpack.setInventorySlotContents(i, null);
+                            this.backpack.setInventorySlotContents(i, ItemStack.EMPTY);
                         }
 
                         ++nActualItems;
@@ -264,7 +266,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
         List<MC_ItemStack> items = new ArrayList<MC_ItemStack>();
         for (int i = 0; i < var1.getSizeInventory(); i++) {
             ItemStack stack = var1.getStackInSlot(i);
-            items.add(stack == null ? EmptyItemStack.getInstance() : (MC_ItemStack) (Object) stack);
+            items.add((MC_ItemStack) (Object) stack);
         }
         Hooks.onContainerOpen(this, items, var1.getName());
         for (int i = 0; i < var1.getSizeInventory(); i++) {
@@ -293,8 +295,8 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
                 containerType = MC_ContainerType.ANVIL;
             } else if (this.openContainer instanceof ContainerBrewingStand) {
                 containerType = MC_ContainerType.BREWING_STAND;
-            } else if (this.openContainer instanceof ContainerMerchant) {
-                containerType = MC_ContainerType.VILLAGER;
+            // todo } else if (this.openContainer instanceof ContainerMerchant) {
+            //    containerType = MC_ContainerType.VILLAGER;
             } else if (this.openContainer instanceof ContainerWorkbench) {
                 containerType = MC_ContainerType.CRAFTING_TABLE;
             } else if (this.openContainer instanceof ContainerBeacon) {
@@ -304,12 +306,12 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
                 if (chest.getLowerChestInventory() != null) {
                     if (chest.getLowerChestInventory() instanceof EntityMinecartContainer) {
                         containerType = MC_ContainerType.MINECART_CHEST;
-                    } else if (chest.getLowerChestInventory() instanceof InventoryLargeChest) {
-                        containerType = MC_ContainerType.CHEST_DOUBLE;
+            // todo         } else if (chest.getLowerChestInventory() instanceof InventoryLargeChest) {
+                   //     containerType = MC_ContainerType.CHEST_DOUBLE;
                     } else if (chest.getLowerChestInventory() instanceof InventoryEnderChest) {
                         containerType = MC_ContainerType.CHEST_ENDER;
-                    } else if (chest.getLowerChestInventory() instanceof AnimalChest) {
-                        containerType = MC_ContainerType.CHEST_HORSE;
+                    //todo } else if (chest.getLowerChestInventory() instanceof AnimalChest) {
+                        //containerType = MC_ContainerType.CHEST_HORSE;
                     } else if (chest.getLowerChestInventory() instanceof _Backpack) {
                         containerType = MC_ContainerType.BACKPACK;
                     } else if (chest.getLowerChestInventory() instanceof TileEntityChest) {
@@ -464,27 +466,27 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public MC_ItemStack getItemInHand() {
-        return Objects.firstNonNull((MC_ItemStack) (Object) inventory.getCurrentItem(), EmptyItemStack.getInstance());
+        return (MC_ItemStack) (Object) inventory.getCurrentItem();
     }
 
     @Override
     public void setItemInHand(MC_ItemStack var1) {
-        inventory.mainInventory[inventory.currentItem] = (ItemStack) (Object) (var1 instanceof EmptyItemStack ? null : var1);
+        inventory.mainInventory.set(inventory.currentItem, PluginHelper.getItemStack(var1));
     }
 
     @Override
     public MC_ItemStack getItemInOffHand() {
-        return Objects.firstNonNull((MC_ItemStack) (Object) inventory.offHandInventory[0], EmptyItemStack.getInstance());
+        return (MC_ItemStack) (Object) inventory.offHandInventory.get(0);
     }
 
     @Override
     public void setItemInOffHand(MC_ItemStack item) {
-        inventory.offHandInventory[0] = item instanceof EmptyItemStack ? null : (ItemStack) (Object) item;
+        inventory.offHandInventory.set(0, PluginHelper.getItemStack(item));
     }
 
     @Override
     public List<MC_ItemStack> getInventory() {
-        return PluginHelper.invArrayToList(inventory.mainInventory);
+        return PluginHelper.copyInvList(inventory.mainInventory);
     }
 
     @Override
@@ -709,5 +711,10 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
     @Override
     public void sendJsonMessage(String json) {
         connection.sendPacket(new SPacketChat(TextComponentString.Serializer.jsonToComponent(json)));
+    }
+
+    @Override
+    public void sendMessage(BaseComponent... msg) {
+        sendJsonMessage(ComponentSerializer.toString(msg));
     }
 }

@@ -223,6 +223,23 @@ public final class MC_ID
 	public static final int BLOCK_RED_NETHER_BRICK = 215;
 	public static final int BLOCK_BONE_BLOCK = 216;
 	public static final int BLOCK_STRUCTURE_VOID = 217;
+	public static final int BLOCK_OBSERVER = 218;
+	public static final int BLOCK_SHULKER_BOX_WHITE = 219;
+	public static final int BLOCK_SHULKER_BOX_ORANGE = 220;
+	public static final int BLOCK_SHULKER_BOX_MAGENTA = 221;
+	public static final int BLOCK_SHULKER_BOX_LIGHT_BLUE = 222;
+	public static final int BLOCK_SHULKER_BOX_YELLOW = 223;
+	public static final int BLOCK_SHULKER_BOX_LIME = 224;
+	public static final int BLOCK_SHULKER_BOX_PINK = 225;
+	public static final int BLOCK_SHULKER_BOX_GRAY = 226;
+	public static final int BLOCK_SHULKER_BOX_SILVER = 227;
+	public static final int BLOCK_SHULKER_BOX_CYAN = 228;
+	public static final int BLOCK_SHULKER_BOX_PURPLE = 229;
+	public static final int BLOCK_SHULKER_BOX_BLUE = 230;
+	public static final int BLOCK_SHULKER_BOX_BROWN = 231;
+	public static final int BLOCK_SHULKER_BOX_GREEN = 232;
+	public static final int BLOCK_SHULKER_BOX_RED = 233;
+	public static final int BLOCK_SHULKER_BOX_BLACK = 234;
 	public static final int BLOCK_STRUCTURE_BLOCK = 255;
 	public static final int ITEM_IRON_SHOVEL = 256;
 	public static final int ITEM_IRON_PICKAXE = 257;
@@ -413,4 +430,19 @@ public final class MC_ID
 	public static final int ITEM_JUNGLE_BOAT = 446;
 	public static final int ITEM_ACACIA_BOAT = 447;
 	public static final int ITEM_DARK_OAK_BOAT = 448;
+	public static final int ITEM_TOTEM = 449;
+	public static final int ITEM_SHULKER_SHELL = 450;
+
+	public static final int ITEM_RECORD_13 = 2256;
+	public static final int ITEM_RECORD_CAT = 2257;
+	public static final int ITEM_RECORD_BLOCKS = 2258;
+	public static final int ITEM_RECORD_CHIRP = 2259;
+	public static final int ITEM_RECORD_FAR = 2260;
+	public static final int ITEM_RECORD_MALL = 2261;
+	public static final int ITEM_RECORD_MELLOHI = 2262;
+	public static final int ITEM_RECORD_STAL = 2263;
+	public static final int ITEM_RECORD_STRAD = 2264;
+	public static final int ITEM_RECORD_WARD = 2265;
+	public static final int ITEM_RECORD_11 = 2266;
+	public static final int ITEM_RECORD_WAIT = 2267;
 }

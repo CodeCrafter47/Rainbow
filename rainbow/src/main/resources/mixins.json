@@ -76,7 +76,6 @@
     "MixinEntityTNTPrimed",
     "MixinContainerPlayer",
     "MixinContainerWorkbench",
-    "MixinSlot",
     "MixinModifiableAttributeInstance",
     "MixinAttributeModifier",
     "MixinUserList",

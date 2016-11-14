@@ -13,3 +13,13 @@ public+synthetic PluginReference/MC_EntityType/HANGING
 public+synthetic PluginReference/RainbowUtils/setServer(LPluginReference/MC_Server;)V
 
 public+synthetic PluginReference/MC_World/getBlockFromName(Ljava/lang/String;)LPluginReference/MC_Block;
+
+public+synthetic PluginReference/MC_Horse/setHorseType(LPluginReference/MC_HorseType;)V
+public+synthetic PluginReference/MC_Horse/getHorseType()LPluginReference/MC_HorseType;
+public+synthetic PluginReference/MC_HorseType
+
+public+synthetic PluginReference/MC_Zombie/isVillager()Z
+
+public+synthetic PluginReference/MC_Skeleton/getSkeletonType()LPluginReference/MC_SkeletonType;
+public+synthetic PluginReference/MC_Skeleton/setSkeletonType(LPluginReference/MC_SkeletonType;)V
+public+synthetic PluginReference.MC_SkeletonType

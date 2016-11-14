@@ -3,7 +3,6 @@ package org.projectrainbow.mixins;
 import PluginReference.MC_EventInfo;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_Player;
-import com.google.common.base.Objects;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;
-import org.projectrainbow.EmptyItemStack;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
 import org.projectrainbow._DiwUtils;
@@ -90,7 +88,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
     @Inject(method = "dropItem(Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/item/EntityItem;", at = @At("HEAD"), cancellable = true)
     private void onItemDropped(ItemStack var1, boolean var2, boolean var3, CallbackInfoReturnable<EntityItem> callbackInfo) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptItemDrop((MC_Player) this, Objects.firstNonNull((MC_ItemStack) (Object) var1, EmptyItemStack.getInstance()), ei);
+        Hooks.onAttemptItemDrop((MC_Player) this, (MC_ItemStack) (Object) var1, ei);
         if (ei.isCancelled) {
             callbackInfo.setReturnValue(null);
         }
@@ -98,22 +96,22 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
 
     @Redirect(method = "onDeath", at = @At(value = "INVOKE", target = "net.minecraft.world.GameRules.getBoolean(Ljava/lang/String;)Z"))
     private boolean onDeath(GameRules gameRules, String key) {
-        return "keepInventory".equals(key) && _DiwUtils.OpsKeepInventory && ((MC_Player)this).isOp() || gameRules.getBoolean(key);
+        return "keepInventory".equals(key) && _DiwUtils.OpsKeepInventory && ((MC_Player) this).isOp() || gameRules.getBoolean(key);
     }
 
     @Redirect(method = "getExperiencePoints", at = @At(value = "INVOKE", target = "net.minecraft.world.GameRules.getBoolean(Ljava/lang/String;)Z"))
     private boolean getExperiencePoints(GameRules gameRules, String key) {
-        return "keepInventory".equals(key) && _DiwUtils.OpsKeepInventory && ((MC_Player)this).isOp() || gameRules.getBoolean(key);
+        return "keepInventory".equals(key) && _DiwUtils.OpsKeepInventory && ((MC_Player) this).isOp() || gameRules.getBoolean(key);
     }
 
     @Redirect(method = "clonePlayer", at = @At(value = "INVOKE", target = "net.minecraft.world.GameRules.getBoolean(Ljava/lang/String;)Z"))
     private boolean clonePlayer(GameRules gameRules, String key) {
-        return "keepInventory".equals(key) && _DiwUtils.OpsKeepInventory && ((MC_Player)this).isOp() || gameRules.getBoolean(key);
+        return "keepInventory".equals(key) && _DiwUtils.OpsKeepInventory && ((MC_Player) this).isOp() || gameRules.getBoolean(key);
     }
 
     @Override
     public List<MC_ItemStack> getArmor() {
-        return PluginHelper.invArrayToList(inventory.armorInventory);
+        return PluginHelper.copyInvList(inventory.armorInventory);
     }
 
     @Override

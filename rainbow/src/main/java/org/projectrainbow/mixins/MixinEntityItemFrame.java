@@ -39,9 +39,9 @@ public abstract class MixinEntityItemFrame extends MixinEntityHanging{
     }
 
     @Inject(method = "processInitialInteract", at = @At("HEAD"), cancellable = true)
-    private void onInteract(EntityPlayer var1, ItemStack var2, EnumHand var3, CallbackInfoReturnable<Boolean> callbackInfo) {
+    private void onInteract(EntityPlayer var1, EnumHand var3, CallbackInfoReturnable<Boolean> callbackInfo) {
         MC_ItemFrameActionType type;
-        if (getDisplayedItem() == null && var2 != null) {
+        if (getDisplayedItem() == null && !var1.getHeldItem(var3).isEmpty()) {
             type = MC_ItemFrameActionType.PLACE_INNER_ITEM;
         } else {
             type = MC_ItemFrameActionType.ROTATE_INNER_ITEM;
