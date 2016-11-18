@@ -51,7 +51,7 @@ public abstract class MixinEntity implements MC_Entity {
     @Shadow
     public int dimension;
     @Shadow
-    public World worldObj;
+    public World world;
     @Shadow
     public boolean isDead;
     @Shadow
@@ -189,7 +189,7 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Override
     public MC_World getWorld() {
-        return (MC_World) worldObj;
+        return (MC_World) world;
     }
 
     @Override
@@ -365,7 +365,7 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Override
     public List getNearbyEntities(float var1) {
-        return worldObj.getEntitiesInAABBexcluding((Entity) (Object) this, new AxisAlignedBB(posX - var1, posY - var1, posZ - var1, posX + var1, posY + var1, posZ + var1), Predicates.<Entity>alwaysTrue());
+        return world.getEntitiesInAABBexcluding((Entity) (Object) this, new AxisAlignedBB(posX - var1, posY - var1, posZ - var1, posX + var1, posY + var1, posZ + var1), Predicates.<Entity>alwaysTrue());
     }
 
     @Override
@@ -474,8 +474,8 @@ public abstract class MixinEntity implements MC_Entity {
         for (Entity passenger : getPassengers()) {
             passenger.dismountRidingEntity();
         }
-        if (world != worldObj) {
-            final WorldServer fromWorld = (WorldServer) worldObj;
+        if (world != this.world) {
+            final WorldServer fromWorld = (WorldServer) this.world;
             final WorldServer toWorld = world;
 
             fromWorld.removeEntityDangerously((EntityPlayerMP) (Object) this);

@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(TileEntityHopper.class)
 public class MixinTileEntityHopper {
 
-    @Inject(method = "a(Lnet/minecraft/inventory/IInventory;Lnet/minecraft/inventory/IInventory;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/EnumFacing;)Lnet/minecraft/item/ItemStack;", at = @At("HEAD"), cancellable = true) // todo rename putStackInInventoryAllSlots
+    @Inject(method = "putStackInInventoryAllSlots(Lnet/minecraft/inventory/IInventory;Lnet/minecraft/inventory/IInventory;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/EnumFacing;)Lnet/minecraft/item/ItemStack;", at = @At("HEAD"), cancellable = true)
     private static void onHopperItemReceived(IInventory from, IInventory to, ItemStack itemStack, EnumFacing facing, CallbackInfoReturnable<ItemStack> callbackInfo) {
         MC_Location joeLoc = null;
         boolean doEvents = false;

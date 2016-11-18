@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.UUID;
 
-@Mixin(EntityHorse.class)
+@Mixin(AbstractHorse.class)
 @Implements(@Interface(iface = MC_Horse.class, prefix = "api$"))
 public abstract class MixinEntityHorse extends MixinEntityAnimal {
 
@@ -26,12 +26,6 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
 
     @Shadow
     public abstract void setHorseTamed(boolean var1);
-
-    @Shadow
-    public abstract boolean isChested();
-
-    @Shadow
-    public abstract void setChested(boolean var1);
 
     @Shadow
     public abstract int getTemper();
@@ -58,18 +52,18 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
     }
 
     public MC_HorseType api$getHorseType() {
-        EntityHorse handle = (EntityHorse) (Object) this;
-        if (handle instanceof EntityHorseGeneric)
+        AbstractHorse handle = (EntityHorse) (Object) this;
+        if (handle instanceof EntityHorse)
                 return MC_HorseType.HORSE;
-        if (handle instanceof EntityHorseDonkey)
+        if (handle instanceof EntityDonkey)
                 return MC_HorseType.DONKEY;
-        if (handle instanceof EntityHorseMule)
+        if (handle instanceof EntityMule)
                 return MC_HorseType.MULE;
-        if (handle instanceof EntityHorseZombie)
+        if (handle instanceof EntityZombieHorse)
                 return MC_HorseType.ZOMBIE;
-        if (handle instanceof EntityHorseSkeleton)
+        if (handle instanceof EntitySkeletonHorse)
                 return MC_HorseType.SKELETON;
-        if (handle instanceof EntityHorseLlama)
+        if (handle instanceof EntityLlama)
             return MC_HorseType.LLAMA;
         return MC_HorseType.UNKNOWN;
     }
@@ -79,26 +73,32 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
     }
 
     public MC_HorseVariant getHorseVariant() {
-        EntityHorse handle = (EntityHorse) (Object) this;
-        if (handle instanceof EntityHorseGeneric) {
-            return MC_HorseVariant.values()[((EntityHorseGeneric) handle).df()];
+        AbstractHorse handle = (EntityHorse) (Object) this;
+        if (handle instanceof EntityHorse) {
+            return MC_HorseVariant.values()[((EntityHorse) handle).getHorseVariant()];
         }
         return MC_HorseVariant.UNKNOWN;
     }
 
     public void setHorseVariant(MC_HorseVariant arg) {
-        EntityHorse handle = (EntityHorse) (Object) this;
-        if (handle instanceof EntityHorseGeneric) {
-            ((EntityHorseGeneric) handle).o(arg.ordinal());
+        AbstractHorse handle = (EntityHorse) (Object) this;
+        if (handle instanceof EntityHorse) {
+            ((EntityHorse) handle).setHorseVariant(arg.ordinal());
         }
     }
 
     public boolean hasChest() {
-        return isChested();
+        AbstractHorse handle = (EntityHorse) (Object) this;
+        return handle instanceof AbstractChestHorse && ((AbstractChestHorse) handle).dh();
     }
 
     public void setHasChest(boolean flag) {
-        setChested(flag);
+        AbstractHorse handle = (EntityHorse) (Object) this;
+        if (handle instanceof AbstractChestHorse) {
+            ((AbstractChestHorse) handle).setChested(flag);
+        } else {
+            throw new UnsupportedOperationException("setHasChest not supported for this entity type");
+        }
     }
 
 

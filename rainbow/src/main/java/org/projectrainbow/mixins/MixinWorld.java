@@ -24,8 +24,8 @@ public abstract class MixinWorld {
     @Inject(method = "spawnEntityInWorld", at = @At("HEAD"), cancellable = true)
     private void onEntitySpawned(Entity entity, CallbackInfoReturnable<Boolean> callbackInfo) {
 
-        int var2 = MathHelper.floor_double(entity.posX / 16.0D); // MathHelper.floor_double
-        int var3 = MathHelper.floor_double(entity.posZ / 16.0D);
+        int var2 = MathHelper.floor(entity.posX / 16.0D);
+        int var3 = MathHelper.floor(entity.posZ / 16.0D);
         boolean var4 = entity.forceSpawn;
         if(entity instanceof EntityPlayer) {
             var4 = true;

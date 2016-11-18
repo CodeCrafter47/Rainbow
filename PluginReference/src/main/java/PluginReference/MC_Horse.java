@@ -33,14 +33,18 @@ public interface MC_Horse extends MC_Animal {
      * Check if horse has chest
      *
      * @return True if has chest, False otherwise
+     * @deprecated Not all horse types may have a chest
      */
+    @Deprecated
     boolean hasChest();
 
     /**
      * Sets whether horse has chest
      *
      * @param flag True for chest, False otherwise
+     * @deprecated Not all horse types may have a chest
      */
+    @Deprecated
     void setHasChest(boolean flag);
 
     /**

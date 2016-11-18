@@ -8,7 +8,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NullSafeList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.Rotations;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
@@ -28,10 +28,10 @@ public abstract class MixinEntityArmorStand extends MixinEntityLivingBase implem
 
     @Shadow
     @Final
-    private NullSafeList<ItemStack> handItems;
+    private NonNullList<ItemStack> handItems;
     @Shadow
     @Final
-    private NullSafeList<ItemStack> armorItems;
+    private NonNullList<ItemStack> armorItems;
     @Shadow
     private Rotations headRotation;
     @Shadow

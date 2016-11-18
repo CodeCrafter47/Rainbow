@@ -43,18 +43,13 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
     @Shadow
     protected FoodStats foodStats;
     @Shadow
-    public BlockPos playerLocation;
+    public BlockPos bedLocation;
 
     @Shadow
     public abstract GameProfile getGameProfile();
 
     @Shadow
     public abstract boolean isPlayerSleeping();
-
-    @Shadow
-    public void clonePlayer(EntityPlayer oldPlayer, boolean b) {
-        // dummy
-    }
 
     @Shadow
     public abstract void addExperience(int var1);

@@ -7,7 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.util.NullSafeList;
+import net.minecraft.util.NonNullList;
 import org.projectrainbow.PluginHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,7 +17,7 @@ import java.util.List;
 @Mixin(TileEntityChest.class)
 public abstract class MixinTileEntityChest extends TileEntity implements MC_Chest {
     @Shadow
-    private NullSafeList<ItemStack> chestContents;
+    private NonNullList<ItemStack> chestContents;
     @Shadow
     public TileEntityChest adjacentChestZNeg;
     @Shadow

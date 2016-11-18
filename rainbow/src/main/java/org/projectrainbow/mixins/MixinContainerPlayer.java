@@ -26,7 +26,7 @@ public abstract class MixinContainerPlayer extends Container {
 
     @Overwrite
     public void onCraftMatrixChanged(IInventory var1) {
-        ItemStack itemStack = CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.thePlayer.worldObj);
+        ItemStack itemStack = CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.thePlayer.world);
         this.craftResult.setInventorySlotContents(0, itemStack);
         if (super.listeners.size() < 1) {
             return;

@@ -19,7 +19,7 @@ import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IntHashMap;
-import net.minecraft.util.NullSafeList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.*;
@@ -447,15 +447,15 @@ public class MixinNetHandlerPlayServer {
             openContainer.setCanCraft(playerEntity, false);
             openContainer.slotClick(packet.getSlotId(), packet.getUsedButton(), packet.getClickType(), playerEntity);
             if (openContainer == playerEntity.openContainer) {
-                NullSafeList<ItemStack> var8 = NullSafeList.a();
+                NonNullList<ItemStack> var8 = NonNullList.a();
 
-                for (int var4 = 0; var4 < this.playerEntity.openContainer.inventoryItemStacks.size(); ++var4) {
-                    ItemStack var5 = this.playerEntity.openContainer.inventoryItemStacks.get(var4).getStack();
+                for (int var4 = 0; var4 < this.playerEntity.openContainer.inventorySlots.size(); ++var4) {
+                    ItemStack var5 = this.playerEntity.openContainer.inventorySlots.get(var4).getStack();
                     ItemStack var6 = var5.isEmpty() ? ItemStack.EMPTY : var5;
                     var8.add(var6);
                 }
 
-                this.playerEntity.a(this.playerEntity.openContainer, var8);
+                this.playerEntity.updateCraftingInventory(this.playerEntity.openContainer, var8);
             }
             ci.cancel();
         }

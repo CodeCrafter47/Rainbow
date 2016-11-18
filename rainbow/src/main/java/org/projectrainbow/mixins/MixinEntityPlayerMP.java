@@ -112,9 +112,9 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
         if (openContainer != ((EntityPlayerMP) (Object) this).inventoryContainer) {
             ((EntityPlayerMP) (Object) this).closeContainer();
         }
-        if (world != worldObj) {
+        if (world != this.world) {
             MinecraftServer mcServer = _DiwUtils.getMinecraftServer();
-            final WorldServer fromWorld = (WorldServer) worldObj;
+            final WorldServer fromWorld = (WorldServer) this.world;
             final WorldServer toWorld = world;
             fromWorld.getEntityTracker().removePlayerFromTrackers((EntityPlayerMP) (Object) this);
             fromWorld.getPlayerChunkMap().removePlayer((EntityPlayerMP) (Object) this);
@@ -341,12 +341,12 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Inject(method = "trySleep", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.EntityPlayerMP.getServerWorld()Lnet/minecraft/world/WorldServer;"))
     private void startSleeping(BlockPos bed, CallbackInfoReturnable callbackInfo) {
-        Hooks.onPlayerBedEnter(this, new BlockWrapper(worldObj.getBlockState(bed)), new MC_Location(bed.getX(), bed.getY(), bed.getZ(), dimension));
+        Hooks.onPlayerBedEnter(this, new BlockWrapper(world.getBlockState(bed)), new MC_Location(bed.getX(), bed.getY(), bed.getZ(), dimension));
     }
 
     @Inject(method = "wakeUpPlayer", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.EntityPlayerMP.getServerWorld()Lnet/minecraft/world/WorldServer;"))
     private void finishSleeping(boolean a, boolean b, boolean c, CallbackInfo callbackInfo) {
-        Hooks.onPlayerBedLeave(this, new BlockWrapper(worldObj.getBlockState(playerLocation)), new MC_Location(playerLocation.getX(), playerLocation.getY(), playerLocation.getZ(), dimension));
+        Hooks.onPlayerBedLeave(this, new BlockWrapper(world.getBlockState(bedLocation)), new MC_Location(bedLocation.getX(), bedLocation.getY(), bedLocation.getZ(), dimension));
     }
 
     @Inject(method = "setSpectatingEntity", at = @At("HEAD"), cancellable = true)
