@@ -220,7 +220,7 @@ public class _CmdDiw extends CommandBase {
                 } EntityPlayer p = null;
                   if (cs instanceof EntityPlayer) {
                       p = (EntityPlayer) cs;
-                      p.displayGUIChest(((IMixinEntityPlayerMP) args[1]).getBackpack());
+                      p.displayGUIChest(((IMixinEntityPlayerMP) args[1].getPlayer()).getBackpack());
                   } else {
                       System.out.println("--- Only for players!");
                   }
