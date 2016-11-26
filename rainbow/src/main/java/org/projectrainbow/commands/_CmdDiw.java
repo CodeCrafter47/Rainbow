@@ -16,13 +16,11 @@ import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow._Janitor;
 import org.projectrainbow._UUIDMapper;
+import org.projectrainbow.interfaces.IMixinEntityPlayerMP;
 import org.projectrainbow.interfaces.IMixinICommandSender;
 import org.projectrainbow.interfaces.IMixinPlayerCapabilities;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -163,7 +161,7 @@ public class _CmdDiw extends CommandBase {
 
     public void ShowUsage(ICommandSender cs) {
         _DiwUtils.reply(cs, _ColorHelper.RED + "Usage: /diw [option]");
-        String[] arrCmds = new String[]{"save", "speed", "flyspeed", "walkspeed", "mem", "skyclear", "setgrass", "border", "echo", "script", "loadBanList", "clean", "namecolor", "loadconfig", "flow"};
+        String[] arrCmds = new String[]{"save", "speed", "flyspeed", "walkspeed", "mem", "skyclear", "setgrass", "border", "echo", "script", "loadBanList", "clean", "namecolor", "loadconfig", "flow", "bp", "ec"};
         List<String> cmds = Arrays.asList(arrCmds);
         Collections.sort(cmds);
         _DiwUtils.reply(cs, _ColorHelper.WHITE + "Options: " + RainbowUtils.RainbowStringList(cmds));
@@ -324,7 +322,7 @@ public class _CmdDiw extends CommandBase {
                 String var35 = args[1].trim();
                 if (var35.equalsIgnoreCase("evil")) {
                     _Janitor.DoMobClean(p, true,
-                            new String[] {
+                            new String[]{
                                     "Zombie",
                                     "Skeleton", "BatEntity", "Enderman",
                                     "Witch", "Spider", "MagmaCube",
@@ -333,7 +331,7 @@ public class _CmdDiw extends CommandBase {
                                     "Blaze"});
                 } else {
                     _Janitor.DoMobClean(p, true,
-                            new String[] { var35});
+                            new String[]{var35});
                 }
             }
         } else if (args[0].equalsIgnoreCase("mem") || args[0].equalsIgnoreCase("jc")) {
@@ -368,6 +366,32 @@ public class _CmdDiw extends CommandBase {
                 _DiwUtils.g_restartCountdown = 70L;
             }
 
+        } else if (args[0].equalsIgnoreCase("bp") && p != null) {
+            if (args.length != 2) {
+                _DiwUtils.reply(p, ChatColor.RED + "Usage: /diw bp " + ChatColor.YELLOW + "PlayerName");
+            } else {
+                MC_Player other = RainbowUtils.getServer().getOfflinePlayerByName(args[1]);
+
+                if (other == null) {
+                    _DiwUtils.reply(p, ChatColor.RED + "No player found: " + ChatColor.YELLOW + args[1]);
+                } else {
+                    p.displayGUIChest(((IMixinEntityPlayerMP) other).getBackpack());
+                    _DiwUtils.reply(p, ChatColor.GREEN + "Opening " + ChatColor.AQUA + "ONLINE " + ChatColor.GREEN + "Backpack of: " + ChatColor.YELLOW + other.getName());
+                }
+            }
+        } else if (args[0].equalsIgnoreCase("ec") && p != null) {
+            if (args.length != 2) {
+                _DiwUtils.reply(p, ChatColor.RED + "Usage: /diw ec " + ChatColor.YELLOW + "PlayerName");
+            } else {
+                MC_Player other = RainbowUtils.getServer().getOfflinePlayerByName(args[1]);
+
+                if (other == null) {
+                    _DiwUtils.reply(p, ChatColor.RED + "No player found: " + ChatColor.YELLOW + args[1]);
+                } else {
+                    p.displayGUIChest(((EntityPlayerMP) other).getInventoryEnderChest());
+                    _DiwUtils.reply(p, ChatColor.GREEN + "Opening " + ChatColor.AQUA + "ONLINE " + ChatColor.GREEN + "Enderchest of: " + ChatColor.YELLOW + other.getName());
+                }
+            }
         } else {
             _DiwUtils.reply(cs, _ColorHelper.RED + "Unknown Option: " + _ColorHelper.AQUA + args[0]);
             this.ShowUsage(cs);
