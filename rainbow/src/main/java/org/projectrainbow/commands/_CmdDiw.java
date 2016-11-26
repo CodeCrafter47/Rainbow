@@ -163,7 +163,7 @@ public class _CmdDiw extends CommandBase {
 
     public void ShowUsage(ICommandSender cs) {
         _DiwUtils.reply(cs, _ColorHelper.RED + "Usage: /diw [option]");
-        String[] arrCmds = new String[]{"save", "speed", "flyspeed", "walkspeed", "mem", "skyclear", "setgrass", "border", "echo", "script", "loadBanList", "clean", "namecolor", "loadconfig", "flow"};
+        String[] arrCmds = new String[]{"save", "speed", "flyspeed", "walkspeed", "mem", "skyclear", "setgrass", "border", "echo", "script", "loadBanList", "clean", "namecolor", "loadconfig", "flow", "bp"};
         List<String> cmds = Arrays.asList(arrCmds);
         Collections.sort(cmds);
         _DiwUtils.reply(cs, _ColorHelper.WHITE + "Options: " + RainbowUtils.RainbowStringList(cmds));
@@ -208,6 +208,22 @@ public class _CmdDiw extends CommandBase {
                     if (player != null) {
                         _CmdNameColor.updateNameColorOnTab(player);
                     }
+                }
+            }
+        } else if (args[0].equalsIgnoreCase("bp")) {
+            if (args.length < 2) {
+                _DiwUtils.reply(cs, _ColorHelper.RED + "Usage: /diw bp <User>");
+            } else {
+                UUID uuid = _UUIDMapper.getUUID(args[1]);
+                if (uuid == null) {
+                    _DiwUtils.reply(cs, _ColorHelper.RED + "Player not found.");
+                } EntityPlayer p = null;
+                  if (cs instanceof EntityPlayer) {
+                      p = (EntityPlayer) cs;
+                      p.displayGUIChest(((IMixinEntityPlayerMP) args[1].getPlayer()).getBackpack());
+                  } else {
+                      System.out.println("--- Only for players!");
+                  }
                 }
             }
         } else if (args[0].equalsIgnoreCase("flow")) {
