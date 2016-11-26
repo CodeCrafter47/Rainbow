@@ -4,11 +4,75 @@ import net.md_5.bungee.api.chat.BaseComponent;
 
 import java.net.SocketAddress;
 import java.util.List;
+import java.util.UUID;
 
 /**
- * Represents a Minecraft player
+ * Represents a Minecraft player.
+ *
+ * Note that this class is used to represent offline players too. If it represents an offline player some methods will
+ * throw an {@link UnsupportedOperationException}. Unless documented otherwise in the javadoc of the respective method
+ * you should assume all methods to be unsupported for offline players.
  */
+@SuppressWarnings("ALL")
 public interface MC_Player extends MC_LivingEntity {
+
+    /**
+     * Gets name of this player.
+     *
+     * This method is supported for offline players.
+     *
+     * @return player name
+     */
+    @Override
+    String getName();
+
+    /**
+     * Check if this player has a custom name.
+     *
+     * The custom name of a player is identical to the name modified by the /namecolor command.
+     *
+     * This method is supported for offline players.
+     *
+     * @return True if has a custom name, False otherwise
+     */
+    @Override
+    boolean hasCustomName();
+
+    /**
+     * Sets custom name for this player.
+     *
+     * The custom name of a player is identical to the name modified by the /namecolor command.
+     *
+     * This method is supported for offline players.
+     *
+     * @param str Custom Name
+     */
+    @Override
+    void setCustomName(String str);
+
+    /**
+     * Gets the custom name of this player.
+     *
+     * The custom name of a player is identical to the name modified by the /namecolor command.
+     *
+     * This method is supported for offline players.
+     *
+     * @return Custom name
+     */
+    @Override
+    String getCustomName();
+
+
+    /**
+     * Gets the uuid of this player.
+     *
+     * This method is supported for offline players.
+     *
+     * @return uuid
+     */
+    @Override
+    UUID getUUID();
+
     public String getIPAddress();
 
     // Operations
@@ -94,7 +158,9 @@ public interface MC_Player extends MC_LivingEntity {
     public void setFoodLevel(int argFoodLevel);
 
     /**
-     * Get Economy balance (as managed by Rainbow)
+     * Get Economy balance (as managed by Rainbow).
+     *
+     * This method is supported for offline players.
      *
      * @return Economy balance
      */
@@ -102,6 +168,8 @@ public interface MC_Player extends MC_LivingEntity {
 
     /**
      * Sets Economy balance
+     *
+     * This method is supported for offline players.
      *
      * @param amt New Balance
      */
@@ -410,5 +478,59 @@ public interface MC_Player extends MC_LivingEntity {
      * Closes any open inventory.
      */
     void closeInventory();
+
+    /**
+     * Tests whether the player has been playing on the server before.
+     *
+     * This method is supported for offline players.
+     *
+     * @return true if the player has been playing on the server before
+     */
+    boolean hasPlayedBefore();
+
+    /**
+     * Get the amount of time the player has spent playing on this server.
+     *
+     * This method is supported for offline players.
+     *
+     * @return total online time of the player in milliseconds
+     */
+    long getOnlineTime();
+
+    /**
+     * Get the player's home (as managed by the built-in /home and /sethome commands).
+     *
+     * This method is supported for offline players.
+     *
+     * @return the player's home
+     */
+    MC_Location getHome();
+
+    /**
+     * Set the player's home (as managed by the built-in /home and /sethome commands).
+     *
+     * This method is supported for offline players.
+     *
+     * @param location the new home
+     */
+    void setHome(MC_Location location);
+
+    /**
+     * Get the player's second home (as managed by the built-in /home2 and /sethome2 commands).
+     *
+     * This method is supported for offline players.
+     *
+     * @return the player's home
+     */
+    MC_Location getHome2();
+
+    /**
+     * Set the player's second home (as managed by the built-in /home2 and /sethome2 commands).
+     *
+     * This method is supported for offline players.
+     *
+     * @param location the new home
+     */
+    void setHome2(MC_Location location);
 }
 

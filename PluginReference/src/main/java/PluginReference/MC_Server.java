@@ -47,6 +47,14 @@ public interface MC_Server {
     MC_Player getOnlinePlayerByName(String pName);
 
     /**
+     * Get a player object of an online player by uuid
+     *
+     * @param uuid player unique id
+     * @return Player object
+     */
+    MC_Player getOnlinePlayerByUUID(UUID uuid);
+
+    /**
      * Get list of player names matching substring. Useful for implementing Tab feature of commands.
      *
      * @param subString Substring for search
@@ -411,5 +419,27 @@ public interface MC_Server {
      * @return the {@link MC_InventoryGUI} instance
      */
     MC_InventoryGUI createInventoryGUI(int size, String title);
+
+    /**
+     * Get an offline player by the name. If the player is online this method returns the same object as
+     * {@link #getOnlinePlayerByName(String)}.
+     *
+     * Also look at the javadoc of {@link MC_Player} to find out which methods are implemented for offline players.
+     *
+     * @param name the name of the player
+     * @return the (offline) player if present
+     */
+    MC_Player getOfflinePlayerByName(String name);
+
+    /**
+     * Get an offline player by the uuid. If the player is online this method returns the same object as
+     * {@link #getOnlinePlayerByUUID(UUID)}.
+     *
+     * Also look at the javadoc of {@link MC_Player} to find out which methods are implemented for offline players.
+     *
+     * @param uuid the uuid of the player
+     * @return the (offline) player if present
+     */
+    MC_Player getOfflinePlayerByUUID(UUID uuid);
 }
 

@@ -3,6 +3,8 @@ package org.projectrainbow.mixins;
 import PluginReference.*;
 import com.google.common.base.Objects;
 import com.google.common.io.Files;
+import joebkt._JOT_OnlineTimeEntry;
+import joebkt._SerializableLocation;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.command.ICommandSender;
@@ -31,6 +33,7 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.GameType;
 import net.minecraft.world.WorldServer;
 import org.projectrainbow.*;
+import org.projectrainbow.commands._CmdNameColor;
 import org.projectrainbow.interfaces.*;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -295,8 +298,8 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
                 containerType = MC_ContainerType.ANVIL;
             } else if (this.openContainer instanceof ContainerBrewingStand) {
                 containerType = MC_ContainerType.BREWING_STAND;
-            // todo } else if (this.openContainer instanceof ContainerMerchant) {
-            //    containerType = MC_ContainerType.VILLAGER;
+                // todo } else if (this.openContainer instanceof ContainerMerchant) {
+                //    containerType = MC_ContainerType.VILLAGER;
             } else if (this.openContainer instanceof ContainerWorkbench) {
                 containerType = MC_ContainerType.CRAFTING_TABLE;
             } else if (this.openContainer instanceof ContainerBeacon) {
@@ -306,11 +309,11 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
                 if (chest.getLowerChestInventory() != null) {
                     if (chest.getLowerChestInventory() instanceof EntityMinecartContainer) {
                         containerType = MC_ContainerType.MINECART_CHEST;
-            // todo         } else if (chest.getLowerChestInventory() instanceof InventoryLargeChest) {
-                   //     containerType = MC_ContainerType.CHEST_DOUBLE;
+                        // todo         } else if (chest.getLowerChestInventory() instanceof InventoryLargeChest) {
+                        //     containerType = MC_ContainerType.CHEST_DOUBLE;
                     } else if (chest.getLowerChestInventory() instanceof InventoryEnderChest) {
                         containerType = MC_ContainerType.CHEST_ENDER;
-                    //todo } else if (chest.getLowerChestInventory() instanceof AnimalChest) {
+                        //todo } else if (chest.getLowerChestInventory() instanceof AnimalChest) {
                         //containerType = MC_ContainerType.CHEST_HORSE;
                     } else if (chest.getLowerChestInventory() instanceof _Backpack) {
                         containerType = MC_ContainerType.BACKPACK;
@@ -716,5 +719,70 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
     @Override
     public void sendMessage(BaseComponent... msg) {
         sendJsonMessage(ComponentSerializer.toString(msg));
+    }
+
+    @Override
+    public boolean hasPlayedBefore() {
+        _JOT_OnlineTimeEntry entry = _JOT_OnlineTimeUtils.Data.playerData.get(getUUID().toString());
+        return entry != null && entry.msTotal > 0;
+    }
+
+    @Override
+    public long getOnlineTime() {
+        _JOT_OnlineTimeEntry entry = _JOT_OnlineTimeUtils.Data.playerData.get(getUUID().toString());
+        return entry == null ? 0 : entry.msTotal + System.currentTimeMillis() - entry.msLastLogin;
+    }
+
+    public boolean hasCustomName() {
+        String customName = _CmdNameColor.ColorNameDict.get(getUUID().toString());
+
+        return customName != null && customName.equalsIgnoreCase(getName());
+    }
+
+    public void setCustomName(String newName) {
+        String key = getUUID().toString();
+
+        if (newName != null && newName.length() > 0) {
+            _CmdNameColor.ColorNameDict.put(key, newName);
+        } else {
+            _CmdNameColor.ColorNameDict.remove(key);
+        }
+
+        _CmdNameColor.updateNameColorOnTab((EntityPlayerMP) (Object) this);
+    }
+
+    public String getCustomName() {
+        String key = getUUID().toString();
+        String customName = _CmdNameColor.ColorNameDict.get(key);
+
+        return customName == null ? getName() : customName;
+    }
+
+    @Override
+    public MC_Location getHome() {
+        _SerializableLocation sloc = _HomeUtils.getHome(getUUID());
+        return new MC_Location(sloc.x, sloc.y, sloc.z, sloc.dimension, sloc.yaw, sloc.pitch);
+    }
+
+    @Override
+    public void setHome(MC_Location location) {
+        _HomeUtils.setHome(getUUID(), new _SerializableLocation(
+                location.x, location.y, location.z,
+                location.dimension, location.yaw, location.pitch
+        ));
+    }
+
+    @Override
+    public MC_Location getHome2() {
+        _SerializableLocation sloc = _HomeUtils.getHome2(getUUID());
+        return new MC_Location(sloc.x, sloc.y, sloc.z, sloc.dimension, sloc.yaw, sloc.pitch);
+    }
+
+    @Override
+    public void setHome2(MC_Location location) {
+        _HomeUtils.setHome2(getUUID(), new _SerializableLocation(
+                location.x, location.y, location.z,
+                location.dimension, location.yaw, location.pitch
+        ));
     }
 }

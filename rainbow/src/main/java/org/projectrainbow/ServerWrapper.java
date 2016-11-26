@@ -219,6 +219,23 @@ public class ServerWrapper implements MC_Server {
         }
     }
 
+    @Override
+    public MC_Player getOnlinePlayerByUUID(UUID uuid) {
+        if (uuid == null) {
+            return null;
+        } else {
+            for (Object oPlayer : _DiwUtils.getMinecraftServer().getPlayerList().getPlayerList()) {
+                MC_Player player = (MC_Player) oPlayer;
+
+                if (uuid.equals(player.getUUID())) {
+                    return player;
+                }
+            }
+
+            return null;
+        }
+    }
+
     public void registerCommand(MC_Command argCmd) {
         ((ServerCommandManager) _DiwUtils.getMinecraftServer().getCommandManager()).registerCommand(new PluginCommand(argCmd));
     }
@@ -368,7 +385,7 @@ public class ServerWrapper implements MC_Server {
         // sort recipes
         Collections.sort(CraftingManager.getInstance().getRecipeList(), new Comparator<IRecipe>() {
             public int compare(IRecipe var1, IRecipe var2) {
-                return var1 instanceof ShapelessRecipes && var2 instanceof ShapedRecipes ?1:(var2 instanceof ShapelessRecipes && var1 instanceof ShapedRecipes?-1:(var2.getRecipeSize() < var1.getRecipeSize()?-1:(var2.getRecipeSize() > var1.getRecipeSize()?1:0)));
+                return var1 instanceof ShapelessRecipes && var2 instanceof ShapedRecipes ? 1 : (var2 instanceof ShapelessRecipes && var1 instanceof ShapedRecipes ? -1 : (var2.getRecipeSize() < var1.getRecipeSize() ? -1 : (var2.getRecipeSize() > var1.getRecipeSize() ? 1 : 0)));
             }
         });
     }
@@ -379,7 +396,7 @@ public class ServerWrapper implements MC_Server {
         // sort recipes
         Collections.sort(CraftingManager.getInstance().getRecipeList(), new Comparator<IRecipe>() {
             public int compare(IRecipe var1, IRecipe var2) {
-                return var1 instanceof ShapelessRecipes && var2 instanceof ShapedRecipes ?1:(var2 instanceof ShapelessRecipes && var1 instanceof ShapedRecipes?-1:(var2.getRecipeSize() < var1.getRecipeSize()?-1:(var2.getRecipeSize() > var1.getRecipeSize()?1:0)));
+                return var1 instanceof ShapelessRecipes && var2 instanceof ShapedRecipes ? 1 : (var2 instanceof ShapelessRecipes && var1 instanceof ShapedRecipes ? -1 : (var2.getRecipeSize() < var1.getRecipeSize() ? -1 : (var2.getRecipeSize() > var1.getRecipeSize() ? 1 : 0)));
             }
         });
     }
@@ -423,5 +440,16 @@ public class ServerWrapper implements MC_Server {
             throw new IllegalArgumentException("title is null");
         }
         return new GUIInventory(title, size);
+    }
+
+    @Override
+    public MC_Player getOfflinePlayerByName(String name) {
+        return _UUIDMapper.getUUID(name) != null ? new OfflinePlayerWrapper(name) : null;
+    }
+
+    @Override
+    public MC_Player getOfflinePlayerByUUID(UUID uuid) {
+        String name = _UUIDMapper.getName(uuid);
+        return name != null ? new OfflinePlayerWrapper(name) : null;
     }
 }
