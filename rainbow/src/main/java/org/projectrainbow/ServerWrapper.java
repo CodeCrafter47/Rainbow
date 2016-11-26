@@ -444,11 +444,19 @@ public class ServerWrapper implements MC_Server {
 
     @Override
     public MC_Player getOfflinePlayerByName(String name) {
+        MC_Player onlinePlayer = getOnlinePlayerByName(name);
+        if (onlinePlayer != null) {
+            return onlinePlayer;
+        }
         return _UUIDMapper.getUUID(name) != null ? new OfflinePlayerWrapper(name) : null;
     }
 
     @Override
     public MC_Player getOfflinePlayerByUUID(UUID uuid) {
+        MC_Player onlinePlayer = getOnlinePlayerByUUID(uuid);
+        if (onlinePlayer != null) {
+            return onlinePlayer;
+        }
         String name = _UUIDMapper.getName(uuid);
         return name != null ? new OfflinePlayerWrapper(name) : null;
     }
