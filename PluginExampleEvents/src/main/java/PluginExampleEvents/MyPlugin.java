@@ -1089,4 +1089,10 @@ public class MyPlugin extends PluginBase {
         String logMsg = String.format("onAttemptProjectileHitBlock: %s hit %s @ %s", projectile.getName(), blockLocation.toString(), hitLocation.toString());
         System.out.println("EventSamplePlugin -- " + logMsg);
     }
+
+    @Override
+    public void onPlayerKick(MC_Player player, String reason, MC_EventInfo ei) {
+        String logMsg = String.format("onPlayerKick: %s kicked for %s", player.getName(), reason);
+        System.out.println("EventSamplePlugin -- " + logMsg);
+    }
 }

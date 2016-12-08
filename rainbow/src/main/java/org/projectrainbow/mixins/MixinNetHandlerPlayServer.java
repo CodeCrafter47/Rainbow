@@ -460,4 +460,13 @@ public class MixinNetHandlerPlayServer {
             ci.cancel();
         }
     }
+
+    @Inject(method = "kickPlayerFromServer", at = @At("HEAD"), cancellable = true)
+    private void onKick(String reason, CallbackInfo callbackInfo) {
+        MC_EventInfo ei = new MC_EventInfo();
+        Hooks.onPlayerKick((MC_Player) playerEntity, reason, ei);
+        if (ei.isCancelled) {
+            callbackInfo.cancel();
+        }
+    }
 }

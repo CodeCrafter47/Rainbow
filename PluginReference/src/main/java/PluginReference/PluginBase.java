@@ -592,5 +592,16 @@ public abstract class PluginBase
 	 */
     public void onAttemptProjectileHitBlock(MC_Projectile projectile, MC_Location blockLocation, MC_DirectionNESWUD blockFaceHit, MC_Location hitLocation, MC_EventInfo ei) {
     }
+
+    /**
+     * Called when a player is about to be kicked. The event can be cancelled in which case the player won't be kicked.
+     * The event is also called if a player is being kicked by a plugin.
+     *
+     * @param player the player
+     * @param reason the reason why the player is kicked
+     * @param ei     event info, can be cancelled
+     */
+    public void onPlayerKick(MC_Player player, String reason, MC_EventInfo ei) {
+    }
 }
 

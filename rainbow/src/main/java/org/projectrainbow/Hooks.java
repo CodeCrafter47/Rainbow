@@ -598,4 +598,14 @@ public class Hooks {
             }
         }
     }
+
+    public static void onPlayerKick(MC_Player player, String reason, MC_EventInfo ei) {
+        for (PluginInfo plugin : _DiwUtils.pluginManager.plugins) {
+            try {
+                plugin.ref.onPlayerKick(player, reason, ei);
+            } catch (Throwable th) {
+                logger.error("Failed to pass event to plugin " + plugin.name, th);
+            }
+        }
+    }
 }
