@@ -62,6 +62,10 @@ public class MixinNetHandlerPlayServer {
     @Shadow
     @Final
     private IntHashMap<Short> pendingTransactions;
+    @Shadow
+    private int lastPositionUpdate;
+    @Shadow
+    private int networkTickCount;
 
     @Redirect(method = "processPlayer", at = @At(value = "INVOKE", target = "warn", remap = false))
     private void doLogWarning(Logger logger, String message, Object... args) {
@@ -235,9 +239,11 @@ public class MixinNetHandlerPlayServer {
         if (ei.isCancelled) {
             callbackInfo.cancel();
 
+            this.targetPos = new Vec3d(playerEntity.posX, playerEntity.posY, playerEntity.posZ);
             if (++this.teleportId == 2147483647) {
                 this.teleportId = 0;
             }
+            this.lastPositionUpdate = this.networkTickCount;
 
             playerEntity.connection.sendPacket(new SPacketPlayerPosLook(playerEntity.posX, playerEntity.posY, playerEntity.posZ, playerEntity.rotationYaw, playerEntity.rotationPitch, Collections.<SPacketPlayerPosLook.EnumFlags>emptySet(), this.teleportId));
         }
