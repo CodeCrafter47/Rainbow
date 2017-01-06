@@ -274,7 +274,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
         Hooks.onContainerOpen(this, items, var1.getName());
         for (int i = 0; i < var1.getSizeInventory(); i++) {
             MC_ItemStack stack = items.get(i);
-            var1.setInventorySlotContents(i, stack == null || stack.getCount() == 0 ? null : (ItemStack) (Object) stack);
+            var1.setInventorySlotContents(i, PluginHelper.getItemStack(stack));
         }
     }
 

@@ -14,7 +14,7 @@ public class _Backpack extends InventoryBasic {
     public void loadInventoryFromNBT(NBTTagList var1) {
         int var2;
         for (var2 = 0; var2 < this.getSizeInventory(); ++var2) {
-            this.setInventorySlotContents(var2, (ItemStack) null);
+            this.setInventorySlotContents(var2, ItemStack.EMPTY);
         }
 
         for (var2 = 0; var2 < var1.tagCount(); ++var2) {
