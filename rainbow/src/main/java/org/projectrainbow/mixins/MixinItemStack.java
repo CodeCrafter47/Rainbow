@@ -29,8 +29,6 @@ public abstract class MixinItemStack implements MC_ItemStack {
     @Shadow
     public int stackSize;
     @Shadow
-    private Item item;
-    @Shadow
     private NBTTagCompound stackTagCompound;
     @Shadow
     private int itemDamage;
@@ -52,6 +50,9 @@ public abstract class MixinItemStack implements MC_ItemStack {
     @Shadow
     public abstract boolean isItemEnchanted();
 
+    @Shadow
+    public abstract Item getItem();
+
     @ModifyArg(method = "setStackDisplayName", at = @At(value = "INVOKE", target = "net.minecraft.nbt.NBTTagCompound.setString(Ljava/lang/String;Ljava/lang/String;)V"), index = 1)
     private String censorItemName(String name) {
         if (_DiwUtils.DoCensor && _DiwUtils.HasBadLanguage(name)) {
@@ -62,7 +63,7 @@ public abstract class MixinItemStack implements MC_ItemStack {
 
     @Override
     public String getFriendlyName() {
-        return item.getItemStackDisplayName((ItemStack) (Object) this);
+        return getItem().getItemStackDisplayName((ItemStack) (Object) this);
     }
 
     @Override
@@ -72,12 +73,12 @@ public abstract class MixinItemStack implements MC_ItemStack {
 
     @Override
     public String getOfficialName() {
-        return item.getUnlocalizedName((ItemStack) (Object) this);
+        return getItem().getUnlocalizedName((ItemStack) (Object) this);
     }
 
     @Override
     public int getId() {
-        return Item.getIdFromItem(item);
+        return Item.getIdFromItem(getItem());
     }
 
     @Override
@@ -122,7 +123,7 @@ public abstract class MixinItemStack implements MC_ItemStack {
 
     @Override
     public int getMaxStackSize() {
-        return item.getItemStackLimit();
+        return getItem().getItemStackLimit();
     }
 
     @Override
@@ -286,7 +287,7 @@ public abstract class MixinItemStack implements MC_ItemStack {
             }
 
             stackTagCompound.setString("SkullOwner", name);
-            item.updateItemStackNBT(stackTagCompound);
+            getItem().updateItemStackNBT(stackTagCompound);
         }
     }
 }
