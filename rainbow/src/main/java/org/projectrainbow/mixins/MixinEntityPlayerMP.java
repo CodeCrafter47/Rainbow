@@ -180,21 +180,6 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
                 ((IMixinNBTBase) tagList).read1(s);
                 this.backpack.loadInventoryFromNBT(tagList);
                 s.close();
-                int nActualItems = 0;
-                int nPackSize = this.backpack.getSizeInventory();
-
-                for (int i = 0; i < nPackSize; ++i) {
-                    ItemStack is = this.backpack.getStackInSlot(i);
-                    if (is != null) {
-                        if (is.getStackSize() <= 0) {
-                            System.out.println("Backpack " + this.getName() + " had " + is.getStackSize() + " of Item ID " + is.getItem() + " -- removing");
-                            is.setItemDamage(0);
-                            this.backpack.setInventorySlotContents(i, ItemStack.EMPTY);
-                        }
-
-                        ++nActualItems;
-                    }
-                }
             }
         } catch (Exception var11) {
             String msg = "--- Error loading backpack for " + this.getName() + " : " + var11.toString();
