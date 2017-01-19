@@ -38,6 +38,11 @@
             <version>1.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupid>org.yaml</groupid>
+            <artifactid>snakeyaml</artifactid>
+            <version>1.17</version>
+        </dependency>
     </dependencies>
 
     <build>
