@@ -8,6 +8,7 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.dedicated.PropertyManager;
 import org.projectrainbow.Hooks;
 import org.projectrainbow._DiwUtils;
+import org.projectrainbow.interfaces.IMixinMinecraftServer;
 import org.projectrainbow.launch.Bootstrap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -56,6 +57,11 @@ public class MixinDedicatedServer {
         }
 
         return propertyManager.getStringProperty(key, defaultValue);
+    }
+
+    @Inject(method = "startServer", at = @At(value = "NEW", args = "class=net/minecraft/server/dedicated/ServerHangWatchdog"))
+    void onCreateServerHangWatchdog(CallbackInfoReturnable<Boolean> callbackInfo) {
+        ((IMixinMinecraftServer) this).setCurrentTime(System.currentTimeMillis());
     }
 
     /*

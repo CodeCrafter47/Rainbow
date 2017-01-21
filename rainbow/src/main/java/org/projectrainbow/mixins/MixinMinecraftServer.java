@@ -12,13 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.projectrainbow.Hooks;
-import org.projectrainbow.ServerWrapper;
-import org.projectrainbow._Announcer;
-import org.projectrainbow._ColorHelper;
-import org.projectrainbow._DiwUtils;
-import org.projectrainbow._EconomyManager;
-import org.projectrainbow._Janitor;
+import org.projectrainbow.*;
 import org.projectrainbow.commands._CmdCron;
 import org.projectrainbow.interfaces.IMixinMinecraftServer;
 import org.spongepowered.asm.mixin.Final;
@@ -58,6 +52,9 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     private ServerStatusResponse statusResponse;
     @Shadow
     private String motd;
+
+    @Shadow
+    private long currentTime;
 
     int g_secondTick;
 
@@ -223,5 +220,10 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     @Override
     public void onMotdUpdated() {
         this.statusResponse.setServerDescription(new TextComponentString(this.motd));
+    }
+
+    @Override
+    public void setCurrentTime(long l) {
+        this.currentTime = l;
     }
 }
