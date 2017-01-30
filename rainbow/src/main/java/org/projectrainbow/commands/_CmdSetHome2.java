@@ -4,8 +4,8 @@ package org.projectrainbow.commands;
 import PluginReference.ChatColor;
 import PluginReference.MC_Command;
 import PluginReference.MC_Player;
-import org.projectrainbow._HomeUtils;
 import joebkt._SerializableLocation;
+import org.projectrainbow._HomeUtils;
 
 import java.util.List;
 
@@ -36,23 +36,18 @@ public class _CmdSetHome2 implements MC_Command {
             System.out.println("Sethome2 is for Players only!");
         } else {
 
-            if (plr.getLocation().dimension != 0) {
-                plr.sendMessage(
-                        ChatColor.RED + "SetHome2 not allowed in this world!");
-            } else {
-                String pName = plr.getName();
-                _SerializableLocation sloc = new _SerializableLocation(plr.getLocation().x,
-                        plr.getLocation().y, plr.getLocation().z, plr.getLocation().dimension, plr.getLocation().yaw, plr.getLocation().pitch);
+            String pName = plr.getName();
+            _SerializableLocation sloc = new _SerializableLocation(plr.getLocation().x,
+                    plr.getLocation().y, plr.getLocation().z, plr.getLocation().dimension, plr.getLocation().yaw, plr.getLocation().pitch);
 
-                _HomeUtils.setHome2(plr.getUUID(), sloc);
-                String msg = String.format("Home2 Set for %s set to %s",
-                        pName, sloc.toString());
+            _HomeUtils.setHome2(plr.getUUID(), sloc);
+            String msg = String.format("Home2 Set for %s set to %s",
+                    pName, sloc.toString());
 
-                System.out.println(msg);
-                plr.sendMessage(
-                        ChatColor.GREEN + "Home2 set to " + ChatColor.WHITE
-                                + sloc.toString());
-            }
+            System.out.println(msg);
+            plr.sendMessage(
+                    ChatColor.GREEN + "Home2 set to " + ChatColor.WHITE
+                            + sloc.toString());
         }
     }
 

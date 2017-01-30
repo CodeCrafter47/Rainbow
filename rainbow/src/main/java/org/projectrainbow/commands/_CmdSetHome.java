@@ -35,10 +35,6 @@ public class _CmdSetHome extends CommandBase
             return;
         }
         final EntityPlayer p = (EntityPlayer)cs;
-        if (p.dimension != 0) {
-            ((IMixinICommandSender)p).sendMessage(String.valueOf(_ColorHelper.RED) + "SetHome not allowed in this world!");
-            return;
-        }
         final String pName = p.getName();
         final _SerializableLocation sloc = new _SerializableLocation(p.posX, p.posY, p.posZ, p.dimension, p.rotationYaw, p.rotationPitch);
         _HomeUtils.setHome(p.getUniqueID(), sloc);

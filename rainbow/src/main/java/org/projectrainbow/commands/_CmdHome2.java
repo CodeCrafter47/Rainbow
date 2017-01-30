@@ -33,17 +33,12 @@ public class _CmdHome2 implements MC_Command {
     @Override
     public void handleCommand(MC_Player plr, String[] args) {
         if (plr != null) {
-            if (plr.getLocation().dimension != 0) {
-                plr.sendMessage(
-                        ChatColor.RED + "Home2 not allowed in this world!");
+            _SerializableLocation sloc = _HomeUtils.getHome2(plr.getUUID());
+            if (sloc == null) {
+                plr.sendMessage(ChatColor.RED + "You don\'t have a home2 set. Try first: " + ChatColor.GOLD + "/sethome2");
             } else {
-                _SerializableLocation sloc = _HomeUtils.getHome2(plr.getUUID());
-                if (sloc == null) {
-                    plr.sendMessage(ChatColor.RED + "You don\'t have a home2 set. Try first: " + ChatColor.GOLD + "/sethome2");
-                } else {
-                    plr.teleport(new MC_Location(sloc.x, sloc.y, sloc.z, 0, sloc.yaw, sloc.pitch));
-                    plr.sendMessage(ChatColor.GREEN + "You teleport home2 to " + ChatColor.WHITE + sloc.toString());
-                }
+                plr.teleport(new MC_Location(sloc.x, sloc.y, sloc.z, sloc.dimension, sloc.yaw, sloc.pitch));
+                plr.sendMessage(ChatColor.GREEN + "You teleport home2 to " + ChatColor.WHITE + sloc.toString());
             }
         } else {
             System.out.println("For players only.");

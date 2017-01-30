@@ -1,5 +1,6 @@
 package org.projectrainbow.commands;
 
+import PluginReference.MC_Location;
 import PluginReference.MC_Player;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -38,11 +39,6 @@ public class _CmdHome extends CommandBase
             return;
         }
         final EntityPlayerMP p = (EntityPlayerMP)cs;
-        if (p.dimension != 0) {
-            ((IMixinICommandSender)p).sendMessage(String.valueOf(_ColorHelper.RED) + "Home not allowed in this world!");
-            return;
-        }
-        final String pName = p.getName();
         _SerializableLocation sloc = _HomeUtils.getHome(p.getUniqueID());
         if (sloc == null) {
             ((IMixinICommandSender)p).sendMessage(String.valueOf(_ColorHelper.RED) + "You don't have a home set. Try first: " + _ColorHelper.GOLD + "/sethome");
@@ -57,7 +53,7 @@ public class _CmdHome extends CommandBase
         catch (Exception exc) {
             System.out.println("Home Step 1 SetVehicle EXC: " + exc.getMessage());
         }
-        ((IMixinEntityPlayerMP)p).teleport(p.getServerWorld(), sloc.x, sloc.y, sloc.z, sloc.yaw, sloc.pitch);
+        ((MC_Player)p).teleport(new MC_Location(sloc.x, sloc.y, sloc.z, sloc.dimension, sloc.yaw, sloc.pitch));
         ((IMixinICommandSender)p).sendMessage(String.valueOf(_ColorHelper.GREEN) + "You teleport home to " + _ColorHelper.WHITE + sloc.toString());
     }
 }
