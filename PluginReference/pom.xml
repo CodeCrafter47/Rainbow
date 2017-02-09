@@ -113,7 +113,7 @@
                     <execution>
                         <phase>verify</phase>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>javadoc</goal>
                         </goals>
                         <configuration>
                             <failOnError>false</failOnError>
