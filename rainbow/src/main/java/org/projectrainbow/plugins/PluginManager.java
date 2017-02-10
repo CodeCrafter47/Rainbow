@@ -112,6 +112,8 @@ public class PluginManager {
                                 info.description = "No Description";
                             }
 
+                            plugin.init(new File(folder, exc));
+
                             info.ref = plugin;
                             info.path = var16;
                             info.name = exc;

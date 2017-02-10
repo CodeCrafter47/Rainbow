@@ -1,5 +1,16 @@
 package PluginReference;
 
+import com.google.common.base.Preconditions;
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Files;
+import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.List;
 import java.util.UUID;
@@ -10,6 +21,125 @@ import java.util.UUID;
 
 public abstract class PluginBase
 {
+    private boolean initialized = false;
+
+    private File dataFolder;
+
+    private Configuration configuration = null;
+
+    /**
+     * Internal method. Called by the plugin manager after creating an instance of the plugin.
+     */
+    public final void init(File dataFolder) {
+        Preconditions.checkState(!initialized, "Plugin instance already initialized.");
+        this.initialized = true;
+        this.dataFolder = dataFolder;
+    }
+
+    /**
+     * Get the configuration file of the plugin. Does not save the default config.
+     * <p>
+     * The file is only read from disk the first time this method is called.
+     *
+     * @return the configuration file
+     */
+    public final Configuration getConfig() {
+        return getConfig(false);
+    }
+
+    /**
+     * Get the configuration files of the plugin.
+     * <p>
+     * The file is only read from disk the first time this method is called.
+     *
+     * @param saveDefaultConfig whether to save the default config, if no config file exists
+     * @return the configuration file
+     */
+    public final Configuration getConfig(boolean saveDefaultConfig) {
+        if (configuration != null) {
+            return configuration;
+        }
+        return reloadConfig(saveDefaultConfig);
+    }
+
+    /**
+     * Reloads the config file from disk.
+     *
+     * @return the configuration file
+     */
+    public final Configuration reloadConfig() {
+        return reloadConfig(false);
+    }
+
+    /**
+     * Reloads the config file from disk.
+     *
+     * @param saveDefaultConfig whether to save the default config, if no config file exists
+     * @return the configuration file
+     */
+    public final Configuration reloadConfig(boolean saveDefaultConfig) {
+        Preconditions.checkState(initialized, "Plugin instance not initialized yet.");
+
+        File configFile = new File(dataFolder, "config.yml");
+
+        if (!configFile.exists() && saveDefaultConfig) {
+            try {
+                Files.createParentDirs(configFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            InputStream defaultConfigStream = getClass().getClassLoader().getResourceAsStream("config.yml");
+            if (defaultConfigStream != null) {
+                try {
+                    ByteStreams.copy(defaultConfigStream, new FileOutputStream(configFile));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                System.err.println("saveDefaultConfig enabled but no default config provided.");
+            }
+        }
+
+        Configuration defaultConfig = null;
+        InputStream defaultConfigStream = getClass().getClassLoader().getResourceAsStream("config.yml");
+
+        if (defaultConfigStream != null) {
+            defaultConfig = ConfigurationProvider.getProvider(YamlConfiguration.class).load(defaultConfigStream);
+        }
+
+        if (configFile.exists()) {
+            try {
+                return configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile, defaultConfig);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return configuration = defaultConfig;
+    }
+
+    /**
+     * Saves the config file to disk.
+     */
+    public final void saveConfig() {
+        Preconditions.checkState(initialized, "Plugin instance not initialized yet.");
+
+        File configFile = new File(dataFolder, "config.yml");
+        if (!configFile.exists()) {
+            try {
+                Files.createParentDirs(configFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            ConfigurationProvider.getProvider(YamlConfiguration.class).save(configuration, configFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 	// Core events
 	 /**
      * Called when a plugin is loaded. Save a reference to passed in MC_Server object.

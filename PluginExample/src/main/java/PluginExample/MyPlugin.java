@@ -13,6 +13,7 @@ import PluginReference.MC_World;
 import PluginReference.PluginBase;
 import PluginReference.PluginInfo;
 import PluginReference.RainbowUtils;
+import net.md_5.bungee.config.Configuration;
 
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,8 +27,10 @@ public class MyPlugin extends PluginBase {
         System.out.println("======= ExamplePlugin --- Startup! =======");
         server = argServer;
 
+        Configuration config = getConfig(true);
+
         // Set a custom shutdown message.
-        server.setCustomShutdownMessage("Custom Message from PluginExample");
+        server.setCustomShutdownMessage(config.getString("customShutdownMessage"));
 
         server.registerCommand(new CmdArrows());
         server.registerCommand(new CmdASAllArms());
