@@ -8,12 +8,12 @@ import net.minecraft.server.MinecraftServer;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.launch.Bootstrap;
+import org.projectrainbow.Updater;
 
 import java.util.Collections;
 import java.util.List;
 
-public class _CmdVer extends CommandBase
-{
+public class _CmdVer extends CommandBase {
     @Override
     public String getCommandName() {
         return "ver";
@@ -36,6 +36,16 @@ public class _CmdVer extends CommandBase
 
     @Override
     public void execute(MinecraftServer minecraftServer, ICommandSender cs, String[] strings) throws CommandException {
-        _DiwUtils.reply(cs, String.valueOf(_ColorHelper.AQUA) + "Rainbow Server Mod: " + _ColorHelper.LIGHT_PURPLE + "Version " + _DiwUtils.MC_VERSION_STRING + " Build " + Bootstrap.buildNumber);
+        _DiwUtils.reply(cs, String.valueOf(_ColorHelper.AQUA) + "Rainbow " + _ColorHelper.LIGHT_PURPLE + _DiwUtils.MC_VERSION_STRING + " b" + Bootstrap.buildNumber
+        );
+        _DiwUtils.reply(cs, "Checking for update, please wait...");
+        String latest = Updater.getLatestVersion();
+        if (Bootstrap.buildNumber == latest) {
+            _DiwUtils.reply(cs, "You are running the latest version.");
+        } else {
+            int latestNum = Integer.valueOf(Bootstrap.buildNumber);
+            int currentNum = Integer.valueOf(latest);
+            _DiwUtils.reply(cs, "You are running " + (latestNum - currentNum) + " versions behind.");
+        }
     }
 }
