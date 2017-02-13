@@ -5,8 +5,8 @@ package PluginReference;
  */
 @Deprecated
 public enum MC_SkeletonType {
-	UNSPECIFIED,
-	SKELETON,
-	WITHER_SKELETON,
-	STRAY
+    UNSPECIFIED,
+    SKELETON,
+    WITHER_SKELETON,
+    STRAY
 }
