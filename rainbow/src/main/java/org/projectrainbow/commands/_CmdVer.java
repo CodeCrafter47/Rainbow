@@ -40,12 +40,16 @@ public class _CmdVer extends CommandBase {
         );
         _DiwUtils.reply(cs, "Checking for update, please wait...");
         String latest = Updater.getLatestVersion();
-        if (Bootstrap.buildNumber == latest) {
-            _DiwUtils.reply(cs, "You are running the latest version.");
+        if (!latest.startsWith("ERROR")) {
+            if (Bootstrap.buildNumber == latest) {
+                _DiwUtils.reply(cs, "You are running the latest version.");
+            } else {
+                int currentNum = Integer.valueOf(Bootstrap.buildNumber);
+                int latestNum = Integer.valueOf(latest);
+                _DiwUtils.reply(cs, "You are running " + (latestNum - currentNum) + " versions behind.");
+            }
         } else {
-            int latestNum = Integer.valueOf(Bootstrap.buildNumber);
-            int currentNum = Integer.valueOf(latest);
-            _DiwUtils.reply(cs, "You are running " + (latestNum - currentNum) + " versions behind.");
+            _DiwUtils.reply(cs, "ERROR: Update to at least Java 8"); //Outdated java should be the only error (atm).
         }
     }
 }
