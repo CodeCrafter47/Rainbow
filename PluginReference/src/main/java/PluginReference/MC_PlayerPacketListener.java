@@ -2,10 +2,10 @@ package PluginReference;
 
 /** 
  * Interface for handling raw network packets outgoing to players.
- */             
+ */ 			
 public interface MC_PlayerPacketListener
 {
-     /** 
+	 /** 
      * Method for handling raw packet data
      * 
      * @param plr Player object
@@ -14,7 +14,7 @@ public interface MC_PlayerPacketListener
      * @param internalPacketClassName internal Packet name
      * @param ei Event Info w/option to cancel
      * @return Packet data 
-     */             
-    public byte[] handleRawPacket(MC_Player plr, int packetID, byte[] data, String internalPacketClassName, MC_EventInfo ei);
+     */ 			
+	public byte[] handleRawPacket(MC_Player plr, int packetID, byte[] data, String internalPacketClassName, MC_EventInfo ei);
 }
 
