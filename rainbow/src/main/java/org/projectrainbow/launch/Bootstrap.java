@@ -82,8 +82,45 @@ public class Bootstrap {
             options.add("--tweakClass");
             options.add(tweakClass);
         }
+        
+        if (Bootstrap.class.getClassLoader() instanceof URLClassLoader){
+            Launch.main(options.toArray(new String[options.size()]));
+        } else {
+            //Temp fix for Java 9
+            javaNineLaunch(options.toArray(new String[options.size()]));
+        }
+    }
+    
+    public static void javaNineLaunch(String[] args){
+        final Class<?> clazz = Launch.class;
+        Launch.classLoader = new LaunchClassLoader(getURLs());
+        Launch.blackboard = new HashMap<String,Object>();
+        Thread.currentThread().setContextClassLoader(Launch.classLoader);
+        try {
+            Constructor<?> constructor = Launch.class.getDeclaredConstructor(new Class[0]);
+            constructor.setAccessible(true);
+            Object l = constructor.newInstance(new Object[0]);
+        
+            Method m = clazz.getDeclaredMethod("launch", new Class[]{String[].class});
+            m.setAccessible(true);
+            m.invoke((Launch) l, (Object) args);
+        } catch (Exception e) {
+           e.printStackTrace();
+           System.out.println("Your system does't support the Java 9 workaround. Please use Java 8");
+        }
+    }
 
-        Launch.main(options.toArray(new String[options.size()]));
+    public static URL[] getURLs() {
+        String cp = System.getProperty("java.class.path");
+        String[] elements = cp.split(File.pathSeparator);
+        if (elements.length == 0) elements = new String[] {""};
+        URL[] urls = new URL[elements.length];
+        for (int i = 0; i < elements.length; i++) {
+            try {
+                urls[i] = new File(elements[i]).toURI().toURL();
+            } catch (MalformedURLException ignore){/**/}
+        }
+        return urls;
     }
 
     private static void addURL(URL u) throws IOException {
