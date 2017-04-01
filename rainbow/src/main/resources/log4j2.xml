@@ -23,6 +23,7 @@
         </RollingRandomAccessFile>
     </Appenders>
     <Loggers>
+        <Logger name="mixin" level="error"/>
         <Root level="info">
             <filters>
                 <MarkerFilter marker="NETWORK_PACKETS" onMatch="DENY" onMismatch="NEUTRAL" />
