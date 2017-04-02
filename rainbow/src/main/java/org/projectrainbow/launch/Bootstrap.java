@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.concurrent.TimeUnit;
 
 public class Bootstrap {
     public static String[] args;
@@ -29,6 +30,15 @@ public class Bootstrap {
 
     public static void main(String[] args) {
         Bootstrap.args = args;
+
+        String jversion = System.getProperty("java.version").split("_")[0].replace("1.", "").replace(".0", "").replace("-ea", "");
+        if (Integer.parseInt(jversion) < 8) {
+            logger.info("*** WARNNING, your Java is outdated ***");
+            logger.info("*** Java 8 will be required as of 1.12 ***");
+            logger.info("*** Get Java 8: http://bit.ly/Java8Download ***");
+            logger.info("*** Server will start in 5 seconds...  ***");
+            Thread.sleep(TimeUnit.SECONDS.toMillis(5));
+        }
 
         logger.info("Searching for additional tweakers...");
 
