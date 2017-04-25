@@ -224,15 +224,7 @@ public class ServerWrapper implements MC_Server {
         if (uuid == null) {
             return null;
         } else {
-            for (Object oPlayer : _DiwUtils.getMinecraftServer().getPlayerList().getPlayerList()) {
-                MC_Player player = (MC_Player) oPlayer;
-
-                if (uuid.equals(player.getUUID())) {
-                    return player;
-                }
-            }
-
-            return null;
+            return (MC_Player) _DiwUtils.getPlayerList().getPlayerByUUID(uuid);
         }
     }
 
