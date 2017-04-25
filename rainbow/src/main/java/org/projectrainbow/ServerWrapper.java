@@ -206,15 +206,7 @@ public class ServerWrapper implements MC_Server {
             if (pName.length() <= 0) {
                 return null;
             } else {
-                for (Object oPlayer : _DiwUtils.getMinecraftServer().getPlayerList().getPlayerList()) {
-                    MC_Player player = (MC_Player) oPlayer;
-
-                    if (pName.equalsIgnoreCase(player.getName())) {
-                        return player;
-                    }
-                }
-
-                return null;
+                return (MC_Player) _DiwUtils.getMinecraftServer().getPlayerList().getPlayerByUsername(pName);
             }
         }
     }
