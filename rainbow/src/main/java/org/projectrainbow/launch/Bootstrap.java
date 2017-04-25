@@ -33,10 +33,10 @@ public class Bootstrap {
 
         String jversion = System.getProperty("java.version").split("_")[0].replace("1.", "").replace(".0", "").replace("-ea", "");
         if (Integer.parseInt(jversion) < 8) {
-            logger.info("*** WARNNING, your Java is outdated ***");
-            logger.info("*** Java 8 will be required as of 1.12 ***");
+            logger.info("*** WARNNING, your Java is outdated         ***");
+            logger.info("*** Java 8 will be required as of 1.12      ***");
             logger.info("*** Get Java 8: http://bit.ly/Java8Download ***");
-            logger.info("*** Server will start in 5 seconds...  ***");
+            logger.info("*** Server will start in 5 seconds...       ***");
             Thread.sleep(TimeUnit.SECONDS.toMillis(5));
         }
 
@@ -96,27 +96,24 @@ public class Bootstrap {
         if (Bootstrap.class.getClassLoader() instanceof URLClassLoader){
             Launch.main(options.toArray(new String[options.size()]));
         } else {
-            //Temp fix for Java 9
-            javaNineLaunch(options.toArray(new String[options.size()]));
-        }
-    }
-    
-    public static void javaNineLaunch(String[] args){
-        final Class<?> clazz = Launch.class;
-        Launch.classLoader = new LaunchClassLoader(getURLs());
-        Launch.blackboard = new HashMap<String,Object>();
-        Thread.currentThread().setContextClassLoader(Launch.classLoader);
-        try {
-            Constructor<?> constructor = Launch.class.getDeclaredConstructor(new Class[0]);
-            constructor.setAccessible(true);
-            Object l = constructor.newInstance(new Object[0]);
+            //Temp fix for Java 9-ea until Launchwrapper updates.
+            //Java 9-ea has lots of proformance fixes.
+            final Class<?> clazz = Launch.class;
+            Launch.classLoader = new LaunchClassLoader(getURLs());
+            Launch.blackboard = new HashMap<String,Object>();
+            Thread.currentThread().setContextClassLoader(Launch.classLoader);
+            try {
+                Constructor<?> constructor = Launch.class.getDeclaredConstructor(new Class[0]);
+                constructor.setAccessible(true);
+                Object l = constructor.newInstance(new Object[0]);
         
-            Method m = clazz.getDeclaredMethod("launch", new Class[]{String[].class});
-            m.setAccessible(true);
-            m.invoke((Launch) l, (Object) args);
-        } catch (Exception e) {
-           e.printStackTrace();
-           System.out.println("Your system does't support the Java 9 workaround. Please use Java 8");
+                Method m = clazz.getDeclaredMethod("launch", new Class[]{String[].class});
+                m.setAccessible(true);
+                m.invoke((Launch) l, (Object) options.toArray(new String[options.size()]);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Your system does't support the Java 9-ea workaround. Please use Java 8");
+            }
         }
     }
 
