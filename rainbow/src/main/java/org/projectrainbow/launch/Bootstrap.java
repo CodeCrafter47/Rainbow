@@ -141,7 +141,7 @@ public class Bootstrap {
 
     private static void addURL(URL u) throws IOException {
         URLClassLoader sysloader = (URLClassLoader) Launch.class.getClassLoader();
-        Class sysclass = URLClassLoader.class;
+        Class<URLClassLoader> sysclass = URLClassLoader.class;
 
         try {
             Method method = sysclass.getDeclaredMethod("addURL", URL.class);
