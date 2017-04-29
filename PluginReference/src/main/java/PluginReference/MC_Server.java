@@ -134,6 +134,13 @@ public interface MC_Server {
      * @return Maximum build height
      */
     int getMaxBuildHeight();
+    
+    /**
+     * Get maximum players allowed to join.
+     * 
+     * @return Maximum players.
+     */
+    int getMaxPlayerCount();
 
     /**
      * Get number of seconds players must wait before reconnecting

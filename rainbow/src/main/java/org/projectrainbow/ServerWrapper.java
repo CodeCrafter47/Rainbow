@@ -444,4 +444,9 @@ public class ServerWrapper implements MC_Server {
         String name = _UUIDMapper.getName(uuid);
         return name != null ? new OfflinePlayerWrapper(name) : null;
     }
+
+    @Override
+    public int getMaxPlayerCount() {
+        return _DiwUtils.getMinecraftServer().getPlayerList().getMaxPlayers();
+    }
 }
