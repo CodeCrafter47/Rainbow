@@ -1,15 +1,20 @@
 package org.projectrainbow.launch;
 
 import net.minecraft.launchwrapper.Launch;
+import net.minecraft.launchwrapper.LaunchClassLoader;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -37,7 +42,11 @@ public class Bootstrap {
             logger.info("*** Java 8 will be required as of 1.12      ***");
             logger.info("*** Get Java 8: http://bit.ly/Java8Download ***");
             logger.info("*** Server will start in 5 seconds...       ***");
-            Thread.sleep(TimeUnit.SECONDS.toMillis(5));
+            try {
+                Thread.sleep(TimeUnit.SECONDS.toMillis(5));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         logger.info("Searching for additional tweakers...");
@@ -109,7 +118,7 @@ public class Bootstrap {
         
                 Method m = clazz.getDeclaredMethod("launch", new Class[]{String[].class});
                 m.setAccessible(true);
-                m.invoke((Launch) l, (Object) options.toArray(new String[options.size()]);
+                m.invoke((Launch) l, (Object) options.toArray(new String[options.size()]));
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("Your system does't support the Java 9-ea workaround. Please use Java 8");
