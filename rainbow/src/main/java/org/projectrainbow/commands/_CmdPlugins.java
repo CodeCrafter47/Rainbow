@@ -32,8 +32,8 @@ public class _CmdPlugins implements MC_Command {
 
     @Override
     public void handleCommand(MC_Player plr, String[] args) {
-        ArrayList pluginNames = new ArrayList();
-        Iterator nextColor = _DiwUtils.pluginManager.plugins.iterator();
+        ArrayList<String> pluginNames = new ArrayList<String>();
+        Iterator<PluginInfo> nextColor = _DiwUtils.pluginManager.plugins.iterator();
 
         while (nextColor.hasNext()) {
             PluginInfo strPlugins = (PluginInfo) nextColor.next();
