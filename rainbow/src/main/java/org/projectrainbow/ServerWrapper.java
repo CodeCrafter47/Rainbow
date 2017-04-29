@@ -449,4 +449,9 @@ public class ServerWrapper implements MC_Server {
     public int getMaxPlayerCount() {
         return _DiwUtils.getMinecraftServer().getPlayerList().getMaxPlayers();
     }
+
+    @Override
+    public String getMinecraftVersion() {
+        return _DiwUtils.getMinecraftServer().getMinecraftVersion();
+    }
 }
