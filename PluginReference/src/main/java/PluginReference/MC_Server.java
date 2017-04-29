@@ -141,6 +141,21 @@ public interface MC_Server {
      * @return Maximum players.
      */
     int getMaxPlayerCount();
+    
+    /**
+     * Get the maximum view distance players are able to see Entitys.
+     * 
+     * @see MC_Server#setViewDistance
+     * @return View Distance
+     */
+    int getViewDistance();
+    
+    /**
+     * Set the maxium view distance players are able to see Entitys.
+     * 
+     * @see MC_Server#getViewDistance
+     */
+    void setViewDistance(int newValue);
 
     /**
      * Get number of seconds players must wait before reconnecting

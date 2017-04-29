@@ -449,4 +449,14 @@ public class ServerWrapper implements MC_Server {
     public int getMaxPlayerCount() {
         return _DiwUtils.getMinecraftServer().getPlayerList().getMaxPlayers();
     }
+
+    @Override
+    public int getViewDistance() {
+        return _DiwUtils.getMinecraftServer().getPlayerList().getViewDistance();
+    }
+
+    @Override
+    public void setViewDistance(int newValue) {
+        _DiwUtils.getMinecraftServer().getPlayerList().setViewDistance(newValue);
+    }
 }
