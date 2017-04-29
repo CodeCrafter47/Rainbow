@@ -27,8 +27,16 @@ import org.projectrainbow.util.WrappedMinecraftCommand;
 import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.util.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class ServerWrapper implements MC_Server {
     private static ServerWrapper instance = new ServerWrapper();
@@ -64,8 +72,8 @@ public class ServerWrapper implements MC_Server {
     }
 
     public List<MC_Player> getOfflinePlayers() {
-        ArrayList list = new ArrayList();
-        Iterator var3 = _JOT_OnlineTimeUtils.Data.playerData.keySet().iterator();
+        ArrayList<MC_Player> list = new ArrayList<MC_Player>();
+        Iterator<String> var3 = _JOT_OnlineTimeUtils.Data.playerData.keySet().iterator();
 
         while (var3.hasNext()) {
             String name = (String) var3.next();
@@ -236,14 +244,14 @@ public class ServerWrapper implements MC_Server {
     }
 
     public List<String> getMatchingOnlinePlayerNames(String arg) {
-        ArrayList matches = new ArrayList();
+        ArrayList<String> matches = new ArrayList<String>();
 
         if (arg == null) {
             arg = "";
         }
 
         arg = arg.toLowerCase().trim();
-        Iterator var4 = _DiwUtils.getMinecraftServer().getPlayerList().getPlayerList().iterator();
+        Iterator<EntityPlayerMP> var4 = _DiwUtils.getMinecraftServer().getPlayerList().getPlayerList().iterator();
 
         while (var4.hasNext()) {
             Object oPlayer = var4.next();
@@ -464,4 +472,5 @@ public class ServerWrapper implements MC_Server {
     public String getMinecraftVersion() {
         return _DiwUtils.getMinecraftServer().getMinecraftVersion();
     }
+
 }
