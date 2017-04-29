@@ -264,6 +264,13 @@ public interface MC_Server {
      * @return Version number
      */
     double getRainbowVersion();
+    
+    /**
+     * Gets Minecraft version number.
+     * 
+     * @return Minecraft version (as String)
+     */
+    String getMinecraftVersion();
 
     /**
      * Get current filename of server icon

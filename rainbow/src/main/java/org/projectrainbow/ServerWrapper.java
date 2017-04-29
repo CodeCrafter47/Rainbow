@@ -459,4 +459,9 @@ public class ServerWrapper implements MC_Server {
     public void setViewDistance(int newValue) {
         _DiwUtils.getMinecraftServer().getPlayerList().setViewDistance(newValue);
     }
+
+    @Override
+    public String getMinecraftVersion() {
+        return _DiwUtils.getMinecraftServer().getMinecraftVersion();
+    }
 }
