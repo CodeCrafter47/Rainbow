@@ -473,4 +473,8 @@ public class ServerWrapper implements MC_Server {
         return _DiwUtils.getMinecraftServer().getMinecraftVersion();
     }
 
+    @Override
+    public boolean getAllowNether() {
+        return _DiwUtils.getMinecraftServer().getAllowNether();
+    }
 }
