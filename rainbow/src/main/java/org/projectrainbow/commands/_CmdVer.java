@@ -1,19 +1,20 @@
 package org.projectrainbow.commands;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.projectrainbow.Updater;
+import org.projectrainbow._ColorHelper;
+import org.projectrainbow._DiwUtils;
+import org.projectrainbow.launch.Bootstrap;
+
 import PluginReference.MC_Player;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import org.projectrainbow._ColorHelper;
-import org.projectrainbow._DiwUtils;
-import org.projectrainbow.launch.Bootstrap;
 
-import java.util.Collections;
-import java.util.List;
-
-public class _CmdVer extends CommandBase
-{
+public class _CmdVer extends CommandBase {
     @Override
     public String getCommandName() {
         return "ver";
@@ -36,6 +37,8 @@ public class _CmdVer extends CommandBase
 
     @Override
     public void execute(MinecraftServer minecraftServer, ICommandSender cs, String[] strings) throws CommandException {
-        _DiwUtils.reply(cs, String.valueOf(_ColorHelper.AQUA) + "Rainbow Server Mod: " + _ColorHelper.LIGHT_PURPLE + "Version " + _DiwUtils.MC_VERSION_STRING + " Build " + Bootstrap.buildNumber);
+        _DiwUtils.reply(cs, String.valueOf(_ColorHelper.AQUA) + "Rainbow " + _ColorHelper.LIGHT_PURPLE + _DiwUtils.MC_VERSION_STRING + " b" + Bootstrap.buildNumber);
+        _DiwUtils.reply(cs, "Checking for update, please wait...");
+        _DiwUtils.reply(cs, Updater.checkForUpdate());
     }
 }
