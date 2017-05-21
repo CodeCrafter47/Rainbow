@@ -5,7 +5,7 @@
     <parent>
         <artifactId>rainbow-parent</artifactId>
         <groupId>org.projectrainbow</groupId>
-        <version>1.11.2-SNAPSHOT</version>
+        <version>1.12-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -34,7 +34,7 @@
                             <outputDirectory>
                                 ${project.build.directory}
                             </outputDirectory>
-                            <md5>e576e5eb43cd176158917585200cb37d</md5>
+                            <md5>218513c2d5b0ec4b6db26801a3883ad1</md5>
                         </configuration>
                     </execution>
                 </executions>
@@ -42,7 +42,7 @@
             <plugin>
                 <groupId>net.md-5</groupId>
                 <artifactId>specialsource-maven-plugin</artifactId>
-                <version>1.2.1-CodeCrafter47-4-SNAPSHOT</version>
+                <version>1.2.1-CodeCrafter47-6-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <phase>initialize</phase>
@@ -63,7 +63,6 @@
                             </inJars>
                             <outputDirectory>${project.build.directory}
                             </outputDirectory>
-                            <skipDebug>true</skipDebug>
                         </configuration>
                     </execution>
                 </executions>

@@ -28,7 +28,7 @@ public class MixinDedicatedServer {
      *
      * Inject the rainbow startup code a the beginning of startServer() in DedicatedServer.
      */
-    @Inject(method = "startServer", at = @At("HEAD"))
+    @Inject(method = "init", at = @At("HEAD"))
     void onServerStart(CallbackInfoReturnable<Boolean> callbackInfo) {
         _DiwUtils.minecraftServer = (MinecraftServer) (Object) this;
         _DiwUtils.ServerStartTime = System.currentTimeMillis();
@@ -50,7 +50,7 @@ public class MixinDedicatedServer {
         System.out.println("Rainbow Mod " + Bootstrap.minecraftVersion + "#" + Bootstrap.buildNumber);
     }
 
-    @Redirect(method = "startServer", at = @At(value = "INVOKE", target = "net.minecraft.server.dedicated.PropertyManager.getStringProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"))
+    @Redirect(method = "init", at = @At(value = "INVOKE", target = "net.minecraft.server.dedicated.PropertyManager.getStringProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"))
     String defaultMotd(PropertyManager propertyManager, String key, String defaultValue) {
         if (key.equals("motd")) {
             defaultValue = _DiwUtils.DefaultMOTD;
@@ -59,7 +59,7 @@ public class MixinDedicatedServer {
         return propertyManager.getStringProperty(key, defaultValue);
     }
 
-    @Inject(method = "startServer", at = @At(value = "NEW", args = "class=net/minecraft/server/dedicated/ServerHangWatchdog"))
+    @Inject(method = "init", at = @At(value = "NEW", args = "class=net/minecraft/server/dedicated/ServerHangWatchdog"))
     void onCreateServerHangWatchdog(CallbackInfoReturnable<Boolean> callbackInfo) {
         ((IMixinMinecraftServer) this).setCurrentTime(System.currentTimeMillis());
     }
@@ -67,7 +67,7 @@ public class MixinDedicatedServer {
     /*
      * @Inject allows us to add code to a method in the target class.
      */
-    @Inject(method = "startServer", at = @At("RETURN"))
+    @Inject(method = "init", at = @At("RETURN"))
     void onServerFullyLoaded(CallbackInfoReturnable<Boolean> callbackInfo) {
         if (callbackInfo.getReturnValue()) {
             Hooks.onServerFullyLoaded();

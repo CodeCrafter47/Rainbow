@@ -11,10 +11,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.CommandBlockBaseLogic;
-import net.minecraft.util.text.TextComponentTranslation;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.projectrainbow.ServerWrapper;
 import org.spongepowered.asm.lib.Opcodes;
 import org.spongepowered.asm.mixin.Final;
@@ -25,13 +21,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-
-import static org.projectrainbow.launch.Bootstrap.args;
 
 @Mixin(CommandHandler.class)
 public class MixinCommandHandler {
@@ -42,10 +35,10 @@ public class MixinCommandHandler {
     private Map<String, ICommand> commandMap;
 
     {
-        commandMap = new LinkedHashMap<String, ICommand>();
+        commandMap = new LinkedHashMap<>();
     }
 
-    @Redirect(method = "executeCommand", at = @At(value = "INVOKE", target = "get", remap = false))
+    @Redirect(method = "executeCommand", at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;", remap = false))
     private Object caseInsensitiveMapGet(Map map, Object key) {
         Object o = map.get(key);
         if (o == null && key instanceof String) {
@@ -82,16 +75,6 @@ public class MixinCommandHandler {
     @Inject(method = "tryExecute", at = @At("RETURN"))
     private void onCommandExecuteEnd(ICommandSender sender, String[] args, ICommand command, String commandLine, CallbackInfoReturnable<Boolean> callbackInfo) {
         ServerWrapper.commandSenderInfo.removeLast();
-    }
-
-    @Inject(method = "tryExecute", at = @At(value = "INVOKE", target = "warn", remap = false), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void onExceptionPrintStackTrace(ICommandSender sender, String[] args, ICommand command, String commandLine, CallbackInfoReturnable<Boolean> callbackInfo, Throwable throwable, TextComponentTranslation errorMessageSentToPlayer) {
-        LogManager.getLogger().log(Level.WARN, "Couldn\'t process command: \'" + commandLine + "\'", throwable);
-    }
-
-    @Redirect(method = "tryExecute", at = @At(value = "INVOKE", target = "warn", remap = false))
-    private void onExceptionIgnoreOldLog(Logger logger, String message, Object... args) {
-
     }
 
     @Redirect(method = "getPossibleCommands", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "net.minecraft.command.CommandHandler.commandSet:Ljava/util/Set;"))

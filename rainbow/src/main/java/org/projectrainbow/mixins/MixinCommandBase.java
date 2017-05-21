@@ -16,7 +16,7 @@ public class MixinCommandBase {
     @Inject(method = "checkPermission", at = @At("HEAD"), cancellable = true)
     private void canUse(MinecraftServer server, ICommandSender commandSender, CallbackInfoReturnable<Boolean> callbackInfo){
         if (commandSender instanceof MC_Player) {
-            callbackInfo.setReturnValue(((MC_Player)commandSender).hasPermission("rainbow." + ((ICommand)this).getCommandName()));
+            callbackInfo.setReturnValue(((MC_Player)commandSender).hasPermission("rainbow." + ((ICommand)this).getName()));
         }
     }
 }

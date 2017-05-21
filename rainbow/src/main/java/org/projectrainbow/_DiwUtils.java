@@ -14,7 +14,6 @@ import joebkt._SerializableLocation;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.ServerCommandManager;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityAreaEffectCloud;
 import net.minecraft.entity.EntityHanging;
@@ -32,6 +31,7 @@ import net.minecraft.entity.passive.EntityAmbientCreature;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.entity.projectile.EntityThrowable;
@@ -39,10 +39,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.gui.StatsComponent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraft.util.text.translation.LanguageMap;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.LogManager;
@@ -83,6 +81,7 @@ import org.projectrainbow.commands._CmdWorth;
 import org.projectrainbow.interfaces.IMixinICommandSender;
 import org.projectrainbow.plugins.PluginManager;
 
+import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -111,7 +110,7 @@ import java.util.jar.JarFile;
 public class _DiwUtils {
     public static boolean ArmorStand_DanceEverywhere = false;
     public static boolean DoJanitor = true;
-    public static String CustomShutdownMessage = "We\'ll be right back!";
+    public static String CustomShutdownMessage = null;
     public static boolean DoHideAnnoyingDefaultServerOutput = true;
     public static int AutoSaveMinutes = 31;
     public static int JanitorInterval = 900;
@@ -125,7 +124,7 @@ public class _DiwUtils {
     public static String DefaultMOTD = "§c§lA§6§l §e§lR§a§la§b§li§d§ln§c§lb§6§lo§e§lw§a§l §b§lS§d§le§c§lr§6§lv§e§le§a§lr\n§6%s Fully Supported!";
     public static SimpleDateFormat shortDateFormat = new SimpleDateFormat("MM/dd/yyyy");
     public static boolean g_didLoadDataFiles = false;
-    public static ConcurrentHashMap<String, Long> tooSoon = new ConcurrentHashMap<String, Long>();
+    public static ConcurrentHashMap<String, Long> tooSoon = new ConcurrentHashMap<>();
     public static MinecraftServer minecraftServer;
     public static PluginManager pluginManager = new PluginManager();
     public static boolean BlockFlowOn = true;
@@ -147,7 +146,7 @@ public class _DiwUtils {
     public static boolean OpsKeepInventory = true;
     public static int MaxNearbyEntities = 250;
     public static long g_standFunIdx = 0L;
-    public static List<String> g_removedCommand = new LinkedList<String>();
+    public static List<String> g_removedCommand = new LinkedList<>();
     public static boolean UpdateNameColorOnTab = false;
     public static double netherDistanceRatio = 8.0D;
     public static long g_restartCountdown = -1L;
@@ -190,9 +189,9 @@ public class _DiwUtils {
         System.out.println(_ColorHelper.stripColor(msg));
     }
 
-    public static void reply(final ICommandSender cs, final String msg) {
+    public static void reply(@Nullable ICommandSender cs, String msg) {
         if (cs instanceof EntityPlayer) {
-            final EntityPlayer p = (EntityPlayer) cs;
+            EntityPlayer p = (EntityPlayer) cs;
             ((IMixinICommandSender) p).sendMessage(msg);
             return;
         }
@@ -296,8 +295,8 @@ public class _DiwUtils {
     }
 
     public static void Startup() {
-        _DiwUtils.MC_VERSION_STRING = getMinecraftServer().getMinecraftVersion();
-        _DiwUtils.DefaultMOTD = String.format(DefaultMOTD, getMinecraftServer().getMinecraftVersion());
+        _DiwUtils.MC_VERSION_STRING = getMinecraftServer().G(); // getMinecraftVersion
+        _DiwUtils.DefaultMOTD = String.format(DefaultMOTD, _DiwUtils.MC_VERSION_STRING);
 
         // Setup BlockHelper
         ImmutableMap.Builder<Integer, String> mapBlockNames = ImmutableMap.builder();
@@ -308,7 +307,7 @@ public class _DiwUtils {
 
         ImmutableMap.Builder<String, String> mapItemNames = ImmutableMap.builder();
         ImmutableMap.Builder<Integer, Integer> mapNumSubtypes = ImmutableMap.builder();
-        Set<String> subtypes = new HashSet<String>();
+        Set<String> subtypes = new HashSet<>();
         for (Item item : Item.REGISTRY) {
             int id = Item.getIdFromItem(item);
             if (item.getHasSubtypes()) {
@@ -365,15 +364,15 @@ public class _DiwUtils {
         }
 
         // register commands
-        ((ServerCommandManager) getMinecraftServer().getCommandManager()).registerCommand(new _CmdNameColor());
-        ((ServerCommandManager) getMinecraftServer().getCommandManager()).registerCommand(new _CmdCron());
-        ((ServerCommandManager) getMinecraftServer().getCommandManager()).registerCommand(new _CmdVer());
-        ((ServerCommandManager) getMinecraftServer().getCommandManager()).registerCommand(new _CmdDiw());
-        ((ServerCommandManager) getMinecraftServer().getCommandManager()).registerCommand(new _CmdSuicide());
-        ((ServerCommandManager) getMinecraftServer().getCommandManager()).registerCommand(new _CmdHome());
-        ((ServerCommandManager) getMinecraftServer().getCommandManager()).registerCommand(new _CmdSetHome());
-        ((ServerCommandManager) getMinecraftServer().getCommandManager()).registerCommand(new _CmdSpawn());
-        ((ServerCommandManager) getMinecraftServer().getCommandManager()).registerCommand(new _CmdBp());
+        ServerWrapper.getInstance().registerCommand(new _CmdNameColor());
+        ServerWrapper.getInstance().registerCommand(new _CmdCron());
+        ServerWrapper.getInstance().registerCommand(new _CmdVer());
+        ServerWrapper.getInstance().registerCommand(new _CmdDiw());
+        ServerWrapper.getInstance().registerCommand(new _CmdSuicide());
+        ServerWrapper.getInstance().registerCommand(new _CmdHome());
+        ServerWrapper.getInstance().registerCommand(new _CmdSetHome());
+        ServerWrapper.getInstance().registerCommand(new _CmdSpawn());
+        ServerWrapper.getInstance().registerCommand(new _CmdBp());
         ServerWrapper.getInstance().registerCommand(new _CmdAnnouncer());
         ServerWrapper.getInstance().registerCommand(new _CmdPay());
         ServerWrapper.getInstance().registerCommand(new _CmdBal());
@@ -405,8 +404,8 @@ public class _DiwUtils {
         for (String cmd : g_removedCommand) {
             ICommand command = commandMap.get(cmd);
             if (command != null) {
-                commandMap.remove(command.getCommandName());
-                for (String alias : command.getCommandAliases()) {
+                commandMap.remove(command.getName());
+                for (String alias : command.getAliases()) {
                     commandMap.remove(alias);
                 }
             }
@@ -603,10 +602,7 @@ public class _DiwUtils {
                                         "INVALID payday_amount setting: " + line);
                                 PayDayAmount = 200.0D;
                                 System.out.println(
-                                        String.format("* Will use default: %.2f",
-                                                new Object[]{
-                                                        Double.valueOf(
-                                                                PayDayAmount)}));
+                                        String.format("* Will use default: %.2f", PayDayAmount));
                             }
                         }
 
@@ -660,8 +656,7 @@ public class _DiwUtils {
                     String.format(fmt,
                             new Object[]{
                                     "payday_amount",
-                                    String.format("%.2f",
-                                            new Object[]{Double.valueOf(PayDayAmount)})}));
+                                    String.format("%.2f", PayDayAmount)}));
             bw.write(
                     String.format(fmt,
                             new Object[]{
@@ -695,7 +690,7 @@ public class _DiwUtils {
                     String.format(fmt,
                             new Object[]{
                                     "max_nearby_entities", "" + MaxNearbyEntities}));
-            bw.write(String.format(fmt, new Object[]{"bungeecord", Boolean.valueOf(BungeeCord)}));
+            bw.write(String.format(fmt, new Object[]{"bungeecord", BungeeCord}));
             bw.write(String.format(fmt, "update_namecolor_on_tab", UpdateNameColorOnTab));
             bw.write(String.format(fmt, "nether_distance_ratio", netherDistanceRatio));
             bw.close();
@@ -718,8 +713,7 @@ public class _DiwUtils {
 
         try {
             res = Integer.parseInt(str);
-        } catch (Exception var5) {
-            ;
+        } catch (Exception ignored) {
         }
 
         if (res < minValidValue) {
@@ -1171,7 +1165,7 @@ public class _DiwUtils {
     }
 
     public static void MessageAllPlayers(String msg) {
-        for (EntityPlayerMP p : getMinecraftServer().getPlayerList().getPlayerList()) {
+        for (EntityPlayerMP p : getMinecraftServer().getPlayerList().getPlayers()) {
             ((IMixinICommandSender) p).sendMessage(msg);
         }
     }
@@ -1764,7 +1758,7 @@ public class _DiwUtils {
     }
 
     public static String TextAlignTrailerPerfect(String str, int padLen) {
-        StringBuffer tgt = new StringBuffer();
+        StringBuilder tgt = new StringBuilder();
         int pixelsTaken = 0;
 
         int spacesPixels;
@@ -1879,8 +1873,8 @@ public class _DiwUtils {
     }
 
     public static String GetCommaList(Collection<String> arr, boolean doSort) {
-        ArrayList list = new ArrayList(arr);
-        StringBuffer buf = new StringBuffer();
+        ArrayList<String> list = new ArrayList<>(arr);
+        StringBuilder buf = new StringBuilder();
 
         Collections.sort(list);
 
@@ -1897,13 +1891,13 @@ public class _DiwUtils {
     }
 
     public static Long IncreaseEventCount(String key) {
-        Long cnt = (Long) _EventManager.eventCount.get(key);
+        Long cnt = _EventManager.eventCount.get(key);
 
         if (cnt == null) {
-            cnt = Long.valueOf(0L);
+            cnt = 0L;
         }
 
-        cnt = Long.valueOf(cnt.longValue() + 1L);
+        cnt = cnt + 1L;
         _EventManager.eventCount.put(key, cnt);
         return cnt;
     }
@@ -2008,10 +2002,18 @@ public class _DiwUtils {
         try {
             Item exc = Item.getItemById(itemID);
             ItemStack is = new ItemStack(exc, itemCount, itemDamage);
-            int idx = ((EntityPlayer) p).inventory.getFirstEmptyStack();
+            InventoryPlayer inventory = ((EntityPlayer) p).inventory;
+            int idx = -1;
+
+            for (int i = 0; i < inventory.getSizeInventory(); i++) {
+                if (inventory.getStackInSlot(i).isEmpty()) {
+                    idx = i;
+                    break;
+                }
+            }
 
             if (idx >= 0) {
-                ((EntityPlayer) p).inventory.mainInventory.set(idx, is);
+                inventory.mainInventory.set(idx, is);
                 return true;
             }
         } catch (Throwable var7) {
@@ -2026,7 +2028,7 @@ public class _DiwUtils {
         int mins = (int) (ms / 1000L / 60L % 60L);
 
         return String.format("%02dm %02ds",
-                new Object[]{Integer.valueOf(mins), Integer.valueOf(secs)});
+                mins, secs);
     }
 
     public static void MessageAllPlayers(MC_Player cs, String msg) {
@@ -2079,15 +2081,13 @@ public class _DiwUtils {
 
         if (hr < 12) {
             return String.format("%02d:%02dam EST",
-                    new Object[]{
-                            Integer.valueOf(hr == 0 ? 12 : hr),
-                            Integer.valueOf(min)});
+                    hr == 0 ? 12 : hr,
+                    min);
         } else {
             hr -= 12;
             return String.format("%02d:%02dpm EST",
-                    new Object[]{
-                            Integer.valueOf(hr == 0 ? 12 : hr),
-                            Integer.valueOf(min)});
+                    hr == 0 ? 12 : hr,
+                    min);
         }
     }
 
@@ -2124,7 +2124,7 @@ public class _DiwUtils {
     public static void Do_ArmorStand_Fun_At_Spawn() {
         if (ArmorStandsDance) {
             ++g_standFunIdx;
-            WorldServer[] worlds = getMinecraftServer().worldServers;
+            WorldServer[] worlds = getMinecraftServer().worlds;
 
             for (int i = 0; i < worlds.length; ++i) {
                 WorldServer world = worlds[i];
@@ -2207,8 +2207,8 @@ public class _DiwUtils {
                             String.format(
                                     "Spawn ForceField: %15s @ x=%-4d y=%-4d",
                                     new Object[]{
-                                            entity.getName(), Integer.valueOf(x),
-                                            Integer.valueOf(z)}));
+                                            entity.getName(), x,
+                                            z}));
 
                     entity.removeEntity();
                 }
@@ -2220,7 +2220,7 @@ public class _DiwUtils {
         double bestDist = 100000.0D;
         MC_Entity bestEnt = null;
         String tgtNameLower = tgtName.toLowerCase();
-        WorldServer[] worlds = getMinecraftServer().worldServers;
+        WorldServer[] worlds = getMinecraftServer().worlds;
         int i = 0;
 
         while (i < worlds.length) {

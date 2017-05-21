@@ -10,19 +10,19 @@ import org.spongepowered.asm.mixin.Shadow;
 public class MixinChunk implements MC_Chunk {
     @Shadow
     @Final
-    public int xPosition;
+    public int x;
     @Shadow
     @Final
-    public int zPosition;
+    public int z;
 
 
     @Override
     public int getCX() {
-        return xPosition;
+        return x;
     }
 
     @Override
     public int getCZ() {
-        return zPosition;
+        return z;
     }
 }

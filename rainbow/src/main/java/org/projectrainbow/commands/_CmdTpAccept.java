@@ -28,9 +28,8 @@ public class _CmdTpAccept implements MC_Command {
     }
 
     @Override
-    public void handleCommand(MC_Player plr, String[] args) {
-        if (plr != null) {
-            MC_Player player = plr;
+    public void handleCommand(MC_Player player, String[] args) {
+        if (player != null) {
             if (args.length == 1 && args[0].length() > 0) {
                 String tgtName = args[0];
                 String pName = player.getName();
@@ -79,7 +78,7 @@ public class _CmdTpAccept implements MC_Command {
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
         return args.length >= 1
                 ? CommandBase.getListOfStringsMatchingLastWord(args,
-                _DiwUtils.getMinecraftServer().getAllUsernames())
+                _DiwUtils.getMinecraftServer().getOnlinePlayerNames())
                 : null;
     }
 

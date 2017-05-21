@@ -35,7 +35,7 @@ public abstract class MixinTileEntityNote extends TileEntity implements MC_NoteB
 
     @Override
     public void play() {
-        triggerNote(getWorld(), getPos());
+        triggerNote(world, getPos());
     }
 
     @Override
@@ -43,6 +43,6 @@ public abstract class MixinTileEntityNote extends TileEntity implements MC_NoteB
         if (note < 0 || note > 24) {
             throw new IllegalArgumentException("Note must be between 0 and 24");
         }
-        getWorld().addBlockEvent(getPos(), Blocks.NOTEBLOCK, instrument.ordinal(), note);
+        world.addBlockEvent(getPos(), Blocks.NOTEBLOCK, instrument.ordinal(), note);
     }
 }

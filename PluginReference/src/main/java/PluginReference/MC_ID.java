@@ -240,6 +240,24 @@ public final class MC_ID
 	public static final int BLOCK_SHULKER_BOX_GREEN = 232;
 	public static final int BLOCK_SHULKER_BOX_RED = 233;
 	public static final int BLOCK_SHULKER_BOX_BLACK = 234;
+	public static final int BLOCK_TERRACOTTA_WHITE = 235;
+	public static final int BLOCK_TERRACOTTA_ORANGE = 236;
+	public static final int BLOCK_TERRACOTTA_MAGENTA = 237;
+	public static final int BLOCK_TERRACOTTA_LIGHT_BLUE = 238;
+	public static final int BLOCK_TERRACOTTA_YELLOW = 239;
+	public static final int BLOCK_TERRACOTTA_LIME = 240;
+	public static final int BLOCK_TERRACOTTA_PINK = 241;
+	public static final int BLOCK_TERRACOTTA_GRAY = 242;
+	public static final int BLOCK_TERRACOTTA_SILVER = 243;
+	public static final int BLOCK_TERRACOTTA_CYAN = 244;
+	public static final int BLOCK_TERRACOTTA_PURPLE = 245;
+	public static final int BLOCK_TERRACOTTA_BLUE = 246;
+	public static final int BLOCK_TERRACOTTA_BROWN = 247;
+	public static final int BLOCK_TERRACOTTA_GREEN = 248;
+	public static final int BLOCK_TERRACOTTA_RED = 249;
+	public static final int BLOCK_TERRACOTTA_BLACK = 250;
+	public static final int BLOCK_CONCRETE = 251;
+	public static final int BLOCK_CONCRETE_POWDER = 252;
 	public static final int BLOCK_STRUCTURE_BLOCK = 255;
 	public static final int ITEM_IRON_SHOVEL = 256;
 	public static final int ITEM_IRON_PICKAXE = 257;
@@ -432,6 +450,8 @@ public final class MC_ID
 	public static final int ITEM_DARK_OAK_BOAT = 448;
 	public static final int ITEM_TOTEM = 449;
 	public static final int ITEM_SHULKER_SHELL = 450;
+	public static final int ITEM_IRON_NUGGET = 452;
+	public static final int ITEM_KNOWLEDGE_BOOK = 453;
 
 	public static final int ITEM_RECORD_13 = 2256;
 	public static final int ITEM_RECORD_CAT = 2257;

@@ -41,7 +41,7 @@ public class _CmdJot implements MC_Command {
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
         return args.length >= 1
                 ? CommandBase.getListOfStringsMatchingLastWord(args,
-                _DiwUtils.getMinecraftServer().getAllUsernames())
+                _DiwUtils.getMinecraftServer().getOnlinePlayerNames())
                 : null;
     }
 }

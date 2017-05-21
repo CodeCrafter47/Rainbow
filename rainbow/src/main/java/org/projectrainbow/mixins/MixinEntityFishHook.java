@@ -4,7 +4,6 @@ import PluginReference.MC_Entity;
 import PluginReference.MC_EventInfo;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_Player;
-import com.google.common.base.Objects;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityFishHook;
@@ -53,7 +52,7 @@ public abstract class MixinEntityFishHook {
         }
     }
 
-    @Inject(method = "handleHookRetraction", at = @At(value = "NEW", args = "class=net.minecraft.entity.item.EntityItem", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    @Inject(method = "handleHookRetraction", at = @At(value = "NEW", target = "Lnet/minecraft/entity/item/EntityItem;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void hook(CallbackInfoReturnable<Integer> callbackInfo, int var1, LootContext.Builder var2, Iterator var3, ItemStack var4) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptFishingReel((MC_Player) angler, (MC_ItemStack) (Object) var4, null, false, ei);

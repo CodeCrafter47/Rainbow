@@ -10,9 +10,8 @@ import PluginReference.MC_Location;
 import PluginReference.MC_MotionData;
 import PluginReference.MC_PotionEffect;
 import PluginReference.MC_World;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicates;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -27,8 +26,16 @@ import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.interfaces.IMixinNBTBase;
-import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.Implements;
+import org.spongepowered.asm.mixin.Interface;
+import org.spongepowered.asm.mixin.Intrinsic;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -195,7 +202,7 @@ public abstract class MixinEntity implements MC_Entity {
     @Override
     public MC_EntityType getType() {
         MC_EntityType type = PluginHelper.getEntityType((Class<? extends Entity>) (Object) getClass());
-        return Objects.firstNonNull(type, MC_EntityType.UNSPECIFIED);
+        return MoreObjects.firstNonNull(type, MC_EntityType.UNSPECIFIED);
     }
 
     @Override
@@ -364,8 +371,8 @@ public abstract class MixinEntity implements MC_Entity {
     }
 
     @Override
-    public List getNearbyEntities(float var1) {
-        return world.getEntitiesInAABBexcluding((Entity) (Object) this, new AxisAlignedBB(posX - var1, posY - var1, posZ - var1, posX + var1, posY + var1, posZ + var1), Predicates.<Entity>alwaysTrue());
+    public List<MC_Entity> getNearbyEntities(float var1) {
+        return (List<MC_Entity>) (List) world.getEntitiesInAABBexcluding((Entity) (Object) this, new AxisAlignedBB(posX - var1, posY - var1, posZ - var1, posX + var1, posY + var1, posZ + var1), entity -> true);
     }
 
     @Override
@@ -489,7 +496,7 @@ public abstract class MixinEntity implements MC_Entity {
             }
 
             this.setWorld(toWorld);
-            toWorld.spawnEntityInWorld((Entity) (Object) this);
+            toWorld.spawnEntity((Entity) (Object) this);
 
             fromWorld.resetUpdateEntityTick();
             toWorld.resetUpdateEntityTick();

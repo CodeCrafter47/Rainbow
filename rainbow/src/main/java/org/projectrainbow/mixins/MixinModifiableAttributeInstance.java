@@ -3,7 +3,7 @@ package org.projectrainbow.mixins;
 import PluginReference.MC_Attribute;
 import PluginReference.MC_AttributeModifier;
 import PluginReference.MC_AttributeType;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
@@ -24,7 +24,7 @@ public abstract class MixinModifiableAttributeInstance implements IAttributeInst
      * @return the type
      */
     public MC_AttributeType api$getType() {
-        return Objects.firstNonNull(PluginHelper.attributeMap.inverse().get(getAttribute()), MC_AttributeType.HORSE_JUMP_STRENGTH);
+        return MoreObjects.firstNonNull(PluginHelper.attributeMap.inverse().get(getAttribute()), MC_AttributeType.HORSE_JUMP_STRENGTH);
     }
 
     /**

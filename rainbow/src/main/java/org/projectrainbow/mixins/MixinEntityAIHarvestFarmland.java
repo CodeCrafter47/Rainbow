@@ -19,7 +19,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -27,12 +26,12 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class MixinEntityAIHarvestFarmland {
     @Shadow
     @Final
-    private EntityVillager theVillager;
+    private EntityVillager villager;
 
     @Inject(method = "updateTask", at = @At(value = "INVOKE", target = "net.minecraft.world.World.destroyBlock(Lnet/minecraft/util/math/BlockPos;Z)Z"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void grief(CallbackInfo callbackInfo, World w, BlockPos pos, IBlockState state, Block block) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptEntityMiscGrief((MC_Entity) theVillager, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), theVillager.dimension), MC_MiscGriefType.VILLAGER_HARVEST, ei);
+        Hooks.onAttemptEntityMiscGrief((MC_Entity) villager, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), villager.dimension), MC_MiscGriefType.VILLAGER_HARVEST, ei);
         if (ei.isCancelled) {
             callbackInfo.cancel();
         }
@@ -41,7 +40,7 @@ public class MixinEntityAIHarvestFarmland {
     @Inject(method = "updateTask", at = @At(value = "INVOKE", target = "net.minecraft.world.World.setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD, expect = 4, require = 4)
     private void grief2(CallbackInfo callbackInfo, World w, BlockPos pos, IBlockState state, InventoryBasic inv, int i, ItemStack is, @Coerce  boolean b) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptEntityMiscGrief((MC_Entity) theVillager, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), theVillager.dimension), MC_MiscGriefType.VILLAGER_PLANT_SEEDS, ei);
+        Hooks.onAttemptEntityMiscGrief((MC_Entity) villager, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), villager.dimension), MC_MiscGriefType.VILLAGER_PLANT_SEEDS, ei);
         if (ei.isCancelled) {
             callbackInfo.cancel();
         }

@@ -1,20 +1,112 @@
 package org.projectrainbow;
 
-import PluginReference.*;
-import com.google.common.base.Objects;
+import PluginReference.BlockHelper;
+import PluginReference.MC_AttributeModifier;
+import PluginReference.MC_AttributeType;
+import PluginReference.MC_Block;
+import PluginReference.MC_DamageType;
+import PluginReference.MC_DirectionNESWUD;
+import PluginReference.MC_EnchantmentType;
+import PluginReference.MC_EntityType;
+import PluginReference.MC_GameMode;
+import PluginReference.MC_GameRuleType;
+import PluginReference.MC_Hand;
+import PluginReference.MC_ItemStack;
+import PluginReference.MC_PotionEffect;
+import PluginReference.MC_PotionEffectType;
+import PluginReference.MC_WorldBiomeType;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.block.Block;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityAreaEffectCloud;
+import net.minecraft.entity.EntityLeashKnot;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.item.*;
-import net.minecraft.entity.monster.*;
-import net.minecraft.entity.passive.*;
+import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.item.EntityBoat;
+import net.minecraft.entity.item.EntityEnderCrystal;
+import net.minecraft.entity.item.EntityEnderEye;
+import net.minecraft.entity.item.EntityEnderPearl;
+import net.minecraft.entity.item.EntityExpBottle;
+import net.minecraft.entity.item.EntityFallingBlock;
+import net.minecraft.entity.item.EntityFireworkRocket;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityItemFrame;
+import net.minecraft.entity.item.EntityMinecartChest;
+import net.minecraft.entity.item.EntityMinecartEmpty;
+import net.minecraft.entity.item.EntityMinecartFurnace;
+import net.minecraft.entity.item.EntityMinecartHopper;
+import net.minecraft.entity.item.EntityMinecartMobSpawner;
+import net.minecraft.entity.item.EntityMinecartTNT;
+import net.minecraft.entity.item.EntityPainting;
+import net.minecraft.entity.item.EntityTNTPrimed;
+import net.minecraft.entity.item.EntityXPOrb;
+import net.minecraft.entity.monster.EntityBlaze;
+import net.minecraft.entity.monster.EntityCaveSpider;
+import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.EntityElderGuardian;
+import net.minecraft.entity.monster.EntityEnderman;
+import net.minecraft.entity.monster.EntityEndermite;
+import net.minecraft.entity.monster.EntityEvoker;
+import net.minecraft.entity.monster.EntityGhast;
+import net.minecraft.entity.monster.EntityGiantZombie;
+import net.minecraft.entity.monster.EntityGuardian;
+import net.minecraft.entity.monster.EntityHusk;
+import net.minecraft.entity.monster.EntityIllusioner;
+import net.minecraft.entity.monster.EntityIronGolem;
+import net.minecraft.entity.monster.EntityMagmaCube;
+import net.minecraft.entity.monster.EntityPigZombie;
+import net.minecraft.entity.monster.EntityPolarBear;
+import net.minecraft.entity.monster.EntityShulker;
+import net.minecraft.entity.monster.EntitySilverfish;
+import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.EntitySlime;
+import net.minecraft.entity.monster.EntitySnowman;
+import net.minecraft.entity.monster.EntitySpider;
+import net.minecraft.entity.monster.EntityStray;
+import net.minecraft.entity.monster.EntityVex;
+import net.minecraft.entity.monster.EntityVindicator;
+import net.minecraft.entity.monster.EntityWitch;
+import net.minecraft.entity.monster.EntityWitherSkeleton;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.monster.EntityZombieVillager;
+import net.minecraft.entity.passive.EntityBat;
+import net.minecraft.entity.passive.EntityChicken;
+import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.passive.EntityDonkey;
+import net.minecraft.entity.passive.EntityHorse;
+import net.minecraft.entity.passive.EntityLlama;
+import net.minecraft.entity.passive.EntityMooshroom;
+import net.minecraft.entity.passive.EntityMule;
+import net.minecraft.entity.passive.EntityOcelot;
+import net.minecraft.entity.passive.EntityParrot;
+import net.minecraft.entity.passive.EntityPig;
+import net.minecraft.entity.passive.EntityRabbit;
+import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.EntitySkeletonHorse;
+import net.minecraft.entity.passive.EntitySquid;
+import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.entity.passive.EntityZombieHorse;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.projectile.*;
+import net.minecraft.entity.projectile.EntityDragonFireball;
+import net.minecraft.entity.projectile.EntityEgg;
+import net.minecraft.entity.projectile.EntityEvokerFangs;
+import net.minecraft.entity.projectile.EntityFishHook;
+import net.minecraft.entity.projectile.EntityLargeFireball;
+import net.minecraft.entity.projectile.EntityPotion;
+import net.minecraft.entity.projectile.EntityShulkerBullet;
+import net.minecraft.entity.projectile.EntitySmallFireball;
+import net.minecraft.entity.projectile.EntitySnowball;
+import net.minecraft.entity.projectile.EntitySpectralArrow;
+import net.minecraft.entity.projectile.EntityTippedArrow;
+import net.minecraft.entity.projectile.EntityWitherSkull;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -47,13 +139,13 @@ public class PluginHelper {
         if (EntityPlayerMP.class.isAssignableFrom(clazz)) {
             return MC_EntityType.PLAYER;
         } else {
-            return Objects.firstNonNull(entityMap.get(clazz), MC_EntityType.UNSPECIFIED);
+            return MoreObjects.firstNonNull(entityMap.get(clazz), MC_EntityType.UNSPECIFIED);
         }
     }
 
     public static List<MC_ItemStack> copyInvList(List<ItemStack> items) {
         int size = items.size();
-        List<MC_ItemStack> list = new ArrayList<MC_ItemStack>();
+        List<MC_ItemStack> list = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             ItemStack itemStack = items.get(i);
             list.add((MC_ItemStack) (Object) itemStack);
@@ -74,7 +166,7 @@ public class PluginHelper {
 
     public static MC_PotionEffect wrap(PotionEffect potionEffect) {
         MC_PotionEffectType type = potionMap.get(potionEffect.getPotion());
-        type = Objects.firstNonNull(type, MC_PotionEffectType.UNSPECIFIED);
+        type = MoreObjects.firstNonNull(type, MC_PotionEffectType.UNSPECIFIED);
         MC_PotionEffect mc_potionEffect = new MC_PotionEffect(type, potionEffect.getDuration(), potionEffect.getAmplifier());
         mc_potionEffect.ambient = potionEffect.getIsAmbient();
         mc_potionEffect.showsParticles = potionEffect.doesShowParticles();
@@ -109,6 +201,9 @@ public class PluginHelper {
         gameRuleMap.put(MC_GameRuleType.REDUCED_DEBUG_INFO, "reducedDebugInfo");
         gameRuleMap.put(MC_GameRuleType.SPECTATORS_GENERATE_CHUNKS, "spectatorsGenerateChunks");
         gameRuleMap.put(MC_GameRuleType.DISABLE_ELYTRA_MOVEMENT_CHECK, "disableElytraMovementCheck");
+        gameRuleMap.put(MC_GameRuleType.DO_WEATHER_CYCLE, "doWeatherCycle");
+        gameRuleMap.put(MC_GameRuleType.DO_LIMITED_CRAFTING, "doLimitedCrafting");
+        gameRuleMap.put(MC_GameRuleType.ANNOUNCE_ADVANCEMENTS, "announceAdvancements");
 
         gamemodeMap.put(GameType.NOT_SET, MC_GameMode.UNKNOWN);
         gamemodeMap.put(GameType.SURVIVAL, MC_GameMode.SURVIVAL);
@@ -198,6 +293,8 @@ public class PluginHelper {
         entityMap.put(EntityMinecartTNT.class, MC_EntityType.MINECART_TNT);
         entityMap.put(EntityMinecartHopper.class, MC_EntityType.MINECART_HOPPER);
         entityMap.put(EntityMinecartMobSpawner.class, MC_EntityType.MINECART_SPAWNER);
+        entityMap.put(EntityParrot.class, MC_EntityType.PARROT);
+        entityMap.put(EntityIllusioner.class, MC_EntityType.ILLUSIONER);
 
         potionMap.put(MobEffects.SPEED, MC_PotionEffectType.SPEED);
         potionMap.put(MobEffects.SLOWNESS, MC_PotionEffectType.SLOWNESS);
@@ -237,12 +334,14 @@ public class PluginHelper {
         enchantmentMap.put((short) 7, MC_EnchantmentType.THORNS);
         enchantmentMap.put((short) 8, MC_EnchantmentType.DEPTH_STRIDER);
         enchantmentMap.put((short) 9, MC_EnchantmentType.FROST_WALKER);
+        enchantmentMap.put((short) 10, MC_EnchantmentType.CURSE_OF_BINDING);
         enchantmentMap.put((short) 16, MC_EnchantmentType.SHARPNESS);
         enchantmentMap.put((short) 17, MC_EnchantmentType.SMITE);
         enchantmentMap.put((short) 18, MC_EnchantmentType.BANE_OF_ARTHROPODS);
         enchantmentMap.put((short) 19, MC_EnchantmentType.KNOCKBACK);
         enchantmentMap.put((short) 20, MC_EnchantmentType.FIRE_ASPECT);
         enchantmentMap.put((short) 21, MC_EnchantmentType.LOOTING);
+        enchantmentMap.put((short) 22, MC_EnchantmentType.SWEEPING);
         enchantmentMap.put((short) 32, MC_EnchantmentType.EFFICIENCY);
         enchantmentMap.put((short) 33, MC_EnchantmentType.SILK_TOUCH);
         enchantmentMap.put((short) 34, MC_EnchantmentType.UNBREAKING);
@@ -254,6 +353,7 @@ public class PluginHelper {
         enchantmentMap.put((short) 61, MC_EnchantmentType.LUCK_OF_THE_SEA);
         enchantmentMap.put((short) 62, MC_EnchantmentType.LURE);
         enchantmentMap.put((short) 70, MC_EnchantmentType.MENDING);
+        enchantmentMap.put((short) 71, MC_EnchantmentType.CURSE_OF_VANISHING);
 
         biomeMap.put(Biome.getBiome(0), MC_WorldBiomeType.OCEAN);
         biomeMap.put(Biome.getBiome(1), MC_WorldBiomeType.PLAINS);
@@ -403,8 +503,8 @@ public class PluginHelper {
                 } else if (subType1 < 0) {
                     return null;
                 } else {
-                    realBlockName = (String) BlockHelper.mapBlockNames.get(
-                            Integer.valueOf(blkID2));
+                    realBlockName = BlockHelper.mapBlockNames.get(
+                            blkID2);
                     if (realBlockName != null) {
                         bo = Block.getBlockFromName(realBlockName.toLowerCase());
                         if (bo != null) {
@@ -426,40 +526,46 @@ public class PluginHelper {
     public static MC_DamageType wrap(DamageSource damageSource) {
         if (damageSource == null) {
             return MC_DamageType.UNSPECIFIED;
-        } else if (damageSource == DamageSource.anvil) {
+        } else if (damageSource == DamageSource.ANVIL) {
             return MC_DamageType.ANVIL;
-        } else if (damageSource == DamageSource.cactus) {
+        } else if (damageSource == DamageSource.CACTUS) {
             return MC_DamageType.CACTUS;
-        } else if (damageSource == DamageSource.drown) {
+        } else if (damageSource == DamageSource.DROWN) {
             return MC_DamageType.DROWN;
-        } else if (damageSource == DamageSource.fall) {
+        } else if (damageSource == DamageSource.FALL) {
             return MC_DamageType.FALL;
-        } else if (damageSource == DamageSource.fallingBlock) {
+        } else if (damageSource == DamageSource.FALLING_BLOCK) {
             return MC_DamageType.FALLING_BLOCK;
-        } else if (damageSource == DamageSource.generic) {
+        } else if (damageSource == DamageSource.GENERIC) {
             return MC_DamageType.GENERIC;
-        } else if (damageSource == DamageSource.inFire) {
+        } else if (damageSource == DamageSource.IN_FIRE) {
             return MC_DamageType.IN_FIRE;
-        } else if (damageSource == DamageSource.inWall) {
+        } else if (damageSource == DamageSource.IN_WALL) {
             return MC_DamageType.IN_WALL;
-        } else if (damageSource == DamageSource.lava) {
+        } else if (damageSource == DamageSource.LAVA) {
             return MC_DamageType.LAVA;
-        } else if (damageSource == DamageSource.lightningBolt) {
+        } else if (damageSource == DamageSource.LIGHTNING_BOLT) {
             return MC_DamageType.LIGHTING_BOLT;
-        } else if (damageSource == DamageSource.magic) {
+        } else if (damageSource == DamageSource.MAGIC) {
             return MC_DamageType.MAGIC;
-        } else if (damageSource == DamageSource.onFire) {
+        } else if (damageSource == DamageSource.ON_FIRE) {
             return MC_DamageType.ON_FIRE;
-        } else if (damageSource == DamageSource.outOfWorld) {
+        } else if (damageSource == DamageSource.OUT_OF_WORLD) {
             return MC_DamageType.OUT_OF_WORLD;
-        } else if (damageSource == DamageSource.starve) {
+        } else if (damageSource == DamageSource.STARVE) {
             return MC_DamageType.STARVE;
-        } else if (damageSource == DamageSource.wither) {
+        } else if (damageSource == DamageSource.WITHER) {
             return MC_DamageType.WITHER;
-        } else if (damageSource == DamageSource.dragonBreath) {
+        } else if (damageSource == DamageSource.DRAGON_BREATH) {
             return MC_DamageType.DRAGON_BREATH;
-        } else if (damageSource == DamageSource.hotFloor) {
+        } else if (damageSource == DamageSource.HOT_FLOOR) {
             return MC_DamageType.HOT_FLOOR;
+        } else if (damageSource == DamageSource.CRAMMING) {
+            return MC_DamageType.CRAMMING;
+        } else if (damageSource == DamageSource.FLY_INTO_WALL) {
+            return MC_DamageType.FLY_INTO_WALL;
+        } else if (damageSource == DamageSource.field_191552_t) {
+            return MC_DamageType.FIREWORKS;
         } else {
             if (damageSource.getDamageType() != null) {
                 if (damageSource.getDamageType().equalsIgnoreCase("mob")) {
@@ -508,24 +614,27 @@ public class PluginHelper {
     }
 
     public static DamageSource unwrap(MC_DamageType cause) {
-        if (cause == null) return DamageSource.generic;
-        else if (cause == MC_DamageType.ANVIL) return DamageSource.anvil;
-        else if (cause == MC_DamageType.CACTUS) return DamageSource.cactus;
-        else if (cause == MC_DamageType.DROWN) return DamageSource.drown;
-        else if (cause == MC_DamageType.FALL) return DamageSource.fall;
-        else if (cause == MC_DamageType.FALLING_BLOCK) return DamageSource.fallingBlock;
-        else if (cause == MC_DamageType.GENERIC) return DamageSource.generic;
-        else if (cause == MC_DamageType.IN_FIRE) return DamageSource.inFire;
-        else if (cause == MC_DamageType.IN_WALL) return DamageSource.inWall;
-        else if (cause == MC_DamageType.LAVA) return DamageSource.lava;
-        else if (cause == MC_DamageType.LIGHTING_BOLT) return DamageSource.lightningBolt;
-        else if (cause == MC_DamageType.MAGIC) return DamageSource.magic;
-        else if (cause == MC_DamageType.ON_FIRE) return DamageSource.onFire;
-        else if (cause == MC_DamageType.OUT_OF_WORLD) return DamageSource.outOfWorld;
-        else if (cause == MC_DamageType.STARVE) return DamageSource.starve;
-        else if (cause == MC_DamageType.WITHER) return DamageSource.wither;
-        else if (cause == MC_DamageType.DRAGON_BREATH) return DamageSource.dragonBreath;
-        else if (cause == MC_DamageType.HOT_FLOOR) return DamageSource.hotFloor;
+        if (cause == null) return DamageSource.GENERIC;
+        else if (cause == MC_DamageType.ANVIL) return DamageSource.ANVIL;
+        else if (cause == MC_DamageType.CACTUS) return DamageSource.CACTUS;
+        else if (cause == MC_DamageType.DROWN) return DamageSource.DROWN;
+        else if (cause == MC_DamageType.FALL) return DamageSource.FALL;
+        else if (cause == MC_DamageType.FALLING_BLOCK) return DamageSource.FALLING_BLOCK;
+        else if (cause == MC_DamageType.GENERIC) return DamageSource.GENERIC;
+        else if (cause == MC_DamageType.IN_FIRE) return DamageSource.IN_FIRE;
+        else if (cause == MC_DamageType.IN_WALL) return DamageSource.IN_WALL;
+        else if (cause == MC_DamageType.LAVA) return DamageSource.LAVA;
+        else if (cause == MC_DamageType.LIGHTING_BOLT) return DamageSource.LIGHTNING_BOLT;
+        else if (cause == MC_DamageType.MAGIC) return DamageSource.MAGIC;
+        else if (cause == MC_DamageType.ON_FIRE) return DamageSource.ON_FIRE;
+        else if (cause == MC_DamageType.OUT_OF_WORLD) return DamageSource.OUT_OF_WORLD;
+        else if (cause == MC_DamageType.STARVE) return DamageSource.STARVE;
+        else if (cause == MC_DamageType.WITHER) return DamageSource.WITHER;
+        else if (cause == MC_DamageType.DRAGON_BREATH) return DamageSource.DRAGON_BREATH;
+        else if (cause == MC_DamageType.HOT_FLOOR) return DamageSource.HOT_FLOOR;
+        else if (cause == MC_DamageType.CRAMMING) return DamageSource.CRAMMING;
+        else if (cause == MC_DamageType.FLY_INTO_WALL) return DamageSource.FLY_INTO_WALL;
+        else if (cause == MC_DamageType.FIREWORKS) return DamageSource.field_191552_t;
         else if (cause == MC_DamageType.MOB) return DamageSource.causeMobDamage(null);
         else if (cause == MC_DamageType.PLAYER) return DamageSource.causePlayerDamage(null);
         else if (cause == MC_DamageType.ARROW) return DamageSource.causeArrowDamage(null, null);
@@ -535,7 +644,7 @@ public class PluginHelper {
         else if (cause == MC_DamageType.THORNS) return DamageSource.causeThornsDamage(null);
         else if (cause == MC_DamageType.EXPLOSION) return DamageSource.causeExplosionDamage((EntityLivingBase) null);
         else if (cause == MC_DamageType.EXPLOSION_PLAYER) return DamageSource.causeExplosionDamage((Explosion) null);
-        else return DamageSource.generic;
+        else return DamageSource.GENERIC;
 
     }
 }

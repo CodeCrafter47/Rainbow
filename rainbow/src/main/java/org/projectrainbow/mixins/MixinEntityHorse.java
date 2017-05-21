@@ -7,7 +7,14 @@ import PluginReference.MC_HorseType;
 import PluginReference.MC_HorseVariant;
 import PluginReference.MC_Player;
 import net.minecraft.entity.ai.attributes.IAttribute;
-import net.minecraft.entity.passive.*;
+import net.minecraft.entity.passive.AbstractChestHorse;
+import net.minecraft.entity.passive.AbstractHorse;
+import net.minecraft.entity.passive.EntityDonkey;
+import net.minecraft.entity.passive.EntityHorse;
+import net.minecraft.entity.passive.EntityLlama;
+import net.minecraft.entity.passive.EntityMule;
+import net.minecraft.entity.passive.EntitySkeletonHorse;
+import net.minecraft.entity.passive.EntityZombieHorse;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
@@ -22,7 +29,7 @@ import java.util.UUID;
 public abstract class MixinEntityHorse extends MixinEntityAnimal {
 
     @Shadow
-    protected abstract boolean isTame();
+    public abstract boolean isTame();
 
     @Shadow
     public abstract void setHorseTamed(boolean var1);
@@ -41,7 +48,7 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
 
     @Shadow
     @Final
-    private static IAttribute JUMP_STRENGTH;
+    protected static IAttribute JUMP_STRENGTH;
 
     public void setOwner(MC_Player plr) {
         if (plr == null) {
@@ -89,7 +96,7 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
 
     public boolean hasChest() {
         AbstractHorse handle = (EntityHorse) (Object) this;
-        return handle instanceof AbstractChestHorse && ((AbstractChestHorse) handle).dh();
+        return handle instanceof AbstractChestHorse && ((AbstractChestHorse) handle).hasChest();
     }
 
     public void setHasChest(boolean flag) {

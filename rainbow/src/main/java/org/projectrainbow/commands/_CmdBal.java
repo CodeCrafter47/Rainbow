@@ -12,7 +12,7 @@ import org.projectrainbow._EconomyManager;
 import org.projectrainbow._UUIDMapper;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -66,24 +66,15 @@ public class _CmdBal implements MC_Command {
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
         return args.length >= 1
                 ? CommandBase.getListOfStringsMatchingLastWord(args,
-                _DiwUtils.getMinecraftServer().getAllUsernames())
+                _DiwUtils.getMinecraftServer().getOnlinePlayerNames())
                 : null;
     }
 
     public void ShowBalTop(MC_Player cs) {
-        ArrayList keys = new ArrayList(_EconomyManager.economy.keySet());
+        ArrayList<String> keys = new ArrayList<>(_EconomyManager.economy.keySet());
 
-        Collections.sort(keys,
-                new java.util.Comparator<String>() {
-                    public int compare(String o1, String o2) {
-                        Double delta = _EconomyManager.economy.get(o2)
-                                - _EconomyManager.economy.get(o1);
+        keys.sort(Comparator.<String>comparingDouble(_EconomyManager.economy::get).reversed());
 
-                        return delta > 0.0D
-                                ? 1
-                                : (delta < 0.0D ? -1 : 0);
-                    }
-                });
         _DiwUtils.reply(cs,
                 ChatColor.GREEN + "Balance" + ChatColor.DARK_GRAY
                         + _DiwUtils.TextAlignTrailerPerfect("Balance", 12)

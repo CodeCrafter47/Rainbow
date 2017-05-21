@@ -1,7 +1,19 @@
 package org.projectrainbow;
 
 
-import PluginReference.*;
+import PluginReference.MC_AttributeModifier;
+import PluginReference.MC_Block;
+import PluginReference.MC_Command;
+import PluginReference.MC_CommandSenderInfo;
+import PluginReference.MC_InventoryGUI;
+import PluginReference.MC_ItemStack;
+import PluginReference.MC_Player;
+import PluginReference.MC_PlayerPacketListener;
+import PluginReference.MC_Server;
+import PluginReference.MC_ServerPacketListener;
+import PluginReference.MC_World;
+import PluginReference.MC_WorldSettings;
+import PluginReference.PluginInfo;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -10,14 +22,14 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemStackMatcher;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import org.projectrainbow.commands._CmdPerm;
 import org.projectrainbow.interfaces.IMixinMinecraftServer;
 import org.projectrainbow.interfaces.IMixinNBTBase;
@@ -27,14 +39,22 @@ import org.projectrainbow.util.WrappedMinecraftCommand;
 import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 
 public class ServerWrapper implements MC_Server {
     private static ServerWrapper instance = new ServerWrapper();
 
     public static String serverIconFileName = "server-icon.png";
-    public static Deque<MC_CommandSenderInfo> commandSenderInfo = new LinkedList<MC_CommandSenderInfo>();
+    public static Deque<MC_CommandSenderInfo> commandSenderInfo = new LinkedList<>();
 
     public static ServerWrapper getInstance() {
         return instance;
@@ -48,14 +68,13 @@ public class ServerWrapper implements MC_Server {
     }
 
     public List<MC_Player> getPlayers() {
-        return (List<MC_Player>) (Object) new ArrayList<EntityPlayerMP>(_DiwUtils.getMinecraftServer().getPlayerList().getPlayerList());
+        return (List<MC_Player>) (Object) new ArrayList<>(_DiwUtils.getMinecraftServer().getPlayerList().getPlayers());
     }
 
     public void executeCommand(String cmd) {
         try {
             _DiwUtils.getMinecraftServer().getCommandManager().executeCommand(_DiwUtils.getMinecraftServer(), cmd);
-        } catch (Exception var3) {
-            ;
+        } catch (Exception ignored) {
         }
     }
 
@@ -64,7 +83,7 @@ public class ServerWrapper implements MC_Server {
     }
 
     public List<MC_Player> getOfflinePlayers() {
-        ArrayList list = new ArrayList();
+        ArrayList<MC_Player> list = new ArrayList<>();
         Iterator var3 = _JOT_OnlineTimeUtils.Data.playerData.keySet().iterator();
 
         while (var3.hasNext()) {
@@ -236,14 +255,14 @@ public class ServerWrapper implements MC_Server {
     }
 
     public List<String> getMatchingOnlinePlayerNames(String arg) {
-        ArrayList matches = new ArrayList();
+        ArrayList<String> matches = new ArrayList<>();
 
         if (arg == null) {
             arg = "";
         }
 
         arg = arg.toLowerCase().trim();
-        Iterator var4 = _DiwUtils.getMinecraftServer().getPlayerList().getPlayerList().iterator();
+        Iterator var4 = _DiwUtils.getMinecraftServer().getPlayerList().getPlayers().iterator();
 
         while (var4.hasNext()) {
             Object oPlayer = var4.next();
@@ -325,7 +344,7 @@ public class ServerWrapper implements MC_Server {
     }
 
     public void log(String msg) {
-        _DiwUtils.getMinecraftServer().logInfo(msg);
+        _DiwUtils.getMinecraftServer().h(msg); // logInfo
     }
 
     public boolean unregisterWorld(String worldName) {
@@ -339,7 +358,7 @@ public class ServerWrapper implements MC_Server {
     }
 
     public List<MC_World> getWorlds() {
-        return (List<MC_World>) (Object) Lists.newArrayList(_DiwUtils.getMinecraftServer().worldServers);
+        return (List<MC_World>) (Object) Lists.newArrayList(_DiwUtils.getMinecraftServer().worlds);
     }
 
     @Override
@@ -363,26 +382,76 @@ public class ServerWrapper implements MC_Server {
         return new BlockWrapper(Block.getBlockById(id).getStateFromMeta(subtype));
     }
 
+    private int nextRecipeId = 0;
+
     @Override
     public void addRecipe(MC_ItemStack result, Object... ingredients) {
-        CraftingManager.getInstance().addRecipe((ItemStack) (Object) result, ingredients);
-        // sort recipes
-        Collections.sort(CraftingManager.getInstance().getRecipeList(), new Comparator<IRecipe>() {
-            public int compare(IRecipe var1, IRecipe var2) {
-                return var1 instanceof ShapelessRecipes && var2 instanceof ShapedRecipes ? 1 : (var2 instanceof ShapelessRecipes && var1 instanceof ShapedRecipes ? -1 : (var2.getRecipeSize() < var1.getRecipeSize() ? -1 : (var2.getRecipeSize() > var1.getRecipeSize() ? 1 : 0)));
+
+        List<String> pattern = new ArrayList<>();
+        Map<Character, MC_ItemStack> symbols = new HashMap<>();
+        symbols.put(' ', (MC_ItemStack) (Object) ItemStack.EMPTY);
+
+        int i;
+        for (i = 0; i < ingredients.length && ingredients[i] instanceof String; i++) {
+            pattern.add((String) ingredients[i]);
+        }
+
+        if (pattern.size() == 0) {
+            throw new IllegalArgumentException("Pattern empty");
+        }
+
+        if (pattern.size() > 3) {
+            throw new IllegalArgumentException("Pattern too big");
+        }
+
+        int width = pattern.get(0).length();
+        int height = pattern.size();
+
+        if (width > 3) {
+            throw new IllegalArgumentException("Pattern too big");
+        }
+
+        for (int j = 1; j < height; j++) {
+            if (pattern.get(j).length() != width) {
+                throw new IllegalArgumentException("Pattern width inconsistent");
             }
-        });
+        }
+
+        for (; i + 1 < ingredients.length && ingredients[i] instanceof Character && ingredients[i + 1] instanceof MC_ItemStack; i += 2) {
+            symbols.put((Character) ingredients[i], (MC_ItemStack) ingredients[i + 1]);
+        }
+
+        if (i < ingredients.length) {
+            throw new IllegalArgumentException("Arguments of wrong Type");
+        }
+
+        NonNullList<ItemStackMatcher> list = NonNullList.create();
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                char symbol = pattern.get(y).charAt(x);
+                MC_ItemStack itemStack = symbols.get(symbol);
+                if (itemStack == null) {
+                    throw new IllegalArgumentException("Undefined symbol in pattern: '" + symbol + "'");
+                }
+                list.add(ItemStackMatcher.a(new ItemStack[]{PluginHelper.getItemStack(itemStack)}));
+            }
+        }
+
+        ShapedRecipes recipe = new ShapedRecipes("rainbow", width, height, list, PluginHelper.getItemStack(result));
+        CraftingManager.a("rainbow:custom-" + Integer.toHexString(nextRecipeId++), recipe); // addRecipe
     }
 
     @Override
     public void addShapelessRecipe(MC_ItemStack result, MC_ItemStack... ingredients) {
-        CraftingManager.getInstance().addShapelessRecipe((ItemStack) (Object) result, (Object[]) ingredients);
-        // sort recipes
-        Collections.sort(CraftingManager.getInstance().getRecipeList(), new Comparator<IRecipe>() {
-            public int compare(IRecipe var1, IRecipe var2) {
-                return var1 instanceof ShapelessRecipes && var2 instanceof ShapedRecipes ? 1 : (var2 instanceof ShapelessRecipes && var1 instanceof ShapedRecipes ? -1 : (var2.getRecipeSize() < var1.getRecipeSize() ? -1 : (var2.getRecipeSize() > var1.getRecipeSize() ? 1 : 0)));
-            }
-        });
+
+        NonNullList<ItemStackMatcher> list = NonNullList.create();
+        for (MC_ItemStack ingredient : ingredients) {
+            list.add(ItemStackMatcher.a(new ItemStack[]{PluginHelper.getItemStack(ingredient)}));
+        }
+
+
+        ShapelessRecipes recipe = new ShapelessRecipes("rainbow", PluginHelper.getItemStack(result), list);
+        CraftingManager.a("rainbow:custom-" + Integer.toHexString(nextRecipeId++), recipe); // addRecipe
     }
 
     /**
@@ -452,6 +521,6 @@ public class ServerWrapper implements MC_Server {
 
     @Override
     public String getMinecraftVersion() {
-        return _DiwUtils.getMinecraftServer().getMinecraftVersion();
+        return _DiwUtils.getMinecraftServer().G(); // getMinecraftVersion
     }
 }

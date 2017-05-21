@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 @Mixin(C00Handshake.class)
 public class MixinCPacketHandshake {
 
-    @ModifyArg(method = "readPacketData", at = @At(value = "INVOKE", target = "net.minecraft.network.PacketBuffer.readStringFromBuffer(I)Ljava/lang/String;"))
+    @ModifyArg(method = "a", at = @At(value = "INVOKE", target = "net.minecraft.network.PacketBuffer.readString(I)Ljava/lang/String;")) // readPacketData
     private int hostNameFieldSize(int oldSize){
         return Short.MAX_VALUE;
     }

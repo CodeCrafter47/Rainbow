@@ -6,10 +6,8 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldServer;
-import org.projectrainbow.interfaces.IMixinICommandSender;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -17,14 +15,14 @@ import java.util.Map;
 
 public class _Janitor {
     public static void DoMobClean(EntityPlayerMP p, boolean doClean, String[] cleanTarget) {
-        final Map<String, Integer> mobCounts = new HashMap<String, Integer>();
+        final Map<String, Integer> mobCounts = new HashMap<>();
         int sectionSize = 16;
         int mobLimitPerSection = 35;
-        Map<String, Integer> sectionHit = new HashMap<String, Integer>();
+        Map<String, Integer> sectionHit = new HashMap<>();
         StringBuilder sbPlayers = new StringBuilder();
         int nPlayers = 0;
         int nRemoved = 0;
-        WorldServer[] worlds = _DiwUtils.getMinecraftServer().worldServers;
+        WorldServer[] worlds = _DiwUtils.getMinecraftServer().worlds;
 
         for (int i = 0; i < worlds.length; ++i) {
             WorldServer world = worlds[i];
@@ -78,18 +76,13 @@ public class _Janitor {
                         if (hits == mobLimitPerSection + 1) {
                             String locStr = String.format("%d %d %d %d", ent.dimension, mobX, mobY, mobZ);
                             String msg = String.format("Reached Mob Limit %d (%s) @ %s", mobLimitPerSection, mobName, locStr);
-                            System.out.println(msg);
-                            if (p != null) {
-                                ((IMixinICommandSender) p).sendMessage(_ColorHelper.LIGHT_PURPLE + msg);
-                            }
+                            _DiwUtils.reply(p, _ColorHelper.LIGHT_PURPLE + msg);
                         }
 
                         if (!isPlayer && doClean) {
                             ent.setDead();
                             ++nRemoved;
-                            if (p != null) {
-                                ((IMixinICommandSender) p).sendMessage(_ColorHelper.LIGHT_PURPLE + ent.toString());
-                            }
+                            _DiwUtils.reply(p, _ColorHelper.LIGHT_PURPLE + ent);
                         }
                     }
 
@@ -131,47 +124,27 @@ public class _Janitor {
             }
         }
 
-        List<String> keys = new ArrayList<String>(mobCounts.keySet());
-        Collections.sort(keys, new Comparator<String>() {
-            public int compare(String o1, String o2) {
-                return mobCounts.get(o2) - mobCounts.get(o1);
-            }
-        });
+        List<String> keys = new ArrayList<>(mobCounts.keySet());
+        keys.sort(Comparator.<String>comparingInt(mobCounts::get).reversed());
         int tot = 0;
         String dashes = "--- ---------------";
-        System.out.println(dashes);
-        if (p != null) {
-            ((IMixinICommandSender) p).sendMessage(_ColorHelper.LIGHT_PURPLE + dashes);
-        }
+        _DiwUtils.reply(p, _ColorHelper.LIGHT_PURPLE + dashes);
 
         for (String mobName : keys) {
             Integer cnt = mobCounts.get(mobName);
             tot += cnt;
             String msg = String.format("%4d %s", cnt, mobName);
-            System.out.println(msg);
-            if (p != null) {
-                ((IMixinICommandSender) p).sendMessage(_ColorHelper.LIGHT_PURPLE + msg);
-            }
+            _DiwUtils.reply(p, _ColorHelper.LIGHT_PURPLE + msg);
         }
 
-        System.out.println(dashes);
-        if (p != null) {
-            ((IMixinICommandSender) p).sendMessage(_ColorHelper.LIGHT_PURPLE + dashes);
-        }
+        _DiwUtils.reply(p, _ColorHelper.LIGHT_PURPLE + dashes);
 
         String msg = String.format("%4d Total Mobs", tot);
-        System.out.println(msg);
-        if (p != null) {
-            ((IMixinICommandSender) p).sendMessage(_ColorHelper.LIGHT_PURPLE + msg);
-        }
+        _DiwUtils.reply(p, _ColorHelper.LIGHT_PURPLE + msg);
 
         if (sbPlayers != null) {
-            String tmsg = String.format("%d Players: %s", nPlayers, sbPlayers.toString());
-            System.out.println("\n" + tmsg + "\n");
-            if (p != null) {
-                tmsg = String.format("%d Players: " + _ColorHelper.YELLOW + "%s", nPlayers, sbPlayers.toString());
-                ((IMixinICommandSender) p).sendMessage(_ColorHelper.AQUA + tmsg);
-            }
+            String tmsg = String.format("%d Players: " + _ColorHelper.YELLOW + "%s", nPlayers, sbPlayers.toString());
+            _DiwUtils.reply(p, _ColorHelper.AQUA + tmsg);
         }
 
         if (doClean || cleanTarget != null) {
@@ -180,10 +153,7 @@ public class _Janitor {
                 tmsg = String.format("REMOVED %d Entities (CleanTarget=%s)", nRemoved, RainbowUtils.GetCommaList(cleanTarget));
             }
 
-            System.out.println("\n" + tmsg + "\n");
-            if (p != null) {
-                ((IMixinICommandSender) p).sendMessage(_ColorHelper.GREEN + tmsg);
-            }
+            _DiwUtils.reply(p, _ColorHelper.GREEN + tmsg);
         }
 
     }

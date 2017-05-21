@@ -431,6 +431,8 @@ public class MC_ItemType {
 	public static final int DARK_OAK_BOAT = 448;
 	public static final int TOTEM = 449;
 	public static final int SHULKER_SHELL = 450;
+	public static final int IRON_NUGGET = 452;
+	public static final int KNOWLEDGE_BOOK = 453;
 
 	public static final int RECORD_13 = 2256;
 	public static final int RECORD_CAT = 2257;

@@ -15,7 +15,7 @@ import PluginReference.MC_NoteBlock;
 import PluginReference.MC_Sign;
 import PluginReference.MC_World;
 import PluginReference.MC_WorldBiomeType;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockStandingSign;
@@ -26,7 +26,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.tileentity.TileEntity;
@@ -72,10 +71,10 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
     @Shadow
     protected abstract boolean isChunkLoaded(int x, int z, boolean ignored);
 
-    @Redirect(method = "canAddEntity", at = @At(value = "INVOKE", target = "warn", remap = false))
-    private void doLogWarning(Logger logger, String message, Object... args) {
+    @Redirect(method = "canAddEntity", at = @At(value = "INVOKE", target = "org/apache/logging/log4j/Logger.warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false))
+    private void doLogWarning(Logger logger, String message, Object arg1, Object arg2) {
         if (_DiwUtils.DoHideAnnoyingDefaultServerOutput == false) {
-            logger.warn(message, args);
+            logger.warn(message, arg1, arg2);
         }
     }
 
@@ -93,7 +92,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
     public MC_DirectionNESWUD getBlockFacing(int x, int y, int z) {
         try {
             EnumFacing value = getBlockState(new BlockPos(x, y, z)).getValue(BlockDirectional.FACING);
-            return Objects.firstNonNull(PluginHelper.directionMap.get(value), MC_DirectionNESWUD.UNSPECIFIED);
+            return MoreObjects.firstNonNull(PluginHelper.directionMap.get(value), MC_DirectionNESWUD.UNSPECIFIED);
         } catch (Throwable ignored) {
             return MC_DirectionNESWUD.UNSPECIFIED;
         }
@@ -243,7 +242,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
             }
             entity.forceSpawn = true;
 
-            if (!spawnEntityInWorld(entity)) {
+            if (!spawnEntity(entity)) {
                 return null;
             }
             return (MC_Entity) entity;
@@ -267,7 +266,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
         double var8 = (double) (rand.nextFloat() * v) + (double) (1.0F - v) * 0.5D;
         EntityItem var10 = new EntityItem(this, var2.x + var4, var2.y + var6, var2.z + var8, PluginHelper.getItemStack(var1));
         var10.setDefaultPickupDelay();
-        spawnEntityInWorld(var10);
+        spawnEntity(var10);
         return (MC_Entity) var10;
     }
 
@@ -300,7 +299,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
     public MC_WorldBiomeType getBiomeTypeAt(int x, int z) {
         Biome biomeGenBase = getBiome(new BlockPos(x, 0, z));
 
-        return Objects.firstNonNull(PluginHelper.biomeMap.get(biomeGenBase), MC_WorldBiomeType.UNSPECIFIED);
+        return MoreObjects.firstNonNull(PluginHelper.biomeMap.get(biomeGenBase), MC_WorldBiomeType.UNSPECIFIED);
     }
 
     @Override
@@ -360,7 +359,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
             entity.setPositionAndRotation(loc.x, loc.y, loc.z, loc.yaw, loc.pitch);
             entity.forceSpawn = true;
 
-            if (spawnEntityInWorld(entity)) {
+            if (spawnEntity(entity)) {
                 return (MC_Entity) entity;
             }
         } catch (Exception var6) {

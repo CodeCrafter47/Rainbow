@@ -42,8 +42,6 @@ public abstract class MixinEntityLivingBase extends MixinEntity implements MC_Li
     @Shadow
     protected EntityPlayer attackingPlayer;
     @Shadow
-    private EntityLivingBase lastAttacker;
-    @Shadow
     @Final
     private Map<Potion, PotionEffect> activePotionsMap;
 
@@ -180,7 +178,7 @@ public abstract class MixinEntityLivingBase extends MixinEntity implements MC_Li
 
     @Override
     public List<MC_PotionEffect> getPotionEffects() {
-        List<MC_PotionEffect> potionEffects = new ArrayList<MC_PotionEffect>();
+        List<MC_PotionEffect> potionEffects = new ArrayList<>();
         for (PotionEffect potionEffect : getActivePotionEffects()) {
             potionEffects.add(PluginHelper.wrap(potionEffect));
         }

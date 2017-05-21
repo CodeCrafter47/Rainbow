@@ -1,16 +1,14 @@
 package org.projectrainbow.commands;
 
 import PluginReference.ChatColor;
+import PluginReference.MC_Command;
 import PluginReference.MC_Player;
 import PluginReference.RainbowUtils;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
@@ -20,23 +18,34 @@ import org.projectrainbow.interfaces.IMixinEntityPlayerMP;
 import org.projectrainbow.interfaces.IMixinICommandSender;
 import org.projectrainbow.interfaces.IMixinPlayerCapabilities;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static org.projectrainbow.launch.Bootstrap.args;
-
-public class _CmdDiw extends CommandBase {
+public class _CmdDiw implements MC_Command {
     @Override
     public String getCommandName() {
         return "diw";
     }
 
     @Override
-    public boolean checkPermission(MinecraftServer minecraftServer, ICommandSender cs) {
-        return (!(cs instanceof MC_Player)) || ((MC_Player) cs).hasPermission("rainbow.diw");
+    public List<String> getAliases() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean hasPermissionToUse(MC_Player player) {
+        return player == null || player.hasPermission("rainbow.diw");
+    }
+
+    @Override
+    public List<String> getTabCompletionList(MC_Player plr, String[] args) {
+        return Collections.emptyList();
     }
 
     public void HandleDiwGrass(EntityPlayer p, int radius) {
@@ -155,77 +164,77 @@ public class _CmdDiw extends CommandBase {
     }
 
     @Override
-    public String getCommandUsage(ICommandSender cs) {
+    public String getHelpLine(MC_Player player) {
         return _ColorHelper.LIGHT_PURPLE + "/diw" + _ColorHelper.WHITE + " --- Admin feature";
     }
 
-    public void ShowUsage(ICommandSender cs) {
-        _DiwUtils.reply(cs, _ColorHelper.RED + "Usage: /diw [option]");
+    public void ShowUsage(MC_Player player) {
+        _DiwUtils.reply(player, _ColorHelper.RED + "Usage: /diw [option]");
         String[] arrCmds = new String[]{"save", "speed", "flyspeed", "walkspeed", "mem", "skyclear", "setgrass", "border", "echo", "script", "loadBanList", "clean", "namecolor", "loadconfig", "flow", "bp", "ec"};
         List<String> cmds = Arrays.asList(arrCmds);
         Collections.sort(cmds);
-        _DiwUtils.reply(cs, _ColorHelper.WHITE + "Options: " + RainbowUtils.RainbowStringList(cmds));
+        _DiwUtils.reply(player, _ColorHelper.WHITE + "Options: " + RainbowUtils.RainbowStringList(cmds));
     }
 
     @Override
-    public void execute(MinecraftServer minecraftServer, ICommandSender cs, String[] args) throws CommandException {
+    public void handleCommand(MC_Player player, String[] args) {
         EntityPlayerMP p = null;
-        if (cs instanceof EntityPlayerMP) {
-            p = (EntityPlayerMP) cs;
+        if (player instanceof EntityPlayerMP) {
+            p = (EntityPlayerMP) player;
         }
 
         if (args.length <= 0) {
-            this.ShowUsage(cs);
+            this.ShowUsage(player);
         } else if (args[0].equalsIgnoreCase("loadBanList")) {
             try {
-                minecraftServer.getPlayerList().getBannedPlayers().readSavedFile();
-                minecraftServer.getPlayerList().getBannedIPs().readSavedFile();
-                _DiwUtils.reply(cs, _ColorHelper.GREEN + "Ban list reloaded.");
+                _DiwUtils.getMinecraftServer().getPlayerList().getBannedPlayers().readSavedFile();
+                _DiwUtils.getMinecraftServer().getPlayerList().getBannedIPs().readSavedFile();
+                _DiwUtils.reply(player, _ColorHelper.GREEN + "Ban list reloaded.");
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                _DiwUtils.reply(cs, _ColorHelper.RED + "Internal error: " + e.getMessage());
+                _DiwUtils.reply(player, _ColorHelper.RED + "Internal error: " + e.getMessage());
             }
         } else if (args[0].equalsIgnoreCase("namecolor")) {
             if (args.length < 3) {
-                _DiwUtils.reply(cs, _ColorHelper.RED + "Usage: /diw namecolor <User> <new nickname|off>");
+                _DiwUtils.reply(player, _ColorHelper.RED + "Usage: /diw namecolor <User> <new nickname|off>");
             } else {
                 UUID uuid = _UUIDMapper.getUUID(args[1]);
                 if (uuid == null) {
-                    _DiwUtils.reply(cs, _ColorHelper.RED + "Player not found.");
+                    _DiwUtils.reply(player, _ColorHelper.RED + "Player not found.");
                 } else {
                     String newName = _DiwUtils.ConcatArgs(args, 2);
                     newName = _DiwUtils.FullTranslate(newName);
                     if (newName.equalsIgnoreCase("off")) {
                         _CmdNameColor.ColorNameDict.remove(uuid.toString());
-                        _DiwUtils.reply(cs, _ColorHelper.GREEN + "Removed colored name of " + args[1]);
+                        _DiwUtils.reply(player, _ColorHelper.GREEN + "Removed colored name of " + args[1]);
                     } else {
                         _CmdNameColor.ColorNameDict.put(uuid.toString(), newName);
-                        _DiwUtils.reply(cs, _ColorHelper.GREEN + "Set colored name of " + args[1] + " to: " + _ColorHelper.YELLOW + newName);
+                        _DiwUtils.reply(player, _ColorHelper.GREEN + "Set colored name of " + args[1] + " to: " + _ColorHelper.YELLOW + newName);
                     }
-                    EntityPlayerMP player = _DiwUtils.getMinecraftServer().getPlayerList().getPlayerByUUID(uuid);
-                    if (player != null) {
-                        _CmdNameColor.updateNameColorOnTab(player);
+                    EntityPlayerMP targetPlayer = _DiwUtils.getMinecraftServer().getPlayerList().getPlayerByUUID(uuid);
+                    if (targetPlayer != null) {
+                        _CmdNameColor.updateNameColorOnTab(targetPlayer);
                     }
                 }
             }
         } else if (args[0].equalsIgnoreCase("flow")) {
             _DiwUtils.BlockFlowOn = !_DiwUtils.BlockFlowOn;
             _DiwUtils.reply(
-                    cs,
+                    player,
                     ChatColor.GREEN
                             + "Joe\'s BlockFlowOn: "
                             + ChatColor.WHITE
                             + _DiwUtils.BlockFlowOn);
         } else if (args[0].equalsIgnoreCase("loadconfig")) {
             _DiwUtils.LoadRainbowProperties();
-            _DiwUtils.reply(cs,
+            _DiwUtils.reply(player,
                     ChatColor.GREEN
                             + "Configuration reloaded: "
                             + ChatColor.AQUA
                             + _DiwUtils.RainbowPropertiesFilename);
         } else if (args[0].equalsIgnoreCase("save")) {
             _DiwUtils.SaveStuffs();
-            _DiwUtils.reply(cs, _ColorHelper.GREEN + "Rainbow data saved.");
+            _DiwUtils.reply(player, _ColorHelper.GREEN + "Rainbow data saved.");
         } else if (args[0].equalsIgnoreCase("flyspeed") && p != null) {
             if (args.length < 2) {
                 ((IMixinICommandSender) p).sendMessage(_ColorHelper.RED + "Example 1: " + _ColorHelper.GOLD + "/diw flySpeed 2");
@@ -289,7 +298,7 @@ public class _CmdDiw extends CommandBase {
             this.HandleDiwBorder(p, radius);
         } else if (args[0].equalsIgnoreCase("echo")) {
             if (args.length <= 1) {
-                _DiwUtils.reply(cs, _ColorHelper.RED + "Usage: /diw echo " + _ColorHelper.YELLOW + "your message to everyone.");
+                _DiwUtils.reply(player, _ColorHelper.RED + "Usage: /diw echo " + _ColorHelper.YELLOW + "your message to everyone.");
             } else {
                 String msg = _DiwUtils.ConcatArgs(args, 1);
                 msg = _DiwUtils.SpecialTranslate(msg);
@@ -298,7 +307,7 @@ public class _CmdDiw extends CommandBase {
             }
         } else if (args[0].equalsIgnoreCase("script")) {
             if (args.length <= 1) {
-                _DiwUtils.reply(cs, _ColorHelper.RED + "Usage: " + _ColorHelper.LIGHT_PURPLE + "/diw script " + _ColorHelper.GOLD + "Filename" + _ColorHelper.DARK_AQUA + " [Parm1] [Parm2] ...");
+                _DiwUtils.reply(player, _ColorHelper.RED + "Usage: " + _ColorHelper.LIGHT_PURPLE + "/diw script " + _ColorHelper.GOLD + "Filename" + _ColorHelper.DARK_AQUA + " [Parm1] [Parm2] ...");
             } else {
                 String fname = _DiwUtils.RainbowDataDirectory + "Scripts" + File.separator + args[1];
                 if (!fname.endsWith(".txt")) {
@@ -307,7 +316,7 @@ public class _CmdDiw extends CommandBase {
 
                 File f = new File(fname);
                 if (!f.exists()) {
-                    _DiwUtils.reply(cs, _ColorHelper.RED + "File not found: " + _ColorHelper.YELLOW + fname);
+                    _DiwUtils.reply(player, _ColorHelper.RED + "File not found: " + _ColorHelper.YELLOW + fname);
                 } else {
                     this.HandleScript(p, fname, args);
                 }
@@ -315,7 +324,7 @@ public class _CmdDiw extends CommandBase {
         } else if (args[0].equals("clean")) {
             if (args.length == 1) {
                 _Janitor.DoMobClean(p, true,
-                        (String[]) null);
+                        null);
             }
 
             if (args.length == 2) {
@@ -355,14 +364,14 @@ public class _CmdDiw extends CommandBase {
             String prefix = _ColorHelper.GOLD + "☕ " + _ColorHelper.LIGHT_PURPLE;
             int labelLen = 11;
             String uptime = _DiwUtils.TimeDeltaString(System.currentTimeMillis() - _DiwUtils.ServerStartTime);
-            _DiwUtils.reply(cs, prefix + "Uptime" + _ColorHelper.DARK_GRAY + RainbowUtils.TextAlignTrailerPerfect("Uptime", labelLen) + _ColorHelper.AQUA + uptime);
-            _DiwUtils.reply(cs, prefix + "RAM Usage" + _ColorHelper.DARK_GRAY + RainbowUtils.TextAlignTrailerPerfect("RAM Usage", labelLen) + usageClr + String.format(usageClr + "%.1fperc %s " + _ColorHelper.GRAY + "(%.1f of %.1f GB)", usagePerc, usageMsg, allocGig - freeGig, maxGig));
+            _DiwUtils.reply(player, prefix + "Uptime" + _ColorHelper.DARK_GRAY + RainbowUtils.TextAlignTrailerPerfect("Uptime", labelLen) + _ColorHelper.AQUA + uptime);
+            _DiwUtils.reply(player, prefix + "RAM Usage" + _ColorHelper.DARK_GRAY + RainbowUtils.TextAlignTrailerPerfect("RAM Usage", labelLen) + usageClr + String.format(usageClr + "%.1fperc %s " + _ColorHelper.GRAY + "(%.1f of %.1f GB)", usagePerc, usageMsg, allocGig - freeGig, maxGig));
         } else if (args[0].equalsIgnoreCase("autorestart")) {
             if (_DiwUtils.g_restartCountdown >= 0L) {
-                _DiwUtils.reply(cs, ChatColor.GREEN + "Auto-Restart cancelled!");
+                _DiwUtils.reply(player, ChatColor.GREEN + "Auto-Restart cancelled!");
                 _DiwUtils.g_restartCountdown = -1L;
             } else {
-                _DiwUtils.reply(cs, ChatColor.GREEN + "Auto-Restart set for 70 seconds!");
+                _DiwUtils.reply(player, ChatColor.GREEN + "Auto-Restart set for 70 seconds!");
                 _DiwUtils.g_restartCountdown = 70L;
             }
 
@@ -393,8 +402,8 @@ public class _CmdDiw extends CommandBase {
                 }
             }
         } else {
-            _DiwUtils.reply(cs, _ColorHelper.RED + "Unknown Option: " + _ColorHelper.AQUA + args[0]);
-            this.ShowUsage(cs);
+            _DiwUtils.reply(player, _ColorHelper.RED + "Unknown Option: " + _ColorHelper.AQUA + args[0]);
+            this.ShowUsage(player);
         }
     }
 }

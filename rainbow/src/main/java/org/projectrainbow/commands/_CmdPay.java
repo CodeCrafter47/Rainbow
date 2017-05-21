@@ -43,10 +43,10 @@ public class _CmdPay implements MC_Command {
                             + ChatColor.YELLOW + "PlayerName" + ChatColor.GREEN
                             + " Amount");
         } else {
-            Double amt = Double.valueOf(0.0D);
+            Double amt = 0.0D;
 
             try {
-                amt = Double.valueOf(Double.parseDouble(args[1]));
+                amt = Double.parseDouble(args[1]);
             } catch (Throwable var9) {
                 _DiwUtils.reply(plr,
                         ChatColor.RED + "Invalid Amount: " + ChatColor.GREEN
@@ -112,7 +112,7 @@ public class _CmdPay implements MC_Command {
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
         return args.length >= 1
                 ? CommandBase.getListOfStringsMatchingLastWord(args,
-                _DiwUtils.getMinecraftServer().getAllUsernames())
+                _DiwUtils.getMinecraftServer().getOnlinePlayerNames())
                 : null;
     }
 }

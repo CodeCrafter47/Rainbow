@@ -24,7 +24,7 @@ import java.util.List;
 public class MixinExplosion {
     @Shadow
     @Final
-    private World worldObj;
+    private World world;
     @Shadow
     @Final
     private double explosionX;
@@ -39,16 +39,13 @@ public class MixinExplosion {
     private Entity exploder;
     @Shadow
     @Final
-    private float explosionSize;
-    @Shadow
-    @Final
     private List<BlockPos> affectedBlockPositions;
 
     @Inject(method = "doExplosionA", at = @At("HEAD"), cancellable = true)
     private void onExplosion(CallbackInfo callbackInfo) {
         try {
             MC_EventInfo ei = new MC_EventInfo();
-            Hooks.onAttemptExplosion(new MC_Location(explosionX, explosionY, explosionZ, ((MC_World)worldObj).getDimension()), ei);
+            Hooks.onAttemptExplosion(new MC_Location(explosionX, explosionY, explosionZ, ((MC_World) world).getDimension()), ei);
             if (ei.isCancelled) {
                 callbackInfo.cancel();
             }
@@ -61,7 +58,7 @@ public class MixinExplosion {
     private void onExplosionB(boolean b, CallbackInfo callbackInfo) {
         try {
             MC_EventInfo ei = new MC_EventInfo();
-            Hooks.onAttemptExplodeSpecific((MC_Entity) exploder, Lists.transform(affectedBlockPositions, new LocationTransformer(worldObj)));
+            Hooks.onAttemptExplodeSpecific((MC_Entity) exploder, Lists.transform(affectedBlockPositions, new LocationTransformer(world)));
             if (ei.isCancelled) {
                 callbackInfo.cancel();
             }

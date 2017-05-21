@@ -101,5 +101,9 @@ public enum MC_EntityType {
     EVOKER,
     VEX,
     LLAMA,
-    VINDICATOR
+    VINDICATOR,
+
+	// Added in 1.12
+	ILLUSIONER,
+	PARROT
 }

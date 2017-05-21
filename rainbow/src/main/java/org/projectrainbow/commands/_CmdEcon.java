@@ -49,7 +49,7 @@ public class _CmdEcon implements MC_Command {
             while (var11.hasNext()) {
                 exactName = (String) var11.next();
                 ++var10;
-                amt = (Double) _EconomyManager.itemWorth.get(exactName);
+                amt = _EconomyManager.itemWorth.get(exactName);
                 _DiwUtils.ConsoleMsg(
                         String.format("%8.2f %s", amt, exactName));
             }
@@ -57,7 +57,7 @@ public class _CmdEcon implements MC_Command {
             _DiwUtils.ConsoleMsg("------------------------------------");
             _DiwUtils.ConsoleMsg(
                     String.format("Listed %d items.",
-                            Integer.valueOf(var10)));
+                            var10));
         } else {
             String tgtName;
             String strAmt;
@@ -134,7 +134,7 @@ public class _CmdEcon implements MC_Command {
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
         return args.length >= 1
                 ? CommandBase.getListOfStringsMatchingLastWord(args,
-                _DiwUtils.getMinecraftServer().getAllUsernames())
+                _DiwUtils.getMinecraftServer().getOnlinePlayerNames())
                 : null;
     }
 }

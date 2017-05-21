@@ -99,11 +99,6 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
         return "keepInventory".equals(key) && _DiwUtils.OpsKeepInventory && ((MC_Player) this).isOp() || gameRules.getBoolean(key);
     }
 
-    @Redirect(method = "clonePlayer", at = @At(value = "INVOKE", target = "net.minecraft.world.GameRules.getBoolean(Ljava/lang/String;)Z"))
-    private boolean clonePlayer(GameRules gameRules, String key) {
-        return "keepInventory".equals(key) && _DiwUtils.OpsKeepInventory && ((MC_Player) this).isOp() || gameRules.getBoolean(key);
-    }
-
     @Override
     public List<MC_ItemStack> getArmor() {
         return PluginHelper.copyInvList(inventory.armorInventory);
