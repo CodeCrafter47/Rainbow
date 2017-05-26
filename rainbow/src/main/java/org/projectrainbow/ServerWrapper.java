@@ -459,6 +459,7 @@ public class ServerWrapper implements MC_Server {
     }
 
     @Override
+
     public int getViewDistance() {
         return _DiwUtils.getMinecraftServer().getPlayerList().getViewDistance();
     }
@@ -476,5 +477,10 @@ public class ServerWrapper implements MC_Server {
     @Override
     public boolean getAllowNether() {
         return _DiwUtils.getMinecraftServer().getAllowNether();
+    }
+
+    @Override
+    public String getMinecraftVersion() {
+        return _DiwUtils.getMinecraftServer().getMinecraftVersion();
     }
 }
