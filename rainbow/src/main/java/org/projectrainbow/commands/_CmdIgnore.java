@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class _CmdIgnore implements MC_Command {
 
-    private static Map<String, List<String>> ignoring = new ConcurrentHashMap<String, List<String>>();
+    private static Map<String, List<String>> ignoring = new ConcurrentHashMap<>();
     private static String Filename = "Ignores.dat";
 
     public _CmdIgnore() {}
@@ -35,10 +35,10 @@ public class _CmdIgnore implements MC_Command {
         List<String> res = ignoring.get(pName);
 
         if (res == null) {
-            res = new ArrayList<String>();
+            res = new ArrayList<>();
         }
 
-        if (((List) res).contains(pAnnoying)) {
+        if (res.contains(pAnnoying)) {
             return false;
         } else {
             res.add(pAnnoying);
@@ -51,7 +51,7 @@ public class _CmdIgnore implements MC_Command {
     public static boolean IsIgnoring(String pName, String pAnnoying) {
         pName = pName.toLowerCase();
         pAnnoying = pAnnoying.toLowerCase();
-        List res = (List) ignoring.get(pName);
+        List res = ignoring.get(pName);
 
         return res != null && res.contains(pAnnoying);
     }
@@ -151,7 +151,7 @@ public class _CmdIgnore implements MC_Command {
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
         return args.length >= 1
                 ? CommandBase.getListOfStringsMatchingLastWord(args,
-                _DiwUtils.getMinecraftServer().getAllUsernames())
+                _DiwUtils.getMinecraftServer().getOnlinePlayerNames())
                 : null;
     }
 
@@ -197,7 +197,7 @@ public class _CmdIgnore implements MC_Command {
             s.close();
         } catch (Throwable var4) {
             System.out.println("Starting New Ignore DB: " + Filename);
-            ignoring = new ConcurrentHashMap<String, List<String>>();
+            ignoring = new ConcurrentHashMap<>();
         }
 
     }

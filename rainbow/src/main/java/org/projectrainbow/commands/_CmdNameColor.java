@@ -1,33 +1,41 @@
 package org.projectrainbow.commands;
 
+import PluginReference.MC_Command;
 import PluginReference.MC_Player;
 import com.google.common.io.Files;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
-import net.minecraft.server.MinecraftServer;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
-import org.projectrainbow.interfaces.IMixinICommandSender;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class _CmdNameColor extends CommandBase {
+public class _CmdNameColor implements MC_Command {
     public static ConcurrentHashMap<String, String> ColorNameDict;
     public static String m_DataFilename;
 
     static {
-        _CmdNameColor.ColorNameDict = new ConcurrentHashMap<String, String>();
+        _CmdNameColor.ColorNameDict = new ConcurrentHashMap<>();
         _CmdNameColor.m_DataFilename = "NameColors.dat";
     }
 
     @Override
-    public boolean checkPermission(MinecraftServer minecraftServer, ICommandSender iCommandSender) {
-        return (!(iCommandSender instanceof MC_Player)) || ((MC_Player) iCommandSender).hasPermission("rainbow.namecolor");
+    public boolean hasPermissionToUse(MC_Player player) {
+        return player == null || player.hasPermission("rainbow.namecolor");
+    }
+
+    @Override
+    public List<String> getTabCompletionList(MC_Player plr, String[] args) {
+        return Collections.emptyList();
     }
 
     @Override
@@ -36,17 +44,22 @@ public class _CmdNameColor extends CommandBase {
     }
 
     @Override
-    public String getCommandUsage(final ICommandSender vParam) {
+    public List<String> getAliases() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public String getHelpLine(MC_Player player) {
         return String.valueOf(_ColorHelper.AQUA) + "/namecolor" + _ColorHelper.WHITE + " --- Change your name color";
     }
 
-    public void SendUsage(final EntityPlayer p) {
+    public void SendUsage(MC_Player p) {
         final String pName = p.getName();
         final int mid = pName.length() / 2;
         final String left = pName.substring(0, mid);
         final String right = pName.substring(mid);
-        ((IMixinICommandSender) p).sendMessage(String.valueOf(_ColorHelper.RED) + "Try Example: " + _ColorHelper.DARK_AQUA + "/namecolor " + _ColorHelper.WHITE + "&b" + left + "&d" + right);
-        ((IMixinICommandSender) p).sendMessage(String.valueOf(_ColorHelper.RED) + "That would make your name: " + _ColorHelper.AQUA + left + _ColorHelper.LIGHT_PURPLE + right);
+        p.sendMessage(String.valueOf(_ColorHelper.RED) + "Try Example: " + _ColorHelper.DARK_AQUA + "/namecolor " + _ColorHelper.WHITE + "&b" + left + "&d" + right);
+        p.sendMessage(String.valueOf(_ColorHelper.RED) + "That would make your name: " + _ColorHelper.AQUA + left + _ColorHelper.LIGHT_PURPLE + right);
     }
 
     public static void SaveData() {
@@ -83,7 +96,7 @@ public class _CmdNameColor extends CommandBase {
             _DiwUtils.ConsoleMsg(String.valueOf(_ColorHelper.YELLOW) + String.format("%-20s: %5d players.  Took %3d ms", "Name Color Load", _CmdNameColor.ColorNameDict.size(), msEnd - msStart));
         } catch (Throwable exc) {
             _DiwUtils.ConsoleMsg("Loading NameColors: Starting new file: " + _CmdNameColor.m_DataFilename);
-            _CmdNameColor.ColorNameDict = new ConcurrentHashMap<String, String>();
+            _CmdNameColor.ColorNameDict = new ConcurrentHashMap<>();
         }
     }
 
@@ -95,19 +108,17 @@ public class _CmdNameColor extends CommandBase {
     }
 
     @Override
-    public void execute(MinecraftServer server, final ICommandSender cs, final String[] args) throws CommandException {
-        EntityPlayerMP p = null;
-        if (!(cs instanceof EntityPlayerMP)) {
+    public void handleCommand(MC_Player player, String[] args) {
+        if (player == null) {
             System.out.println("--- Only for players!");
             return;
         }
-        p = (EntityPlayerMP) cs;
         if (args.length <= 0) {
-            this.SendUsage(p);
+            this.SendUsage(player);
             return;
         }
-        final String pName = p.getName();
-        final boolean isOp = _DiwUtils.IsOp(cs);
+        final String pName = player.getName();
+        final boolean isOp = player.isOp();
         String newName = args[0];
         if (isOp) {
             newName = _DiwUtils.ConcatArgs(args, 0);
@@ -115,21 +126,21 @@ public class _CmdNameColor extends CommandBase {
         } else {
             newName = _DiwUtils.TranslateChatString(newName, false);
             if (!pName.equalsIgnoreCase(_ColorHelper.stripColor(newName))) {
-                ((IMixinICommandSender) p).sendMessage(String.valueOf(_ColorHelper.RED) + "Name must match your own. You can just add color!");
-                this.SendUsage(p);
+                player.sendMessage(String.valueOf(_ColorHelper.RED) + "Name must match your own. You can just add color!");
+                this.SendUsage(player);
                 return;
             }
         }
-        final String key = p.getUniqueID().toString();
+        final String key = player.getUUID().toString();
         String existing = _CmdNameColor.ColorNameDict.get(key);
         if (existing == null) existing = _CmdNameColor.ColorNameDict.get(pName.toLowerCase());
         if (existing != null && newName.equalsIgnoreCase("off")) {
             _CmdNameColor.ColorNameDict.remove(key);
-            ((IMixinICommandSender) p).sendMessage(String.valueOf(_ColorHelper.GREEN) + "You remove your colored name: " + _ColorHelper.YELLOW + existing);
+            player.sendMessage(String.valueOf(_ColorHelper.GREEN) + "You remove your colored name: " + _ColorHelper.YELLOW + existing);
         } else {
             _CmdNameColor.ColorNameDict.put(key, newName);
-            ((IMixinICommandSender) p).sendMessage(String.valueOf(_ColorHelper.GREEN) + "Your colored name is now: " + _ColorHelper.YELLOW + newName);
+            player.sendMessage(String.valueOf(_ColorHelper.GREEN) + "Your colored name is now: " + _ColorHelper.YELLOW + newName);
         }
-        updateNameColorOnTab(p);
+        updateNameColorOnTab((EntityPlayerMP) player);
     }
 }

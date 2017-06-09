@@ -10,9 +10,11 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(ContainerHopper.class)
 public class MixinContainerHopper implements IMixinContainerHopper {
+
     @Shadow
     @Final
     private IInventory hopperInventory;
+
 
     @Override
     public boolean isMinecart() {

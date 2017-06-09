@@ -1,7 +1,9 @@
 {
-  "minVersion": "0.4.7-SNAPSHOT",
-  "required": "true",
+  "minVersion": "0.6.9-SNAPSHOT",
+  "required": true,
   "package": "org.projectrainbow.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "mixin.refmap.json",
   "mixins": [
     "MixinICommandSender",
     "MixinDedicatedServer",
@@ -65,7 +67,6 @@
     "MixinNetworkManager",
     "MixinNetHandlerLoginServer",
     "MixinCommandBase",
-    "MixinContainerHopper",
     "MixinContainerDispenser",
     "MixinItemReed",
     "MixinItemDoor",
@@ -74,13 +75,12 @@
     "MixinEntityArrow",
     "MixinEntityThrowable",
     "MixinEntityTNTPrimed",
-    "MixinContainerPlayer",
-    "MixinContainerWorkbench",
     "MixinModifiableAttributeInstance",
     "MixinAttributeModifier",
     "MixinUserList",
     "MixinSPacketPlayerListHeaderFooter",
     "MixinCPacketHandshake",
-    "MixinCommandMessage"
+    "MixinCommandMessage",
+    "MixinContainerHopper"
   ]
 }

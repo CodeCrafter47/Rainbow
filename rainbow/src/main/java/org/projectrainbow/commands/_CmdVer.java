@@ -1,44 +1,45 @@
 package org.projectrainbow.commands;
 
-import java.util.Collections;
-import java.util.List;
-
+import PluginReference.MC_Command;
+import PluginReference.MC_Player;
 import org.projectrainbow.Updater;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.launch.Bootstrap;
 
-import PluginReference.MC_Player;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
+import java.util.Collections;
+import java.util.List;
 
-public class _CmdVer extends CommandBase {
+public class _CmdVer implements MC_Command {
     @Override
     public String getCommandName() {
         return "ver";
     }
     
     @Override
-    public List<String> getCommandAliases() {
+    public List<String> getAliases() {
         return Collections.singletonList("version");
     }
 
     @Override
-    public boolean checkPermission(MinecraftServer minecraftServer, ICommandSender sender) {
-        return (!(sender instanceof MC_Player)) || ((MC_Player) sender).hasPermission("rainbow.version");
+    public boolean hasPermissionToUse(MC_Player player) {
+        return player == null || player.hasPermission("rainbow.version");
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender) {
+    public List<String> getTabCompletionList(MC_Player plr, String[] args) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public String getHelpLine(MC_Player player) {
         return String.valueOf(_ColorHelper.AQUA) + "/ver" + _ColorHelper.WHITE + " --- Version Info";
     }
 
     @Override
-    public void execute(MinecraftServer minecraftServer, ICommandSender cs, String[] strings) throws CommandException {
-        _DiwUtils.reply(cs, String.valueOf(_ColorHelper.AQUA) + "Rainbow " + _ColorHelper.LIGHT_PURPLE + _DiwUtils.MC_VERSION_STRING + " b" + Bootstrap.buildNumber);
-        _DiwUtils.reply(cs, "Checking for update, please wait...");
-        _DiwUtils.reply(cs, Updater.checkForUpdate());
+    public void handleCommand(MC_Player player, String[] strings) {
+        _DiwUtils.reply(player, String.valueOf(_ColorHelper.AQUA) + "Rainbow " + _ColorHelper.LIGHT_PURPLE + _DiwUtils.MC_VERSION_STRING + " b" + Bootstrap.buildNumber);
+        _DiwUtils.reply(player, "Checking for update, please wait...");
+        _DiwUtils.reply(player, Updater.checkForUpdate());
     }
 }

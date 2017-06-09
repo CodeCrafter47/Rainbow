@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class _CmdRide implements MC_Command {
 
-    public static ConcurrentHashMap<String, Boolean> dictAllow = new ConcurrentHashMap();
+    public static ConcurrentHashMap<String, Boolean> dictAllow = new ConcurrentHashMap<>();
 
     public _CmdRide() {
     }
@@ -52,7 +52,7 @@ public class _CmdRide implements MC_Command {
                 String tgtName = args[0];
 
                 if (tgtName.equalsIgnoreCase("toggle")) {
-                    Boolean tgtEnt1 = (Boolean) dictAllow.get(plr.getName());
+                    Boolean tgtEnt1 = dictAllow.get(plr.getName());
 
                     if (tgtEnt1 == null) {
                         tgtEnt1 = false;
@@ -93,7 +93,7 @@ public class _CmdRide implements MC_Command {
                                     ChatColor.RED
                                             + "That target has not enabled riding.");
                         } else {
-                            ArrayList<MC_Entity> passengers = new ArrayList<MC_Entity>(plr.getRiders());
+                            ArrayList<MC_Entity> passengers = new ArrayList<>(plr.getRiders());
                             for (MC_Entity passenger : passengers) {
                                 plr.removeRider(passenger);
                             }
@@ -123,12 +123,12 @@ public class _CmdRide implements MC_Command {
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
         return args.length >= 1
                 ? CommandBase.getListOfStringsMatchingLastWord(args,
-                _DiwUtils.getMinecraftServer().getAllUsernames())
+                _DiwUtils.getMinecraftServer().getOnlinePlayerNames())
                 : null;
     }
 
     public boolean CanRide(String pName) {
-        Boolean res = (Boolean) dictAllow.get(pName);
+        Boolean res = dictAllow.get(pName);
 
         return res == null ? false : res;
     }

@@ -2,7 +2,6 @@ package org.projectrainbow.mixins;
 
 import net.minecraft.server.management.UserList;
 import net.minecraft.server.management.UserListBans;
-import net.minecraft.server.management.UserListEntry;
 import net.minecraft.server.management.UserListIPBans;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -14,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Map;
 
 // fixes https://bugs.mojang.com/browse/MC-84786
-// todo 1.12 check whether mojang fixed the issue
+// todo 1.13 check whether mojang fixed the issue
 @Mixin(UserList.class)
 public abstract class MixinUserList {
 

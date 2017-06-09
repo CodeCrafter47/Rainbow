@@ -15,9 +15,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-/**
- * Created by florian on 03.02.15.
- */
 @Mixin(NetHandlerLoginServer.class)
 public class MixinNetHandlerLoginServer {
     @Shadow
@@ -35,7 +32,7 @@ public class MixinNetHandlerLoginServer {
         }
     }
 
-    @Redirect(method = "processLoginStart", at = @At(value = "INVOKE", target = "net.minecraft.server.MinecraftServer.isServerInOnlineMode()Z"))
+    @Redirect(method = "a(Lml;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;isServerInOnlineMode()Z")) // processLoginStart
     private boolean simulateOfflineMode(MinecraftServer server) {
         return !_DiwUtils.BungeeCord && server.isServerInOnlineMode();
     }

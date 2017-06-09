@@ -9,7 +9,11 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemBlockSpecial;
+import net.minecraft.item.ItemDoor;
+import net.minecraft.item.ItemSign;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -34,18 +38,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinItemInWorldManager {
 
     @Shadow
-    public World theWorld;
+    public World world;
 
     @Shadow
-    public EntityPlayerMP thisPlayerMP;
+    public EntityPlayerMP player;
 
     @Shadow
     private GameType gameType;
 
     @Inject(method = "tryHarvestBlock", at = @At(value = "INVOKE", target = "net.minecraft.server.management.PlayerInteractionManager.removeBlock(Lnet/minecraft/util/math/BlockPos;)Z"))
     private void blockBreakHook(BlockPos blockPos, CallbackInfoReturnable<Boolean> callbackInfo) {
-        Hooks.onBlockBroke((MC_Player) thisPlayerMP, new MC_Location(blockPos.getX(), blockPos.getY(), blockPos.getZ(), thisPlayerMP.dimension), Block.getIdFromBlock(theWorld.getBlockState(blockPos).getBlock()));
-        Hooks.onBlockBroke((MC_Player) thisPlayerMP, new MC_Location(blockPos.getX(), blockPos.getY(), blockPos.getZ(), thisPlayerMP.dimension), new BlockWrapper(theWorld.getBlockState(blockPos)));
+        Hooks.onBlockBroke((MC_Player) player, new MC_Location(blockPos.getX(), blockPos.getY(), blockPos.getZ(), player.dimension), Block.getIdFromBlock(world.getBlockState(blockPos).getBlock()));
+        Hooks.onBlockBroke((MC_Player) player, new MC_Location(blockPos.getX(), blockPos.getY(), blockPos.getZ(), player.dimension), new BlockWrapper(world.getBlockState(blockPos)));
     }
 
     @Redirect(method = "processRightClickBlock", at = @At(value = "INVOKE", target = "net.minecraft.block.Block.onBlockActivated(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;Lnet/minecraft/util/EnumFacing;FFF)Z"))

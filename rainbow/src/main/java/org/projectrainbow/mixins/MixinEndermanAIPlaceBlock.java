@@ -25,7 +25,7 @@ public class MixinEndermanAIPlaceBlock {
     @Final
     private EntityEnderman enderman;
 
-    @Inject(method = "updateTask", at = @At(value = "INVOKE", target = "net.minecraft.world.World.setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "updateTask()V", at = @At(value = "INVOKE", target = "net.minecraft.world.World.setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void grief(CallbackInfo callbackInfo, Random var1, World var2, int var3, int var4, int var5, BlockPos pos, IBlockState var7, IBlockState var8, IBlockState var9) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptEntityMiscGrief((MC_Entity) enderman, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), enderman.dimension), MC_MiscGriefType.ENDERMAN_PLACE_CARRIED_BLOCK, ei);

@@ -1,10 +1,66 @@
 package PluginExample;
 
-import PluginExample.commands.*;
+import PluginExample.commands.CmdASAllArms;
+import PluginExample.commands.CmdASAllBase;
+import PluginExample.commands.CmdASNoArms;
+import PluginExample.commands.CmdASNoBase;
+import PluginExample.commands.CmdASPose;
+import PluginExample.commands.CmdArrows;
+import PluginExample.commands.CmdAsArmsOnly;
+import PluginExample.commands.CmdAsBaseOnly;
+import PluginExample.commands.CmdAttributeTest;
+import PluginExample.commands.CmdBiome;
+import PluginExample.commands.CmdBurn;
+import PluginExample.commands.CmdCarry;
+import PluginExample.commands.CmdCat;
+import PluginExample.commands.CmdChunkTest1;
+import PluginExample.commands.CmdChunkTest2;
+import PluginExample.commands.CmdChunkTest3;
+import PluginExample.commands.CmdClearItemName;
+import PluginExample.commands.CmdClearLore;
+import PluginExample.commands.CmdDrop1;
+import PluginExample.commands.CmdDrop2;
+import PluginExample.commands.CmdECarry;
+import PluginExample.commands.CmdEHead;
+import PluginExample.commands.CmdEgg;
+import PluginExample.commands.CmdEnchants;
+import PluginExample.commands.CmdFly;
+import PluginExample.commands.CmdFlySpeed;
+import PluginExample.commands.CmdGetBurn;
+import PluginExample.commands.CmdGetLore;
+import PluginExample.commands.CmdGui;
+import PluginExample.commands.CmdHat;
+import PluginExample.commands.CmdHead;
+import PluginExample.commands.CmdHeal;
+import PluginExample.commands.CmdHero;
+import PluginExample.commands.CmdInfo;
+import PluginExample.commands.CmdItemInfo;
+import PluginExample.commands.CmdItemsGold;
+import PluginExample.commands.CmdJunk;
+import PluginExample.commands.CmdNameItem;
+import PluginExample.commands.CmdNearinvis;
+import PluginExample.commands.CmdNearvis;
+import PluginExample.commands.CmdNether;
+import PluginExample.commands.CmdNickClear;
+import PluginExample.commands.CmdNickTest;
+import PluginExample.commands.CmdRemEffects;
+import PluginExample.commands.CmdSetAbsorb;
+import PluginExample.commands.CmdSetBiome;
+import PluginExample.commands.CmdSetFly;
+import PluginExample.commands.CmdSetHead;
+import PluginExample.commands.CmdSetLore;
+import PluginExample.commands.CmdShake;
+import PluginExample.commands.CmdStalkMe;
+import PluginExample.commands.CmdTest1;
+import PluginExample.commands.CmdTestEffects;
+import PluginExample.commands.CmdTestSpawn;
+import PluginExample.commands.CmdWalkSpeed;
+import PluginExample.commands.CmdWorlds;
 import PluginReference.ChatColor;
 import PluginReference.MC_Block;
 import PluginReference.MC_BlockType;
 import PluginReference.MC_Entity;
+import PluginReference.MC_ID;
 import PluginReference.MC_ItemStack;
 import PluginReference.MC_Location;
 import PluginReference.MC_Player;
@@ -21,7 +77,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MyPlugin extends PluginBase {
     public static MC_Server server = null;
 
-    public static ConcurrentHashMap<String, MC_Location> hashCompassTarget = new ConcurrentHashMap<String, MC_Location>();
+    public static ConcurrentHashMap<String, MC_Location> hashCompassTarget = new ConcurrentHashMap<>();
 
     public void onStartup(MC_Server argServer) {
         System.out.println("======= ExamplePlugin --- Startup! =======");
@@ -88,6 +144,13 @@ public class MyPlugin extends PluginBase {
         server.registerCommand(new CmdWorlds());
         server.registerCommand(new CmdAttributeTest());
         server.registerCommand(new CmdGui());
+
+        server.addRecipe(server.createItemStack(MC_ID.ITEM_STONE_PICKAXE, 1, 0),
+                "XXX", " I ", " I ",
+                'X', server.createItemStack(MC_ID.BLOCK_STONE, 1, 0),
+                'I', server.createItemStack(MC_ID.ITEM_STICK, 1, 0));
+        server.addShapelessRecipe(server.createItemStack(MC_ID.ITEM_LEATHER, 1, 0),
+                server.createItemStack(MC_ID.ITEM_ROTTEN_FLESH, 1, 0));
     }
 
     public void onShutdown() {
@@ -106,7 +169,7 @@ public class MyPlugin extends PluginBase {
 
         // As example of controlling order based on another plugin.
         // This tells Rainbow to put us before 'RainbowZones' if it was found
-        info.pluginNamesINeedToGetEventsBefore = new ArrayList<String>();
+        info.pluginNamesINeedToGetEventsBefore = new ArrayList<>();
         info.pluginNamesINeedToGetEventsBefore.add("RainbowZones");
 
         return info;
@@ -126,15 +189,15 @@ public class MyPlugin extends PluginBase {
 
     // Event handler: onTick...
     static long lastProcessedMS = 0;
-    public ConcurrentHashMap<String, String> lastInfoMap = new ConcurrentHashMap<String, String>();
+    public ConcurrentHashMap<String, String> lastInfoMap = new ConcurrentHashMap<>();
 
     public void onTick(int tickNumber) {
         long ms = System.currentTimeMillis();
         if (ms - lastProcessedMS < 500) return;
         lastProcessedMS = ms;
-		
+
 		/*
-		// Armor stand test...
+        // Armor stand test...
 		// -----------------------------------------------------------
 		for(MC_Player plr : server.getPlayers())
 		{
@@ -179,7 +242,7 @@ public class MyPlugin extends PluginBase {
             }
 
             // Show player status info...
-            ArrayList<String> info = new ArrayList<String>();
+            ArrayList<String> info = new ArrayList<>();
             if (plr.isDead()) info.add("Dead");
             if (plr.isSleeping()) info.add("Sleeping");
             if (plr.isSneaking()) info.add("Sneaking");

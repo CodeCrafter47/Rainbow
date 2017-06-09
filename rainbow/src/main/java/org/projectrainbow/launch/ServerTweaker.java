@@ -4,28 +4,18 @@ import com.google.common.io.ByteStreams;
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
-import org.spongepowered.asm.launch.platform.MixinContainer;
-import org.spongepowered.asm.mixin.MixinEnvironment;
-import org.spongepowered.asm.util.JavaVersion;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
 public class ServerTweaker implements ITweaker {
     static {
-        MixinContainer.agentClasses.remove("org.spongepowered.asm.launch.MixinLaunchAgentFML");
-        if (JavaVersion.current() >= 1.7D) {
-            // If running at least Java 7 set MixinCompatibilityLevel to Java 7,
-            // so that the Mixin Processor doesn't throw an exception if it
-            // encounters a Java 7 Mixin Class.
-            // This is done to prevent a mixin failure in dev environment. In the
-            // final jar our maven plugins convert all our Java 7 classes to Java 6.
-            // But when running the server from the IDE that has not happened yet.
-            MixinEnvironment.setCompatibilityLevel(MixinEnvironment.CompatibilityLevel.JAVA_7);
-        }
-
         Launch.classLoader.addClassLoaderExclusion("com.google.gson.");
         Launch.classLoader.addClassLoaderExclusion("org.apache.commons.io");
         Launch.classLoader.addClassLoaderExclusion("PluginReference.");

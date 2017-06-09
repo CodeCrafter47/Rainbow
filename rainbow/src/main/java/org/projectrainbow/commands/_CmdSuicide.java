@@ -1,43 +1,51 @@
 package org.projectrainbow.commands;
 
+import PluginReference.MC_Command;
 import PluginReference.MC_Player;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
-import org.projectrainbow.interfaces.IMixinICommandSender;
 
-public class _CmdSuicide extends CommandBase {
+import java.util.Collections;
+import java.util.List;
+
+public class _CmdSuicide implements MC_Command {
     @Override
     public String getCommandName() {
         return "suicide";
     }
 
     @Override
-    public boolean checkPermission(MinecraftServer minecraftServer, ICommandSender iCommandSender) {
-        return (!(iCommandSender instanceof MC_Player)) || ((MC_Player) iCommandSender).hasPermission("rainbow.suicide");
+    public List<String> getAliases() {
+        return Collections.emptyList();
     }
 
     @Override
-    public String getCommandUsage(ICommandSender iCommandSender) {
+    public boolean hasPermissionToUse(MC_Player player) {
+        return player == null || player.hasPermission("rainbow.suicide");
+    }
+
+    @Override
+    public List<String> getTabCompletionList(MC_Player plr, String[] args) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public String getHelpLine(MC_Player player) {
         return String.valueOf(_ColorHelper.AQUA) + "/suicide" + _ColorHelper.WHITE + " --- Don't do it!";
     }
 
     @Override
-    public void execute(MinecraftServer minecraftServer, ICommandSender cs, String[] strings) throws CommandException {
-        EntityPlayer p = null;
-        if (!(cs instanceof EntityPlayer)) {
+    public void handleCommand(MC_Player player, String[] args) {
+        if (player == null) {
             System.out.println("--- Only for players!");
             return;
         }
-        p = (EntityPlayer) cs;
-        if (_DiwUtils.TooSoon(cs, "Suicide", 120)) {
+        if (_DiwUtils.TooSoon((ICommandSender) player, "Suicide", 120)) {
             return;
         }
-        ((IMixinICommandSender) p).sendMessage(String.valueOf(_ColorHelper.AQUA) + "You give up on the world!");
-        p.onKillCommand();
+        player.sendMessage(String.valueOf(_ColorHelper.AQUA) + "You give up on the world!");
+        ((EntityPlayerMP) player).onKillCommand();
     }
 }

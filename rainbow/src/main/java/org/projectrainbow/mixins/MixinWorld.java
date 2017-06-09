@@ -21,7 +21,7 @@ public abstract class MixinWorld {
     @Shadow
     protected abstract boolean isChunkLoaded(int var1, int var2, boolean var3);
 
-    @Inject(method = "spawnEntityInWorld", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "spawnEntity", at = @At("HEAD"), cancellable = true)
     private void onEntitySpawned(Entity entity, CallbackInfoReturnable<Boolean> callbackInfo) {
 
         int var2 = MathHelper.floor(entity.posX / 16.0D);

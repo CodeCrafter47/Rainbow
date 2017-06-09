@@ -16,8 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class _CmdTpaHere implements MC_Command {
 
-    public static Map<String, MC_Location> tpahereMap = new ConcurrentHashMap();
-    public static Map<String, Long> tpahereTimer = new ConcurrentHashMap();
+    public static Map<String, MC_Location> tpahereMap = new ConcurrentHashMap<>();
+    public static Map<String, Long> tpahereTimer = new ConcurrentHashMap<>();
 
     public _CmdTpaHere() {}
 
@@ -56,10 +56,10 @@ public class _CmdTpaHere implements MC_Command {
                                         + ChatColor.YELLOW + tgtName);
                     } else {
                         long curMS = System.currentTimeMillis();
-                        Long prev = (Long) tpahereTimer.get(pName);
+                        Long prev = tpahereTimer.get(pName);
 
                         if (prev != null) {
-                            long key = 15000L - (curMS - prev.longValue());
+                            long key = 15000L - (curMS - prev);
 
                             if (key > 0L) {
                                 plr.sendMessage(
@@ -72,7 +72,7 @@ public class _CmdTpaHere implements MC_Command {
                             }
                         }
 
-                        tpahereTimer.put(pName, Long.valueOf(curMS));
+                        tpahereTimer.put(pName, curMS);
                         if (_CmdIgnore.IsIgnoring(pTgt.getName(),
                                 plr.getName())) {
                             plr.sendMessage(
@@ -112,7 +112,7 @@ public class _CmdTpaHere implements MC_Command {
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
         return args.length >= 1
                 ? CommandBase.getListOfStringsMatchingLastWord(args,
-                _DiwUtils.getMinecraftServer().getAllUsernames())
+                _DiwUtils.getMinecraftServer().getOnlinePlayerNames())
                 : null;
     }
 }

@@ -1,40 +1,51 @@
 package org.projectrainbow.commands;
 
+import PluginReference.MC_Command;
 import PluginReference.MC_Player;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import org.projectrainbow._ColorHelper;
+import org.projectrainbow._DiwUtils;
 import org.projectrainbow.interfaces.IMixinEntityPlayerMP;
 import org.projectrainbow.interfaces.IMixinICommandSender;
 
-public class _CmdSpawn extends CommandBase {
+import java.util.Collections;
+import java.util.List;
+
+public class _CmdSpawn implements MC_Command {
     @Override
     public String getCommandName() {
         return "spawn";
     }
 
     @Override
-    public boolean checkPermission(MinecraftServer minecraftServer, ICommandSender iCommandSender) {
-        return (!(iCommandSender instanceof MC_Player)) || ((MC_Player) iCommandSender).hasPermission("rainbow.spawn");
+    public List<String> getAliases() {
+        return Collections.emptyList();
     }
 
     @Override
-    public String getCommandUsage(ICommandSender iCommandSender) {
+    public boolean hasPermissionToUse(MC_Player player) {
+        return player == null || player.hasPermission("rainbow.spawn");
+    }
+
+    @Override
+    public List<String> getTabCompletionList(MC_Player plr, String[] args) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public String getHelpLine(MC_Player player) {
         return String.valueOf(_ColorHelper.AQUA) + "/spawn" + _ColorHelper.WHITE + " --- Go to Spawn";
     }
 
     @Override
-    public void execute(MinecraftServer minecraftServer, ICommandSender cs, String[] args) throws CommandException {
+    public void handleCommand(MC_Player player, String[] args) {
         EntityPlayer p;
-        if (cs instanceof EntityPlayerMP) {
-            p = (EntityPlayerMP) cs;
-            final WorldServer world = minecraftServer.worldServerForDimension(0);
+        if (player != null) {
+            p = (EntityPlayerMP) player;
+            final WorldServer world = _DiwUtils.getMinecraftServer().worldServerForDimension(0);
             final BlockPos coords = world.getSpawnPoint();
             final double x = coords.getX() + 0.5;
             final int y = coords.getY();

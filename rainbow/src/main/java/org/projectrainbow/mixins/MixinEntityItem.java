@@ -28,7 +28,7 @@ public abstract class MixinEntityItem implements MC_ItemEntity {
     public abstract String getOwner();
 
     @Shadow
-    public abstract void setOwner(String var1);
+    public abstract void setOwner(String var1); // setOwner
 
     @Shadow
     public abstract String getThrower();

@@ -7,13 +7,20 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.WorldServer;
 import org.projectrainbow.Hooks;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow._JOT_OnlineTimeUtils;
 import org.projectrainbow._UUIDMapper;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -24,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Mixin(PlayerList.class)
 public class MixinServerConfigurationManager {
-    private Map<String, Long> lastConnectTime = new ConcurrentHashMap<String, Long>();
+    private Map<String, Long> lastConnectTime = new ConcurrentHashMap<>();
 
     @Inject(method = "playerLoggedIn", at = @At("HEAD"))
     private void onLogin(EntityPlayerMP var1, CallbackInfo callback) {
@@ -46,9 +53,13 @@ public class MixinServerConfigurationManager {
         return new BlockPos(compassTarget.getBlockX(), compassTarget.getBlockY(), compassTarget.getBlockZ());
     }
 
-    @ModifyArg(method = "removeAllPlayers", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetHandlerPlayServer;kickPlayerFromServer(Ljava/lang/String;)V"))
-    String getCustomShutdownMessage(String oldShutdownMessage) {
-        return _DiwUtils.CustomShutdownMessage;
+    @ModifyArg(method = "removeAllPlayers", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetHandlerPlayServer;disconnect(Lnet/minecraft/util/text/ITextComponent;)V"))
+    ITextComponent getCustomShutdownMessage(ITextComponent oldShutdownMessage) {
+        if (_DiwUtils.CustomShutdownMessage != null) {
+            return new TextComponentString(_DiwUtils.CustomShutdownMessage);
+        } else {
+            return oldShutdownMessage;
+        }
     }
 
     @Inject(method = "allowUserToConnect", at = @At("HEAD"), cancellable = true)
@@ -58,7 +69,7 @@ public class MixinServerConfigurationManager {
         if (_DiwUtils.DoReconnectDelay) {
             var4 = var2.getName();
             Long var3 = System.currentTimeMillis();
-            Long msLast = (Long) lastConnectTime.get(var4);
+            Long msLast = lastConnectTime.get(var4);
 
             if (msLast != null
                     && var3 - msLast

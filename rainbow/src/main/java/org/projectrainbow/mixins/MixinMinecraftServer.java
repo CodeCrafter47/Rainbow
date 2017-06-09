@@ -12,7 +12,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.projectrainbow.*;
+import org.projectrainbow.Hooks;
+import org.projectrainbow.ServerWrapper;
+import org.projectrainbow._Announcer;
+import org.projectrainbow._ColorHelper;
+import org.projectrainbow._DiwUtils;
+import org.projectrainbow._EconomyManager;
+import org.projectrainbow._Janitor;
 import org.projectrainbow.commands._CmdCron;
 import org.projectrainbow.interfaces.IMixinMinecraftServer;
 import org.spongepowered.asm.mixin.Final;
@@ -36,7 +42,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
     @Shadow
     @Final
-    public Profiler theProfiler;
+    public Profiler profiler;
 
     @Shadow
     private PlayerList playerList;
@@ -101,10 +107,10 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
             System.out.println("----------------------------------\n");
             this.DumpDiwMemInfo();
             System.out.println("----------------------------------\n");
-            this.theProfiler.startSection("save");
+            this.profiler.startSection("save");
             this.playerList.saveAllPlayerData();
             this.saveAllWorlds(true);
-            this.theProfiler.endSection();
+            this.profiler.endSection();
             System.out.println("==============================================================");
         }
 
@@ -203,11 +209,11 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     }
 
     @Overwrite
-    public void addChatMessage(ITextComponent var1) {
+    public void sendMessage(ITextComponent var1) {
         LOG.info(CHAT_MARKER, _ColorHelper.stripColor(var1.getUnformattedText()));
     }
 
-    @Overwrite
+    // No @Overwrite because the target method is not obfuscated
     public String getServerModName() {
         return _DiwUtils.MC_SERVER_MOD_NAME;
     }

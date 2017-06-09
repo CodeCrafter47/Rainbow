@@ -17,6 +17,6 @@ public abstract class MixinICommandSender implements IMixinICommandSender {
      * Add a useful helper method
      */
     public void sendMessage(String legacyText) {
-        ((ICommandSender)this).addChatMessage(new TextComponentString(legacyText));
+        ((ICommandSender)this).sendMessage(new TextComponentString(legacyText));
     }
 }

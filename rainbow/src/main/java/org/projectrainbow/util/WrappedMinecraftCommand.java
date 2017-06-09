@@ -23,7 +23,7 @@ public class WrappedMinecraftCommand implements MC_Command {
 
     @Override
     public boolean equals(Object obj) {
-        return delegate.equals(obj);
+        return obj instanceof WrappedMinecraftCommand && delegate.equals(((WrappedMinecraftCommand) obj).delegate);
     }
 
     @Override
@@ -33,17 +33,17 @@ public class WrappedMinecraftCommand implements MC_Command {
 
     @Override
     public String getCommandName() {
-        return delegate.getCommandName();
+        return delegate.getName();
     }
 
     @Override
     public List<String> getAliases() {
-        return delegate.getCommandAliases();
+        return delegate.getAliases();
     }
 
     @Override
     public String getHelpLine(MC_Player plr) {
-        return delegate.getCommandUsage((ICommandSender) plr);
+        return delegate.getUsage((ICommandSender) plr);
     }
 
     @Override
@@ -62,6 +62,6 @@ public class WrappedMinecraftCommand implements MC_Command {
 
     @Override
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
-        return delegate.getTabCompletionOptions(_DiwUtils.getMinecraftServer(), (ICommandSender) plr, args, null);
+        return delegate.getTabCompletions(_DiwUtils.getMinecraftServer(), (ICommandSender) plr, args, null);
     }
 }
