@@ -1,7 +1,5 @@
 package PluginReference;
 
-package PluginReference;
-
 /** 
  * GameRule Type
  */ 			
