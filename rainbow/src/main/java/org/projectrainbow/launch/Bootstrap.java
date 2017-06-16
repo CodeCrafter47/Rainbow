@@ -35,20 +35,6 @@ public class Bootstrap {
 
     public static void main(String[] args) {
         Bootstrap.args = args;
-
-        String jversion = System.getProperty("java.version").split("_")[0].replace("1.", "").replace(".0", "").replace("-ea", "");
-        if (Integer.parseInt(jversion) < 8) {
-            logger.info("*** WARNNING, your Java is outdated         ***");
-            logger.info("*** Java 8 will be required as of 1.12      ***");
-            logger.info("*** Get Java 8: http://bit.ly/Java8Download ***");
-            logger.info("*** Server will start in 5 seconds...       ***");
-            try {
-                Thread.sleep(TimeUnit.SECONDS.toMillis(5));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
         logger.info("Searching for additional tweakers...");
 
         List<String> tweakClasses = new ArrayList<String>() {{
@@ -101,42 +87,7 @@ public class Bootstrap {
             options.add("--tweakClass");
             options.add(tweakClass);
         }
-        
-        if (Bootstrap.class.getClassLoader() instanceof URLClassLoader){
-            Launch.main(options.toArray(new String[options.size()]));
-        } else {
-            //Temp fix for Java 9-ea until Launchwrapper updates.
-            //Java 9-ea has lots of proformance fixes.
-            final Class<?> clazz = Launch.class;
-            Launch.classLoader = new LaunchClassLoader(getURLs());
-            Launch.blackboard = new HashMap<String,Object>();
-            Thread.currentThread().setContextClassLoader(Launch.classLoader);
-            try {
-                Constructor<?> constructor = Launch.class.getDeclaredConstructor(new Class[0]);
-                constructor.setAccessible(true);
-                Object l = constructor.newInstance(new Object[0]);
-        
-                Method m = clazz.getDeclaredMethod("launch", new Class[]{String[].class});
-                m.setAccessible(true);
-                m.invoke((Launch) l, (Object) options.toArray(new String[options.size()]));
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("Your system does't support the Java 9-ea workaround. Please use Java 8");
-            }
-        }
-    }
-
-    public static URL[] getURLs() {
-        String cp = System.getProperty("java.class.path");
-        String[] elements = cp.split(File.pathSeparator);
-        if (elements.length == 0) elements = new String[] {""};
-        URL[] urls = new URL[elements.length];
-        for (int i = 0; i < elements.length; i++) {
-            try {
-                urls[i] = new File(elements[i]).toURI().toURL();
-            } catch (MalformedURLException ignore){/**/}
-        }
-        return urls;
+        Launch.main(options.toArray(new String[options.size()]));
     }
 
     private static void addURL(URL u) throws IOException {
