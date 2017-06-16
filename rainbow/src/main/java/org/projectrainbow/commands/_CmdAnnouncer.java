@@ -3,7 +3,7 @@ package org.projectrainbow.commands;
 
 import PluginReference.MC_Command;
 import PluginReference.MC_Player;
-import net.minecraft.util.text.TextFormatting;
+import org.projectrainbow._ColorHelper;
 import org.projectrainbow._Announcer;
 
 import java.util.List;
@@ -23,8 +23,7 @@ public class _CmdAnnouncer implements MC_Command {
 
     @Override
     public String getHelpLine(MC_Player plr) {
-        return TextFormatting.LIGHT_PURPLE + "/announcer" + TextFormatting.WHITE
-                + " --- Announcer!";
+        return _ColorHelper.LIGHT_PURPLE + "/announcer" + _ColorHelper.WHITE + " --- Announcer!";
     }
 
     @Override
