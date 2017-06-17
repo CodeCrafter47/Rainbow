@@ -8,6 +8,7 @@ import PluginReference.PluginInfo;
 import org.projectrainbow._DiwUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -21,7 +22,7 @@ public class _CmdPlugins implements MC_Command {
 
     @Override
     public List<String> getAliases() {
-        return null;
+        return Arrays.asList("pl");
     }
 
     @Override
