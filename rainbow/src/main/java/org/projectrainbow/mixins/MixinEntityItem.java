@@ -19,10 +19,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinEntityItem implements MC_ItemEntity {
 
     @Shadow
-    public abstract ItemStack getEntityItem();
+    public abstract ItemStack getItem();
 
     @Shadow
-    public abstract void setEntityItemStack(ItemStack var1);
+    public abstract void setItem(ItemStack var1);
 
     @Shadow
     public abstract String getOwner();
@@ -47,12 +47,12 @@ public abstract class MixinEntityItem implements MC_ItemEntity {
 
     @Override
     public MC_ItemStack getItemStack() {
-        return (MC_ItemStack) (Object) getEntityItem();
+        return (MC_ItemStack) (Object) getItem();
     }
 
     @Override
     public void setItemStack(MC_ItemStack is) {
-        setEntityItemStack(PluginHelper.getItemStack(is));
+        setItem(PluginHelper.getItemStack(is));
     }
 
     @Override

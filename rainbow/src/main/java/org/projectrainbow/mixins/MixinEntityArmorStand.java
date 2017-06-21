@@ -1,6 +1,12 @@
 package org.projectrainbow.mixins;
 
-import PluginReference.*;
+import PluginReference.MC_ArmorStand;
+import PluginReference.MC_ArmorStandActionType;
+import PluginReference.MC_Entity;
+import PluginReference.MC_EventInfo;
+import PluginReference.MC_FloatTriplet;
+import PluginReference.MC_ItemStack;
+import PluginReference.MC_Player;
 import com.google.common.base.Preconditions;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
@@ -80,7 +86,7 @@ public abstract class MixinEntityArmorStand extends MixinEntityLivingBase implem
     private void onAttacked(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> callbackInfo) {
         m_rainbowAdjustedDamage = damage;
         damageModified = false;
-        attacker = (MC_Entity) damageSource.getEntity();
+        attacker = (MC_Entity) damageSource.getTrueSource();
 
         MC_EventInfo ei = new MC_EventInfo();
 

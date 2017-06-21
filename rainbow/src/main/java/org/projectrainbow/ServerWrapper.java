@@ -24,8 +24,8 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemStackMatcher;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -166,7 +166,7 @@ public class ServerWrapper implements MC_Server {
     }
 
     public MC_World getWorld(int idxDimension) {
-        return (MC_World) _DiwUtils.getMinecraftServer().worldServerForDimension(idxDimension);
+        return (MC_World) _DiwUtils.getMinecraftServer().getWorld(idxDimension);
     }
 
     public int getSpawnProtectionRadius() {
@@ -344,7 +344,7 @@ public class ServerWrapper implements MC_Server {
     }
 
     public void log(String msg) {
-        _DiwUtils.getMinecraftServer().h(msg); // logInfo
+        _DiwUtils.getMinecraftServer().logInfo(msg);
     }
 
     public boolean unregisterWorld(String worldName) {
@@ -425,7 +425,7 @@ public class ServerWrapper implements MC_Server {
             throw new IllegalArgumentException("Arguments of wrong Type");
         }
 
-        NonNullList<ItemStackMatcher> list = NonNullList.create();
+        NonNullList<Ingredient> list = NonNullList.create();
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 char symbol = pattern.get(y).charAt(x);
@@ -433,25 +433,25 @@ public class ServerWrapper implements MC_Server {
                 if (itemStack == null) {
                     throw new IllegalArgumentException("Undefined symbol in pattern: '" + symbol + "'");
                 }
-                list.add(ItemStackMatcher.a(new ItemStack[]{PluginHelper.getItemStack(itemStack)}));
+                list.add(Ingredient.fromStacks(PluginHelper.getItemStack(itemStack)));
             }
         }
 
         ShapedRecipes recipe = new ShapedRecipes("rainbow", width, height, list, PluginHelper.getItemStack(result));
-        CraftingManager.a("rainbow:custom-" + Integer.toHexString(nextRecipeId++), recipe); // addRecipe
+        CraftingManager.register("rainbow:custom-" + Integer.toHexString(nextRecipeId++), recipe); // addRecipe
     }
 
     @Override
     public void addShapelessRecipe(MC_ItemStack result, MC_ItemStack... ingredients) {
 
-        NonNullList<ItemStackMatcher> list = NonNullList.create();
+        NonNullList<Ingredient> list = NonNullList.create();
         for (MC_ItemStack ingredient : ingredients) {
-            list.add(ItemStackMatcher.a(new ItemStack[]{PluginHelper.getItemStack(ingredient)}));
+            list.add(Ingredient.fromStacks(PluginHelper.getItemStack(ingredient)));
         }
 
 
         ShapelessRecipes recipe = new ShapelessRecipes("rainbow", PluginHelper.getItemStack(result), list);
-        CraftingManager.a("rainbow:custom-" + Integer.toHexString(nextRecipeId++), recipe); // addRecipe
+        CraftingManager.register("rainbow:custom-" + Integer.toHexString(nextRecipeId++), recipe); // addRecipe
     }
 
     /**
@@ -521,6 +521,6 @@ public class ServerWrapper implements MC_Server {
 
     @Override
     public String getMinecraftVersion() {
-        return _DiwUtils.getMinecraftServer().G(); // getMinecraftVersion
+        return _DiwUtils.getMinecraftServer().getMinecraftVersion();
     }
 }

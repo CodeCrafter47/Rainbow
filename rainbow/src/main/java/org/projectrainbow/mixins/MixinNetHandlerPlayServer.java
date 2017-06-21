@@ -39,7 +39,7 @@ import net.minecraft.util.IntHashMap;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ChatMessageType;
+import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
@@ -234,7 +234,7 @@ public class MixinNetHandlerPlayServer {
 
         _DiwUtils.getMinecraftServer().sendMessage(result);
 
-        SPacketChat packet = new SPacketChat(result, ChatMessageType.a((byte) (b ? 1 : 0)));
+        SPacketChat packet = new SPacketChat(result, ChatType.byId((byte) (b ? 1 : 0)));
         for (EntityPlayerMP receiver : playerList.getPlayers()) {
             if (!_CmdIgnore.IsIgnoring(receiver.getName(), this.player.getName())) {
                 receiver.connection.sendPacket(packet);
@@ -486,7 +486,7 @@ public class MixinNetHandlerPlayServer {
                     var8.add(var6);
                 }
 
-                this.player.updateCraftingInventory(this.player.openContainer, var8);
+                this.player.sendAllContents(this.player.openContainer, var8);
             }
             ci.cancel();
         }

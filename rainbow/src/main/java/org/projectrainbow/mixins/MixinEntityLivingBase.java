@@ -88,7 +88,7 @@ public abstract class MixinEntityLivingBase extends MixinEntity implements MC_Li
     private void onAttacked(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> callbackInfo) {
         m_rainbowAdjustedDamage = damage;
         damageModified = false;
-        attacker = (MC_Entity) damageSource.getEntity();
+        attacker = (MC_Entity) damageSource.getTrueSource();
 
         MC_EventInfo ei = new MC_EventInfo();
 
@@ -107,9 +107,9 @@ public abstract class MixinEntityLivingBase extends MixinEntity implements MC_Li
 
     @Inject(method = "attackEntityFrom", at = @At(value = "INVOKE", target = "net.minecraft.entity.EntityLivingBase.onDeath(Lnet/minecraft/util/DamageSource;)V"))
     private void hookOnDeath(DamageSource var1, float var2, CallbackInfoReturnable<Boolean> callbackInfo) {
-        Hooks.onAttemptDeath(this, (MC_Entity) var1.getEntity(), PluginHelper.wrap(var1), var2);
+        Hooks.onAttemptDeath(this, (MC_Entity) var1.getTrueSource(), PluginHelper.wrap(var1), var2);
         if (!(this instanceof MC_Player)) {
-            Hooks.onNonPlayerEntityDeath(this, (MC_Entity) var1.getEntity(), PluginHelper.wrap(var1));
+            Hooks.onNonPlayerEntityDeath(this, (MC_Entity) var1.getTrueSource(), PluginHelper.wrap(var1));
         }
     }
 

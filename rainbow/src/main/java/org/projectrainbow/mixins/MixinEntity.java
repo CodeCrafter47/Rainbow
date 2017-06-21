@@ -442,7 +442,7 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Override
     public void teleport(MC_Location loc, boolean safe) {
-        teleport(_DiwUtils.getMinecraftServer().worldServerForDimension(loc.dimension), loc.x, loc.y, loc.z, loc.yaw, loc.pitch, safe);
+        teleport(_DiwUtils.getMinecraftServer().getWorld(loc.dimension), loc.x, loc.y, loc.z, loc.yaw, loc.pitch, safe);
     }
 
     @Override

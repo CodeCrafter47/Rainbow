@@ -58,7 +58,7 @@ import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityGiantZombie;
 import net.minecraft.entity.monster.EntityGuardian;
 import net.minecraft.entity.monster.EntityHusk;
-import net.minecraft.entity.monster.EntityIllusioner;
+import net.minecraft.entity.monster.EntityIllusionIllager;
 import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.monster.EntityMagmaCube;
 import net.minecraft.entity.monster.EntityPigZombie;
@@ -294,7 +294,7 @@ public class PluginHelper {
         entityMap.put(EntityMinecartHopper.class, MC_EntityType.MINECART_HOPPER);
         entityMap.put(EntityMinecartMobSpawner.class, MC_EntityType.MINECART_SPAWNER);
         entityMap.put(EntityParrot.class, MC_EntityType.PARROT);
-        entityMap.put(EntityIllusioner.class, MC_EntityType.ILLUSIONER);
+        entityMap.put(EntityIllusionIllager.class, MC_EntityType.ILLUSIONER);
 
         potionMap.put(MobEffects.SPEED, MC_PotionEffectType.SPEED);
         potionMap.put(MobEffects.SLOWNESS, MC_PotionEffectType.SLOWNESS);
@@ -564,7 +564,7 @@ public class PluginHelper {
             return MC_DamageType.CRAMMING;
         } else if (damageSource == DamageSource.FLY_INTO_WALL) {
             return MC_DamageType.FLY_INTO_WALL;
-        } else if (damageSource == DamageSource.field_191552_t) {
+        } else if (damageSource == DamageSource.FIREWORKS) {
             return MC_DamageType.FIREWORKS;
         } else {
             if (damageSource.getDamageType() != null) {
@@ -634,7 +634,7 @@ public class PluginHelper {
         else if (cause == MC_DamageType.HOT_FLOOR) return DamageSource.HOT_FLOOR;
         else if (cause == MC_DamageType.CRAMMING) return DamageSource.CRAMMING;
         else if (cause == MC_DamageType.FLY_INTO_WALL) return DamageSource.FLY_INTO_WALL;
-        else if (cause == MC_DamageType.FIREWORKS) return DamageSource.field_191552_t;
+        else if (cause == MC_DamageType.FIREWORKS) return DamageSource.FIREWORKS;
         else if (cause == MC_DamageType.MOB) return DamageSource.causeMobDamage(null);
         else if (cause == MC_DamageType.PLAYER) return DamageSource.causePlayerDamage(null);
         else if (cause == MC_DamageType.ARROW) return DamageSource.causeArrowDamage(null, null);

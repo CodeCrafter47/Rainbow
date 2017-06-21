@@ -27,13 +27,13 @@ public class MixinExplosion {
     private World world;
     @Shadow
     @Final
-    private double explosionX;
+    private double x;
     @Shadow
     @Final
-    private double explosionY;
+    private double y;
     @Shadow
     @Final
-    private double explosionZ;
+    private double z;
     @Shadow
     @Final
     private Entity exploder;
@@ -45,7 +45,7 @@ public class MixinExplosion {
     private void onExplosion(CallbackInfo callbackInfo) {
         try {
             MC_EventInfo ei = new MC_EventInfo();
-            Hooks.onAttemptExplosion(new MC_Location(explosionX, explosionY, explosionZ, ((MC_World) world).getDimension()), ei);
+            Hooks.onAttemptExplosion(new MC_Location(x, y, z, ((MC_World) world).getDimension()), ei);
             if (ei.isCancelled) {
                 callbackInfo.cancel();
             }

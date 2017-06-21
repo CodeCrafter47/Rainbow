@@ -23,7 +23,7 @@ public abstract class MixinEntityHanging extends MixinEntity {
     private void onAttacked2(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> callbackInfo) {
         m_rainbowAdjustedDamage = damage;
         damageModified = false;
-        attacker = (MC_Entity) damageSource.getEntity();
+        attacker = (MC_Entity) damageSource.getTrueSource();
 
         MC_EventInfo ei = new MC_EventInfo();
 

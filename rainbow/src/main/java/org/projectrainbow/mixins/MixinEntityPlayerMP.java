@@ -271,7 +271,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Redirect(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;sendMessage(Lnet/minecraft/util/text/ITextComponent;)V"))
     private void onDeathMessage(PlayerList configurationManager, ITextComponent deathMsg, DamageSource damageSource) {
-        MC_Player killer = damageSource.getEntity() instanceof MC_Player ? (MC_Player) damageSource.getEntity() : null;
+        MC_Player killer = damageSource.getTrueSource() instanceof MC_Player ? (MC_Player) damageSource.getTrueSource() : null;
         Hooks.onPlayerDeath(this, killer, PluginHelper.wrap(damageSource), deathMsg.getUnformattedText());
         configurationManager.sendMessage(deathMsg);
     }
@@ -398,7 +398,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
         }
     }
 
-    @Inject(method = "clonePlayer", at = @At("HEAD"))
+    @Inject(method = "copyFrom", at = @At("HEAD"))
     private void clone(EntityPlayerMP entityPlayer, boolean b, CallbackInfo callbackInfo) {
         this.backpack = ((IMixinEntityPlayerMP) entityPlayer).getBackpack();
         this.compassTarget = ((MC_Player) entityPlayer).getCompassTarget();
@@ -460,7 +460,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public void teleport(MC_Location var1, boolean safe) {
-        teleport(_DiwUtils.getMinecraftServer().worldServerForDimension(var1.dimension), var1.x, var1.y, var1.z, var1.yaw, var1.pitch, safe);
+        teleport(_DiwUtils.getMinecraftServer().getWorld(var1.dimension), var1.x, var1.y, var1.z, var1.yaw, var1.pitch, safe);
     }
 
     @Override

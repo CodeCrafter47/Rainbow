@@ -295,7 +295,7 @@ public class _DiwUtils {
     }
 
     public static void Startup() {
-        _DiwUtils.MC_VERSION_STRING = getMinecraftServer().G(); // getMinecraftVersion
+        _DiwUtils.MC_VERSION_STRING = getMinecraftServer().getMinecraftVersion();
         _DiwUtils.DefaultMOTD = String.format(DefaultMOTD, _DiwUtils.MC_VERSION_STRING);
 
         // Setup BlockHelper
@@ -2096,7 +2096,7 @@ public class _DiwUtils {
     }
 
     public static boolean IsInsideSpawn(int x, int z) {
-        WorldServer world = getMinecraftServer().worldServerForDimension(0);
+        WorldServer world = getMinecraftServer().getWorld(0);
         BlockPos coords = world.getSpawnPoint();
         int depth = getMinecraftServer().getSpawnProtectionSize();
         int spawnX = coords.getX();
@@ -2176,7 +2176,7 @@ public class _DiwUtils {
 
     public static void Do_Spawn_Forcefield_MobClean() {
         new ConcurrentHashMap();
-        WorldServer world = getMinecraftServer().worldServerForDimension(0);
+        WorldServer world = getMinecraftServer().getWorld(0);
 
         for (MC_Entity entity : ((MC_World) world).getEntities()) {
 

@@ -35,10 +35,10 @@ public abstract class MixinEntityThrowable extends MixinEntity implements MC_Pro
         MC_EventInfo ei = new MC_EventInfo();
         Vec3d hitVec = hit.hitVec;
         if (hit.typeOfHit == RayTraceResult.Type.ENTITY) {
-            Hooks.onAttemptProjectileHitEntity(this, (MC_Entity) hit.entityHit, new MC_Location(hitVec.xCoord, hitVec.yCoord, hitVec.zCoord, dimension), ei);
+            Hooks.onAttemptProjectileHitEntity(this, (MC_Entity) hit.entityHit, new MC_Location(hitVec.x, hitVec.y, hitVec.z, dimension), ei);
         } else if (hit.typeOfHit == RayTraceResult.Type.BLOCK) {
             BlockPos pos = hit.getBlockPos();
-            Hooks.onAttemptProjectileHitBlock(this, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), dimension), PluginHelper.directionMap.get(hit.sideHit), new MC_Location(hitVec.xCoord, hitVec.yCoord, hitVec.zCoord, dimension), ei);
+            Hooks.onAttemptProjectileHitBlock(this, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), dimension), PluginHelper.directionMap.get(hit.sideHit), new MC_Location(hitVec.x, hitVec.y, hitVec.z, dimension), ei);
         }
         if (!ei.isCancelled) {
             onImpact(hit);

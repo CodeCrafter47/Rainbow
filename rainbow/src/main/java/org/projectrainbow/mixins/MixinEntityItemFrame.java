@@ -25,7 +25,7 @@ public abstract class MixinEntityItemFrame extends MixinEntityHanging{
     @Inject(method = "attackEntityFrom", at = @At("HEAD"), cancellable = true)
     private void onAttacked(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> callbackInfo) {
         m_rainbowAdjustedDamage = damage;
-        MC_Entity entity = (MC_Entity) damageSource.getEntity();
+        MC_Entity entity = (MC_Entity) damageSource.getTrueSource();
         MC_Player player = entity instanceof MC_Player ? (MC_Player) entity : null;
 
         MC_EventInfo ei = new MC_EventInfo();
