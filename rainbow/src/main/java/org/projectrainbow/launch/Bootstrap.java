@@ -46,8 +46,7 @@ public class Bootstrap {
         if (plugins_mod.exists() && plugins_mod.isDirectory()) {
             for (File file : plugins_mod.listFiles()) {
                 if (file.isFile() && file.getName().endsWith(".jar")) {
-                    try {
-                        JarFile jarFile = new JarFile(file);
+                    try (JarFile jarFile = new JarFile(file)) {
                         Manifest ex = jarFile.getManifest();
                         if (ex != null) {
                             Attributes var3 = ex.getMainAttributes();
@@ -60,7 +59,6 @@ public class Bootstrap {
                                 }
                             }
                         }
-                        jarFile.close();
                     } catch (Throwable th) {
                         logger.error("Failed to load tweaker file " + file, th);
                     }

@@ -59,8 +59,8 @@ public class _JoeCommandStats {
                     "buy", "ec", "bp", "worth"};
             String msgLower = msg.toLowerCase();
 
-            for (int doKick = 0; doKick < skips.length; ++doKick) {
-                if (msgLower.startsWith("/" + skips[doKick])) {
+            for (String iterator : skips) {
+                if (msgLower.startsWith("/" + iterator)) {
                     return null;
                 }
             }
