@@ -363,13 +363,12 @@ public class ServerWrapper implements MC_Server {
 
     @Override
     public PluginInfo getPluginInfo(String name) {
-        PluginInfo info = null;
         for (PluginInfo pluginInfo : getPlugins()) {
             if (pluginInfo.name.equals(name)) {
-                info = pluginInfo;
+                return pluginInfo;
             }
         }
-        return info;
+        return null;
     }
 
     @Override
