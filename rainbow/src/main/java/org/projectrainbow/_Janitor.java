@@ -24,9 +24,7 @@ public class _Janitor {
         int nRemoved = 0;
         WorldServer[] worlds = _DiwUtils.getMinecraftServer().worlds;
 
-        for (int i = 0; i < worlds.length; ++i) {
-            WorldServer world = worlds[i];
-
+        for (WorldServer world : worlds) {
             for (Entity ent : world.loadedEntityList) {
                 String entClassName = EntityList.getEntityString(ent);
                 String mobName = entClassName;
@@ -88,13 +86,13 @@ public class _Janitor {
 
                     boolean shouldRemove = false;
                     if (cleanTarget != null) {
-                        for (int idx = 0; idx < cleanTarget.length; ++idx) {
-                            if (cleanTarget[idx].equalsIgnoreCase(entClassName)) {
+                        for (String iterator : cleanTarget) {
+                            if (iterator.equalsIgnoreCase(entClassName)) {
                                 shouldRemove = true;
                                 break;
                             }
 
-                            if (cleanTarget[idx].equalsIgnoreCase(mobName) || cleanTarget[idx].equals("*") || mobName.startsWith("item.") && cleanTarget[idx].equalsIgnoreCase("item")) {
+                            if (iterator.equalsIgnoreCase(mobName) || iterator.equals("*") || mobName.startsWith("item.") && iterator.equalsIgnoreCase("item")) {
                                 shouldRemove = true;
                                 break;
                             }

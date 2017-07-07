@@ -328,10 +328,9 @@ public class RainbowUtils
 		  {
 			  String nextColor = ChatColor.YELLOW;
 			  StringBuilder sb = new StringBuilder();
-			  for(int i=0; i<strings.size(); i++)
-			  {
+			  for (String iterator : strings) {
 				  if(sb.length() > 0) sb.append(ChatColor.WHITE + ", ");
-				  sb.append(nextColor + strings.get(i));
+				  sb.append(nextColor + iterator);
 				  if(nextColor == ChatColor.GOLD) nextColor = ChatColor.YELLOW;
 				  else if(nextColor == ChatColor.YELLOW) nextColor = ChatColor.GREEN;
 				  else if(nextColor == ChatColor.GREEN) nextColor = ChatColor.AQUA;

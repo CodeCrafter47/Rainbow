@@ -1,15 +1,20 @@
 package org.projectrainbow.launch;
 
 import net.minecraft.launchwrapper.Launch;
+import net.minecraft.launchwrapper.LaunchClassLoader;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -17,6 +22,7 @@ import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.concurrent.TimeUnit;
 
 public class Bootstrap {
     public static String[] args;
@@ -29,7 +35,6 @@ public class Bootstrap {
 
     public static void main(String[] args) {
         Bootstrap.args = args;
-
         logger.info("Searching for additional tweakers...");
 
         List<String> tweakClasses = new ArrayList<String>() {{
@@ -41,8 +46,7 @@ public class Bootstrap {
         if (plugins_mod.exists() && plugins_mod.isDirectory()) {
             for (File file : plugins_mod.listFiles()) {
                 if (file.isFile() && file.getName().endsWith(".jar")) {
-                    try {
-                        JarFile jarFile = new JarFile(file);
+                    try (JarFile jarFile = new JarFile(file)) {
                         Manifest ex = jarFile.getManifest();
                         if (ex != null) {
                             Attributes var3 = ex.getMainAttributes();
@@ -55,7 +59,6 @@ public class Bootstrap {
                                 }
                             }
                         }
-                        jarFile.close();
                     } catch (Throwable th) {
                         logger.error("Failed to load tweaker file " + file, th);
                     }
@@ -82,13 +85,12 @@ public class Bootstrap {
             options.add("--tweakClass");
             options.add(tweakClass);
         }
-
         Launch.main(options.toArray(new String[options.size()]));
     }
 
     private static void addURL(URL u) throws IOException {
         URLClassLoader sysloader = (URLClassLoader) Launch.class.getClassLoader();
-        Class sysclass = URLClassLoader.class;
+        Class<URLClassLoader> sysclass = URLClassLoader.class;
 
         try {
             Method method = sysclass.getDeclaredMethod("addURL", URL.class);

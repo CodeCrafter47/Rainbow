@@ -39,16 +39,16 @@ import org.projectrainbow.util.WrappedMinecraftCommand;
 import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 
 public class ServerWrapper implements MC_Server {
     private static ServerWrapper instance = new ServerWrapper();
@@ -363,13 +363,12 @@ public class ServerWrapper implements MC_Server {
 
     @Override
     public PluginInfo getPluginInfo(String name) {
-        PluginInfo info = null;
         for (PluginInfo pluginInfo : getPlugins()) {
             if (pluginInfo.name.equals(name)) {
-                info = pluginInfo;
+                return pluginInfo;
             }
         }
-        return info;
+        return null;
     }
 
     @Override
@@ -517,6 +516,27 @@ public class ServerWrapper implements MC_Server {
     @Override
     public int getMaxPlayerCount() {
         return _DiwUtils.getMinecraftServer().getPlayerList().getMaxPlayers();
+    }
+
+    @Override
+
+    public int getViewDistance() {
+        return _DiwUtils.getMinecraftServer().getPlayerList().getViewDistance();
+    }
+
+    @Override
+    public void setViewDistance(int newValue) {
+        _DiwUtils.getMinecraftServer().getPlayerList().setViewDistance(newValue);
+    }
+
+    @Override
+    public String getMinecraftVersion() {
+        return _DiwUtils.getMinecraftServer().getMinecraftVersion();
+    }
+
+    @Override
+    public boolean getAllowNether() {
+        return _DiwUtils.getMinecraftServer().getAllowNether();
     }
 
     @Override

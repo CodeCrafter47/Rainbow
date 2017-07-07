@@ -141,6 +141,27 @@ public interface MC_Server {
      * @return Maximum players.
      */
     int getMaxPlayerCount();
+    
+    /**
+     * The view distance setting will determine distance in which the world will load when the player is in a spot.
+     * The higher the number the view distance is set to, the further they can see.
+     * However, seeing further uses up RAM so the lower view distance, 
+     * the better your Minecraft server will perform.
+     * 
+     * @see MC_Server#setViewDistance
+     * @return View Distance
+     */
+    int getViewDistance();
+    
+    /**
+     * The view distance setting will determine distance in which the world will load when the player is in a spot.
+     * The higher the number the view distance is set to, the further they can see.
+     * However, seeing further uses up RAM so the lower view distance, 
+     * the better your Minecraft server will perform.
+     * 
+     * @see MC_Server#getViewDistance
+     */
+    void setViewDistance(int newValue);
 
     /**
      * Get number of seconds players must wait before reconnecting
@@ -455,5 +476,14 @@ public interface MC_Server {
      * @return the (offline) player if present
      */
     MC_Player getOfflinePlayerByUUID(UUID uuid);
+    
+    /**
+     * Get is Nether enabled.
+     * If false Nether Portals will not take you to the Nether
+     * and using a MutiWorld plugin won't allow you to enter ether. 
+     * 
+     * @return True if Nether is enabled, False if Nether is disabled. 
+     */
+    boolean getAllowNether();
 }
 

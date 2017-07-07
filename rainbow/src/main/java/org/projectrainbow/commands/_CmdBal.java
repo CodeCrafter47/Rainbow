@@ -5,7 +5,7 @@ import PluginReference.ChatColor;
 import PluginReference.MC_Command;
 import PluginReference.MC_Player;
 import net.minecraft.command.CommandBase;
-import net.minecraft.util.text.TextFormatting;
+import org.projectrainbow._ColorHelper;
 import org.projectrainbow.ServerWrapper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow._EconomyManager;
@@ -32,7 +32,7 @@ public class _CmdBal implements MC_Command {
 
     @Override
     public String getHelpLine(MC_Player plr) {
-        return TextFormatting.AQUA + "/bal" + TextFormatting.WHITE + " --- Check Balance";
+        return _ColorHelper.AQUA + "/bal" + _ColorHelper.WHITE + " --- Check Balance";
     }
 
     @Override

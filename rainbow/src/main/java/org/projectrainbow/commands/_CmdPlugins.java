@@ -8,6 +8,7 @@ import PluginReference.PluginInfo;
 import org.projectrainbow._DiwUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -21,7 +22,7 @@ public class _CmdPlugins implements MC_Command {
 
     @Override
     public List<String> getAliases() {
-        return null;
+        return Arrays.asList("pl");
     }
 
     @Override
@@ -32,8 +33,8 @@ public class _CmdPlugins implements MC_Command {
 
     @Override
     public void handleCommand(MC_Player plr, String[] args) {
-        ArrayList pluginNames = new ArrayList();
-        Iterator nextColor = _DiwUtils.pluginManager.plugins.iterator();
+        ArrayList<String> pluginNames = new ArrayList<String>();
+        Iterator<PluginInfo> nextColor = _DiwUtils.pluginManager.plugins.iterator();
 
         while (nextColor.hasNext()) {
             PluginInfo strPlugins = (PluginInfo) nextColor.next();
