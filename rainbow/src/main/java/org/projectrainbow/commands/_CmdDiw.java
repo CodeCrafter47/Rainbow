@@ -116,8 +116,7 @@ public class _CmdDiw implements MC_Command {
         System.out.println("[Script] Executing File: " + fname);
         File file = new File(fname);
 
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             ICommandSender sender = _DiwUtils.getMinecraftServer();
             if (plr != null) {
                 sender = plr;
@@ -155,8 +154,6 @@ public class _CmdDiw implements MC_Command {
                     }
                 }
             }
-
-            br.close();
         } catch (Exception var16) {
             var16.printStackTrace();
         }
