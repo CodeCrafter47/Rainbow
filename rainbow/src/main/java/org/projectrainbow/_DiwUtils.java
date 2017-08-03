@@ -295,7 +295,7 @@ public class _DiwUtils {
     }
 
     public static void Startup() {
-        _DiwUtils.MC_VERSION_STRING = getMinecraftServer().getMinecraftVersion();
+        _DiwUtils.MC_VERSION_STRING = getMinecraftServer().G(); // getMinecraftVersion
         _DiwUtils.DefaultMOTD = String.format(DefaultMOTD, _DiwUtils.MC_VERSION_STRING);
 
         // Setup BlockHelper

@@ -344,7 +344,7 @@ public class ServerWrapper implements MC_Server {
     }
 
     public void log(String msg) {
-        _DiwUtils.getMinecraftServer().logInfo(msg);
+        _DiwUtils.getMinecraftServer().e(msg); // logInfo
     }
 
     public boolean unregisterWorld(String worldName) {
@@ -520,6 +520,6 @@ public class ServerWrapper implements MC_Server {
 
     @Override
     public String getMinecraftVersion() {
-        return _DiwUtils.getMinecraftServer().getMinecraftVersion();
+        return _DiwUtils.getMinecraftServer().G(); // getMinecraftVersion
     }
 }
