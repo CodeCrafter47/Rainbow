@@ -29,6 +29,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.NonNullList;
 import org.projectrainbow.commands._CmdPerm;
 import org.projectrainbow.interfaces.IMixinMinecraftServer;
@@ -68,7 +69,12 @@ public class ServerWrapper implements MC_Server {
     }
 
     public List<MC_Player> getPlayers() {
-        return (List<MC_Player>) (Object) new ArrayList<>(_DiwUtils.getMinecraftServer().getPlayerList().getPlayers());
+        PlayerList playerList = _DiwUtils.getMinecraftServer().getPlayerList();
+        if (playerList != null) {
+            return (List<MC_Player>) (Object) new ArrayList<>(playerList.getPlayers());
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     public void executeCommand(String cmd) {
