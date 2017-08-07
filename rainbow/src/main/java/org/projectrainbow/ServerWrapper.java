@@ -48,7 +48,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
+import java.lang.NullPointerException;
 
 public class ServerWrapper implements MC_Server {
     private static ServerWrapper instance = new ServerWrapper();
@@ -68,7 +68,11 @@ public class ServerWrapper implements MC_Server {
     }
 
     public List<MC_Player> getPlayers() {
-        return (List<MC_Player>) (Object) new ArrayList<>(_DiwUtils.getMinecraftServer().getPlayerList().getPlayers());
+        try {
+            return (List<MC_Player>) (Object) new ArrayList<>(_DiwUtils.getMinecraftServer().getPlayerList().getPlayers());
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     public void executeCommand(String cmd) {
