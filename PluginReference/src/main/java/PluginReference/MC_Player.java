@@ -532,5 +532,13 @@ public interface MC_Player extends MC_LivingEntity {
      * @param location the new home
      */
     void setHome2(MC_Location location);
+
+    /**
+     * Send a plugin message to the player.
+     *
+     * @param channel the channel to use
+     * @param data    the data to send
+     */
+    void sendPluginMessage(String channel, byte[] data);
 }
 

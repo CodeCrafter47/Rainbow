@@ -545,4 +545,9 @@ public class OfflinePlayerWrapper implements MC_Player {
                 location.dimension, location.yaw, location.pitch
         ));
     }
+
+    @Override
+    public void sendPluginMessage(String channel, byte[] data) {
+        unsupported();
+    }
 }

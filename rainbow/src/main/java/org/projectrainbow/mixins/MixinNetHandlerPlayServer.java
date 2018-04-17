@@ -1,11 +1,6 @@
 package org.projectrainbow.mixins;
 
-import PluginReference.MC_Entity;
-import PluginReference.MC_EventInfo;
-import PluginReference.MC_ItemStack;
-import PluginReference.MC_Location;
-import PluginReference.MC_Player;
-import PluginReference.MC_Sign;
+import PluginReference.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -16,20 +11,8 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.CPacketChatMessage;
-import net.minecraft.network.play.client.CPacketClickWindow;
-import net.minecraft.network.play.client.CPacketCustomPayload;
-import net.minecraft.network.play.client.CPacketPlayer;
-import net.minecraft.network.play.client.CPacketPlayerDigging;
-import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
-import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
-import net.minecraft.network.play.client.CPacketUpdateSign;
-import net.minecraft.network.play.client.CPacketUseEntity;
-import net.minecraft.network.play.server.SPacketBlockChange;
-import net.minecraft.network.play.server.SPacketChat;
-import net.minecraft.network.play.server.SPacketConfirmTransaction;
-import net.minecraft.network.play.server.SPacketPlayerPosLook;
-import net.minecraft.network.play.server.SPacketSpawnPosition;
+import net.minecraft.network.play.client.*;
+import net.minecraft.network.play.server.*;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
@@ -39,24 +22,12 @@ import net.minecraft.util.IntHashMap;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.WorldServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.projectrainbow.GUIContainer;
-import org.projectrainbow.Hooks;
-import org.projectrainbow.PluginHelper;
-import org.projectrainbow._DiwUtils;
-import org.projectrainbow._DynReward;
-import org.projectrainbow._EmoteUtils;
-import org.projectrainbow._JOT_OnlineTimeUtils;
-import org.projectrainbow._JoeCommandStats;
+import org.projectrainbow.*;
 import org.projectrainbow.commands._CmdIgnore;
 import org.projectrainbow.interfaces.IMixinEntityPlayerMP;
 import org.projectrainbow.interfaces.IMixinOutboundPacketSoundEffect;
@@ -400,6 +371,16 @@ public class MixinNetHandlerPlayServer {
         MC_Location location = new MC_Location(pos.getX(), pos.getY(), pos.getZ(), player.dimension);
 
         Hooks.onSignChanged((MC_Player) player, (MC_Sign) sign, location);
+    }
+
+    @Inject(method = "processCustomPayload", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/play/client/CPacketCustomPayload;getChannelName()Ljava/lang/String;"))
+    private void onPluginMessage(CPacketCustomPayload var1, CallbackInfo callback) {
+        String channelName = var1.getChannelName();
+        PacketBuffer buf = var1.getBufferData();
+        byte[] data = new byte[buf.readableBytes()];
+        int readerIndex = buf.readerIndex();
+        buf.getBytes(readerIndex, data);
+        Hooks.onPluginMessage(channelName, data, (MC_Player) player);
     }
 
     @Inject(method = "processCustomPayload", at = @At(value = "INVOKE", target = "net.minecraft.item.ItemStack.setTagInfo(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)

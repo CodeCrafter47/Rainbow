@@ -608,4 +608,14 @@ public class Hooks {
             }
         }
     }
+
+    public static void onPluginMessage(String channel, byte[] data, MC_Player player) {
+        for (PluginInfo plugin : _DiwUtils.pluginManager.plugins) {
+            try {
+                plugin.ref.onPluginMessage(channel, data, player);
+            } catch (Throwable th) {
+                logger.error("Failed to pass event to plugin " + plugin.name, th);
+            }
+        }
+    }
 }

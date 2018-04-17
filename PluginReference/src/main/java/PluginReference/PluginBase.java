@@ -733,5 +733,16 @@ public abstract class PluginBase
      */
     public void onPlayerKick(MC_Player player, String reason, MC_EventInfo ei) {
     }
+
+    /**
+     * Called when the player receives a plugin message.
+     *
+     * @param channel the channel through which the message was sent
+     * @param data    the data
+     * @param player  the player who sent the message
+     */
+    public void onPluginMessage(String channel, byte[] data, MC_Player player) {
+
+    }
 }
 

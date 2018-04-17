@@ -1,17 +1,9 @@
 package org.projectrainbow.mixins;
 
-import PluginReference.MC_ContainerType;
-import PluginReference.MC_Entity;
-import PluginReference.MC_EventInfo;
-import PluginReference.MC_GameMode;
-import PluginReference.MC_InventoryGUI;
-import PluginReference.MC_ItemStack;
-import PluginReference.MC_Location;
-import PluginReference.MC_Player;
-import PluginReference.MC_Server;
-import PluginReference.MC_World;
+import PluginReference.*;
 import com.google.common.base.MoreObjects;
 import com.google.common.io.Files;
+import io.netty.buffer.Unpooled;
 import joebkt._JOT_OnlineTimeEntry;
 import joebkt._SerializableLocation;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -20,33 +12,13 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecartContainer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerBeacon;
-import net.minecraft.inventory.ContainerBrewingStand;
-import net.minecraft.inventory.ContainerChest;
-import net.minecraft.inventory.ContainerDispenser;
-import net.minecraft.inventory.ContainerEnchantment;
-import net.minecraft.inventory.ContainerFurnace;
-import net.minecraft.inventory.ContainerHopper;
-import net.minecraft.inventory.ContainerHorseChest;
-import net.minecraft.inventory.ContainerHorseInventory;
-import net.minecraft.inventory.ContainerMerchant;
-import net.minecraft.inventory.ContainerPlayer;
-import net.minecraft.inventory.ContainerRepair;
-import net.minecraft.inventory.ContainerWorkbench;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryEnderChest;
-import net.minecraft.inventory.InventoryLargeChest;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.network.play.server.SPacketChat;
-import net.minecraft.network.play.server.SPacketPlayerListHeaderFooter;
-import net.minecraft.network.play.server.SPacketRespawn;
-import net.minecraft.network.play.server.SPacketSetExperience;
-import net.minecraft.network.play.server.SPacketSoundEffect;
-import net.minecraft.network.play.server.SPacketSpawnPosition;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.server.management.PlayerList;
@@ -61,25 +33,9 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.GameType;
 import net.minecraft.world.WorldServer;
-import org.projectrainbow.BlockWrapper;
-import org.projectrainbow.GUIInventory;
-import org.projectrainbow.Hooks;
-import org.projectrainbow.PluginHelper;
-import org.projectrainbow.ServerWrapper;
-import org.projectrainbow._Backpack;
-import org.projectrainbow._DiwUtils;
-import org.projectrainbow._EconomyManager;
-import org.projectrainbow._HomeUtils;
-import org.projectrainbow._JOT_OnlineTimeUtils;
-import org.projectrainbow._PermMgr;
+import org.projectrainbow.*;
 import org.projectrainbow.commands._CmdNameColor;
-import org.projectrainbow.interfaces.IMixinContainerDispenser;
-import org.projectrainbow.interfaces.IMixinContainerHopper;
-import org.projectrainbow.interfaces.IMixinEntityPlayerMP;
-import org.projectrainbow.interfaces.IMixinNBTBase;
-import org.projectrainbow.interfaces.IMixinPlayerCapabilities;
-import org.projectrainbow.interfaces.IMixinSPacketPlayerListHeaderFooter;
-import org.projectrainbow.interfaces.IMixinWorldServer;
+import org.projectrainbow.interfaces.*;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -91,14 +47,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nullable;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -821,5 +770,20 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
                 location.x, location.y, location.z,
                 location.dimension, location.yaw, location.pitch
         ));
+    }
+
+    @Override
+    public void sendPluginMessage(String channel, byte[] data) {
+        if (channel == null) {
+            throw new NullPointerException("channel");
+        }
+        if (channel.length() > 20) {
+            throw new IllegalArgumentException("channel.length() > 20");
+        }
+        if (data.length > 32767) {
+            throw new IllegalArgumentException("data.length > 32767");
+        }
+        SPacketCustomPayload packet = new SPacketCustomPayload(channel, new PacketBuffer(Unpooled.copiedBuffer(data)));
+        connection.sendPacket(packet);
     }
 }
