@@ -205,7 +205,7 @@ public class MixinNetHandlerPlayServer {
 
         _DiwUtils.getMinecraftServer().sendMessage(result);
 
-        SPacketChat packet = new SPacketChat(result, ChatType.a((byte) (b ? 1 : 0))); // byId
+        SPacketChat packet = new SPacketChat(result, ChatType.byId((byte) (b ? 1 : 0)));
         for (EntityPlayerMP receiver : playerList.getPlayers()) {
             if (!_CmdIgnore.IsIgnoring(receiver.getName(), this.player.getName())) {
                 receiver.connection.sendPacket(packet);

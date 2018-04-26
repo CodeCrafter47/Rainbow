@@ -1,19 +1,7 @@
 package org.projectrainbow;
 
 
-import PluginReference.MC_AttributeModifier;
-import PluginReference.MC_Block;
-import PluginReference.MC_Command;
-import PluginReference.MC_CommandSenderInfo;
-import PluginReference.MC_InventoryGUI;
-import PluginReference.MC_ItemStack;
-import PluginReference.MC_Player;
-import PluginReference.MC_PlayerPacketListener;
-import PluginReference.MC_Server;
-import PluginReference.MC_ServerPacketListener;
-import PluginReference.MC_World;
-import PluginReference.MC_WorldSettings;
-import PluginReference.PluginInfo;
+import PluginReference.*;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -40,15 +28,7 @@ import org.projectrainbow.util.WrappedMinecraftCommand;
 import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 
 public class ServerWrapper implements MC_Server {
@@ -350,7 +330,7 @@ public class ServerWrapper implements MC_Server {
     }
 
     public void log(String msg) {
-        _DiwUtils.getMinecraftServer().e(msg); // logInfo
+        _DiwUtils.getMinecraftServer().logInfo(msg);
     }
 
     public boolean unregisterWorld(String worldName) {
@@ -526,6 +506,6 @@ public class ServerWrapper implements MC_Server {
 
     @Override
     public String getMinecraftVersion() {
-        return _DiwUtils.getMinecraftServer().G(); // getMinecraftVersion
+        return _DiwUtils.getMinecraftServer().getMinecraftVersion();
     }
 }
