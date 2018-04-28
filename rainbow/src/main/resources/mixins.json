@@ -81,6 +81,7 @@
     "MixinSPacketPlayerListHeaderFooter",
     "MixinCPacketHandshake",
     "MixinCommandMessage",
-    "MixinContainerHopper"
+    "MixinContainerHopper",
+    "MixinBlockBeacon
   ]
 }
