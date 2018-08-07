@@ -5,7 +5,7 @@ import PluginReference.MC_EventInfo;
 import PluginReference.MC_Location;
 import PluginReference.MC_World;
 import net.minecraft.block.BlockDispenser;
-import net.minecraft.block.BlockSourceImpl;
+import net.minecraft.dispenser.BlockSourceImpl;
 import net.minecraft.tileentity.TileEntityDispenser;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -21,7 +21,7 @@ public class MixinBlockDispenser {
     @Inject(method = "dispense", at = @At("HEAD"), cancellable = true)
     private void dispense(World var1, BlockPos var2, CallbackInfo callbackInfo) {
         BlockSourceImpl var3 = new BlockSourceImpl(var1, var2);
-        TileEntityDispenser var4 = (TileEntityDispenser)var3.getBlockTileEntity();
+        TileEntityDispenser var4 = var3.getBlockTileEntity();
         int var5 = var4.getDispenseSlot();
 
         MC_EventInfo ei = new MC_EventInfo();

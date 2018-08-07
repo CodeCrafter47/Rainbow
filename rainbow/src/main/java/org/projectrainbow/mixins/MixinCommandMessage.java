@@ -1,26 +1,29 @@
 package org.projectrainbow.mixins;
 
 import PluginReference.ChatColor;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.server.CommandMessage;
+import PluginReference.MC_Player;
+import com.google.common.collect.Iterables;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.impl.MessageCommand;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.ITextComponent;
 import org.projectrainbow.commands._CmdIgnore;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(CommandMessage.class)
+import java.util.Collection;
+
+@Mixin(MessageCommand.class)
 public class MixinCommandMessage {
 
-    @Inject(method = "execute", at = @At(value = "INVOKE_ASSIGN", target = "net.minecraft.command.server.CommandMessage.getPlayer(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/command/ICommandSender;Ljava/lang/String;)Lnet/minecraft/entity/player/EntityPlayerMP;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void onPrivateMessage(MinecraftServer var1, ICommandSender var2, String[] var3, CallbackInfo ci, EntityPlayerMP target) {
-        if (_CmdIgnore.IsIgnoring(target.getName(), var2.getName())) {
-            var2.sendMessage(new TextComponentString(ChatColor.RED + "That player is ignoring you!"));
-            ci.cancel();
+    @Inject(method = "func_198538_a", at = @At("HEAD"), cancellable = true)
+    private static void onPrivateMessage(CommandSource var0, Collection<EntityPlayerMP> var1, ITextComponent var2, CallbackInfoReturnable<Integer> ci) {
+        MC_Player target = (MC_Player) Iterables.getFirst(var1, null);
+        if (var0.func_197022_f() != null && _CmdIgnore.IsIgnoring(target.getName(), ((MC_Player) var0.func_197022_f()).getName())) {
+            ((MC_Player) var0.func_197022_f()).sendMessage(ChatColor.RED + "That player is ignoring you!");
+            ci.setReturnValue(0);
         }
     }
 }

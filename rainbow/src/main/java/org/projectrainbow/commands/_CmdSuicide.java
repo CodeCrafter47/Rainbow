@@ -2,7 +2,6 @@ package org.projectrainbow.commands;
 
 import PluginReference.MC_Command;
 import PluginReference.MC_Player;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
@@ -42,7 +41,7 @@ public class _CmdSuicide implements MC_Command {
             System.out.println("--- Only for players!");
             return;
         }
-        if (_DiwUtils.TooSoon((ICommandSender) player, "Suicide", 120)) {
+        if (_DiwUtils.TooSoon(player, "Suicide", 120)) {
             return;
         }
         player.sendMessage(String.valueOf(_ColorHelper.AQUA) + "You give up on the world!");

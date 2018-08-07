@@ -4,8 +4,8 @@ import PluginReference.ChatColor;
 import PluginReference.MC_Command;
 import PluginReference.MC_Player;
 import PluginReference.RainbowUtils;
-import net.minecraft.command.ICommandManager;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -15,7 +15,6 @@ import org.projectrainbow._DiwUtils;
 import org.projectrainbow._Janitor;
 import org.projectrainbow._UUIDMapper;
 import org.projectrainbow.interfaces.IMixinEntityPlayerMP;
-import org.projectrainbow.interfaces.IMixinICommandSender;
 import org.projectrainbow.interfaces.IMixinPlayerCapabilities;
 
 import java.io.BufferedReader;
@@ -65,7 +64,7 @@ public class _CmdDiw implements MC_Command {
             }
         }
 
-        ((IMixinICommandSender) p).sendMessage(_ColorHelper.GREEN + "Grass set around you! " + _ColorHelper.AQUA + "Radius: " + radius);
+        ((MC_Player) p).sendMessage(_ColorHelper.GREEN + "Grass set around you! " + _ColorHelper.AQUA + "Radius: " + radius);
     }
 
     public void HandleDiwBorder(EntityPlayer p, int radius) {
@@ -87,7 +86,7 @@ public class _CmdDiw implements MC_Command {
             p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.COBBLESTONE_WALL.getDefaultState(), 3);
         }
 
-        ((IMixinICommandSender) p).sendMessage(_ColorHelper.GREEN + "Wall set around you! " + _ColorHelper.AQUA + "Radius: " + radius);
+        ((MC_Player) p).sendMessage(_ColorHelper.GREEN + "Wall set around you! " + _ColorHelper.AQUA + "Radius: " + radius);
     }
 
     public void HandleDiwSky(EntityPlayer p, int radius) {
@@ -104,25 +103,25 @@ public class _CmdDiw implements MC_Command {
             }
         }
 
-        ((IMixinICommandSender) p).sendMessage(_ColorHelper.GREEN + "Sky cleared around you! " + _ColorHelper.AQUA + "Radius: " + radius);
+        ((MC_Player) p).sendMessage(_ColorHelper.GREEN + "Sky cleared around you! " + _ColorHelper.AQUA + "Radius: " + radius);
     }
 
     public void HandleScript(EntityPlayer plr, String fname, String[] args) {
         String plrName = "CONSOLE";
         if (plr != null) {
-            plrName = plr.getName();
+            plrName = ((MC_Player) plr).getName();
         }
 
         System.out.println("[Script] Executing File: " + fname);
         File file = new File(fname);
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            ICommandSender sender = _DiwUtils.getMinecraftServer();
+            CommandSource sender = _DiwUtils.getMinecraftServer().func_195573_aM();
             if (plr != null) {
-                sender = plr;
+                sender = plr.func_195051_bN();
             }
 
-            ICommandManager executor = _DiwUtils.getMinecraftServer().getCommandManager();
+            Commands executor = _DiwUtils.getMinecraftServer().func_195571_aL();
 
             String line;
             while ((line = br.readLine()) != null) {
@@ -147,7 +146,7 @@ public class _CmdDiw implements MC_Command {
 
                             line = _DiwUtils.FullTranslate(line);
                             System.out.println("[Script] Running: " + line);
-                            executor.executeCommand(sender, line);
+                            executor.func_197059_a(sender, line);
                         } catch (Exception var15) {
                             System.out.println("[Script] Command Error: " + var15.getMessage());
                         }
@@ -234,26 +233,26 @@ public class _CmdDiw implements MC_Command {
             _DiwUtils.reply(player, _ColorHelper.GREEN + "Rainbow data saved.");
         } else if (args[0].equalsIgnoreCase("flyspeed") && p != null) {
             if (args.length < 2) {
-                ((IMixinICommandSender) p).sendMessage(_ColorHelper.RED + "Example 1: " + _ColorHelper.GOLD + "/diw flySpeed 2");
+                ((MC_Player) p).sendMessage(_ColorHelper.RED + "Example 1: " + _ColorHelper.GOLD + "/diw flySpeed 2");
             } else {
                 float spd = Float.parseFloat(args[1]);
                 ((IMixinPlayerCapabilities) p.capabilities).setFlySpeed(spd * 0.05F);
-                ((IMixinICommandSender) p).sendMessage(_ColorHelper.GREEN + String.format("Set fly speed to %.2f", spd));
+                ((MC_Player) p).sendMessage(_ColorHelper.GREEN + String.format("Set fly speed to %.2f", spd));
                 p.sendPlayerAbilities();
             }
         } else if (args[0].equalsIgnoreCase("speed") && p != null) {
-            ((IMixinICommandSender) p).sendMessage(_ColorHelper.GOLD + String.format("Fly Speed: %.2f, Walk Speed: %.2f", (double) p.capabilities.getFlySpeed() / 0.05D, (double) p.capabilities.getWalkSpeed() / 0.1D));
-            ((IMixinICommandSender) p).sendMessage(_ColorHelper.GOLD + String.format("MayFly: %s, IsFlying: %s", p.capabilities.allowFlying, p.capabilities.isFlying));
+            ((MC_Player) p).sendMessage(_ColorHelper.GOLD + String.format("Fly Speed: %.2f, Walk Speed: %.2f", (double) p.capabilities.getFlySpeed() / 0.05D, (double) p.capabilities.getWalkSpeed() / 0.1D));
+            ((MC_Player) p).sendMessage(_ColorHelper.GOLD + String.format("MayFly: %s, IsFlying: %s", p.capabilities.allowFlying, p.capabilities.isFlying));
         } else if (args[0].equalsIgnoreCase("walkspeed") && p != null) {
             if (args.length < 2) {
-                ((IMixinICommandSender) p).sendMessage(_ColorHelper.RED + "Example 1: " + _ColorHelper.GOLD + "/diw walkspeed 2");
+                ((MC_Player) p).sendMessage(_ColorHelper.RED + "Example 1: " + _ColorHelper.GOLD + "/diw walkspeed 2");
             } else {
                 float spd = Float.parseFloat(args[1]) * 0.1F;
                 ((IMixinPlayerCapabilities) p.capabilities).setWalkSpeed(spd);
-                ((IMixinICommandSender) p).sendMessage(_ColorHelper.GREEN + String.format("Set walk speed to %.2f", spd));
+                ((MC_Player) p).sendMessage(_ColorHelper.GREEN + String.format("Set walk speed to %.2f", spd));
             }
         } else if ((args[0].equalsIgnoreCase("setgrass") || args[0].equalsIgnoreCase("skyclear")) && p != null) {
-            int radius = 5;
+            int radius;
 
             try {
                 radius = Integer.parseInt(args[1].trim());
@@ -276,7 +275,7 @@ public class _CmdDiw implements MC_Command {
             }
 
         } else if (args[0].equalsIgnoreCase("border") && p != null) {
-            int radius = 5;
+            int radius;
 
             try {
                 radius = Integer.parseInt(args[1].trim());
@@ -320,14 +319,14 @@ public class _CmdDiw implements MC_Command {
             }
         } else if (args[0].equals("clean")) {
             if (args.length == 1) {
-                _Janitor.DoMobClean(p, true,
+                _Janitor.DoMobClean(((MC_Player) p), true,
                         null);
             }
 
             if (args.length == 2) {
                 String var35 = args[1].trim();
                 if (var35.equalsIgnoreCase("evil")) {
-                    _Janitor.DoMobClean(p, true,
+                    _Janitor.DoMobClean(((MC_Player) p), true,
                             new String[]{
                                     "Zombie",
                                     "Skeleton", "BatEntity", "Enderman",
@@ -336,7 +335,7 @@ public class _CmdDiw implements MC_Command {
                                     "Silverfish", "Slime", "CaveSpider",
                                     "Blaze"});
                 } else {
-                    _Janitor.DoMobClean(p, true,
+                    _Janitor.DoMobClean((MC_Player) p, true,
                             new String[]{var35});
                 }
             }
@@ -374,28 +373,28 @@ public class _CmdDiw implements MC_Command {
 
         } else if (args[0].equalsIgnoreCase("bp") && p != null) {
             if (args.length != 2) {
-                _DiwUtils.reply(p, ChatColor.RED + "Usage: /diw bp " + ChatColor.YELLOW + "PlayerName");
+                _DiwUtils.reply((MC_Player) p, ChatColor.RED + "Usage: /diw bp " + ChatColor.YELLOW + "PlayerName");
             } else {
                 MC_Player other = RainbowUtils.getServer().getOfflinePlayerByName(args[1]);
 
                 if (other == null) {
-                    _DiwUtils.reply(p, ChatColor.RED + "No player found: " + ChatColor.YELLOW + args[1]);
+                    _DiwUtils.reply((MC_Player) p, ChatColor.RED + "No player found: " + ChatColor.YELLOW + args[1]);
                 } else {
                     p.displayGUIChest(((IMixinEntityPlayerMP) other).getBackpack());
-                    _DiwUtils.reply(p, ChatColor.GREEN + "Opening " + ChatColor.AQUA + "ONLINE " + ChatColor.GREEN + "Backpack of: " + ChatColor.YELLOW + other.getName());
+                    _DiwUtils.reply((MC_Player) p, ChatColor.GREEN + "Opening " + ChatColor.AQUA + "ONLINE " + ChatColor.GREEN + "Backpack of: " + ChatColor.YELLOW + other.getName());
                 }
             }
         } else if (args[0].equalsIgnoreCase("ec") && p != null) {
             if (args.length != 2) {
-                _DiwUtils.reply(p, ChatColor.RED + "Usage: /diw ec " + ChatColor.YELLOW + "PlayerName");
+                _DiwUtils.reply((MC_Player) p, ChatColor.RED + "Usage: /diw ec " + ChatColor.YELLOW + "PlayerName");
             } else {
                 MC_Player other = RainbowUtils.getServer().getOfflinePlayerByName(args[1]);
 
                 if (other == null) {
-                    _DiwUtils.reply(p, ChatColor.RED + "No player found: " + ChatColor.YELLOW + args[1]);
+                    _DiwUtils.reply((MC_Player) p, ChatColor.RED + "No player found: " + ChatColor.YELLOW + args[1]);
                 } else {
                     p.displayGUIChest(((EntityPlayerMP) other).getInventoryEnderChest());
-                    _DiwUtils.reply(p, ChatColor.GREEN + "Opening " + ChatColor.AQUA + "ONLINE " + ChatColor.GREEN + "Enderchest of: " + ChatColor.YELLOW + other.getName());
+                    _DiwUtils.reply((MC_Player) p, ChatColor.GREEN + "Opening " + ChatColor.AQUA + "ONLINE " + ChatColor.GREEN + "Enderchest of: " + ChatColor.YELLOW + other.getName());
                 }
             }
         } else {

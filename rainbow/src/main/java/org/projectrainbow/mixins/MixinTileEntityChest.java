@@ -1,13 +1,18 @@
 package org.projectrainbow.mixins;
 
+import PluginReference.MC_Block;
 import PluginReference.MC_Chest;
 import PluginReference.MC_DirectionNESWUD;
 import PluginReference.MC_ItemStack;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockChest;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.properties.ChestType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import org.projectrainbow.BlockWrapper;
 import org.projectrainbow.PluginHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,14 +23,10 @@ import java.util.List;
 public abstract class MixinTileEntityChest extends TileEntity implements MC_Chest {
     @Shadow
     private NonNullList<ItemStack> chestContents;
-    @Shadow
-    public TileEntityChest adjacentChestZNeg;
-    @Shadow
-    public TileEntityChest adjacentChestXPos;
-    @Shadow
-    public TileEntityChest adjacentChestXNeg;
-    @Shadow
-    public TileEntityChest adjacentChestZPos;
+
+    public MixinTileEntityChest(TileEntityType<?> tileEntityType) {
+        super(tileEntityType);
+    }
 
     @Override
     public List<MC_ItemStack> getInventory() {
@@ -39,18 +40,24 @@ public abstract class MixinTileEntityChest extends TileEntity implements MC_Ches
 
     @Override
     public MC_Chest GetLinkedChestAt(MC_DirectionNESWUD var1) {
-        if (adjacentChestXNeg != null)
-            return (MC_Chest) adjacentChestXNeg;
-        else if (adjacentChestXPos != null)
-            return (MC_Chest) adjacentChestXPos;
-        else if (adjacentChestZNeg != null)
-            return (MC_Chest) adjacentChestZNeg;
-        else
-            return (MC_Chest) adjacentChestZPos;
+        if (func_195044_w().getValue(BlockChest.field_196314_b) == ChestType.SINGLE) {
+            return null;
+        }
+        BlockPos adjacent = pos.offset(BlockChest.func_196311_i(func_195044_w()));
+        if (world.getBlockState(adjacent).getBlock() != func_195044_w().getBlock()) {
+            return null;
+        }
+        return (MC_Chest)world.getTileEntity(adjacent);
     }
 
     @Override
+    @Deprecated
     public int getBlockId() {
-        return Block.getIdFromBlock(getBlockType());
+        return 54;
+    }
+
+    @Override
+    public MC_Block getBlock() {
+        return new BlockWrapper(func_195044_w());
     }
 }

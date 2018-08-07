@@ -5,11 +5,7 @@ import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -32,7 +28,7 @@ public class ServerTweaker implements ITweaker {
             if (!serverJar.exists()) {
                 Bootstrap.logger.info("Downloading minecraft server. Please wait.");
                 try {
-                    URL url = new URL("https://s3.amazonaws.com/Minecraft.Download/versions/" + Bootstrap.minecraftVersion + "/minecraft_server." + Bootstrap.minecraftVersion + ".jar");
+                    URL url = new URL(Bootstrap.serverURL);
                     InputStream in = url.openStream();
                     OutputStream out = new FileOutputStream(serverJar);
                     ByteStreams.copy(in, out);

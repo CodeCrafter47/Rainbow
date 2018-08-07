@@ -5,7 +5,6 @@ import PluginReference.ChatColor;
 import PluginReference.MC_Command;
 import PluginReference.MC_Player;
 import com.google.common.io.Files;
-import net.minecraft.command.CommandBase;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow._JOT_OnlineTimeUtils;
 
@@ -143,10 +142,7 @@ public class _CmdIgnore implements MC_Command {
 
     @Override
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
-        return args.length >= 1
-                ? CommandBase.getListOfStringsMatchingLastWord(args,
-                _DiwUtils.getMinecraftServer().getOnlinePlayerNames())
-                : null;
+        return null;
     }
 
     public static void SaveData() {

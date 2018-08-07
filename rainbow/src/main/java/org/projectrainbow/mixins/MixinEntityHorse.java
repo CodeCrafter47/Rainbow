@@ -1,26 +1,9 @@
 package org.projectrainbow.mixins;
 
-import PluginReference.MC_Attribute;
-import PluginReference.MC_AttributeType;
-import PluginReference.MC_Horse;
-import PluginReference.MC_HorseType;
-import PluginReference.MC_HorseVariant;
-import PluginReference.MC_Player;
+import PluginReference.*;
 import net.minecraft.entity.ai.attributes.IAttribute;
-import net.minecraft.entity.passive.AbstractChestHorse;
-import net.minecraft.entity.passive.AbstractHorse;
-import net.minecraft.entity.passive.EntityDonkey;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityLlama;
-import net.minecraft.entity.passive.EntityMule;
-import net.minecraft.entity.passive.EntitySkeletonHorse;
-import net.minecraft.entity.passive.EntityZombieHorse;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Implements;
-import org.spongepowered.asm.mixin.Interface;
-import org.spongepowered.asm.mixin.Intrinsic;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import net.minecraft.entity.passive.*;
+import org.spongepowered.asm.mixin.*;
 
 import java.util.UUID;
 
@@ -58,8 +41,9 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
         setOwnerUniqueId(plr.getUUID());
     }
 
+    @Deprecated
     public MC_HorseType api$getHorseType() {
-        AbstractHorse handle = (EntityHorse) (Object) this;
+        AbstractHorse handle = (AbstractHorse) (Object) this;
         if (handle instanceof EntityHorse)
                 return MC_HorseType.HORSE;
         if (handle instanceof EntityDonkey)

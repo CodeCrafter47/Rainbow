@@ -1,32 +1,6 @@
 package PluginExampleEvents;
 
-import PluginReference.BlockHelper;
-import PluginReference.ChatColor;
-import PluginReference.MC_Block;
-import PluginReference.MC_Chest;
-import PluginReference.MC_Container;
-import PluginReference.MC_ContainerType;
-import PluginReference.MC_DamageType;
-import PluginReference.MC_DirectionNESWUD;
-import PluginReference.MC_Entity;
-import PluginReference.MC_EventInfo;
-import PluginReference.MC_Hand;
-import PluginReference.MC_HangingEntityType;
-import PluginReference.MC_ItemFrameActionType;
-import PluginReference.MC_ItemStack;
-import PluginReference.MC_ItemType;
-import PluginReference.MC_Location;
-import PluginReference.MC_MiscGriefType;
-import PluginReference.MC_Player;
-import PluginReference.MC_PotionEffectType;
-import PluginReference.MC_PrimedTNT;
-import PluginReference.MC_Projectile;
-import PluginReference.MC_Server;
-import PluginReference.MC_Sign;
-import PluginReference.MC_Skeleton;
-import PluginReference.PluginBase;
-import PluginReference.PluginInfo;
-import PluginReference.RainbowUtils;
+import PluginReference.*;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -345,9 +319,9 @@ public class MyPlugin extends PluginBase {
         System.out.println("EventSamplePlugin -- " + logMsg);
         plr.sendMessage(ChatColor.LIGHT_PURPLE + "[ExamplePlugin] " + ChatColor.AQUA + "Custom Logon Message");
         MC_ItemStack is = plr.getItemInHand();
-        if ((is != null) && (is.getId() == 0)) {
+        if ((is != null) && (is.getCount() == 0)) {
             // Give them a sea lantern...
-            plr.setItemInHand(server.createItemStack(MC_ItemType.SEA_LANTERN, 1, 0));
+            plr.setItemInHand(server.createItemStack("sea_lantern", 1));
             plr.updateInventory();
         }
     }
@@ -363,7 +337,7 @@ public class MyPlugin extends PluginBase {
 
     @Override
     public void onItemPlaced(MC_Player plr, MC_Location loc, MC_ItemStack isHandItem, MC_Location locPlacedAgainst, MC_DirectionNESWUD dir) {
-        String logMsg = String.format("%s PLACED %s (%d) @ %s on %s facing %s", plr.getName(), isHandItem.getFriendlyName(), isHandItem.getId(), loc.toString(), locPlacedAgainst.toString(), dir + "");
+        String logMsg = String.format("%s PLACED %s @ %s on %s facing %s", plr.getName(), isHandItem.getFriendlyName(), loc.toString(), locPlacedAgainst.toString(), dir + "");
         System.out.println("EventSamplePlugin -- " + logMsg);
     }
 
@@ -379,7 +353,7 @@ public class MyPlugin extends PluginBase {
 
         System.out.println("EventSamplePlugin -- " + logMsg);
         MC_Block blk = plr.getWorld().getBlockAt((int) loc.x, (int) loc.y, (int) loc.z);
-        System.out.println("Interacted Block ID: " + blk.getId());
+        //System.out.println("Interacted Block ID: " + blk.getId());
 
         MC_DirectionNESWUD dir = plr.getWorld().getBlockFacing((int) loc.x, (int) loc.y, (int) loc.z);
         System.out.println("Interacted Block Facing: " + dir);
@@ -405,31 +379,6 @@ public class MyPlugin extends PluginBase {
         int rotation = plr.getWorld().getBlockRotation((int) loc.x, (int) loc.y, (int) loc.z);
         System.out.println("- Block Rotation: " + rotation);
 
-        if (isHandItem.getId() == MC_ItemType.GOLD_NUGGET) {
-            plr.getWorld().setBlockRotation((int) loc.x, (int) loc.y, (int) loc.z, nextRotationValue);
-            System.out.println("========= GOLD NUGGET: Adjusted Rotation: " + nextRotationValue);
-            nextRotationValue = (nextRotationValue + 1) % 15;
-        }
-        if (isHandItem.getId() == MC_ItemType.ARROW) {
-            MC_DirectionNESWUD[] dirVals = MC_DirectionNESWUD.values();
-            MC_DirectionNESWUD newDir = dirVals[nextDir];
-
-            nextDir++;
-            if (nextDir >= dirVals.length) nextDir = 1;
-            plr.getWorld().setBlockFacing((int) loc.x, (int) loc.y, (int) loc.z, newDir);
-            System.out.println("========= ARROW: Adjusted Direction: " + newDir);
-        }
-    }
-
-    @Override
-    public void onBlockBroke(MC_Player plr, MC_Location loc, MC_Block blk) {
-        int blockID = blk.getId();
-        int blockID_Subtype = blk.getSubtype();
-        String strBlockName = BlockHelper.getBlockName(blockID);
-        if (blockID_Subtype != 0) strBlockName += ":" + blockID_Subtype;
-
-        String logMsg = String.format("%s BROKE %s @ %s", plr.getName(), strBlockName, loc.toString());
-        System.out.println("EventSamplePlugin[NEW] -- " + logMsg);
     }
 
     @Override
@@ -496,7 +445,7 @@ public class MyPlugin extends PluginBase {
         //if (blk.getId() == 54) {
         MC_Chest chest = plr.getWorld().getChestAt(loc);
         if (chest != null) {
-            System.out.println("It's a CHEST. Block ID: " + chest.getBlockId());
+            System.out.println("It's a CHEST. Block ID: " + chest.getBlock().getOfficialName());
 
             // Check for nearby signs...
             for (MC_DirectionNESWUD d : MC_DirectionNESWUD.values()) {
@@ -513,13 +462,12 @@ public class MyPlugin extends PluginBase {
             boolean foundSponge = false;
             for (int i = 0; i < items.size(); i++) {
                 MC_ItemStack is = items.get(i);
-                int id = is.getId();
-                if (id == 0) continue; // skip empty
+                if (is.getCount() == 0) continue; // skip empty
                 System.out.println(String.format("- Chest Contents: %d x %s", is.getCount(), ChatColor.StripColor(is.getFriendlyName())));
 
                 // If a sponge, rename it. Why? Because this is a sample :D
-                if (id == MC_ItemType.SPONGE) {
-                    System.out.println("Setting Item ID " + id + " to Mr. Spongey at idx " + i + ", on item " + is.getFriendlyName());
+                if (is.getOfficialName().equals("sponge")) {
+                    System.out.println("Setting Item ID " + is.getOfficialName() + " to Mr. Spongey at idx " + i + ", on item " + is.getFriendlyName());
                     is.setCustomName(RainbowUtils.RainbowString("Mr. Spongey"));
                     foundSponge = true;
                 }
@@ -549,7 +497,7 @@ public class MyPlugin extends PluginBase {
             System.out.println("Container Size: " + container.getSize());
             for (int i = 0; i < container.getSize(); i++) {
                 MC_ItemStack is = container.getItemAtIdx(i);
-                if ((is == null) || (is.getId() == 0)) continue;
+                if ((is == null) || (is.getCount() == 0)) continue;
                 System.out.println("- Item at idx " + i + ": " + is.getFriendlyName());
             }
             System.out.println("------------- END of CONTAINER --------------");
@@ -558,7 +506,7 @@ public class MyPlugin extends PluginBase {
         if (ToggleMidas) {
             if (chest != null) {
                 List<MC_ItemStack> items = chest.getInventory();
-                MC_ItemStack isGold = server.createItemStack(MC_ItemType.GOLD_BLOCK, 64, 0);
+                MC_ItemStack isGold = server.createItemStack("gold_block", 64);
                 for (int i = 0; i < items.size(); i++) {
                     items.set(i, isGold.getDuplicate());
                 }
@@ -673,7 +621,7 @@ public class MyPlugin extends PluginBase {
 
     @Override
     public void onAttemptItemDrop(MC_Player plr, MC_ItemStack is, MC_EventInfo ei) {
-        String logMsg = String.format("%s dropping item. InHand: %d x ID=%d (%s) @ %s", plr.getName(), is.getCount(), is.getId(), is.getFriendlyName(), plr.getLocation().toString());
+        String logMsg = String.format("%s dropping item. InHand: %d x ID=%s (%s) @ %s", plr.getName(), is.getCount(), is.getOfficialName(), is.getFriendlyName(), plr.getLocation().toString());
         System.out.println("EventSamplePlugin -- " + logMsg);
 
         if (ToggleDrop) {
@@ -743,7 +691,7 @@ public class MyPlugin extends PluginBase {
 
     @Override
     public void onAttemptBlockFlow(MC_Location loc, MC_Block blk, MC_EventInfo ei) {
-        String logMsg = String.format("onFlow: %s w/blk id %d", loc.toString(), blk.getId());
+        String logMsg = String.format("onFlow: %s w/blk id %s", loc.toString(), blk.getOfficialName());
         //System.out.println("EventSamplePlugin -- " + logMsg);
         if (ToggleFlow) {
             ei.isCancelled = true;
@@ -882,7 +830,7 @@ public class MyPlugin extends PluginBase {
     @Override
     public void onFallComplete(MC_Entity ent, float fallDistance, MC_Location loc, boolean isWaterLanding) {
         MC_Block blk = ent.getWorld().getBlockAt((int) loc.x, (int) loc.y, (int) loc.z);
-        String blkName = "ID=" + blk.getId();
+        String blkName = "ID=" + blk.getOfficialName();
 
         if (ent instanceof MC_Player) {
             String logMsg = String.format("onFallComplete: %s %s FallDist=%.2f @ %s on BLK %s; water=%s", ent.getType(), ent.getName(), fallDistance, loc.toString(), blkName, isWaterLanding + "");
@@ -950,28 +898,28 @@ public class MyPlugin extends PluginBase {
 
     @Override
     public void onPlayerBedEnter(MC_Player plr, MC_Block bedBlk, MC_Location bedLoc) {
-        System.out.println(String.format("EventSamplePlugin -- onPlayerBedEnter: %s. Bed Blk ID %s @ %s", plr.getName(), bedBlk.getId(), bedLoc.toString()));
+        System.out.println(String.format("EventSamplePlugin -- onPlayerBedEnter: %s. Bed Blk ID %s @ %s", plr.getName(), bedBlk.getOfficialName(), bedLoc.toString()));
 
         //MC_Location loc = plr.getLocation();
         //loc.x = loc.getBlockX();
         //loc.z = loc.getBlockZ();
         MC_Block blkPlr = plr.getWorld().getBlockAt(bedLoc);
-        System.out.println(String.format("-- Plr Block Loc=%s, Blk ID=%d", bedLoc.toString(), blkPlr.getId()));
+        System.out.println(String.format("-- Plr Block Loc=%s, Blk ID=%s", bedLoc.toString(), blkPlr.getOfficialName()));
 
     }
 
     @Override
     public void onPlayerBedLeave(MC_Player plr, MC_Block blk, MC_Location bedLoc) {
-        System.out.println(String.format("EventSamplePlugin -- onPlayerBedLeave: %s. Bed Blk ID %s", plr.getName(), blk.getId()));
+        System.out.println(String.format("EventSamplePlugin -- onPlayerBedLeave: %s. Bed Blk ID %s", plr.getName(), blk.getOfficialName()));
 
         MC_Block blkPlr = plr.getWorld().getBlockAt(bedLoc);
-        System.out.println(String.format("-- Bed Block Loc=%s, Blk ID=%d", bedLoc.toString(), blkPlr.getId()));
+        System.out.println(String.format("-- Bed Block Loc=%s, Blk ID=%s", bedLoc.toString(), blkPlr.getOfficialName()));
 
         MC_Location loc = plr.getLocation();
         loc.x = loc.getBlockX();
         loc.z = loc.getBlockZ();
         blkPlr = plr.getWorld().getBlockAt(loc);
-        System.out.println(String.format("-- Plr Block Loc=%s, Blk ID=%d", loc.toString(), blkPlr.getId()));
+        System.out.println(String.format("-- Plr Block Loc=%s, Blk ID=%s", loc.toString(), blkPlr.getOfficialName()));
 
     }
 
@@ -988,7 +936,7 @@ public class MyPlugin extends PluginBase {
 
     @Override
     public void onAttemptBlockPlace(MC_Player plr, MC_Location loc, MC_Block blk, MC_ItemStack isHandItem, MC_Location locPlacedAgainst, MC_DirectionNESWUD dir, MC_EventInfo ei) {
-        String logMsg = String.format("%s PLACING %s (%d) [BLK %d/%d] @ %s on %s facing %s", plr.getName(), isHandItem.getFriendlyName(), isHandItem.getId(), blk.getId(), blk.getSubtype(), loc.toString(), locPlacedAgainst.toString(), dir + "");
+        String logMsg = String.format("%s PLACING %s [BLK %s] @ %s on %s facing %s", plr.getName(), isHandItem.getFriendlyName(), blk.getOfficialName(), loc.toString(), locPlacedAgainst.toString(), dir + "");
         System.out.println("EventSamplePlugin -- " + logMsg);
         if (ToggleBlockPlace) {
             ei.isCancelled = true;

@@ -24,7 +24,7 @@ public class MixinRabbitAIRaidFarm {
     @Final
     private EntityRabbit rabbit;
 
-    @Inject(method = "updateTask()V", at = @At(value = "INVOKE", target = "net.minecraft.block.state.IBlockState.getValue(Lnet/minecraft/block/properties/IProperty;)Ljava/lang/Comparable;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "updateTask()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/state/IStateHolder;getValue(Lnet/minecraft/state/IProperty;)Ljava/lang/Comparable;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void grief(CallbackInfo callbackInfo, World w, BlockPos pos, IBlockState var3, Block var4) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptEntityMiscGrief((MC_Entity) rabbit, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), rabbit.dimension), MC_MiscGriefType.RABBIT_EATS_CARROT, ei);

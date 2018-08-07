@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Mixin(AttributeModifier.class)
 public class MixinAttributeModifier implements MC_AttributeModifier {
@@ -19,7 +20,7 @@ public class MixinAttributeModifier implements MC_AttributeModifier {
     private int operation;
     @Shadow
     @Final
-    private String name;
+    private Supplier<String> name;
     @Shadow
     @Final
     private UUID id;
@@ -51,7 +52,7 @@ public class MixinAttributeModifier implements MC_AttributeModifier {
      */
     @Override
     public String getName() {
-        return name;
+        return name.get();
     }
 
     /**

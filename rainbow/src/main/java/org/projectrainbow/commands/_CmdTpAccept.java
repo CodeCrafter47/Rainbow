@@ -5,8 +5,6 @@ import PluginReference.ChatColor;
 import PluginReference.MC_Command;
 import PluginReference.MC_Location;
 import PluginReference.MC_Player;
-import net.minecraft.command.CommandBase;
-import org.projectrainbow._DiwUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -76,10 +74,7 @@ public class _CmdTpAccept implements MC_Command {
 
     @Override
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
-        return args.length >= 1
-                ? CommandBase.getListOfStringsMatchingLastWord(args,
-                _DiwUtils.getMinecraftServer().getOnlinePlayerNames())
-                : null;
+        return null;
     }
 
     public String getCommandName() {

@@ -8,6 +8,8 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(EntityZombie.class)
 public abstract class MixinEntityZombie implements MC_Zombie {
 
+    @Override
+    @Deprecated
     public boolean isVillager() {
         return ((Object) this) instanceof EntityZombieVillager;
     }

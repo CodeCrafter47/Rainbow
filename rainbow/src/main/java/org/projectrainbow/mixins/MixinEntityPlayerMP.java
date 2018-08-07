@@ -8,12 +8,12 @@ import joebkt._JOT_OnlineTimeEntry;
 import joebkt._SerializableLocation;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecartContainer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -23,6 +23,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.tileentity.TileEntityTrappedChest;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -130,7 +131,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
             dimension = ((MC_World) toWorld).getDimension();
             setPositionAndRotation(x, y, z, yaw, pitch);
 
-            toWorld.getChunkProvider().loadChunk((int) posX >> 4, (int) posZ >> 4);
+            toWorld.getChunkProvider().provideChunk((int) posX >> 4, (int) posZ >> 4);
 
             EntityPlayerMP entityplayermp1 = (EntityPlayerMP) (Object) this;
 
@@ -146,7 +147,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
             entityplayermp1.connection.sendPacket(new SPacketRespawn(clientDimension, toWorld.getDifficulty(), toWorld.getWorldInfo().getTerrainType(), entityplayermp1.interactionManager.getGameType()));
             setWorld(toWorld);
             isDead = false;
-            while (safe && !toWorld.getCollisionBoxes((Entity) (Object) this, this.getEntityBoundingBox()).isEmpty() && this.posY < 255.0D) {
+            while (safe && !toWorld.func_195586_b((Entity) (Object) this, this.getEntityBoundingBox()) && this.posY < 255.0D) {
                 this.setPosition(this.posX, this.posY + 1.0D, this.posZ);
             }
             entityplayermp1.connection.setPlayerLocation(entityplayermp1.posX, entityplayermp1.posY, entityplayermp1.posZ, entityplayermp1.rotationYaw, entityplayermp1.rotationPitch);
@@ -178,7 +179,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
             if (file.exists()) {
                 FileInputStream f = new FileInputStream(file);
                 ObjectInputStream s = new ObjectInputStream(new BufferedInputStream(f));
-                ((IMixinNBTBase) tagList).read1(s);
+                tagList.read(s, 0, NBTSizeTracker.INFINITE);
                 this.backpack.loadInventoryFromNBT(tagList);
                 s.close();
             }
@@ -207,7 +208,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
                 NBTTagList tagList = this.backpack.saveInventoryToNBT();
                 FileOutputStream f = new FileOutputStream(file);
                 ObjectOutputStream s = new ObjectOutputStream(new BufferedOutputStream(f));
-                ((IMixinNBTBase) tagList).write1(s);
+                tagList.write(s);
                 s.close();
             } else if (file.exists()) {
                 file.delete();
@@ -221,7 +222,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
     @Redirect(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;sendMessage(Lnet/minecraft/util/text/ITextComponent;)V"))
     private void onDeathMessage(PlayerList configurationManager, ITextComponent deathMsg, DamageSource damageSource) {
         MC_Player killer = damageSource.getTrueSource() instanceof MC_Player ? (MC_Player) damageSource.getTrueSource() : null;
-        Hooks.onPlayerDeath(this, killer, PluginHelper.wrap(damageSource), deathMsg.getUnformattedText());
+        Hooks.onPlayerDeath(this, killer, PluginHelper.wrap(damageSource), deathMsg.getString());
         configurationManager.sendMessage(deathMsg);
     }
 
@@ -257,7 +258,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
             ItemStack stack = var1.getStackInSlot(i);
             items.add((MC_ItemStack) (Object) stack);
         }
-        Hooks.onContainerOpen(this, items, var1.getName());
+        Hooks.onContainerOpen(this, items, var1.getDisplayName().getString());
         for (int i = 0; i < var1.getSizeInventory(); i++) {
             MC_ItemStack stack = items.get(i);
             var1.setInventorySlotContents(i, PluginHelper.getItemStack(stack));
@@ -305,10 +306,9 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
                         containerType = MC_ContainerType.BACKPACK;
                     } else if (chest.getLowerChestInventory() instanceof TileEntityChest) {
                         TileEntityChest te = (TileEntityChest) chest.getLowerChestInventory();
-                        int subType = te.getBlockMetadata();
 
                         containerType = MC_ContainerType.CHEST_SINGLE;
-                        if (subType == 1) {
+                        if (te instanceof TileEntityTrappedChest) {
                             containerType = MC_ContainerType.CHEST_TRAPPED;
                         }
                     }
@@ -414,7 +414,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public void executeCommand(String var1) {
-        _DiwUtils.getMinecraftServer().getCommandManager().executeCommand((ICommandSender) this, var1);
+        _DiwUtils.getMinecraftServer().func_195571_aL().func_197059_a(((EntityPlayerMP)(Object) this).func_195051_bN(), var1);
     }
 
     @Override
@@ -549,7 +549,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public void giveExp(int var1) {
-        addExperience(var1);
+        addExperience$func_195068_e(var1);
     }
 
     @Override
@@ -590,7 +590,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
         experience = 0;
         experienceLevel = 0;
         experienceTotal = 0;
-        addExperience(var1);
+        addExperience$func_195068_e(var1);
     }
 
     @Override
@@ -783,7 +783,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
         if (data.length > 32767) {
             throw new IllegalArgumentException("data.length > 32767");
         }
-        SPacketCustomPayload packet = new SPacketCustomPayload(channel, new PacketBuffer(Unpooled.copiedBuffer(data)));
+        SPacketCustomPayload packet = new SPacketCustomPayload(new ResourceLocation(channel), new PacketBuffer(Unpooled.copiedBuffer(data)));
         connection.sendPacket(packet);
     }
 }

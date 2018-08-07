@@ -1,20 +1,18 @@
 package org.projectrainbow;
 
+import PluginReference.MC_Player;
 import PluginReference.RainbowUtils;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class _Janitor {
-    public static void DoMobClean(EntityPlayerMP p, boolean doClean, String[] cleanTarget) {
+    public static void DoMobClean(MC_Player p, boolean doClean, String[] cleanTarget) {
         final Map<String, Integer> mobCounts = new HashMap<>();
         int sectionSize = 16;
         int mobLimitPerSection = 35;
@@ -26,10 +24,12 @@ public class _Janitor {
 
         for (WorldServer world : worlds) {
             for (Entity ent : world.loadedEntityList) {
-                String entClassName = EntityList.getEntityString(ent);
+                EntityType<?> var1 = ent.func_200600_R();
+                ResourceLocation var2 = EntityType.func_200718_a(var1);
+                String entClassName = var1.func_200715_a() && var2 != null ? var2.toString() : null;
                 String mobName = entClassName;
                 if (ent instanceof EntityPlayerMP) {
-                    mobName = ent.getName();
+                    mobName = ((MC_Player)ent).getName();
                 }
 
                 boolean isPlayer = false;

@@ -25,7 +25,7 @@ public class MixinEndermanAITakeBlock {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptEntityMiscGrief((MC_Entity) enderman, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), enderman.dimension), MC_MiscGriefType.ENDERMAN_PICKUP_BLOCK, ei);
         if (ei.isCancelled) {
-            this.enderman.setHeldBlockState(null);
+            this.enderman.func_195406_b(null);
         }
         return !ei.isCancelled && world.setBlockToAir(pos);
     }

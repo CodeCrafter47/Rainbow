@@ -11,24 +11,24 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(EntityEnderman.class)
 public abstract class MixinEntityEnderman extends MixinEntityLivingBase implements MC_Enderman {
 
-    @Shadow
-    public abstract void setHeldBlockState(IBlockState var1);
+    @Shadow(prefix = "setHeldBlockState$")
+    public abstract void setHeldBlockState$func_195406_b(IBlockState var1);
 
-    @Shadow
-    public abstract IBlockState getHeldBlockState();
+    @Shadow(prefix = "getHeldBlockState$")
+    public abstract IBlockState getHeldBlockState$func_195405_dq();
 
     @Override
     public MC_Block getCarriedBlock() {
-        IBlockState heldBlockState = getHeldBlockState();
+        IBlockState heldBlockState = getHeldBlockState$func_195405_dq();
         return heldBlockState == null ? null : new BlockWrapper(heldBlockState);
     }
 
     @Override
     public void setCarriedBlock(MC_Block blk) {
         if (blk == null) {
-            setHeldBlockState(null);
+            setHeldBlockState$func_195406_b(null);
         } else {
-            setHeldBlockState(((BlockWrapper)blk).m_blockState);
+            setHeldBlockState$func_195406_b(((BlockWrapper)blk).m_blockState);
         }
     }
 }

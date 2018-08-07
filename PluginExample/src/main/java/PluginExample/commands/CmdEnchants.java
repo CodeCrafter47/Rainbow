@@ -16,7 +16,7 @@ public class CmdEnchants extends CmdBase {
     @Override
     protected void execute(MC_Player plr, String[] args) {
         MC_ItemStack isHand = plr.getItemInHand();
-        if (isHand.getId() == 0) {
+        if (isHand.getCount() == 0) {
             plr.sendMessage(ChatColor.RED + "You must be holding something!");
             return;
         }

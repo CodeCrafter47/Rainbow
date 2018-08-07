@@ -4,14 +4,13 @@ package org.projectrainbow.commands;
 import PluginReference.ChatColor;
 import PluginReference.MC_Command;
 import PluginReference.MC_Player;
-import net.minecraft.command.CommandBase;
-import net.minecraft.util.text.TextFormatting;
 import org.projectrainbow.ServerWrapper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow._EconomyManager;
 import org.projectrainbow._UUIDMapper;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class _CmdBal implements MC_Command {
@@ -28,7 +27,7 @@ public class _CmdBal implements MC_Command {
 
     @Override
     public String getHelpLine(MC_Player plr) {
-        return TextFormatting.AQUA + "/bal" + TextFormatting.WHITE + " --- Check Balance";
+        return ChatColor.AQUA + "/bal" + ChatColor.WHITE + " --- Check Balance";
     }
 
     @Override
@@ -61,8 +60,10 @@ public class _CmdBal implements MC_Command {
     @Override
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
         return args.length >= 1
-                ? CommandBase.getListOfStringsMatchingLastWord(args,
-                _DiwUtils.getMinecraftServer().getOnlinePlayerNames())
+                ? Arrays.stream(_DiwUtils.getMinecraftServer()
+                .getOnlinePlayerNames())
+                .filter(name -> name.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
+                .collect(Collectors.toList())
                 : null;
     }
 
@@ -80,10 +81,8 @@ public class _CmdBal implements MC_Command {
                         + _DiwUtils.TextAlignTrailerPerfect("-----------", 12)
                         + ChatColor.YELLOW + "   " + "---------------");
         int nShown = 0;
-        Iterator var5 = keys.iterator();
 
-        while (var5.hasNext()) {
-            String key = (String) var5.next();
+        for (String key : keys) {
             Double amt = _EconomyManager.economy.get(key);
             String exactName = ServerWrapper.getInstance().getPlayerExactName(key);
             if (key.length() > 16) {

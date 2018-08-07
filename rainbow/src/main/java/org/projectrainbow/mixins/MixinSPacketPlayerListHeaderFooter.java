@@ -10,18 +10,18 @@ import org.spongepowered.asm.mixin.Shadow;
 public class MixinSPacketPlayerListHeaderFooter implements IMixinSPacketPlayerListHeaderFooter {
 
     @Shadow
-    private ITextComponent a;
+    private ITextComponent header;
 
     @Shadow
-    private ITextComponent b;
+    private ITextComponent footer;
 
     @Override
     public void setHeader(ITextComponent header) {
-        this.a = header;
+        this.header = header;
     }
 
     @Override
     public void setFooter(ITextComponent footer) {
-        this.b = footer;
+        this.footer = footer;
     }
 }

@@ -4,7 +4,6 @@ import PluginExample.CmdBase;
 import PluginExample.MyPlugin;
 import PluginReference.ChatColor;
 import PluginReference.MC_ItemStack;
-import PluginReference.MC_ItemType;
 import PluginReference.MC_Player;
 import PluginReference.RainbowUtils;
 
@@ -65,7 +64,7 @@ public class CmdHead extends CmdBase {
         // Issue command to get player skull...
         //String headCmd = String.format("/give @p skull 1 3 {SkullOwner:%s}", tgtName);
         //MyPlugin.server.executeCommand(headCmd);
-        MC_ItemStack is = MyPlugin.server.createItemStack(MC_ItemType.SKELETON_SKULL, 1, 3);
+        MC_ItemStack is = MyPlugin.server.createItemStack("player_head", 1);
         is.setSkullOwner(tgtName);
         plr.getWorld().dropItem(is, plr.getLocation(), plr.getName());
         //plr.setItemInHand(is);

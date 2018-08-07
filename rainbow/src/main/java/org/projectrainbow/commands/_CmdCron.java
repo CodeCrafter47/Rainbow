@@ -5,22 +5,12 @@ import PluginReference.MC_Player;
 import PluginReference.RainbowUtils;
 import com.google.common.io.Files;
 import joebkt._CronData;
-import net.minecraft.command.ICommandManager;
+import net.minecraft.command.Commands;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class _CmdCron implements MC_Command {
@@ -100,11 +90,11 @@ public class _CmdCron implements MC_Command {
         for (final Map.Entry<String, _CronData> entry : _CmdCron.mapData.entrySet()) {
             final _CronData data = entry.getValue();
             final long delta = msNow - data.msLastRun;
-            final ICommandManager exec = _DiwUtils.getMinecraftServer().getCommandManager();
+            final Commands exec = _DiwUtils.getMinecraftServer().func_195571_aL();
             if (delta > data.msDelay) {
                 try {
                     _DiwUtils.ConsoleMsg("[CRON] Job " + data.jobName + ": " + data.cmdToRun);
-                    exec.executeCommand(_DiwUtils.getMinecraftServer(), data.cmdToRun);
+                    exec.func_197059_a(_DiwUtils.getMinecraftServer().func_195573_aM(), data.cmdToRun);
                 } catch (Exception exc) {
                     exc.printStackTrace();
                 }
@@ -123,8 +113,7 @@ public class _CmdCron implements MC_Command {
 
     static long GetMSFromString(String strTime) {
         try {
-            final long ms = 0L;
-            long multi = 1L;
+            long multi;
             if (strTime.endsWith("ms")) {
                 strTime = strTime.substring(0, strTime.length() - 2);
                 multi = 1L;

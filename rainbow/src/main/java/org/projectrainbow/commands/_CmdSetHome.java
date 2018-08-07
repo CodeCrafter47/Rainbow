@@ -6,7 +6,6 @@ import joebkt._SerializableLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._HomeUtils;
-import org.projectrainbow.interfaces.IMixinICommandSender;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,12 +43,12 @@ public class _CmdSetHome implements MC_Command {
             return;
         }
         final EntityPlayer p = (EntityPlayer) player;
-        final String pName = p.getName();
+        final String pName = player.getName();
         final _SerializableLocation sloc = new _SerializableLocation(p.posX, p.posY, p.posZ, p.dimension, p.rotationYaw, p.rotationPitch);
         _HomeUtils.setHome(p.getUniqueID(), sloc);
         _HomeUtils.SaveHomes();
         final String msg = String.format("Home Set for %s set to %s", pName, sloc.toString());
         System.out.println(msg);
-        ((IMixinICommandSender) p).sendMessage(String.valueOf(_ColorHelper.GREEN) + "Home set to " + _ColorHelper.WHITE + sloc.toString());
+        player.sendMessage(String.valueOf(_ColorHelper.GREEN) + "Home set to " + _ColorHelper.WHITE + sloc.toString());
     }
 }

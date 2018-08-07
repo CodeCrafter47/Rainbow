@@ -1,12 +1,14 @@
 package org.projectrainbow;
 
 import PluginReference.*;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.tree.CommandNode;
+import com.mojang.brigadier.tree.RootCommandNode;
 import joebkt._SerializableLocation;
-import net.minecraft.block.Block;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityAreaEffectCloud;
 import net.minecraft.entity.EntityHanging;
@@ -25,12 +27,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.dimension.DimensionType;
 import org.apache.logging.log4j.LogManager;
 import org.projectrainbow.commands.*;
-import org.projectrainbow.interfaces.IMixinICommandSender;
+import org.projectrainbow.interfaces.IMixinCommandNode;
 import org.projectrainbow.plugins.PluginManager;
 
 import javax.annotation.Nullable;
@@ -40,6 +41,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -108,27 +110,16 @@ public class _DiwUtils {
         System.out.println("[R]: " + _ColorHelper.stripColor(msg));
     }
 
-    public static boolean IsOp(final ICommandSender cs) {
-        if (cs instanceof EntityPlayer) {
-            final EntityPlayer plr = (EntityPlayer) cs;
-            return getMinecraftServer().getPlayerList().canSendCommands(plr.getGameProfile());
+    public static boolean IsOp(@Nullable MC_Player p) {
+        if (p != null) {
+            return getMinecraftServer().getPlayerList().canSendCommands(((EntityPlayer) p).getGameProfile());
         }
         return true;
     }
 
-    public static void reply(final MC_Player cs, final String msg) {
-        if (cs != null && cs instanceof EntityPlayer) {
-            final EntityPlayer p = (EntityPlayer) cs;
-            ((IMixinICommandSender) p).sendMessage(msg);
-            return;
-        }
-        System.out.println(_ColorHelper.stripColor(msg));
-    }
-
-    public static void reply(@Nullable ICommandSender cs, String msg) {
-        if (cs instanceof EntityPlayer) {
-            EntityPlayer p = (EntityPlayer) cs;
-            ((IMixinICommandSender) p).sendMessage(msg);
+    public static void reply(@Nullable MC_Player p, String msg) {
+        if (p != null) {
+            p.sendMessage(msg);
             return;
         }
         System.out.println(_ColorHelper.stripColor(msg));
@@ -234,40 +225,23 @@ public class _DiwUtils {
         _DiwUtils.MC_VERSION_STRING = getMinecraftServer().getMinecraftVersion();
         _DiwUtils.DefaultMOTD = String.format(DefaultMOTD, _DiwUtils.MC_VERSION_STRING);
 
-        // Setup BlockHelper
-        ImmutableMap.Builder<Integer, String> mapBlockNames = ImmutableMap.builder();
-        for (Block block : Block.REGISTRY) {
-            mapBlockNames.put(Block.getIdFromBlock(block), Block.REGISTRY.getNameForObject(block).getResourcePath());
-        }
-        BlockHelper.mapBlockNames = mapBlockNames.build();
-
-        ImmutableMap.Builder<String, String> mapItemNames = ImmutableMap.builder();
-        ImmutableMap.Builder<Integer, Integer> mapNumSubtypes = ImmutableMap.builder();
-        Set<String> subtypes = new HashSet<>();
-        for (Item item : Item.REGISTRY) {
-            int id = Item.getIdFromItem(item);
-            if (item.getHasSubtypes()) {
-                for (int i = 0; i < 16; i++) {
-                    if (id == 162 && i > 1) {
-                        continue;
-                    }
-                    ItemStack itemStack = new ItemStack(item, 1, i);
-                    String localizedName = I18n.translateToLocal(item.getItemStackDisplayName(itemStack));
-                    if (!subtypes.contains(localizedName)) {
-                        mapItemNames.put("" + id + ":" + i, localizedName);
-                        subtypes.add(localizedName);
-                    }
+        // Setup Command permissions
+        Commands commands = minecraftServer.func_195571_aL();
+        CommandDispatcher<CommandSource> dispatcher = commands.func_197054_a();
+        RootCommandNode<CommandSource> rootCommandNode = dispatcher.getRoot();
+        for (CommandNode<CommandSource> commandNode : rootCommandNode.getChildren()) {
+            String name = commandNode.getName();
+            String permission = "rainbow." + name;
+            Predicate<CommandSource> requirement = commandNode.getRequirement();
+            Predicate<CommandSource> newRequirement = source -> {
+                Entity entity = source.func_197022_f();
+                if (entity instanceof EntityPlayerMP) {
+                    return ((MC_Player) entity).hasPermission(permission);
                 }
-                mapNumSubtypes.put(id, subtypes.size());
-                subtypes.clear();
-            } else {
-                String localizedName = item.getItemStackDisplayName(new ItemStack(item));
-                mapItemNames.put("" + id + ":0", localizedName);
-                mapNumSubtypes.put(id, 1);
-            }
+                return requirement.test(source);
+            };
+            ((IMixinCommandNode) commandNode).setRequirement(newRequirement);
         }
-        BlockHelper.mapItemNames = mapItemNames.build();
-        BlockHelper.mapNumSubtypes = mapNumSubtypes.build();
 
         System.out.println("\nInitializing 'Baked In' server goodies...");
         System.out.println("---------------------------------------------------------------");
@@ -336,16 +310,8 @@ public class _DiwUtils {
         ServerWrapper.getInstance().registerCommand(new _CmdWorth());
 
         ReadRestrictedCommands();
-        Map<String, ICommand> commandMap = getMinecraftServer().getCommandManager().getCommands();
-        for (String cmd : g_removedCommand) {
-            ICommand command = commandMap.get(cmd);
-            if (command != null) {
-                commandMap.remove(command.getName());
-                for (String alias : command.getAliases()) {
-                    commandMap.remove(alias);
-                }
-            }
-        }
+        CommandNode<CommandSource> root = getMinecraftServer().func_195571_aL().func_197054_a().getRoot();
+        root.getChildren().removeIf(node -> g_removedCommand.contains(node.getName()));
 
         // load plugins
         pluginManager.enable();
@@ -566,67 +532,61 @@ public class _DiwUtils {
             BufferedWriter bw = new BufferedWriter(new FileWriter(exc));
             String fmt = "%-23s = %s\r\n";
 
-            bw.write(String.format(fmt, new Object[]{"Censor", "" + DoCensor}));
+            bw.write(String.format(fmt, "Censor", "" + DoCensor));
             bw.write(
-                    String.format(fmt, new Object[]{"Paydays", "" + DoPaydays}));
+                    String.format(fmt, "Paydays", "" + DoPaydays));
             bw.write(
-                    String.format(fmt, new Object[]{"Janitor", "" + DoJanitor}));
+                    String.format(fmt, "Janitor", "" + DoJanitor));
             bw.write(
-                    String.format(fmt, new Object[]{"Weather", "" + DoWeather}));
-            bw.write(
-                    String.format(fmt,
-                            new Object[]{"SpamKick", "" + DoSpamKick}));
+                    String.format(fmt, "Weather", "" + DoWeather));
             bw.write(
                     String.format(fmt,
-                            new Object[]{"Announcer", "" + _Announcer.IsEnabled}));
+                            "SpamKick", "" + DoSpamKick));
             bw.write(
                     String.format(fmt,
-                            new Object[]{"autosave_minutes", "" + AutoSaveMinutes}));
+                            "Announcer", "" + _Announcer.IsEnabled));
             bw.write(
                     String.format(fmt,
-                            new Object[]{"autosave_notice", "" + DoSavingWorldNotice}));
+                            "autosave_minutes", "" + AutoSaveMinutes));
             bw.write(
                     String.format(fmt,
-                            new Object[]{"payday_minutes", "" + PayDayMinutes}));
+                            "autosave_notice", "" + DoSavingWorldNotice));
             bw.write(
                     String.format(fmt,
-                            new Object[]{
-                                    "payday_amount",
-                                    String.format("%.2f", PayDayAmount)}));
+                            "payday_minutes", "" + PayDayMinutes));
             bw.write(
                     String.format(fmt,
-                            new Object[]{
-                                    "janitor_seconds",
-                                    "" + janitorInterval}));
+                            "payday_amount",
+                            String.format("%.2f", PayDayAmount)));
             bw.write(
                     String.format(fmt,
-                            new Object[]{"reconnect_delay", "" + DoReconnectDelay}));
+                            "janitor_seconds",
+                            "" + janitorInterval));
             bw.write(
                     String.format(fmt,
-                            new Object[]{
-                                    "reconnect_delay_seconds",
-                                    "" + ReconnectDelaySeconds}));
+                            "reconnect_delay", "" + DoReconnectDelay));
             bw.write(
                     String.format(fmt,
-                            new Object[]{
-                                    "welcome_new_players",
-                                    "" + DoWelcomeNewPlayers}));
+                            "reconnect_delay_seconds",
+                            "" + ReconnectDelaySeconds));
             bw.write(
                     String.format(fmt,
-                            new Object[]{"armor_stands_dance", "" + ArmorStandsDance}));
+                            "welcome_new_players",
+                            "" + DoWelcomeNewPlayers));
             bw.write(
                     String.format(fmt,
-                            new Object[]{"ops_keep_inventory", "" + OpsKeepInventory}));
+                            "armor_stands_dance", "" + ArmorStandsDance));
             bw.write(
                     String.format(fmt,
-                            new Object[]{
-                                    "notify_admins_censor",
-                                    "" + NotifyAdminCensor}));
+                            "ops_keep_inventory", "" + OpsKeepInventory));
             bw.write(
                     String.format(fmt,
-                            new Object[]{
-                                    "max_nearby_entities", "" + MaxNearbyEntities}));
-            bw.write(String.format(fmt, new Object[]{"bungeecord", BungeeCord}));
+                            "notify_admins_censor",
+                            "" + NotifyAdminCensor));
+            bw.write(
+                    String.format(fmt,
+                            "max_nearby_entities", "" + MaxNearbyEntities));
+            bw.write(String.format(fmt, "bungeecord", BungeeCord));
             bw.write(String.format(fmt, "update_namecolor_on_tab", UpdateNameColorOnTab));
             bw.write(String.format(fmt, "nether_distance_ratio", netherDistanceRatio));
             bw.close();
@@ -637,11 +597,7 @@ public class _DiwUtils {
     }
 
     public static boolean isStringTrue(String str) {
-        return str.equalsIgnoreCase("yes")
-                ? true
-                : (str.equalsIgnoreCase("1")
-                ? true
-                : str.equalsIgnoreCase("true"));
+        return str.equalsIgnoreCase("yes") || (str.equalsIgnoreCase("1") || str.equalsIgnoreCase("true"));
     }
 
     public static int getIntegerWithDefault(String str, int minValidValue, int argDefault) {
@@ -877,212 +833,187 @@ public class _DiwUtils {
 
     public static String SpecialTranslate(final String txt) {
         String res;
-        for (res = txt; res.indexOf("{star1}") >= 0; res = StringReplace(res, "{star1}", "\u269d")) {
+        res = txt;
+        while (res.contains("{star1}")) {
+            res = StringReplace(res, "{star1}", "\u269d");
         }
-        while (res.indexOf("{star2}") >= 0) {
+        while (res.contains("{star2}")) {
             res = StringReplace(res, "{star2}", "\u2605");
         }
-        while (res.indexOf("{star3}") >= 0) {
+        while (res.contains("{star3}")) {
             res = StringReplace(res, "{star3}", "\u2606");
         }
-        while (res.indexOf("{space}") >= 0) {
+        while (res.contains("{space}")) {
             res = StringReplace(res, "{space}", " ");
         }
-        while (res.indexOf("{_}") >= 0) {
+        while (res.contains("{_}")) {
             res = StringReplace(res, "{_}", " ");
         }
-        while (res.indexOf("{heart1}") >= 0) {
+        while (res.contains("{heart1}")) {
             res = StringReplace(res, "{heart1}", "\u2764");
         }
-        while (res.indexOf("{heart2}") >= 0) {
+        while (res.contains("{heart2}")) {
             res = StringReplace(res, "{heart2}", "\u2661");
         }
-        while (res.indexOf("{heart3}") >= 0) {
+        while (res.contains("{heart3}")) {
             res = StringReplace(res, "{heart3}", "\u2665");
         }
-        while (res.indexOf("{cross1}") >= 0) {
+        while (res.contains("{cross1}")) {
             res = StringReplace(res, "{cross1}", "\u271e");
         }
-        while (res.indexOf("{cross2}") >= 0) {
+        while (res.contains("{cross2}")) {
             res = StringReplace(res, "{cross2}", "\u2671");
         }
-        while (res.indexOf("{cross3}") >= 0) {
+        while (res.contains("{cross3}")) {
             res = StringReplace(res, "{cross3}", "\u2670");
         }
-        while (res.indexOf("{diamond1}") >= 0) {
+        while (res.contains("{diamond1}")) {
             res = StringReplace(res, "{diamond1}", "\u2666");
         }
-        while (res.indexOf("{diamond2}") >= 0) {
+        while (res.contains("{diamond2}")) {
             res = StringReplace(res, "{diamond2}", "\u2662");
         }
-        while (res.indexOf("{radio}") >= 0) {
+        while (res.contains("{radio}")) {
             res = StringReplace(res, "{radio}", "\u2622");
         }
-        while (res.indexOf("{bio}") >= 0) {
+        while (res.contains("{bio}")) {
             res = StringReplace(res, "{bio}", "\u2623");
         }
-        while (res.indexOf("{ankh}") >= 0) {
+        while (res.contains("{ankh}")) {
             res = StringReplace(res, "{ankh}", "\u2625");
         }
-        while (res.indexOf("{peace}") >= 0) {
+        while (res.contains("{peace}")) {
             res = StringReplace(res, "{peace}", "\u262e");
         }
-        while (res.indexOf("{yinyang}") >= 0) {
+        while (res.contains("{yinyang}")) {
             res = StringReplace(res, "{yinyang}", "\u262f");
         }
-        while (res.indexOf("{male}") >= 0) {
+        while (res.contains("{male}")) {
             res = StringReplace(res, "{male}", "\u2642");
         }
-        while (res.indexOf("{female}") >= 0) {
+        while (res.contains("{female}")) {
             res = StringReplace(res, "{female}", "\u2640");
         }
-        while (res.indexOf("{aquarius}") >= 0) {
+        while (res.contains("{aquarius}")) {
             res = StringReplace(res, "{aquarius}", "\u2652");
         }
-        while (res.indexOf("{music1}") >= 0) {
+        while (res.contains("{music1}")) {
             res = StringReplace(res, "{music1}", "\u2669");
         }
-        while (res.indexOf("{music2}") >= 0) {
+        while (res.contains("{music2}")) {
             res = StringReplace(res, "{music2}", "\u266a");
         }
-        while (res.indexOf("{music3}") >= 0) {
+        while (res.contains("{music3}")) {
             res = StringReplace(res, "{music3}", "\u266b");
         }
-        while (res.indexOf("{music4}") >= 0) {
+        while (res.contains("{music4}")) {
             res = StringReplace(res, "{music4}", "\u266c");
         }
-        while (res.indexOf("{music5}") >= 0) {
+        while (res.contains("{music5}")) {
             res = StringReplace(res, "{music5}", "\u266d");
         }
-        while (res.indexOf("{anchor}") >= 0) {
+        while (res.contains("{anchor}")) {
             res = StringReplace(res, "{anchor}", "\u2693");
         }
-        while (res.indexOf("{atom}") >= 0) {
+        while (res.contains("{atom}")) {
             res = StringReplace(res, "{atom}", "\u269b");
         }
-        while (res.indexOf("{bolt}") >= 0) {
+        while (res.contains("{bolt}")) {
             res = StringReplace(res, "{bolt}", "\u26a1");
         }
-        while (res.indexOf("{plane}") >= 0) {
+        while (res.contains("{plane}")) {
             res = StringReplace(res, "{plane}", "\u2708");
         }
-        while (res.indexOf("{flower1}") >= 0) {
+        while (res.contains("{flower1}")) {
             res = StringReplace(res, "{flower1}", "\u2740");
         }
-        while (res.indexOf("{flower2}") >= 0) {
+        while (res.contains("{flower2}")) {
             res = StringReplace(res, "{flower2}", "\u2743");
         }
-        while (res.indexOf("{flower3}") >= 0) {
+        while (res.contains("{flower3}")) {
             res = StringReplace(res, "{flower3}", "\u273c");
         }
-        while (res.indexOf("{newline}") >= 0) {
+        while (res.contains("{newline}")) {
             res = StringReplace(res, "{newline}", "\n");
         }
-        while (res.indexOf("{fingers}") >= 0) {
+        while (res.contains("{fingers}")) {
             res = StringReplace(res, "{fingers}", "\u270c");
         }
-        while (res.indexOf("{coffee}") >= 0) {
+        while (res.contains("{coffee}")) {
             res = StringReplace(res, "{coffee}", "\u2615");
         }
-        while (res.indexOf("{shamrock}") >= 0) {
+        while (res.contains("{shamrock}")) {
             res = StringReplace(res, "{shamrock}", "\u2618");
         }
-        while (res.indexOf("{doctor}") >= 0) {
+        while (res.contains("{doctor}")) {
             res = StringReplace(res, "{doctor}", "\u2624");
         }
-        while (res.indexOf("{swords}") >= 0) {
+        while (res.contains("{swords}")) {
             res = StringReplace(res, "{swords}", "\u2694");
         }
-        while (res.indexOf("{hermes}") >= 0) {
+        while (res.contains("{hermes}")) {
             res = StringReplace(res, "{hermes}", "\u269a");
         }
-        while (res.indexOf("{heaven}") >= 0) {
+        while (res.contains("{heaven}")) {
             res = StringReplace(res, "{heaven}", "\u2630");
         }
-        while (res.indexOf("{earth}") >= 0) {
+        while (res.contains("{earth}")) {
             res = StringReplace(res, "{earth}", "\u2637");
         }
-        while (res.indexOf("{handicap}") >= 0) {
+        while (res.contains("{handicap}")) {
             res = StringReplace(res, "{handicap}", "\u267f");
         }
-        while (res.indexOf("{ussr}") >= 0) {
+        while (res.contains("{ussr}")) {
             res = StringReplace(res, "{ussr}", "\u262d");
         }
-        while (res.indexOf("{storm}") >= 0) {
+        while (res.contains("{storm}")) {
             res = StringReplace(res, "{storm}", "\u2608");
         }
-        while (res.indexOf("{sun}") >= 0) {
+        while (res.contains("{sun}")) {
             res = StringReplace(res, "{sun}", "\u2609");
         }
-        while (res.indexOf("{sad}") >= 0) {
+        while (res.contains("{sad}")) {
             res = StringReplace(res, "{sad}", "\u2639");
         }
-        while (res.indexOf("{phone}") >= 0) {
+        while (res.contains("{phone}")) {
             res = StringReplace(res, "{phone}", "\u260e");
         }
-        while (res.indexOf("{whiteflag}") >= 0) {
+        while (res.contains("{whiteflag}")) {
             res = StringReplace(res, "{whiteflag}", "\u2690");
         }
-        while (res.indexOf("{blackflag}") >= 0) {
+        while (res.contains("{blackflag}")) {
             res = StringReplace(res, "{blackflag}", "\u2691");
         }
-        while (res.indexOf("{farsi}") >= 0) {
+        while (res.contains("{farsi}")) {
             res = StringReplace(res, "{farsi}", "\u262b");
         }
-        while (res.indexOf("{khanda}") >= 0) {
+        while (res.contains("{khanda}")) {
             res = StringReplace(res, "{khanda}", "\u262c");
         }
         return res;
     }
 
-    public static String ColorWrapFix(final String argMsg, final boolean handlePercents) {
-        if (argMsg == null) {
-            return "";
-        }
-        if (argMsg.length() <= 0) {
-            return "";
-        }
-        final StringBuilder sb = new StringBuilder();
-        String lastColorString = "";
-        boolean lastCharWasSpace = false;
-        for (int len = argMsg.length(), i = 0; i < len; ++i) {
-            final char ch = argMsg.charAt(i);
-            if (ch != ' ' && ch != _ColorHelper.COLOR_CHAR && lastCharWasSpace) {
-                sb.append(lastColorString);
-            }
-            sb.append(ch);
-            lastCharWasSpace = (ch == ' ');
-            if (i < len - 1 && ch == _ColorHelper.COLOR_CHAR) {
-                lastColorString = String.valueOf(_ColorHelper.COLOR_CHAR) + argMsg.charAt(i + 1);
-            }
-            if (handlePercents && ch == '%') {
-                sb.append("%").append(lastColorString);
-            }
-        }
-        return sb.toString();
-    }
-
-    public static boolean TooSoon(final ICommandSender cs, final String what, final int seconds) {
-        if (!(cs instanceof EntityPlayer)) {
+    public static boolean TooSoon(@Nullable MC_Player p, final String what, final int seconds) {
+        if (p == null) {
             return true;
-        }
-        final EntityPlayer p = (EntityPlayer) cs;
-        if (IsOp(p)) {
+        } else {
+            if (IsOp(p)) {
+                return false;
+            }
+            final String key = String.valueOf(what) + "." + p.getName();
+            final Long msBefore = _DiwUtils.tooSoon.get(key);
+            final Long curMS = System.currentTimeMillis();
+            if (msBefore != null) {
+                final Long msDelta = curMS - msBefore;
+                final Long msWaitTime = 1000L * seconds;
+                if (msDelta < msWaitTime) {
+                    reply(p, String.valueOf(_ColorHelper.RED) + "[" + what + "] Too soon, you must wait: " + _ColorHelper.AQUA + RainbowUtils.TimeDeltaString_JustMinutesSecs(msWaitTime - msDelta));
+                    return true;
+                }
+            }
+            _DiwUtils.tooSoon.put(key, curMS);
             return false;
         }
-        final String key = String.valueOf(what) + "." + p.getName();
-        final Long msBefore = _DiwUtils.tooSoon.get(key);
-        final Long curMS = System.currentTimeMillis();
-        if (msBefore != null) {
-            final Long msDelta = curMS - msBefore;
-            final Long msWaitTime = 1000L * seconds;
-            if (msDelta < msWaitTime) {
-                reply(p, String.valueOf(_ColorHelper.RED) + "[" + what + "] Too soon, you must wait: " + _ColorHelper.AQUA + RainbowUtils.TimeDeltaString_JustMinutesSecs(msWaitTime - msDelta));
-                return true;
-            }
-        }
-        _DiwUtils.tooSoon.put(key, curMS);
-        return false;
     }
 
     public static String TimeDeltaString(long ms) {
@@ -1102,7 +1033,7 @@ public class _DiwUtils {
 
     public static void MessageAllPlayers(String msg) {
         for (EntityPlayerMP p : getMinecraftServer().getPlayerList().getPlayers()) {
-            ((IMixinICommandSender) p).sendMessage(msg);
+            ((MC_Player) p).sendMessage(msg);
         }
     }
 
@@ -1355,7 +1286,7 @@ public class _DiwUtils {
             return true;
         } else if (sb.indexOf("DILDO") >= 0) {
             return true;
-        } else if (var9.indexOf("GTFO") >= 0) {
+        } else if (var9.contains("GTFO")) {
             return true;
         } else if (sb.indexOf("BASTARD") >= 0) {
             return true;
@@ -1436,7 +1367,7 @@ public class _DiwUtils {
             return true;
         } else {
             if (var8.contains("PENI")) {
-                if (var9.indexOf(" PENIS") >= 0) {
+                if (var9.contains(" PENIS")) {
                     return true;
                 }
 
@@ -1506,17 +1437,17 @@ public class _DiwUtils {
                     }
                 }
 
-                if (msgUpper.indexOf(" SHIT") >= 0) {
+                if (msgUpper.contains(" SHIT")) {
                     return true;
-                } else if (msgUpper.indexOf(" RAPE") >= 0) {
+                } else if (msgUpper.contains(" RAPE")) {
                     return true;
                 } else if (var9.endsWith(" ASS")) {
                     return true;
                 } else if (var9.endsWith(" FU")) {
                     return true;
-                } else if (var9.indexOf("VAGINA") >= 0) {
+                } else if (var9.contains("VAGINA")) {
                     return true;
-                } else if (var9.indexOf("CROTCH") >= 0) {
+                } else if (var9.contains("CROTCH")) {
                     return true;
                 } else if (var9.endsWith("SHIT")) {
                     return true;
@@ -1524,20 +1455,20 @@ public class _DiwUtils {
                     return true;
                 } else if (var9.endsWith("SHITTY")) {
                     return true;
-                } else if (var9.indexOf(" HORNY") >= 0) {
+                } else if (var9.contains(" HORNY")) {
                     return true;
                 } else if (var9.startsWith("HORNY ")) {
                     return true;
                 } else if (var9.startsWith("RAPE ")) {
                     return true;
-                } else if (var9.indexOf(" ASS ") >= 0) {
+                } else if (var9.contains(" ASS ")) {
                     return true;
-                } else if (var9.indexOf(" FUK") >= 0) {
+                } else if (var9.contains(" FUK")) {
                     return true;
-                } else if (var9.indexOf(" FUC") >= 0
+                } else if (var9.contains(" FUC")
                         && !var9.contains("FUCHSIA")) {
                     return true;
-                } else if (var9.indexOf("FUC ") >= 0) {
+                } else if (var9.contains("FUC ")) {
                     return true;
                 } else if (var9.endsWith(" PORN")) {
                     return true;
@@ -1553,17 +1484,17 @@ public class _DiwUtils {
                     return true;
                 } else if (var9.endsWith(" CLIT")) {
                     return true;
-                } else if (var9.indexOf(" TITS ") >= 0) {
+                } else if (var9.contains(" TITS ")) {
                     return true;
-                } else if (var9.indexOf(" HUMPING ") >= 0) {
+                } else if (var9.contains(" HUMPING ")) {
                     return true;
-                } else if (var9.indexOf(" HUMPIN ") >= 0) {
+                } else if (var9.contains(" HUMPIN ")) {
                     return true;
-                } else if (var9.indexOf(" CLIT ") >= 0) {
+                } else if (var9.contains(" CLIT ")) {
                     return true;
                 } else if (var9.startsWith("TITS ")) {
                     return true;
-                } else if (var9.indexOf("FK U") >= 0 && !var9.contains("AFK U")) {
+                } else if (var9.contains("FK U") && !var9.contains("AFK U")) {
                     return true;
                 } else {
                     if (var8.contains("DICK")) {
@@ -1805,10 +1736,6 @@ public class _DiwUtils {
     }
 
     public static String GetCommaList(Collection<String> arr) {
-        return GetCommaList(arr, true);
-    }
-
-    public static String GetCommaList(Collection<String> arr, boolean doSort) {
         ArrayList<String> list = new ArrayList<>(arr);
         StringBuilder buf = new StringBuilder();
 
@@ -1934,10 +1861,10 @@ public class _DiwUtils {
         }
     }
 
-    public static boolean GiveItemToPlayer(MC_Player p, int itemID, int itemCount, int itemDamage) {
+    public static void GiveItemToPlayer(MC_Player p, int itemID, int itemCount, int itemDamage) {
         try {
-            Item exc = Item.getItemById(itemID);
-            ItemStack is = new ItemStack(exc, itemCount, itemDamage);
+            Item exc = PluginHelper.getItemFromLegacyId(itemID);
+            ItemStack is = new ItemStack(exc, itemCount);
             InventoryPlayer inventory = ((EntityPlayer) p).inventory;
             int idx = -1;
 
@@ -1950,13 +1877,10 @@ public class _DiwUtils {
 
             if (idx >= 0) {
                 inventory.mainInventory.set(idx, is);
-                return true;
             }
         } catch (Throwable var7) {
             var7.printStackTrace();
         }
-
-        return false;
     }
 
     public static String TimeDeltaString_JustMinutesSecs(long ms) {
@@ -1968,11 +1892,8 @@ public class _DiwUtils {
     }
 
     public static void MessageAllPlayers(MC_Player cs, String msg) {
-        Iterator<MC_Player> var3 = ServerWrapper.getInstance().getPlayers().iterator();
 
-        while (var3.hasNext()) {
-            Object oPlayer = var3.next();
-            MC_Player p = (MC_Player) oPlayer;
+        for (MC_Player p : ServerWrapper.getInstance().getPlayers()) {
 
             if (!_CmdIgnore.IsIgnoring(p.getName(), cs.getName())) {
                 p.sendMessage(msg);
@@ -2028,7 +1949,7 @@ public class _DiwUtils {
     }
 
     public static boolean IsInsideSpawn(_SerializableLocation loc) {
-        return loc.dimension != 0 ? false : IsInsideSpawn(loc.x, loc.z);
+        return loc.dimension == 0 && IsInsideSpawn(loc.x, loc.z);
     }
 
     public static boolean IsInsideSpawn(int x, int z) {
@@ -2038,11 +1959,7 @@ public class _DiwUtils {
         int spawnX = coords.getX();
         int spawnZ = coords.getZ();
 
-        return x < spawnX - depth
-                ? false
-                : (z < spawnZ - depth
-                ? false
-                : (x > spawnX + depth ? false : z <= spawnZ + depth));
+        return x >= spawnX - depth && (z >= spawnZ - depth && (x <= spawnX + depth && z <= spawnZ + depth));
     }
 
     public static boolean IsInsideSpawn(double x, double z) {
@@ -2142,9 +2059,8 @@ public class _DiwUtils {
                     LogManager.getLogger().debug(
                             String.format(
                                     "Spawn ForceField: %15s @ x=%-4d y=%-4d",
-                                    new Object[]{
-                                            entity.getName(), x,
-                                            z}));
+                                    entity.getName(), x,
+                                    z));
 
                     entity.removeEntity();
                 }

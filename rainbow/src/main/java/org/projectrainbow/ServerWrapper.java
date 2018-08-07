@@ -2,33 +2,40 @@ package org.projectrainbow;
 
 
 import PluginReference.*;
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.tree.ArgumentCommandNode;
+import com.mojang.brigadier.tree.CommandNode;
 import net.minecraft.block.Block;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ServerCommandManager;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.item.crafting.RecipeManager;
+import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.item.crafting.ShapelessRecipe;
+import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import org.projectrainbow.commands._CmdPerm;
 import org.projectrainbow.interfaces.IMixinMinecraftServer;
-import org.projectrainbow.interfaces.IMixinNBTBase;
 import org.projectrainbow.plugins.PluginCommand;
 import org.projectrainbow.util.WrappedMinecraftCommand;
 
-import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 public class ServerWrapper implements MC_Server {
@@ -59,7 +66,7 @@ public class ServerWrapper implements MC_Server {
 
     public void executeCommand(String cmd) {
         try {
-            _DiwUtils.getMinecraftServer().getCommandManager().executeCommand(_DiwUtils.getMinecraftServer(), cmd);
+            _DiwUtils.getMinecraftServer().func_195571_aL().func_197059_a(_DiwUtils.getMinecraftServer().func_195573_aM(), cmd);
         } catch (Exception ignored) {
         }
     }
@@ -70,11 +77,8 @@ public class ServerWrapper implements MC_Server {
 
     public List<MC_Player> getOfflinePlayers() {
         ArrayList<MC_Player> list = new ArrayList<>();
-        Iterator var3 = _JOT_OnlineTimeUtils.Data.playerData.keySet().iterator();
 
-        while (var3.hasNext()) {
-            String name = (String) var3.next();
-
+        for (String name : _JOT_OnlineTimeUtils.Data.playerData.keySet()) {
             list.add(new OfflinePlayerWrapper(name));
         }
 
@@ -155,6 +159,15 @@ public class ServerWrapper implements MC_Server {
         return (MC_World) _DiwUtils.getMinecraftServer().getWorld(idxDimension);
     }
 
+    @Override
+    public MC_ItemStack createItemStack(String id, int count) {
+        Item item = Item.REGISTRY.getObject(new ResourceLocation(id));
+        if (item != null) {
+            return (MC_ItemStack)(Object)new ItemStack(item, count);
+        }
+        return (MC_ItemStack)(Object) ItemStack.EMPTY;
+    }
+
     public int getSpawnProtectionRadius() {
         return _DiwUtils.getMinecraftServer().getSpawnProtectionSize();
     }
@@ -172,11 +185,12 @@ public class ServerWrapper implements MC_Server {
     }
 
     public MC_ItemStack createItemStack(int id, int count, int dmg) {
-        Item item = Item.getItemById(id);
+        Item item = PluginHelper.getItemFromLegacyId(id);
         if (item == null) {
             throw new IllegalArgumentException("An item with id " + id + " does not exist.");
         }
-        return (MC_ItemStack) (Object) new ItemStack(item, count, dmg);
+        ItemStack itemStack = new ItemStack(item, count);
+        return (MC_ItemStack) (Object) itemStack;
     }
 
     public String getPlayerExactName(String plrName) {
@@ -226,20 +240,40 @@ public class ServerWrapper implements MC_Server {
     }
 
     public void registerCommand(MC_Command argCmd) {
-        ((ServerCommandManager) _DiwUtils.getMinecraftServer().getCommandManager()).registerCommand(new PluginCommand(argCmd));
+        CommandDispatcher<CommandSource> dispatcher = _DiwUtils.getMinecraftServer().func_195571_aL().func_197054_a();
+
+        Command<CommandSource> commandExecutor = context -> {
+            Entity entity = context.getSource().func_197022_f();
+            MC_Player sender = entity instanceof MC_Player ? (MC_Player) entity : null;
+            String cmdLine = null;
+            try {
+                cmdLine = context.getArgument("parameters", String.class);
+            } catch (IllegalArgumentException ignored) { }
+            argCmd.handleCommand(sender, cmdLine == null ? new String[0] : cmdLine.split(" ", -1));
+            return 0;
+        };
+
+        Predicate<CommandSource> requirement = source -> {
+            Entity entity = source.func_197022_f();
+            MC_Player sender = entity instanceof MC_Player ? (MC_Player) entity : null;
+            return argCmd.hasPermissionToUse(sender);
+        };
+
+        PluginCommand commandNode = new PluginCommand(argCmd, argCmd.getCommandName(), commandExecutor, requirement, null, null, false);
+        commandNode.addChild(new ArgumentCommandNode<>("parameters", StringArgumentType.greedyString(), commandExecutor, requirement, null, null, false, null));
+        dispatcher.getRoot().addChild(commandNode);
+        List<String> aliases = argCmd.getAliases();
+        if (aliases != null) {
+            for (String alias : aliases) {
+                dispatcher.getRoot().addChild(LiteralArgumentBuilder.<CommandSource>literal(alias).redirect(commandNode).build());
+            }
+        }
     }
 
     @Override
     public Map<String, MC_Command> getCommandMap() {
-        return Maps.transformValues(_DiwUtils.getMinecraftServer().getCommandManager().getCommands(), new Function<ICommand, MC_Command>() {
-            @Nullable
-            @Override
-            public MC_Command apply(@Nullable ICommand iCommand) {
-                return iCommand instanceof PluginCommand ? ((PluginCommand) iCommand).delegate : new WrappedMinecraftCommand(iCommand);
-            }
-        });
+        return _DiwUtils.getMinecraftServer().func_195571_aL().func_197054_a().getRoot().getChildren().stream().map((CommandNode<CommandSource> iCommand) ->  iCommand instanceof PluginCommand ? ((PluginCommand) iCommand).delegate : new WrappedMinecraftCommand(iCommand)).collect(Collectors.toMap(MC_Command::getCommandName, cmd -> cmd));
     }
-
     public List<String> getMatchingOnlinePlayerNames(String arg) {
         ArrayList<String> matches = new ArrayList<>();
 
@@ -253,10 +287,10 @@ public class ServerWrapper implements MC_Server {
         while (var4.hasNext()) {
             Object oPlayer = var4.next();
             EntityPlayer player = (EntityPlayer) oPlayer;
-            String pName = player.getName().toLowerCase();
+            String pName = ((MC_Player)player).getName().toLowerCase();
 
             if (pName.contains(arg)) {
-                matches.add(player.getName());
+                matches.add(((MC_Player)player).getName());
             }
         }
 
@@ -293,6 +327,7 @@ public class ServerWrapper implements MC_Server {
         ((IMixinMinecraftServer) _DiwUtils.getMinecraftServer()).onMotdUpdated();
     }
 
+    @Deprecated
     public void registerPlayerPacketListener(MC_PlayerPacketListener argListener) {
         System.err.println("packet listeners are no longer supported.");
     }
@@ -306,9 +341,9 @@ public class ServerWrapper implements MC_Server {
             ByteArrayInputStream bis = new ByteArrayInputStream(rawData);
             DataInputStream dis = new DataInputStream(bis);
 
-            ((IMixinNBTBase) exc).read1(dis);
+            exc.read(dis, 0, NBTSizeTracker.INFINITE);
             bis.close();
-            ItemStack is = new ItemStack(exc);
+            ItemStack is = ItemStack.func_199557_a(exc);
 
             return (MC_ItemStack) (Object) is;
         } catch (Exception var6) {
@@ -321,6 +356,7 @@ public class ServerWrapper implements MC_Server {
         return commandSenderInfo.getLast();
     }
 
+    @Deprecated
     public void registerServerPacketListener(MC_ServerPacketListener argListener) {
         System.err.println("packet listeners are no longer supported.");
     }
@@ -333,11 +369,13 @@ public class ServerWrapper implements MC_Server {
         _DiwUtils.getMinecraftServer().logInfo(msg);
     }
 
+    @Deprecated
     public boolean unregisterWorld(String worldName) {
         System.err.println("built-in multiworld support has been removed. Use a plugin.");
         return false;
     }
 
+    @Deprecated
     public int registerWorld(String worldName, MC_WorldSettings settings) {
         System.err.println("built-in multiworld support has been removed. Use a plugin.");
         return 0;
@@ -358,13 +396,17 @@ public class ServerWrapper implements MC_Server {
     }
 
     @Override
+    @Deprecated
     public MC_Block getBlock(int id) {
-        return new BlockWrapper(Block.getBlockById(id).getDefaultState());
+        return getBlock(id, 0);
     }
 
     @Override
+    @Deprecated
     public MC_Block getBlock(int id, int subtype) {
-        return new BlockWrapper(Block.getBlockById(id).getStateFromMeta(subtype));
+        Block block = Blocks.AIR;
+        // todo
+        return new BlockWrapper(block.getDefaultState());
     }
 
     private int nextRecipeId = 0;
@@ -418,12 +460,13 @@ public class ServerWrapper implements MC_Server {
                 if (itemStack == null) {
                     throw new IllegalArgumentException("Undefined symbol in pattern: '" + symbol + "'");
                 }
-                list.add(Ingredient.fromStacks(PluginHelper.getItemStack(itemStack)));
+                list.add(Ingredient.func_199804_a(PluginHelper.getItemStack(itemStack).getItem()));
             }
         }
 
-        ShapedRecipes recipe = new ShapedRecipes("rainbow", width, height, list, PluginHelper.getItemStack(result));
-        CraftingManager.register("rainbow:custom-" + Integer.toHexString(nextRecipeId++), recipe); // addRecipe
+        ShapedRecipe recipe = new ShapedRecipe(new ResourceLocation("rainbow", "custom-" + Integer.toHexString(nextRecipeId++)), "rainbow", width, height, list, PluginHelper.getItemStack(result));
+        RecipeManager recipeManager = _DiwUtils.getMinecraftServer().func_199529_aN();
+        recipeManager.func_199509_a(recipe); // addRecipe
     }
 
     @Override
@@ -431,12 +474,13 @@ public class ServerWrapper implements MC_Server {
 
         NonNullList<Ingredient> list = NonNullList.create();
         for (MC_ItemStack ingredient : ingredients) {
-            list.add(Ingredient.fromStacks(PluginHelper.getItemStack(ingredient)));
+            list.add(Ingredient.func_199804_a(PluginHelper.getItemStack(ingredient).getItem()));
         }
 
 
-        ShapelessRecipes recipe = new ShapelessRecipes("rainbow", PluginHelper.getItemStack(result), list);
-        CraftingManager.register("rainbow:custom-" + Integer.toHexString(nextRecipeId++), recipe); // addRecipe
+        ShapelessRecipe recipe = new ShapelessRecipe(new ResourceLocation("rainbow", "custom-" + Integer.toHexString(nextRecipeId++)), "rainbow", PluginHelper.getItemStack(result), list);
+        RecipeManager recipeManager = _DiwUtils.getMinecraftServer().func_199529_aN();
+        recipeManager.func_199509_a(recipe); // addRecipe
     }
 
     /**

@@ -14,13 +14,13 @@ public class CmdItemInfo extends CmdBase {
     @Override
     protected void execute(MC_Player plr, String[] args) {
         MC_ItemStack is = plr.getItemInHand();
-        if ((is == null) || (is.getId() == 0)) {
+        if ((is == null) || (is.getCount() == 0)) {
             plr.sendMessage(ChatColor.RED + "Nothing in your hand");
             return;
         }
         int len = 16;
         plr.sendMessage(ChatColor.DARK_GRAY + "--------------------------");
-        plr.sendMessage(ChatColor.AQUA + RainbowUtils.TextLabel("ID", len) + ChatColor.WHITE + String.format("%d", is.getId()));
+        plr.sendMessage(ChatColor.AQUA + RainbowUtils.TextLabel("ID", len) + ChatColor.WHITE + String.format("%s", is.getOfficialName()));
         plr.sendMessage(ChatColor.AQUA + RainbowUtils.TextLabel("Dmg/Subtype", len) + ChatColor.WHITE + String.format("%d", is.getDamage()));
         plr.sendMessage(ChatColor.AQUA + RainbowUtils.TextLabel("Lore", len) + ChatColor.WHITE + RainbowUtils.GetCommaList(is.getLore()));
         plr.sendMessage(ChatColor.AQUA + RainbowUtils.TextLabel("Max Stack", len) + ChatColor.WHITE + is.getMaxStackSize());

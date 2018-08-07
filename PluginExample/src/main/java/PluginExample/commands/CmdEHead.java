@@ -1,12 +1,7 @@
 package PluginExample.commands;
 
 import PluginExample.CmdBase;
-import PluginReference.ChatColor;
-import PluginReference.MC_Block;
-import PluginReference.MC_Enderman;
-import PluginReference.MC_Entity;
-import PluginReference.MC_Location;
-import PluginReference.MC_Player;
+import PluginReference.*;
 
 public class CmdEHead extends CmdBase {
     public CmdEHead() {
@@ -20,10 +15,10 @@ public class CmdEHead extends CmdBase {
             MC_Enderman enderman = (MC_Enderman) ent;
             MC_Block blk = enderman.getCarriedBlock();
             if (blk == null) continue;
-            if (blk.getId() == 0) continue;
+            //if (blk.getId() == 0) continue;
             MC_Location locAbove = enderman.getLocation().toBlockLocation();
             locAbove.y += 4;
-            plr.getWorld().setBlockAt(locAbove, blk, blk.getSubtype());
+            plr.getWorld().setBlockAt(locAbove, blk);
         }
 
         plr.sendMessage(ChatColor.GREEN + "Carried blocks placed above Enderman heads");

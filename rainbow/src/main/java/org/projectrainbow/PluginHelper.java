@@ -1,113 +1,26 @@
 package org.projectrainbow;
 
-import PluginReference.BlockHelper;
-import PluginReference.MC_AttributeModifier;
-import PluginReference.MC_AttributeType;
-import PluginReference.MC_Block;
-import PluginReference.MC_DamageType;
-import PluginReference.MC_DirectionNESWUD;
-import PluginReference.MC_EnchantmentType;
-import PluginReference.MC_EntityType;
-import PluginReference.MC_GameMode;
-import PluginReference.MC_GameRuleType;
-import PluginReference.MC_Hand;
-import PluginReference.MC_ItemStack;
-import PluginReference.MC_PotionEffect;
-import PluginReference.MC_PotionEffectType;
-import PluginReference.MC_WorldBiomeType;
+import PluginReference.*;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityAreaEffectCloud;
-import net.minecraft.entity.EntityLeashKnot;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.item.EntityArmorStand;
-import net.minecraft.entity.item.EntityBoat;
-import net.minecraft.entity.item.EntityEnderCrystal;
-import net.minecraft.entity.item.EntityEnderEye;
-import net.minecraft.entity.item.EntityEnderPearl;
-import net.minecraft.entity.item.EntityExpBottle;
-import net.minecraft.entity.item.EntityFallingBlock;
-import net.minecraft.entity.item.EntityFireworkRocket;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.entity.item.EntityMinecartChest;
-import net.minecraft.entity.item.EntityMinecartEmpty;
-import net.minecraft.entity.item.EntityMinecartFurnace;
-import net.minecraft.entity.item.EntityMinecartHopper;
-import net.minecraft.entity.item.EntityMinecartMobSpawner;
-import net.minecraft.entity.item.EntityMinecartTNT;
-import net.minecraft.entity.item.EntityPainting;
-import net.minecraft.entity.item.EntityTNTPrimed;
-import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.monster.EntityBlaze;
-import net.minecraft.entity.monster.EntityCaveSpider;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityElderGuardian;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntityEndermite;
-import net.minecraft.entity.monster.EntityEvoker;
-import net.minecraft.entity.monster.EntityGhast;
-import net.minecraft.entity.monster.EntityGiantZombie;
-import net.minecraft.entity.monster.EntityGuardian;
-import net.minecraft.entity.monster.EntityHusk;
-import net.minecraft.entity.monster.EntityIllusionIllager;
-import net.minecraft.entity.monster.EntityIronGolem;
-import net.minecraft.entity.monster.EntityMagmaCube;
-import net.minecraft.entity.monster.EntityPigZombie;
-import net.minecraft.entity.monster.EntityPolarBear;
-import net.minecraft.entity.monster.EntityShulker;
-import net.minecraft.entity.monster.EntitySilverfish;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntitySlime;
-import net.minecraft.entity.monster.EntitySnowman;
-import net.minecraft.entity.monster.EntitySpider;
-import net.minecraft.entity.monster.EntityStray;
-import net.minecraft.entity.monster.EntityVex;
-import net.minecraft.entity.monster.EntityVindicator;
-import net.minecraft.entity.monster.EntityWitch;
-import net.minecraft.entity.monster.EntityWitherSkeleton;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.monster.EntityZombieVillager;
-import net.minecraft.entity.passive.EntityBat;
-import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.entity.passive.EntityDonkey;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityLlama;
-import net.minecraft.entity.passive.EntityMooshroom;
-import net.minecraft.entity.passive.EntityMule;
-import net.minecraft.entity.passive.EntityOcelot;
-import net.minecraft.entity.passive.EntityParrot;
-import net.minecraft.entity.passive.EntityPig;
-import net.minecraft.entity.passive.EntityRabbit;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.passive.EntitySkeletonHorse;
-import net.minecraft.entity.passive.EntitySquid;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.entity.passive.EntityWolf;
-import net.minecraft.entity.passive.EntityZombieHorse;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.projectile.EntityDragonFireball;
-import net.minecraft.entity.projectile.EntityEgg;
-import net.minecraft.entity.projectile.EntityEvokerFangs;
-import net.minecraft.entity.projectile.EntityFishHook;
-import net.minecraft.entity.projectile.EntityLargeFireball;
-import net.minecraft.entity.projectile.EntityPotion;
-import net.minecraft.entity.projectile.EntityShulkerBullet;
-import net.minecraft.entity.projectile.EntitySmallFireball;
-import net.minecraft.entity.projectile.EntitySnowball;
-import net.minecraft.entity.projectile.EntitySpectralArrow;
-import net.minecraft.entity.projectile.EntityTippedArrow;
-import net.minecraft.entity.projectile.EntityWitherSkull;
+import net.minecraft.entity.item.*;
+import net.minecraft.entity.monster.*;
+import net.minecraft.entity.passive.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.*;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Enchantments;
+import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -119,9 +32,7 @@ import net.minecraft.world.GameType;
 import net.minecraft.world.biome.Biome;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class PluginHelper {
     public static BiMap<EnumFacing, MC_DirectionNESWUD> directionMap = HashBiMap.create();
@@ -129,14 +40,14 @@ public class PluginHelper {
     public static BiMap<GameType, MC_GameMode> gamemodeMap = HashBiMap.create();
     public static BiMap<Class<? extends Entity>, MC_EntityType> entityMap = HashBiMap.create();
     public static BiMap<Potion, MC_PotionEffectType> potionMap = HashBiMap.create();
-    public static BiMap<Short, MC_EnchantmentType> enchantmentMap = HashBiMap.create();
+    public static BiMap<Enchantment, MC_EnchantmentType> enchantmentMap = HashBiMap.create();
     public static BiMap<Biome, MC_WorldBiomeType> biomeMap = HashBiMap.create();
     public static BiMap<EnumHand, MC_Hand> handMap = HashBiMap.create();
     public static BiMap<MC_AttributeType, IAttribute> attributeMap = HashBiMap.create();
     public static BiMap<MC_AttributeModifier.Operator, Integer> operatorMap = HashBiMap.create();
 
     public static MC_EntityType getEntityType(Class<? extends Entity> clazz) {
-        if (EntityPlayerMP.class.isAssignableFrom(clazz)) {
+        if (EntityPlayer.class.isAssignableFrom(clazz)) {
             return MC_EntityType.PLAYER;
         } else {
             return MoreObjects.firstNonNull(entityMap.get(clazz), MC_EntityType.UNSPECIFIED);
@@ -232,7 +143,6 @@ public class PluginHelper {
         entityMap.put(EntityDragonFireball.class, MC_EntityType.DRAGON_FIREBALL);
         entityMap.put(EntityArmorStand.class, MC_EntityType.ARMOR_STAND);
         entityMap.put(EntityBoat.class, MC_EntityType.BOAT);
-        entityMap.put(EntityMinecartEmpty.class, MC_EntityType.MINECART);
         entityMap.put(EntityCreeper.class, MC_EntityType.CREEPER);
         entityMap.put(EntitySkeleton.class, MC_EntityType.SKELETON);
         entityMap.put(EntityWitherSkeleton.class, MC_EntityType.WHITHER_SKELETON);
@@ -295,6 +205,17 @@ public class PluginHelper {
         entityMap.put(EntityMinecartMobSpawner.class, MC_EntityType.MINECART_SPAWNER);
         entityMap.put(EntityParrot.class, MC_EntityType.PARROT);
         entityMap.put(EntityIllusionIllager.class, MC_EntityType.ILLUSIONER);
+        entityMap.put(EntityCod.class, MC_EntityType.COD);
+        entityMap.put(EntityDolphin.class, MC_EntityType.DOLPHIN);
+        entityMap.put(EntityDrowned.class, MC_EntityType.DROWNED);
+        entityMap.put(EntityLlamaSpit.class, MC_EntityType.LLAMA_SPIT);
+        entityMap.put(EntityMinecartCommandBlock.class, MC_EntityType.MINECART_COMMAND_BLOCK);
+        entityMap.put(EntityPufferFish.class, MC_EntityType.PUFFER_FISH);
+        entityMap.put(EntitySalmon.class, MC_EntityType.SALMON);
+        entityMap.put(EntityTropicalFish.class, MC_EntityType.TROPICAL_FISH);
+        entityMap.put(EntityTurtle.class, MC_EntityType.TURTLE);
+        entityMap.put(EntityPhantom.class, MC_EntityType.PHANTOM);
+        entityMap.put(EntityTrident.class, MC_EntityType.TRIDENT);
 
         potionMap.put(MobEffects.SPEED, MC_PotionEffectType.SPEED);
         potionMap.put(MobEffects.SLOWNESS, MC_PotionEffectType.SLOWNESS);
@@ -324,36 +245,36 @@ public class PluginHelper {
         potionMap.put(MobEffects.LUCK, MC_PotionEffectType.LUCK);
         potionMap.put(MobEffects.UNLUCK, MC_PotionEffectType.UNLUCK);
 
-        enchantmentMap.put((short) 0, MC_EnchantmentType.PROTECTION);
-        enchantmentMap.put((short) 1, MC_EnchantmentType.FIRE_PROTECTION);
-        enchantmentMap.put((short) 2, MC_EnchantmentType.FEATHER_FALLING);
-        enchantmentMap.put((short) 3, MC_EnchantmentType.BLAST_PROTECTION);
-        enchantmentMap.put((short) 4, MC_EnchantmentType.PROJECTILE_PROTECTION);
-        enchantmentMap.put((short) 5, MC_EnchantmentType.RESPIRATION);
-        enchantmentMap.put((short) 6, MC_EnchantmentType.AQUA_AFFINITY);
-        enchantmentMap.put((short) 7, MC_EnchantmentType.THORNS);
-        enchantmentMap.put((short) 8, MC_EnchantmentType.DEPTH_STRIDER);
-        enchantmentMap.put((short) 9, MC_EnchantmentType.FROST_WALKER);
-        enchantmentMap.put((short) 10, MC_EnchantmentType.CURSE_OF_BINDING);
-        enchantmentMap.put((short) 16, MC_EnchantmentType.SHARPNESS);
-        enchantmentMap.put((short) 17, MC_EnchantmentType.SMITE);
-        enchantmentMap.put((short) 18, MC_EnchantmentType.BANE_OF_ARTHROPODS);
-        enchantmentMap.put((short) 19, MC_EnchantmentType.KNOCKBACK);
-        enchantmentMap.put((short) 20, MC_EnchantmentType.FIRE_ASPECT);
-        enchantmentMap.put((short) 21, MC_EnchantmentType.LOOTING);
-        enchantmentMap.put((short) 22, MC_EnchantmentType.SWEEPING);
-        enchantmentMap.put((short) 32, MC_EnchantmentType.EFFICIENCY);
-        enchantmentMap.put((short) 33, MC_EnchantmentType.SILK_TOUCH);
-        enchantmentMap.put((short) 34, MC_EnchantmentType.UNBREAKING);
-        enchantmentMap.put((short) 35, MC_EnchantmentType.FORTUNE);
-        enchantmentMap.put((short) 48, MC_EnchantmentType.POWER);
-        enchantmentMap.put((short) 49, MC_EnchantmentType.PUNCH);
-        enchantmentMap.put((short) 50, MC_EnchantmentType.FLAME);
-        enchantmentMap.put((short) 51, MC_EnchantmentType.INFINITY);
-        enchantmentMap.put((short) 61, MC_EnchantmentType.LUCK_OF_THE_SEA);
-        enchantmentMap.put((short) 62, MC_EnchantmentType.LURE);
-        enchantmentMap.put((short) 70, MC_EnchantmentType.MENDING);
-        enchantmentMap.put((short) 71, MC_EnchantmentType.CURSE_OF_VANISHING);
+        enchantmentMap.put(Enchantments.PROTECTION, MC_EnchantmentType.PROTECTION);
+        enchantmentMap.put(Enchantments.FIRE_PROTECTION, MC_EnchantmentType.FIRE_PROTECTION);
+        enchantmentMap.put(Enchantments.FEATHER_FALLING, MC_EnchantmentType.FEATHER_FALLING);
+        enchantmentMap.put(Enchantments.BLAST_PROTECTION, MC_EnchantmentType.BLAST_PROTECTION);
+        enchantmentMap.put(Enchantments.PROJECTILE_PROTECTION, MC_EnchantmentType.PROJECTILE_PROTECTION);
+        enchantmentMap.put(Enchantments.RESPIRATION, MC_EnchantmentType.RESPIRATION);
+        enchantmentMap.put(Enchantments.AQUA_AFFINITY, MC_EnchantmentType.AQUA_AFFINITY);
+        enchantmentMap.put(Enchantments.THORNS, MC_EnchantmentType.THORNS);
+        enchantmentMap.put(Enchantments.DEPTH_STRIDER, MC_EnchantmentType.DEPTH_STRIDER);
+        enchantmentMap.put(Enchantments.FROST_WALKER, MC_EnchantmentType.FROST_WALKER);
+        enchantmentMap.put(Enchantments.BINDING_CURSE, MC_EnchantmentType.CURSE_OF_BINDING);
+        enchantmentMap.put(Enchantments.SHARPNESS, MC_EnchantmentType.SHARPNESS);
+        enchantmentMap.put(Enchantments.SMITE, MC_EnchantmentType.SMITE);
+        enchantmentMap.put(Enchantments.BANE_OF_ARTHROPODS, MC_EnchantmentType.BANE_OF_ARTHROPODS);
+        enchantmentMap.put(Enchantments.KNOCKBACK, MC_EnchantmentType.KNOCKBACK);
+        enchantmentMap.put(Enchantments.FIRE_ASPECT, MC_EnchantmentType.FIRE_ASPECT);
+        enchantmentMap.put(Enchantments.LOOTING, MC_EnchantmentType.LOOTING);
+        enchantmentMap.put(Enchantments.SWEEPING, MC_EnchantmentType.SWEEPING);
+        enchantmentMap.put(Enchantments.EFFICIENCY, MC_EnchantmentType.EFFICIENCY);
+        enchantmentMap.put(Enchantments.SILK_TOUCH, MC_EnchantmentType.SILK_TOUCH);
+        enchantmentMap.put(Enchantments.UNBREAKING, MC_EnchantmentType.UNBREAKING);
+        enchantmentMap.put(Enchantments.FORTUNE, MC_EnchantmentType.FORTUNE);
+        enchantmentMap.put(Enchantments.POWER, MC_EnchantmentType.POWER);
+        enchantmentMap.put(Enchantments.PUNCH, MC_EnchantmentType.PUNCH);
+        enchantmentMap.put(Enchantments.FLAME, MC_EnchantmentType.FLAME);
+        enchantmentMap.put(Enchantments.INFINITY, MC_EnchantmentType.INFINITY);
+        enchantmentMap.put(Enchantments.LUCK_OF_THE_SEA, MC_EnchantmentType.LUCK_OF_THE_SEA);
+        enchantmentMap.put(Enchantments.LURE, MC_EnchantmentType.LURE);
+        enchantmentMap.put(Enchantments.MENDING, MC_EnchantmentType.MENDING);
+        enchantmentMap.put(Enchantments.VANISHING_CURSE, MC_EnchantmentType.CURSE_OF_VANISHING);
 
         biomeMap.put(Biome.getBiome(0), MC_WorldBiomeType.OCEAN);
         biomeMap.put(Biome.getBiome(1), MC_WorldBiomeType.PLAINS);
@@ -395,6 +316,17 @@ public class PluginHelper {
         biomeMap.put(Biome.getBiome(37), MC_WorldBiomeType.MESA);
         biomeMap.put(Biome.getBiome(38), MC_WorldBiomeType.MESA_PLATEAU_F);
         biomeMap.put(Biome.getBiome(39), MC_WorldBiomeType.MESA_PLATEAU);
+        biomeMap.put(Biome.getBiome(40), MC_WorldBiomeType.END_SMALL_ISLANDS);
+        biomeMap.put(Biome.getBiome(41), MC_WorldBiomeType.END_MIDLANDS);
+        biomeMap.put(Biome.getBiome(42), MC_WorldBiomeType.END_HIGHLANDS);
+        biomeMap.put(Biome.getBiome(43), MC_WorldBiomeType.END_BARRENS);
+        biomeMap.put(Biome.getBiome(44), MC_WorldBiomeType.WARM_OCEAN);
+        biomeMap.put(Biome.getBiome(45), MC_WorldBiomeType.LUKEWARM_OCEAN);
+        biomeMap.put(Biome.getBiome(46), MC_WorldBiomeType.COLD_OCEAN);
+        biomeMap.put(Biome.getBiome(47), MC_WorldBiomeType.DEEP_WARM_OCEAN);
+        biomeMap.put(Biome.getBiome(48), MC_WorldBiomeType.DEEP_LUKEWARM_OCEAN);
+        biomeMap.put(Biome.getBiome(49), MC_WorldBiomeType.DEEP_COLD_OCEAN);
+        biomeMap.put(Biome.getBiome(50), MC_WorldBiomeType.DEEP_FROZEN_OCEAN);
         biomeMap.put(Biome.getBiome(127), MC_WorldBiomeType.VOID);
         biomeMap.put(Biome.getBiome(129), MC_WorldBiomeType.SUNFLOWER_PLAINS);
         biomeMap.put(Biome.getBiome(130), MC_WorldBiomeType.DESERT_M);
@@ -450,76 +382,8 @@ public class PluginHelper {
 
             if (bo != null) {
                 return new BlockWrapper(bo.getDefaultState());
-            } else {
-                Iterator blkID = BlockHelper.mapItemNames.entrySet().iterator();
-
-                while (blkID.hasNext()) {
-                    Map.Entry idxColon = (Map.Entry) blkID.next();
-                    String subType = (String) idxColon.getValue();
-
-                    if (blockName.equalsIgnoreCase(subType)) {
-                        blockName = (String) idxColon.getKey();
-                        break;
-                    }
-
-                    while (subType.contains(" ")) {
-                        subType = subType.replace(" ", "_");
-                    }
-
-                    if (subType.equalsIgnoreCase(blockName)
-                            || subType.equalsIgnoreCase(blockName + "_wool")) {
-                        blockName = (String) idxColon.getKey();
-                        break;
-                    }
-                }
-
-                int idxColon1 = blockName.indexOf(58);
-                boolean blkID1 = true;
-                int subType1 = 0;
-                String realBlockName;
-                int blkID2;
-
-                if (idxColon1 < 0) {
-                    try {
-                        blkID2 = Integer.parseInt(blockName);
-                    } catch (Exception var8) {
-                        blkID2 = -1;
-                    }
-                } else {
-                    try {
-                        realBlockName = blockName.substring(0, idxColon1);
-                        String bw = blockName.substring(idxColon1 + 1);
-
-                        blkID2 = Integer.parseInt(realBlockName);
-                        subType1 = Integer.parseInt(bw);
-                    } catch (Exception var7) {
-                        blkID2 = -1;
-                        subType1 = -1;
-                    }
-                }
-
-                if (blkID2 < 0) {
-                    return null;
-                } else if (subType1 < 0) {
-                    return null;
-                } else {
-                    realBlockName = BlockHelper.mapBlockNames.get(
-                            blkID2);
-                    if (realBlockName != null) {
-                        bo = Block.getBlockFromName(realBlockName.toLowerCase());
-                        if (bo != null) {
-                            BlockWrapper bw1 = new BlockWrapper(bo.getDefaultState());
-
-                            if (subType1 != 0) {
-                                bw1.setSubtype(subType1);
-                            }
-
-                            return bw1;
-                        }
-                    }
-                    return null;
-                }
             }
+            return null;
         }
     }
 
@@ -646,5 +510,859 @@ public class PluginHelper {
         else if (cause == MC_DamageType.EXPLOSION_PLAYER) return DamageSource.causeExplosionDamage((Explosion) null);
         else return DamageSource.GENERIC;
 
+    }
+    
+    public static Item getItemFromLegacyId(int id) {
+        switch (id) {
+            case 0:
+                return Items.AIR;
+            case 1:
+                return Item.BLOCK_TO_ITEM.get(Blocks.STONE);
+            case 2:
+                return Item.BLOCK_TO_ITEM.get(Blocks.GRASS);
+            case 3:
+                return Item.BLOCK_TO_ITEM.get(Blocks.DIRT);
+            case 4:
+                return Item.BLOCK_TO_ITEM.get(Blocks.COBBLESTONE);
+            case 5:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196662_n); // oak planks
+            case 6:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196674_t); // oak sapling
+            case 7:
+                return Item.BLOCK_TO_ITEM.get(Blocks.BEDROCK);
+            case 8:
+                return Item.BLOCK_TO_ITEM.get(Blocks.WATER);
+            case 9:
+                return Item.BLOCK_TO_ITEM.get(Blocks.WATER);
+            case 10:
+                return Item.BLOCK_TO_ITEM.get(Blocks.LAVA);
+            case 11:
+                return Item.BLOCK_TO_ITEM.get(Blocks.LAVA);
+            case 12:
+                return Item.BLOCK_TO_ITEM.get(Blocks.SAND);
+            case 13:
+                return Item.BLOCK_TO_ITEM.get(Blocks.GRAVEL);
+            case 14:
+                return Item.BLOCK_TO_ITEM.get(Blocks.GOLD_ORE);
+            case 15:
+                return Item.BLOCK_TO_ITEM.get(Blocks.IRON_ORE);
+            case 16:
+                return Item.BLOCK_TO_ITEM.get(Blocks.COAL_ORE);
+            case 17:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196617_K); // oak log
+            case 18:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196642_W); // oak leaves
+            case 19:
+                return Item.BLOCK_TO_ITEM.get(Blocks.SPONGE);
+            case 20:
+                return Item.BLOCK_TO_ITEM.get(Blocks.GLASS);
+            case 21:
+                return Item.BLOCK_TO_ITEM.get(Blocks.LAPIS_ORE);
+            case 22:
+                return Item.BLOCK_TO_ITEM.get(Blocks.LAPIS_BLOCK);
+            case 23:
+                return Item.BLOCK_TO_ITEM.get(Blocks.DISPENSER);
+            case 24:
+                return Item.BLOCK_TO_ITEM.get(Blocks.SANDSTONE);
+            case 25:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196586_al); // note block
+            //case 26: return Item.BLOCK_TO_ITEM.get(Blocks.BED);
+            case 27:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196552_aC); // powered rail
+            case 28:
+                return Item.BLOCK_TO_ITEM.get(Blocks.DETECTOR_RAIL);
+            case 29:
+                return Item.BLOCK_TO_ITEM.get(Blocks.STICKY_PISTON);
+            case 30:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196553_aF); // web
+            case 31:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196804_gh); // tall grass
+            case 32:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196555_aI); // dead bush
+            case 33:
+                return Item.BLOCK_TO_ITEM.get(Blocks.PISTON);
+            case 34:
+                return Item.BLOCK_TO_ITEM.get(Blocks.PISTON_HEAD);
+            case 35:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196556_aL); // white wool
+            //case 36: return Item.BLOCK_TO_ITEM.get(Blocks.PISTON_EXTENSION);
+            case 37:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196605_bc); // dandelion / yellow flower
+            case 38:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196606_bd); // poppy / red flower
+            case 39:
+                return Item.BLOCK_TO_ITEM.get(Blocks.BROWN_MUSHROOM);
+            case 40:
+                return Item.BLOCK_TO_ITEM.get(Blocks.RED_MUSHROOM);
+            case 41:
+                return Item.BLOCK_TO_ITEM.get(Blocks.GOLD_BLOCK);
+            case 42:
+                return Item.BLOCK_TO_ITEM.get(Blocks.IRON_BLOCK);
+            //case 43: return Item.BLOCK_TO_ITEM.get(Blocks.DOUBLE_STONE_SLAB);
+            case 44:
+                return Item.BLOCK_TO_ITEM.get(Blocks.STONE_SLAB);
+            case 45:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196584_bK); // bricks
+            case 46:
+                return Item.BLOCK_TO_ITEM.get(Blocks.TNT);
+            case 47:
+                return Item.BLOCK_TO_ITEM.get(Blocks.BOOKSHELF);
+            case 48:
+                return Item.BLOCK_TO_ITEM.get(Blocks.MOSSY_COBBLESTONE);
+            case 49:
+                return Item.BLOCK_TO_ITEM.get(Blocks.OBSIDIAN);
+            case 50:
+                return Item.BLOCK_TO_ITEM.get(Blocks.TORCH);
+            case 51:
+                return Item.BLOCK_TO_ITEM.get(Blocks.FIRE);
+            case 52:
+                return Item.BLOCK_TO_ITEM.get(Blocks.MOB_SPAWNER);
+            case 53:
+                return Item.BLOCK_TO_ITEM.get(Blocks.OAK_STAIRS);
+            case 54:
+                return Item.BLOCK_TO_ITEM.get(Blocks.CHEST);
+            case 55:
+                return Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_WIRE);
+            case 56:
+                return Item.BLOCK_TO_ITEM.get(Blocks.DIAMOND_ORE);
+            case 57:
+                return Item.BLOCK_TO_ITEM.get(Blocks.DIAMOND_BLOCK);
+            case 58:
+                return Item.BLOCK_TO_ITEM.get(Blocks.CRAFTING_TABLE);
+            //case 59: return Item.BLOCK_TO_ITEM.get(Blocks.WHEAT);
+            case 60:
+                return Item.BLOCK_TO_ITEM.get(Blocks.FARMLAND);
+            case 61: // fall through
+            case 62:
+                return Item.BLOCK_TO_ITEM.get(Blocks.FURNACE);
+            case 63:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196649_cc); // sign
+            case 64:
+                return Item.BLOCK_TO_ITEM.get(Blocks.OAK_DOOR);
+            case 65:
+                return Item.BLOCK_TO_ITEM.get(Blocks.LADDER);
+            case 66:
+                return Item.BLOCK_TO_ITEM.get(Blocks.RAIL);
+            case 67:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196659_cl); // cobblestone stairs
+            case 68:
+                return Item.BLOCK_TO_ITEM.get(Blocks.WALL_SIGN);
+            case 69:
+                return Item.BLOCK_TO_ITEM.get(Blocks.LEVER);
+            case 70:
+                return Item.BLOCK_TO_ITEM.get(Blocks.STONE_PRESSURE_PLATE);
+            //case 71: return Item.BLOCK_TO_ITEM.get(Blocks.IRON_DOOR);
+            case 72:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196663_cq); // oak pressure plate
+            case 73: // fall through
+            case 74:
+                return Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_ORE);
+            case 75:
+            case 76:
+                return Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_TORCH);
+            case 77:
+                return Item.BLOCK_TO_ITEM.get(Blocks.STONE_BUTTON);
+            case 78:
+                return Item.BLOCK_TO_ITEM.get(Blocks.SNOW);
+            case 79:
+                return Item.BLOCK_TO_ITEM.get(Blocks.ICE);
+            case 80:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196604_cC); // snow block
+            case 81:
+                return Item.BLOCK_TO_ITEM.get(Blocks.CACTUS);
+            case 82:
+                return Item.BLOCK_TO_ITEM.get(Blocks.CLAY);
+            case 84:
+                return Item.BLOCK_TO_ITEM.get(Blocks.JUKEBOX);
+            case 85:
+                return Item.BLOCK_TO_ITEM.get(Blocks.OAK_FENCE);
+            case 86:
+                return Item.BLOCK_TO_ITEM.get(Blocks.PUMPKIN);
+            case 87:
+                return Item.BLOCK_TO_ITEM.get(Blocks.NETHERRACK);
+            case 88:
+                return Item.BLOCK_TO_ITEM.get(Blocks.SOUL_SAND);
+            case 89:
+                return Item.BLOCK_TO_ITEM.get(Blocks.GLOWSTONE);
+            case 90:
+                return Item.BLOCK_TO_ITEM.get(Blocks.PORTAL);
+            case 91:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196628_cT); // lit pumpkin
+            //case 92: return Item.BLOCK_TO_ITEM.get(Blocks.CAKE);
+            case 93:
+            case 94:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196633_cV); // repeater
+            case 95:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196807_gj); // white stained glass
+            case 96:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196636_cW); // oak trapdoor
+            case 97:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196686_dc); // infested stone
+            case 98:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196696_di); // stone bricks
+            case 99:
+                return Item.BLOCK_TO_ITEM.get(Blocks.BROWN_MUSHROOM_BLOCK);
+            case 100:
+                return Item.BLOCK_TO_ITEM.get(Blocks.RED_MUSHROOM_BLOCK);
+            case 101:
+                return Item.BLOCK_TO_ITEM.get(Blocks.IRON_BARS);
+            case 102:
+                return Item.BLOCK_TO_ITEM.get(Blocks.GLASS_PANE);
+            case 103:
+                return Item.BLOCK_TO_ITEM.get(Blocks.MELON_BLOCK);
+            case 104:
+                return Item.BLOCK_TO_ITEM.get(Blocks.PUMPKIN_STEM);
+            case 105:
+                return Item.BLOCK_TO_ITEM.get(Blocks.MELON_STEM);
+            case 106:
+                return Item.BLOCK_TO_ITEM.get(Blocks.VINE);
+            case 107:
+                return Item.BLOCK_TO_ITEM.get(Blocks.OAK_FENCE_GATE);
+            case 108:
+                return Item.BLOCK_TO_ITEM.get(Blocks.BRICK_STAIRS);
+            case 109:
+                return Item.BLOCK_TO_ITEM.get(Blocks.STONE_BRICK_STAIRS);
+            case 110:
+                return Item.BLOCK_TO_ITEM.get(Blocks.MYCELIUM);
+            case 111:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196651_dG); // lily pad
+            case 112:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196653_dH); // nether bricks
+            case 113:
+                return Item.BLOCK_TO_ITEM.get(Blocks.NETHER_BRICK_FENCE);
+            case 114:
+                return Item.BLOCK_TO_ITEM.get(Blocks.NETHER_BRICK_STAIRS);
+            //case 115: return Item.BLOCK_TO_ITEM.get(Blocks.NETHER_WART);
+            case 116:
+                return Item.BLOCK_TO_ITEM.get(Blocks.ENCHANTING_TABLE);
+            //case 117: return Item.BLOCK_TO_ITEM.get(Blocks.BREWING_STAND);
+            //case 118: return Item.BLOCK_TO_ITEM.get(Blocks.CAULDRON);
+            case 119:
+                return Item.BLOCK_TO_ITEM.get(Blocks.END_PORTAL);
+            case 120:
+                return Item.BLOCK_TO_ITEM.get(Blocks.END_PORTAL_FRAME);
+            case 121:
+                return Item.BLOCK_TO_ITEM.get(Blocks.END_STONE);
+            case 122:
+                return Item.BLOCK_TO_ITEM.get(Blocks.DRAGON_EGG);
+            case 123:
+            case 124:
+                return Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_LAMP);
+            //case 125: return Item.BLOCK_TO_ITEM.get(Blocks.DOUBLE_WOODEN_SLAB);
+            case 126:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196622_bq); // oak slab
+            case 127:
+                return Item.BLOCK_TO_ITEM.get(Blocks.COCOA);
+            case 128:
+                return Item.BLOCK_TO_ITEM.get(Blocks.SANDSTONE_STAIRS);
+            case 129:
+                return Item.BLOCK_TO_ITEM.get(Blocks.EMERALD_ORE);
+            case 130:
+                return Item.BLOCK_TO_ITEM.get(Blocks.ENDER_CHEST);
+            case 131:
+                return Item.BLOCK_TO_ITEM.get(Blocks.TRIPWIRE_HOOK);
+            case 132:
+                return Item.BLOCK_TO_ITEM.get(Blocks.TRIPWIRE);
+            case 133:
+                return Item.BLOCK_TO_ITEM.get(Blocks.EMERALD_BLOCK);
+            case 134:
+                return Item.BLOCK_TO_ITEM.get(Blocks.SPRUCE_STAIRS);
+            case 135:
+                return Item.BLOCK_TO_ITEM.get(Blocks.BIRCH_STAIRS);
+            case 136:
+                return Item.BLOCK_TO_ITEM.get(Blocks.JUNGLE_STAIRS);
+            case 137:
+                return Item.BLOCK_TO_ITEM.get(Blocks.COMMAND_BLOCK);
+            case 138:
+                return Item.BLOCK_TO_ITEM.get(Blocks.BEACON);
+            case 139:
+                return Item.BLOCK_TO_ITEM.get(Blocks.COBBLESTONE_WALL);
+            //case 140: return Item.BLOCK_TO_ITEM.get(Blocks.FLOWER_POT);
+            case 141:
+                return Item.BLOCK_TO_ITEM.get(Blocks.CARROTS);
+            case 142:
+                return Item.BLOCK_TO_ITEM.get(Blocks.POTATOES);
+            case 143:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196689_eF); // oak button
+            case 144:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196703_eM); // skeleton skull
+            case 145:
+                return Item.BLOCK_TO_ITEM.get(Blocks.ANVIL);
+            case 146:
+                return Item.BLOCK_TO_ITEM.get(Blocks.TRAPPED_CHEST);
+            case 147:
+                return Item.BLOCK_TO_ITEM.get(Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE);
+            case 148:
+                return Item.BLOCK_TO_ITEM.get(Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE);
+            case 149:
+            case 150:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196762_fd);
+            case 151:
+                return Item.BLOCK_TO_ITEM.get(Blocks.DAYLIGHT_DETECTOR);
+            case 152:
+                return Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_BLOCK);
+            case 153:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196766_fg); // nether quartz ore
+            case 154:
+                return Item.BLOCK_TO_ITEM.get(Blocks.HOPPER);
+            case 155:
+                return Item.BLOCK_TO_ITEM.get(Blocks.QUARTZ_BLOCK);
+            case 156:
+                return Item.BLOCK_TO_ITEM.get(Blocks.QUARTZ_STAIRS);
+            case 157:
+                return Item.BLOCK_TO_ITEM.get(Blocks.ACTIVATOR_RAIL);
+            case 158:
+                return Item.BLOCK_TO_ITEM.get(Blocks.DROPPER);
+            case 159:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196777_fo); // white terracotta
+            case 160:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196825_gz); // white stained glass pane
+            case 161:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196574_ab); // dark oak leaves
+            case 162:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196623_P); // dark oak log
+            case 163:
+                return Item.BLOCK_TO_ITEM.get(Blocks.ACACIA_STAIRS);
+            case 164:
+                return Item.BLOCK_TO_ITEM.get(Blocks.DARK_OAK_STAIRS);
+            case 165:
+                return Item.BLOCK_TO_ITEM.get(Blocks.SLIME_BLOCK);
+            case 166:
+                return Item.BLOCK_TO_ITEM.get(Blocks.BARRIER);
+            case 167:
+                return Item.BLOCK_TO_ITEM.get(Blocks.IRON_TRAPDOOR);
+            case 168:
+                return Item.BLOCK_TO_ITEM.get(Blocks.PRISMARINE);
+            case 169:
+                return Item.BLOCK_TO_ITEM.get(Blocks.SEA_LANTERN);
+            case 170:
+                return Item.BLOCK_TO_ITEM.get(Blocks.HAY_BLOCK);
+            case 171:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196724_fH); // white carpet
+            case 172:
+                return Item.BLOCK_TO_ITEM.get(Blocks.HARDENED_CLAY);
+            case 173:
+                return Item.BLOCK_TO_ITEM.get(Blocks.COAL_BLOCK);
+            case 174:
+                return Item.BLOCK_TO_ITEM.get(Blocks.PACKED_ICE);
+            case 176:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196784_gT); // white banner
+            case 177:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196843_hj); // white wall banner
+            case 178:
+                return Item.BLOCK_TO_ITEM.get(Blocks.DAYLIGHT_DETECTOR);
+            case 179:
+                return Item.BLOCK_TO_ITEM.get(Blocks.RED_SANDSTONE);
+            case 180:
+                return Item.BLOCK_TO_ITEM.get(Blocks.RED_SANDSTONE_STAIRS);
+            case 183:
+                return Item.BLOCK_TO_ITEM.get(Blocks.SPRUCE_FENCE_GATE);
+            case 184:
+                return Item.BLOCK_TO_ITEM.get(Blocks.BIRCH_FENCE_GATE);
+            case 185:
+                return Item.BLOCK_TO_ITEM.get(Blocks.JUNGLE_FENCE_GATE);
+            case 186:
+                return Item.BLOCK_TO_ITEM.get(Blocks.DARK_OAK_FENCE_GATE);
+            case 187:
+                return Item.BLOCK_TO_ITEM.get(Blocks.ACACIA_FENCE_GATE);
+            case 188:
+                return Item.BLOCK_TO_ITEM.get(Blocks.SPRUCE_FENCE);
+            case 189:
+                return Item.BLOCK_TO_ITEM.get(Blocks.BIRCH_FENCE);
+            case 190:
+                return Item.BLOCK_TO_ITEM.get(Blocks.JUNGLE_FENCE);
+            case 191:
+                return Item.BLOCK_TO_ITEM.get(Blocks.DARK_OAK_FENCE);
+            case 192:
+                return Item.BLOCK_TO_ITEM.get(Blocks.ACACIA_FENCE);
+            //case 193: return Item.BLOCK_TO_ITEM.get(Blocks.SPRUCE_DOOR);
+            //case 194: return Item.BLOCK_TO_ITEM.get(Blocks.BIRCH_DOOR);
+            //case 195: return Item.BLOCK_TO_ITEM.get(Blocks.JUNGLE_DOOR);
+            //case 196: return Item.BLOCK_TO_ITEM.get(Blocks.ACACIA_DOOR);
+            //case 197: return Item.BLOCK_TO_ITEM.get(Blocks.DARK_OAK_DOOR);
+            case 198:
+                return Item.BLOCK_TO_ITEM.get(Blocks.END_ROD);
+            case 199:
+                return Item.BLOCK_TO_ITEM.get(Blocks.CHORUS_PLANT);
+            case 200:
+                return Item.BLOCK_TO_ITEM.get(Blocks.CHORUS_FLOWER);
+            case 201:
+                return Item.BLOCK_TO_ITEM.get(Blocks.PURPUR_BLOCK);
+            case 202:
+                return Item.BLOCK_TO_ITEM.get(Blocks.PURPUR_PILLAR);
+            case 203:
+                return Item.BLOCK_TO_ITEM.get(Blocks.PURPUR_STAIRS);
+            case 205:
+                return Item.BLOCK_TO_ITEM.get(Blocks.PURPUR_SLAB);
+            case 206:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196806_hJ); // end stone bricks
+            //case 207: return Item.BLOCK_TO_ITEM.get(Blocks.BEETROOTS);
+            case 208:
+                return Item.BLOCK_TO_ITEM.get(Blocks.GRASS_PATH);
+            case 209:
+                return Item.BLOCK_TO_ITEM.get(Blocks.END_GATEWAY);
+            case 210:
+                return Item.BLOCK_TO_ITEM.get(Blocks.REPEATING_COMMAND_BLOCK);
+            case 211:
+                return Item.BLOCK_TO_ITEM.get(Blocks.CHAIN_COMMAND_BLOCK);
+            case 212:
+                return Item.BLOCK_TO_ITEM.get(Blocks.FROSTED_ICE);
+            case 213:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196814_hQ); // magma block
+            case 214:
+                return Item.BLOCK_TO_ITEM.get(Blocks.NETHER_WART_BLOCK);
+            case 215:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196817_hS); // red nether brick
+            case 216:
+                return Item.BLOCK_TO_ITEM.get(Blocks.BONE_BLOCK);
+            case 217:
+                return Item.BLOCK_TO_ITEM.get(Blocks.STRUCTURE_VOID);
+            case 218:
+                return Item.BLOCK_TO_ITEM.get(Blocks.OBSERVER);
+            case 219:
+                return Item.BLOCK_TO_ITEM.get(Blocks.WHITE_SHULKER_BOX);
+            case 220:
+                return Item.BLOCK_TO_ITEM.get(Blocks.ORANGE_SHULKER_BOX);
+            case 221:
+                return Item.BLOCK_TO_ITEM.get(Blocks.MAGENTA_SHULKER_BOX);
+            case 222:
+                return Item.BLOCK_TO_ITEM.get(Blocks.LIGHT_BLUE_SHULKER_BOX);
+            case 223:
+                return Item.BLOCK_TO_ITEM.get(Blocks.YELLOW_SHULKER_BOX);
+            case 224:
+                return Item.BLOCK_TO_ITEM.get(Blocks.LIME_SHULKER_BOX);
+            case 225:
+                return Item.BLOCK_TO_ITEM.get(Blocks.PINK_SHULKER_BOX);
+            case 226:
+                return Item.BLOCK_TO_ITEM.get(Blocks.GRAY_SHULKER_BOX);
+            case 227:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196875_ie); // light gray shulker box
+            case 228:
+                return Item.BLOCK_TO_ITEM.get(Blocks.CYAN_SHULKER_BOX);
+            case 229:
+                return Item.BLOCK_TO_ITEM.get(Blocks.PURPLE_SHULKER_BOX);
+            case 230:
+                return Item.BLOCK_TO_ITEM.get(Blocks.BLUE_SHULKER_BOX);
+            case 231:
+                return Item.BLOCK_TO_ITEM.get(Blocks.BROWN_SHULKER_BOX);
+            case 232:
+                return Item.BLOCK_TO_ITEM.get(Blocks.GREEN_SHULKER_BOX);
+            case 233:
+                return Item.BLOCK_TO_ITEM.get(Blocks.RED_SHULKER_BOX);
+            case 234:
+                return Item.BLOCK_TO_ITEM.get(Blocks.BLACK_SHULKER_BOX);
+            case 255:
+                return Item.BLOCK_TO_ITEM.get(Blocks.STRUCTURE_BLOCK);
+            case 256:
+                return Items.IRON_SHOVEL;
+            case 257:
+                return Items.IRON_PICKAXE;
+            case 258:
+                return Items.IRON_AXE;
+            case 259:
+                return Items.FLINT_AND_STEEL;
+            case 260:
+                return Items.APPLE;
+            case 261:
+                return Items.BOW;
+            case 262:
+                return Items.ARROW;
+            case 263:
+                return Items.COAL;
+            case 264:
+                return Items.DIAMOND;
+            case 265:
+                return Items.IRON_INGOT;
+            case 266:
+                return Items.GOLD_INGOT;
+            case 267:
+                return Items.IRON_SWORD;
+            case 268:
+                return Items.WOODEN_SWORD;
+            case 269:
+                return Items.WOODEN_SHOVEL;
+            case 270:
+                return Items.WOODEN_PICKAXE;
+            case 271:
+                return Items.WOODEN_AXE;
+            case 272:
+                return Items.STONE_SWORD;
+            case 273:
+                return Items.STONE_SHOVEL;
+            case 274:
+                return Items.STONE_PICKAXE;
+            case 275:
+                return Items.STONE_AXE;
+            case 276:
+                return Items.DIAMOND_SWORD;
+            case 277:
+                return Items.DIAMOND_SHOVEL;
+            case 278:
+                return Items.DIAMOND_PICKAXE;
+            case 279:
+                return Items.DIAMOND_AXE;
+            case 280:
+                return Items.STICK;
+            case 281:
+                return Items.BOWL;
+            case 282:
+                return Items.MUSHROOM_STEW;
+            case 283:
+                return Items.GOLDEN_SWORD;
+            case 284:
+                return Items.GOLDEN_SHOVEL;
+            case 285:
+                return Items.GOLDEN_PICKAXE;
+            case 286:
+                return Items.GOLDEN_AXE;
+            case 287:
+                return Items.STRING;
+            case 288:
+                return Items.FEATHER;
+            case 289:
+                return Items.GUNPOWDER;
+            case 290:
+                return Items.WOODEN_HOE;
+            case 291:
+                return Items.STONE_HOE;
+            case 292:
+                return Items.IRON_HOE;
+            case 293:
+                return Items.DIAMOND_HOE;
+            case 294:
+                return Items.GOLDEN_HOE;
+            case 295:
+                return Items.WHEAT_SEEDS;
+            case 296:
+                return Items.WHEAT;
+            case 297:
+                return Items.BREAD;
+            case 298:
+                return Items.LEATHER_HELMET;
+            case 299:
+                return Items.LEATHER_CHESTPLATE;
+            case 300:
+                return Items.LEATHER_LEGGINGS;
+            case 301:
+                return Items.LEATHER_BOOTS;
+            case 302:
+                return Items.CHAINMAIL_HELMET;
+            case 303:
+                return Items.CHAINMAIL_CHESTPLATE;
+            case 304:
+                return Items.CHAINMAIL_LEGGINGS;
+            case 305:
+                return Items.CHAINMAIL_BOOTS;
+            case 306:
+                return Items.IRON_HELMET;
+            case 307:
+                return Items.IRON_CHESTPLATE;
+            case 308:
+                return Items.IRON_LEGGINGS;
+            case 309:
+                return Items.IRON_BOOTS;
+            case 310:
+                return Items.DIAMOND_HELMET;
+            case 311:
+                return Items.DIAMOND_CHESTPLATE;
+            case 312:
+                return Items.DIAMOND_LEGGINGS;
+            case 313:
+                return Items.DIAMOND_BOOTS;
+            case 314:
+                return Items.GOLDEN_HELMET;
+            case 315:
+                return Items.GOLDEN_CHESTPLATE;
+            case 316:
+                return Items.GOLDEN_LEGGINGS;
+            case 317:
+                return Items.GOLDEN_BOOTS;
+            case 318:
+                return Items.FLINT;
+            case 319:
+                return Items.PORKCHOP;
+            case 320:
+                return Items.COOKED_PORKCHOP;
+            case 321:
+                return Items.PAINTING;
+            case 322:
+                return Items.GOLDEN_APPLE;
+            case 323:
+                return Items.SIGN;
+            case 324:
+                return Item.BLOCK_TO_ITEM.get(Blocks.OAK_DOOR);
+            case 325:
+                return Items.BUCKET;
+            case 326:
+                return Items.WATER_BUCKET;
+            case 327:
+                return Items.LAVA_BUCKET;
+            case 328:
+                return Items.MINECART;
+            case 329:
+                return Items.SADDLE;
+            case 330:
+                return Item.BLOCK_TO_ITEM.get(Blocks.IRON_DOOR);
+            case 331:
+                return Items.REDSTONE;
+            case 332:
+                return Items.SNOWBALL;
+            case 333:
+                return Items.BOAT;
+            case 334:
+                return Items.LEATHER;
+            case 335:
+                return Items.MILK_BUCKET;
+            case 336:
+                return Items.BRICK;
+            case 338:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196608_cF); // sugar cane
+            case 339:
+                return Items.PAPER;
+            case 340:
+                return Items.BOOK;
+            case 341:
+                return Items.SLIME_BALL;
+            case 342:
+                return Items.CHEST_MINECART;
+            case 343:
+                return Items.FURNACE_MINECART;
+            case 344:
+                return Items.EGG;
+            case 345:
+                return Items.COMPASS;
+            case 346:
+                return Items.FISHING_ROD;
+            case 347:
+                return Items.CLOCK;
+            case 348:
+                return Items.GLOWSTONE_DUST;
+            case 349:
+                return Items.field_196086_aW; // cod
+            case 350:
+                return Items.field_196102_ba; // cooked cod
+            case 351:
+                return Items.field_196136_br; // ink sac
+            case 352:
+                return Items.BONE;
+            case 353:
+                return Items.SUGAR;
+            case 354:
+                return Item.BLOCK_TO_ITEM.get(Blocks.CAKE);
+            case 355:
+                return Items.field_196140_bu; // bed
+            case 356:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196633_cV); // repeater
+            case 357:
+                return Items.COOKIE;
+            case 358:
+                return Items.MAP;
+            case 359:
+                return Items.SHEARS;
+            case 361:
+                return Items.PUMPKIN_SEEDS;
+            case 362:
+                return Items.MELON_SEEDS;
+            case 363:
+                return Items.BEEF;
+            case 364:
+                return Items.COOKED_BEEF;
+            case 365:
+                return Items.CHICKEN;
+            case 366:
+                return Items.COOKED_CHICKEN;
+            case 367:
+                return Items.ROTTEN_FLESH;
+            case 368:
+                return Items.ENDER_PEARL;
+            case 369:
+                return Items.BLAZE_ROD;
+            case 370:
+                return Items.GHAST_TEAR;
+            case 371:
+                return Items.GOLD_NUGGET;
+            case 372:
+                return Items.NETHER_WART;
+            case 373:
+            case 374:
+                return Items.GLASS_BOTTLE;
+            case 375:
+                return Items.SPIDER_EYE;
+            case 376:
+                return Items.FERMENTED_SPIDER_EYE;
+            case 377:
+                return Items.BLAZE_POWDER;
+            case 378:
+                return Items.MAGMA_CREAM;
+            case 379:
+                return Item.BLOCK_TO_ITEM.get(Blocks.BREWING_STAND);
+            case 380:
+                return Item.BLOCK_TO_ITEM.get(Blocks.CAULDRON);
+            case 381:
+                return Items.ENDER_EYE;
+            case 382:
+                return Items.SPECKLED_MELON;
+            case 383:
+                return Items.field_196127_cN; // pig spawn egg
+            case 384:
+                return Items.EXPERIENCE_BOTTLE;
+            case 385:
+                return Items.FIRE_CHARGE;
+            case 386:
+                return Items.WRITABLE_BOOK;
+            case 387:
+                return Items.WRITTEN_BOOK;
+            case 388:
+                return Items.EMERALD;
+            case 389:
+                return Items.ITEM_FRAME;
+            case 390:
+                return Item.BLOCK_TO_ITEM.get(Blocks.FLOWER_POT);
+            case 391:
+                return Items.CARROT;
+            case 392:
+                return Items.POTATO;
+            case 393:
+                return Items.BAKED_POTATO;
+            case 394:
+                return Items.POISONOUS_POTATO;
+            case 395:
+                return Items.MAP;
+            case 396:
+                return Items.GOLDEN_CARROT;
+            case 397:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196703_eM); // skeleton skull
+            case 398:
+                return Items.CARROT_ON_A_STICK;
+            case 399:
+                return Items.NETHER_STAR;
+            case 400:
+                return Items.PUMPKIN_PIE;
+            case 401:
+                return Items.field_196152_dE; // firework rocket
+            case 402:
+                return Items.field_196153_dF; // firework star
+            case 403:
+                return Items.ENCHANTED_BOOK;
+            case 404:
+                return Item.BLOCK_TO_ITEM.get(Blocks.field_196762_fd); // comparator
+            case 406:
+                return Items.QUARTZ;
+            case 407:
+                return Items.TNT_MINECART;
+            case 408:
+                return Items.HOPPER_MINECART;
+            case 409:
+                return Items.PRISMARINE_SHARD;
+            case 410:
+                return Items.PRISMARINE_CRYSTALS;
+            case 411:
+                return Items.RABBIT;
+            case 412:
+                return Items.COOKED_RABBIT;
+            case 413:
+                return Items.RABBIT_STEW;
+            case 414:
+                return Items.RABBIT_FOOT;
+            case 415:
+                return Items.RABBIT_HIDE;
+            case 416:
+                return Items.ARMOR_STAND;
+            case 417:
+                return Items.IRON_HORSE_ARMOR;
+            case 418:
+                return Items.GOLDEN_HORSE_ARMOR;
+            case 419:
+                return Items.DIAMOND_HORSE_ARMOR;
+            case 420:
+                return Items.LEAD;
+            case 421:
+                return Items.NAME_TAG;
+            case 422:
+                return Items.COMMAND_BLOCK_MINECART;
+            case 423:
+                return Items.MUTTON;
+            case 424:
+                return Items.COOKED_MUTTON;
+            //case 425: return Items.BLACK_BANNER;
+            case 427:
+                return Item.BLOCK_TO_ITEM.get(Blocks.SPRUCE_DOOR);
+            case 428:
+                return Item.BLOCK_TO_ITEM.get(Blocks.BIRCH_DOOR);
+            case 429:
+                return Item.BLOCK_TO_ITEM.get(Blocks.JUNGLE_DOOR);
+            case 430:
+                return Item.BLOCK_TO_ITEM.get(Blocks.ACACIA_DOOR);
+            case 431:
+                return Item.BLOCK_TO_ITEM.get(Blocks.DARK_OAK_DOOR);
+            case 432:
+                return Items.CHORUS_FRUIT;
+            case 433:
+                return Items.CHORUS_FRUIT_POPPED;
+            case 434:
+                return Items.BEETROOT;
+            case 435:
+                return Items.BEETROOT_SEEDS;
+            case 436:
+                return Items.BEETROOT_SOUP;
+            case 437:
+                return Items.DRAGON_BREATH;
+            case 438:
+                return Items.SPLASH_POTION;
+            case 439:
+                return Items.SPECTRAL_ARROW;
+            case 440:
+                return Items.TIPPED_ARROW;
+            case 441:
+                return Items.LINGERING_POTION;
+            case 442:
+                return Items.SHIELD;
+            case 443:
+                return Items.ELYTRA;
+            case 444:
+                return Items.SPRUCE_BOAT;
+            case 445:
+                return Items.BIRCH_BOAT;
+            case 446:
+                return Items.JUNGLE_BOAT;
+            case 447:
+                return Items.ACACIA_BOAT;
+            case 448:
+                return Items.DARK_OAK_BOAT;
+            case 449:
+                return Items.TOTEM_OF_UNDYING;
+            case 450:
+                return Items.SHULKER_SHELL;
+            case 452:
+                return Items.IRON_NUGGET;
+            case 453:
+                return Items.KNOWLEDGE_BOOK;
+
+            case 2256:
+                return Items.field_196156_dS; // record 13
+            case 2257:
+                return Items.field_196158_dT; // record cat
+            case 2258:
+                return Items.field_196160_dU; // record blocks
+            case 2259:
+                return Items.field_196162_dV; // record chirp
+            case 2260:
+                return Items.field_196164_dW; // record far
+            case 2261:
+                return Items.field_196166_dX; // record mall
+            case 2262:
+                return Items.field_196168_dY; // record mellohi
+            case 2263:
+                return Items.field_196170_dZ; // record stal
+            case 2264:
+                return Items.field_196187_ea; // record strad
+            case 2265:
+                return Items.field_196188_eb; // record ward
+            case 2266:
+                return Items.field_196189_ec; // record 11
+            case 2267:
+                return Items.field_196190_ed; // record wait
+        }
+        return Items.AIR;
     }
 }

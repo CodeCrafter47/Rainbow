@@ -7,13 +7,8 @@ import PluginReference.MC_Player;
 import com.google.common.io.Files;
 import joebkt._DynRewardInfo;
 import joebkt._SerializableLocation;
-import net.minecraft.item.Item;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -307,13 +302,17 @@ public class _DynReward {
         } else if (itemID == -2) {
             return "Kinder Egg";
         } else {
-            String itemName = Item.getItemById(itemID).getUnlocalizedName();
+            /*String itemName = MixinItemIntIDToString.getIdMap().get(itemID);
+            if (itemName == null) {
+                itemName = "unknown";
+            }
 
             if (itemName.startsWith("minecraft:")) {
                 itemName = itemName.substring("minecraft:".length());
             }
 
-            return itemName;
+            return itemName;*/
+            return "unknown";
         }
     }
 

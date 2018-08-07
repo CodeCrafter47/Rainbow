@@ -4,11 +4,12 @@ package org.projectrainbow.commands;
 import PluginReference.ChatColor;
 import PluginReference.MC_Command;
 import PluginReference.MC_Player;
-import net.minecraft.command.CommandBase;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow._JOT_OnlineTimeUtils;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class _CmdJot implements MC_Command {
@@ -40,8 +41,10 @@ public class _CmdJot implements MC_Command {
     @Override
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
         return args.length >= 1
-                ? CommandBase.getListOfStringsMatchingLastWord(args,
-                _DiwUtils.getMinecraftServer().getOnlinePlayerNames())
+                ? Arrays.stream(_DiwUtils.getMinecraftServer()
+                .getOnlinePlayerNames())
+                .filter(name -> name.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
+                .collect(Collectors.toList())
                 : null;
     }
 }

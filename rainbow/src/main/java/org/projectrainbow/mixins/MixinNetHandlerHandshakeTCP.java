@@ -5,7 +5,7 @@ import com.mojang.authlib.properties.Property;
 import io.netty.channel.Channel;
 import net.minecraft.network.EnumConnectionState;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.handshake.client.C00Handshake;
+import net.minecraft.network.handshake.client.CPacketHandshake;
 import net.minecraft.server.network.NetHandlerHandshakeTCP;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.interfaces.IBungeeDataStorage;
@@ -34,7 +34,7 @@ public class MixinNetHandlerHandshakeTCP {
     private NetworkManager networkManager;
 
     @Inject(method = "processHandshake", at = @At(value = "HEAD"))
-    private void doBungeeStuff(C00Handshake handshake, CallbackInfo callback){
+    private void doBungeeStuff(CPacketHandshake handshake, CallbackInfo callback){
         if(handshake.getRequestedState().equals(EnumConnectionState.LOGIN) && _DiwUtils.BungeeCord) {
             try {
                 Channel channel = null;

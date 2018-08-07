@@ -5,9 +5,8 @@ import PluginReference.ChatColor;
 import PluginReference.MC_Command;
 import PluginReference.MC_Location;
 import PluginReference.MC_Player;
-import net.minecraft.command.ICommandSender;
-import org.projectrainbow._DiwUtils;
 import joebkt._SerializableLocation;
+import org.projectrainbow._DiwUtils;
 import org.projectrainbow._WarpManager;
 
 import java.util.ArrayList;
@@ -55,7 +54,7 @@ public class _CmdWarp implements MC_Command {
                         _SerializableLocation sloc1 = (_SerializableLocation) _WarpManager.adminWarps.get(
                                 actualWarpName);
 
-                        if (!_DiwUtils.TooSoon((ICommandSender) plr, "warp", 5)) {
+                        if (!_DiwUtils.TooSoon(plr, "warp", 5)) {
                             plr.teleport(new MC_Location(sloc1.x, sloc1.y, sloc1.z, sloc1.dimension, sloc1.yaw, sloc1.pitch));
                             plr.sendMessage(
                                     ChatColor.GREEN + "You warp to "

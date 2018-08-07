@@ -5,15 +5,8 @@ import PluginReference.ChatColor;
 import PluginReference.MC_Player;
 import com.google.common.io.Files;
 import joebkt._EmoteEntry;
-import net.minecraft.command.ICommandSender;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
@@ -40,7 +33,7 @@ public class _EmoteUtils {
 
             if (!file.exists()) {
                 _DiwUtils.ConsoleMsg("Starting New Emote Database...");
-                emotes = new ConcurrentHashMap<String, _EmoteEntry>();
+                emotes = new ConcurrentHashMap<>();
                 return;
             }
 
@@ -61,7 +54,7 @@ public class _EmoteUtils {
         } catch (Throwable var9) {
             var9.printStackTrace();
             _DiwUtils.ConsoleMsg("Starting New Emote Database...");
-            emotes = new ConcurrentHashMap<String, _EmoteEntry>();
+            emotes = new ConcurrentHashMap<>();
         }
 
     }
@@ -136,9 +129,7 @@ public class _EmoteUtils {
 
     public static boolean CanDoEmote(MC_Player cs, String emote) {
         if (cs != null) {
-            if (!cs.hasPermission("rainbow.jemote." + emote) && !cs.hasPermission("rainbow.jemote.*")) {
-                return false;
-            }
+            return cs.hasPermission("rainbow.jemote." + emote) || cs.hasPermission("rainbow.jemote.*");
         }
 
         return true;
@@ -162,7 +153,7 @@ public class _EmoteUtils {
             } else if (!CanDoEmote(cs, emote)) {
                 _DiwUtils.reply(cs, ChatColor.RED + "You don\'t yet have this emote! :(...");
                 return true;
-            } else if (_DiwUtils.TooSoon((ICommandSender) cs, "Emote", 7)) {
+            } else if (_DiwUtils.TooSoon(cs, "Emote", 7)) {
                 return true;
             } else {
                 _EmoteEntry entry = emotes.get(emote);
@@ -194,15 +185,14 @@ public class _EmoteUtils {
         }
     }
 
-    public static boolean HandleCommand(MC_Player cs, String[] args) {
+    public static void HandleCommand(MC_Player cs, String[] args) {
         String emote;
 
         if (args.length >= 1 && args[0].equalsIgnoreCase("list")) {
             emote = _DiwUtils.GetCommaList(emotes.keySet());
             _DiwUtils.reply(cs, ChatColor.GREEN + "All Emotes: " + ChatColor.YELLOW + emote);
-            return true;
         } else if (args.length >= 1 && args[0].equalsIgnoreCase("mine")) {
-            ArrayList<String> emote1 = new ArrayList<String>(emotes.keySet());
+            ArrayList<String> emote1 = new ArrayList<>(emotes.keySet());
 
             new StringBuffer();
             Collections.sort(emote1);
@@ -219,45 +209,38 @@ public class _EmoteUtils {
             }
 
             _DiwUtils.reply(cs, ChatColor.GREEN + "Your Emotes: " + ChatColor.YELLOW + msNow3);
-            return true;
         } else {
             if (HasAdminPerm(cs)) {
                 if (args.length == 2 && args[0].equalsIgnoreCase("delete")) {
                     emote = args[1].toLowerCase();
                     if (!emotes.containsKey(emote)) {
                         _DiwUtils.reply(cs, ChatColor.RED + "Emote does not exist: " + ChatColor.YELLOW + emote);
-                        return true;
                     }
 
                     emotes.remove(emote);
                     _DiwUtils.reply(cs, ChatColor.GREEN + "Removed Emote: " + ChatColor.YELLOW + emote);
                     SaveEmotes();
-                    return true;
                 }
 
                 if (args.length >= 2 && args[0].equalsIgnoreCase("info")) {
                     emote = args[1].toLowerCase();
                     ShowEmoteDetails(cs, emote);
-                    return true;
                 }
 
                 if (args.length >= 1 && args[0].equalsIgnoreCase("save")) {
                     SaveEmotes();
                     _DiwUtils.reply(cs, ChatColor.GREEN + "Saved emotes.");
-                    return true;
                 }
 
                 if (args.length >= 1 && args[0].equalsIgnoreCase("reload")) {
                     LoadEmotes();
                     _DiwUtils.reply(cs, ChatColor.GREEN + "Reloadedd emotes.");
-                    return true;
                 }
 
                 if (args.length >= 4 && args[0].equalsIgnoreCase("add")) {
                     emote = args[1].toLowerCase();
                     if (emote.equalsIgnoreCase("jemote")) {
                         _DiwUtils.reply(cs, ChatColor.RED + "No! You can\'t make an emote named \'jemote\'.");
-                        return true;
                     }
 
                     String entry1 = args[2].toLowerCase();
@@ -274,7 +257,6 @@ public class _EmoteUtils {
                     msNow2.updatedBy = cs.getName();
                     if (!entry1.equalsIgnoreCase("default") && !entry1.equalsIgnoreCase("self") && !entry1.equalsIgnoreCase("other")) {
                         _DiwUtils.reply(cs, ChatColor.RED + "Unknown target type: " + ChatColor.YELLOW + entry1);
-                        return true;
                     }
 
                     String msg = _DiwUtils.FullTranslate(_DiwUtils.ConcatArgs(args, 3));
@@ -284,14 +266,12 @@ public class _EmoteUtils {
                     SaveEmotes();
                     ShowEmoteDetails(cs, emote);
                     _DiwUtils.reply(cs, ChatColor.GREEN + "Set " + ChatColor.YELLOW + emote + ChatColor.AQUA + " " + entry1 + ChatColor.GREEN + ": " + msg);
-                    return true;
                 }
 
                 if (args.length >= 2 && args[0].equalsIgnoreCase("add")) {
                     emote = args[1].toLowerCase();
                     if (emote.equalsIgnoreCase("jemote")) {
                         _DiwUtils.reply(cs, ChatColor.RED + "No! You can\'t make an emote named \'jemote\'.");
-                        return true;
                     }
 
                     _EmoteEntry entry = emotes.get(emote);
@@ -308,12 +288,10 @@ public class _EmoteUtils {
                     emotes.put(emote, entry);
                     SaveEmotes();
                     ShowEmoteDetails(cs, emote);
-                    return true;
                 }
             }
 
             ShowUsage(cs);
-            return false;
         }
     }
 }

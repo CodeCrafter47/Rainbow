@@ -8,7 +8,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._HomeUtils;
-import org.projectrainbow.interfaces.IMixinICommandSender;
 
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +47,7 @@ public class _CmdHome implements MC_Command {
         final EntityPlayerMP p = (EntityPlayerMP) player;
         _SerializableLocation sloc = _HomeUtils.getHome(p.getUniqueID());
         if (sloc == null) {
-            ((IMixinICommandSender) p).sendMessage(String.valueOf(_ColorHelper.RED) + "You don't have a home set. Try first: " + _ColorHelper.GOLD + "/sethome");
+            player.sendMessage(String.valueOf(_ColorHelper.RED) + "You don't have a home set. Try first: " + _ColorHelper.GOLD + "/sethome");
             return;
         }
         try {
@@ -60,6 +59,6 @@ public class _CmdHome implements MC_Command {
             System.out.println("Home Step 1 SetVehicle EXC: " + exc.getMessage());
         }
         ((MC_Player) p).teleport(new MC_Location(sloc.x, sloc.y, sloc.z, sloc.dimension, sloc.yaw, sloc.pitch));
-        ((IMixinICommandSender) p).sendMessage(String.valueOf(_ColorHelper.GREEN) + "You teleport home to " + _ColorHelper.WHITE + sloc.toString());
+        player.sendMessage(String.valueOf(_ColorHelper.GREEN) + "You teleport home to " + _ColorHelper.WHITE + sloc.toString());
     }
 }

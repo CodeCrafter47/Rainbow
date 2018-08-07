@@ -12,6 +12,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.GameRules;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
@@ -51,8 +53,8 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
     @Shadow
     public abstract boolean isPlayerSleeping();
 
-    @Shadow
-    public abstract void addExperience(int var1);
+    @Shadow(prefix = "addExperience$")
+    public abstract void addExperience$func_195068_e(int var1);
 
     @Shadow
     public abstract void addExperienceLevel(int var1);
@@ -68,16 +70,16 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
      * To do this the first call to getName() is intercepted and if we have a colored
      * name for that player we return it. Otherwise we return the result of getName().
      */
-    @Redirect(method = "getDisplayName", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.EntityPlayer.getName()Ljava/lang/String;", ordinal = 0))
-    public String hook_getName(EntityPlayer player) {
+    @Redirect(method = "getDisplayName", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;func_200200_C_()Lnet/minecraft/util/text/ITextComponent;", ordinal = 0))
+    public ITextComponent hook_getName(EntityPlayer player) {
         String s = _CmdNameColor.ColorNameDict.get(player.getUniqueID().toString());
         if (s == null) {
-            s = _CmdNameColor.ColorNameDict.get(player.getName().toLowerCase());
+            s = _CmdNameColor.ColorNameDict.get(((MC_Player) player).getName().toLowerCase());
         }
         if (s != null) {
-            return s;
+            return new TextComponentString(s);
         }
-        return player.getName();
+        return player.func_200200_C_();
     }
 
     @Inject(method = "dropItem(Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/item/EntityItem;", at = @At("HEAD"), cancellable = true)

@@ -1,41 +1,27 @@
 package org.projectrainbow.mixins;
 
-import PluginReference.MC_Block;
-import PluginReference.MC_Chest;
-import PluginReference.MC_Chunk;
-import PluginReference.MC_Container;
-import PluginReference.MC_DirectionNESWUD;
-import PluginReference.MC_EnchantmentType;
-import PluginReference.MC_Entity;
-import PluginReference.MC_EntityType;
-import PluginReference.MC_GameRuleType;
-import PluginReference.MC_ItemStack;
-import PluginReference.MC_Location;
-import PluginReference.MC_NoteBlock;
-import PluginReference.MC_Sign;
-import PluginReference.MC_World;
-import PluginReference.MC_WorldBiomeType;
+import PluginReference.*;
 import com.google.common.base.MoreObjects;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockStandingSign;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.command.CommandGameRule;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
@@ -45,7 +31,6 @@ import org.projectrainbow.BlockWrapper;
 import org.projectrainbow.PluginHelper;
 import org.projectrainbow.ServerWrapper;
 import org.projectrainbow._DiwUtils;
-import org.projectrainbow.interfaces.IMixinNBTBase;
 import org.projectrainbow.interfaces.IMixinWorldServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -63,22 +48,24 @@ import java.util.List;
 @Mixin(WorldServer.class)
 public abstract class MixinWorldServer extends World implements MC_World, IMixinWorldServer {
 
-    protected MixinWorldServer(ISaveHandler iSaveHandler, WorldInfo worldInfo, WorldProvider worldProvider, Profiler profiler, boolean b) {
-        super(iSaveHandler, worldInfo, worldProvider, profiler, b);
+
+    protected MixinWorldServer(ISaveHandler iSaveHandler, WorldInfo worldInfo, Dimension dimension, Profiler profiler, boolean b) {
+        super(iSaveHandler, worldInfo, dimension, profiler, b);
         // dummy
     }
 
     @Shadow
-    protected abstract boolean isChunkLoaded(int x, int z, boolean ignored);
+    public abstract boolean isChunkLoaded(int x, int z, boolean ignored);
 
     @Redirect(method = "canAddEntity", at = @At(value = "INVOKE", target = "org/apache/logging/log4j/Logger.warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false))
     private void doLogWarning(Logger logger, String message, Object arg1, Object arg2) {
-        if (_DiwUtils.DoHideAnnoyingDefaultServerOutput == false) {
+        if (!_DiwUtils.DoHideAnnoyingDefaultServerOutput) {
             logger.warn(message, arg1, arg2);
         }
     }
 
     @Override
+    @Deprecated
     public MC_Block getBlockFromName(String var1) {
         return ServerWrapper.getInstance().getBlockFromName(var1);
     }
@@ -102,7 +89,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
     public void setBlockRotation(int x, int y, int z, int rotation) {
         BlockPos blockPos = new BlockPos(x, y, z);
         try {
-            setBlockState(blockPos, getBlockState(blockPos).withProperty(BlockStandingSign.ROTATION, rotation));
+            setBlockState(blockPos, getBlockState(blockPos).func_206870_a(BlockStandingSign.ROTATION, rotation));
         } catch (Throwable ignored) {
             // block not a sign, ignore
         }
@@ -116,7 +103,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
 
         BlockPos blockPos = new BlockPos(x, y, z);
         try {
-            setBlockState(blockPos, getBlockState(blockPos).withProperty(BlockDirectional.FACING, PluginHelper.directionMap.inverse().get(direction)));
+            setBlockState(blockPos, getBlockState(blockPos).func_206870_a(BlockDirectional.FACING, PluginHelper.directionMap.inverse().get(direction)));
         } catch (Throwable ignored) {
             // block not directional, ignore
         }
@@ -139,17 +126,29 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
     }
 
     @Override
-    public void setBlockAt(int x, int y, int z, MC_Block block, int metaData) {
-        // todo we have duplicate metadata as it is already in MC_Block, suggestion: add a method to the api that does not take the metaData argument
+    public void setBlockAt(int x, int y, int z, MC_Block block) {
         BlockPos blockPos = new BlockPos(x, y, z);
-        setBlockState(blockPos, ((BlockWrapper) block).m_blockObject.getStateFromMeta(metaData));
+        setBlockState(blockPos, ((BlockWrapper) block).m_blockObject.getDefaultState());
     }
 
     @Override
-    public void setBlockAt(MC_Location loc, MC_Block block, int metaData) {
-        // todo we have duplicate metadata as it is already in MC_Block, suggestion: add a method to the api that does not take the metaData argument
+    public void setBlockAt(MC_Location loc, MC_Block block) {
         BlockPos blockPos = new BlockPos(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-        setBlockState(blockPos, ((BlockWrapper) block).m_blockObject.getStateFromMeta(metaData));
+        setBlockState(blockPos, ((BlockWrapper) block).m_blockObject.getDefaultState());
+    }
+
+    @Override
+    @Deprecated
+    public void setBlockAt(int x, int y, int z, MC_Block block, int metaData) {
+        BlockPos blockPos = new BlockPos(x, y, z);
+        setBlockState(blockPos, ((BlockWrapper) block).m_blockObject.getDefaultState());
+    }
+
+    @Override
+    @Deprecated
+    public void setBlockAt(MC_Location loc, MC_Block block, int metaData) {
+        BlockPos blockPos = new BlockPos(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        setBlockState(blockPos, ((BlockWrapper) block).m_blockObject.getDefaultState());
     }
 
     @Override
@@ -167,7 +166,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
         if (mat == Material.AIR) {
             return false;
         } else {
-            bo.dropBlockAsItem(this, coords, bs, toolOptional == null ? 0 : toolOptional.getEnchantmentLevel(MC_EnchantmentType.FORTUNE));
+            bs.func_196949_c(this, coords, toolOptional == null ? 0 : toolOptional.getEnchantmentLevel(MC_EnchantmentType.FORTUNE)); // dropBlockAsItem
             setBlockState(coords, Blocks.AIR.getDefaultState(), 3);
             return true;
         }
@@ -197,8 +196,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
     @Override
     public void setGameRule(MC_GameRuleType var1, boolean var2) {
         String rule = PluginHelper.gameRuleMap.get(var1);
-        getGameRules().setOrCreateGameRule(rule, "" + var2);
-        CommandGameRule.notifyGameRuleChange(getGameRules(), rule, _DiwUtils.getMinecraftServer());
+        getGameRules().setOrCreateGameRule(rule, "" + var2, _DiwUtils.getMinecraftServer());
     }
 
     @Override
@@ -238,7 +236,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
             entity.setPositionAndRotation(loc.x, loc.y, loc.z,
                     loc.yaw, loc.pitch);
             if (name != null) {
-                entity.setCustomNameTag(name);
+                ((MC_Entity)entity).setCustomName(name);
             }
             entity.forceSpawn = true;
 
@@ -309,16 +307,16 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
         }
         Biome biomeGenBase = PluginHelper.biomeMap.inverse().get(var3);
         BlockPos blockPos = new BlockPos(x, 0, z);
-        Chunk var2 = this.getChunkFromBlockCoords(blockPos);
+        Chunk var2 = this.getChunk(blockPos);
         int xInChunk = x & 15;
         int zInChunk = z & 15;
 
-        var2.getBiomeArray()[zInChunk << 4 | xInChunk] = (byte) Biome.getIdForBiome(biomeGenBase);
+        var2.func_201590_e()[zInChunk << 4 | xInChunk] = biomeGenBase;
     }
 
     @Override
     public boolean loadChunk(int x, int z) {
-        return super.getChunkFromChunkCoords(x, z) != null;
+        return super.getChunk(x, z) != null;
     }
 
     @Override
@@ -352,10 +350,10 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
             ByteArrayInputStream bis = new ByteArrayInputStream(rawEntityData);
             DataInputStream dis = new DataInputStream(bis);
 
-            ((IMixinNBTBase) compound).read1(dis);
+            compound.read(dis, 0, new NBTSizeTracker(Long.MAX_VALUE));
             bis.close();
 
-            Entity entity = EntityList.createEntityFromNBT(compound, this);
+            Entity entity = EntityType.func_200716_a(compound, this);
             entity.setPositionAndRotation(loc.x, loc.y, loc.z, loc.yaw, loc.pitch);
             entity.forceSpawn = true;
 

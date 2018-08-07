@@ -2,17 +2,21 @@ package org.projectrainbow.util;
 
 import PluginReference.MC_Command;
 import PluginReference.MC_Player;
+import com.mojang.brigadier.tree.CommandNode;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.EntityPlayerMP;
 import org.projectrainbow._DiwUtils;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WrappedMinecraftCommand implements MC_Command {
-    public final ICommand delegate;
+    public final CommandNode<CommandSource> delegate;
 
-    public WrappedMinecraftCommand(ICommand delegate) {
+    public WrappedMinecraftCommand(CommandNode<CommandSource> delegate) {
         this.delegate = delegate;
     }
 
@@ -38,18 +42,31 @@ public class WrappedMinecraftCommand implements MC_Command {
 
     @Override
     public List<String> getAliases() {
-        return delegate.getAliases();
+        return _DiwUtils.getMinecraftServer()
+                .func_195571_aL()
+                .func_197054_a()
+                .getRoot()
+                .getChildren()
+                .stream()
+                .filter(node -> node.getRedirect() == delegate)
+                .map(CommandNode::getName)
+                .collect(Collectors.toList());
     }
 
     @Override
     public String getHelpLine(MC_Player plr) {
-        return delegate.getUsage((ICommandSender) plr);
+        return delegate.getUsageText();
     }
 
     @Override
     public void handleCommand(MC_Player plr, String[] args) {
         try {
-            delegate.execute(_DiwUtils.getMinecraftServer(), (ICommandSender) plr, args);
+            _DiwUtils.getMinecraftServer()
+                    .func_195571_aL()
+                    .func_197059_a(plr == null
+                    ? _DiwUtils.getMinecraftServer().func_195573_aM()
+                    : ((EntityPlayerMP)plr).func_195051_bN(),
+                            delegate.getName() + " " + Arrays.stream(args).collect(Collectors.joining(" ")));
         } catch (CommandException e) {
             Util.sneakyThrow(e);
         }
@@ -57,11 +74,11 @@ public class WrappedMinecraftCommand implements MC_Command {
 
     @Override
     public boolean hasPermissionToUse(MC_Player plr) {
-        return delegate.checkPermission(_DiwUtils.getMinecraftServer(), (ICommandSender) plr);
+        return delegate.getRequirement().test(((EntityPlayerMP) plr).func_195051_bN());
     }
 
     @Override
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
-        return delegate.getTabCompletions(_DiwUtils.getMinecraftServer(), (ICommandSender) plr, args, null);
+        return Collections.emptyList(); // todo
     }
 }

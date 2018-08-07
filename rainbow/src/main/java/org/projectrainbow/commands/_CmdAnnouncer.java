@@ -1,13 +1,12 @@
 package org.projectrainbow.commands;
 
 
+import PluginReference.ChatColor;
 import PluginReference.MC_Command;
 import PluginReference.MC_Player;
-import net.minecraft.util.text.TextFormatting;
 import org.projectrainbow._Announcer;
 
 import java.util.List;
-
 
 public class _CmdAnnouncer implements MC_Command {
 
@@ -23,7 +22,7 @@ public class _CmdAnnouncer implements MC_Command {
 
     @Override
     public String getHelpLine(MC_Player plr) {
-        return TextFormatting.LIGHT_PURPLE + "/announcer" + TextFormatting.WHITE
+        return ChatColor.LIGHT_PURPLE + "/announcer" + ChatColor.WHITE
                 + " --- Announcer!";
     }
 

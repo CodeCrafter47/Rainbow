@@ -9,11 +9,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -23,6 +19,7 @@ public class Bootstrap {
     public static Set<File> tweakers = new HashSet<File>();
 
     public final static String minecraftVersion;
+    public final static String serverURL;
     public final static String buildNumber;
 
     public static Logger logger = LogManager.getLogger("Minecraft");
@@ -112,6 +109,7 @@ public class Bootstrap {
             Properties properties = new Properties();
             properties.load(Bootstrap.class.getClassLoader().getResourceAsStream("build.properties"));
             minecraftVersion = properties.getProperty("mcversion");
+            serverURL = properties.getProperty("url");
             buildNumber = properties.getProperty("build");
         } catch (IOException ex) {
             throw new RuntimeException(ex);

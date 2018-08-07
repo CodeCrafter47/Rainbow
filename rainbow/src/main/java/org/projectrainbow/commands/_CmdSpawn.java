@@ -9,7 +9,6 @@ import net.minecraft.world.WorldServer;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.interfaces.IMixinEntityPlayerMP;
-import org.projectrainbow.interfaces.IMixinICommandSender;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +50,7 @@ public class _CmdSpawn implements MC_Command {
             final int y = coords.getY();
             final double z = coords.getZ() + 0.5;
             ((IMixinEntityPlayerMP) p).teleport(world, x, y, z, 0.0f, 0.0f);
-            ((IMixinICommandSender) p).sendMessage(String.valueOf(_ColorHelper.GREEN) + "You travel to spawn!");
+            player.sendMessage(String.valueOf(_ColorHelper.GREEN) + "You travel to spawn!");
             return;
         }
         System.out.println("--- Only for players!");

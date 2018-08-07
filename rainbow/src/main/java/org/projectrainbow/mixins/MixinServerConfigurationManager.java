@@ -15,12 +15,7 @@ import org.projectrainbow._DiwUtils;
 import org.projectrainbow._JOT_OnlineTimeUtils;
 import org.projectrainbow._UUIDMapper;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Constant;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -36,8 +31,8 @@ public class MixinServerConfigurationManager {
     @Inject(method = "playerLoggedIn", at = @At("HEAD"))
     private void onLogin(EntityPlayerMP var1, CallbackInfo callback) {
         _JOT_OnlineTimeUtils.HandlePlayerLogin((MC_Player) var1);
-        _UUIDMapper.AddMap(var1.getName(), var1.getUniqueID().toString());
-        Hooks.onPlayerLogin(var1.getName(), var1.getUniqueID(), var1.getPlayerIP());
+        _UUIDMapper.AddMap(((MC_Player) var1).getName(), var1.getUniqueID().toString());
+        Hooks.onPlayerLogin(((MC_Player) var1).getName(), var1.getUniqueID(), var1.getPlayerIP());
         Hooks.onPlayerJoin((MC_Player) var1);
     }
 
@@ -62,8 +57,8 @@ public class MixinServerConfigurationManager {
         }
     }
 
-    @Inject(method = "allowUserToConnect", at = @At("HEAD"), cancellable = true)
-    public void reconnectDelay(SocketAddress var1, GameProfile var2, CallbackInfoReturnable<String> callbackInfo) {
+    @Inject(method = "func_206258_a", at = @At("HEAD"), cancellable = true)
+    public void reconnectDelay(SocketAddress var1, GameProfile var2, CallbackInfoReturnable<ITextComponent> callbackInfo) {
         String var4;
 
         if (_DiwUtils.DoReconnectDelay) {
@@ -74,22 +69,22 @@ public class MixinServerConfigurationManager {
             if (msLast != null
                     && var3 - msLast
                     < (long) (_DiwUtils.ReconnectDelaySeconds * 1000)) {
-                callbackInfo.setReturnValue("There is a " + _DiwUtils.ReconnectDelaySeconds + "-second reconnect delay.");
+                callbackInfo.setReturnValue(new TextComponentString("There is a " + _DiwUtils.ReconnectDelaySeconds + "-second reconnect delay."));
             }
 
             lastConnectTime.put(var4, var3);
         }
     }
 
-    @Inject(method = "allowUserToConnect", at = @At("RETURN"), cancellable = true)
-    public void attemptLoginEvent(SocketAddress var1, GameProfile var2, CallbackInfoReturnable<String> callbackInfo) {
+    @Inject(method = "func_206258_a", at = @At("RETURN"), cancellable = true)
+    public void attemptLoginEvent(SocketAddress var1, GameProfile var2, CallbackInfoReturnable<ITextComponent> callbackInfo) {
         MC_EventInfo ei = new MC_EventInfo();
-        ei.tag = callbackInfo.getReturnValue();
+        ei.tag = callbackInfo.getReturnValue() != null ? callbackInfo.getReturnValue().getFormattedText() : null;
         ei.isCancelled = ei.tag != null;
         Hooks.onPlayerLogin(var2.getName(), var2.getId(), ((InetSocketAddress)var1).getAddress(), ei);
 
         if (ei.isCancelled) {
-            callbackInfo.setReturnValue("" + ei.tag);
+            callbackInfo.setReturnValue(new TextComponentString(ei.tag));
         } else {
             callbackInfo.setReturnValue(null);
         }

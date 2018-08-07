@@ -3,6 +3,7 @@ package org.projectrainbow.mixins;
 import PluginReference.MC_Sign;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import org.spongepowered.asm.mixin.Final;
@@ -18,11 +19,15 @@ public class MixinTileEntitySign extends TileEntity implements MC_Sign {
     @Final
     public ITextComponent[] signText;
 
+    public MixinTileEntitySign(TileEntityType<?> tileEntityType) {
+        super(tileEntityType);
+    }
+
     @Override
     public List<String> getLines() {
-        ArrayList<String> list = new ArrayList<String>(4);
+        ArrayList<String> list = new ArrayList<>(4);
         for (ITextComponent chatComponent : signText) {
-            list.add(chatComponent.getUnformattedText());
+            list.add(chatComponent.getString());
         }
         return list;
     }

@@ -1,11 +1,7 @@
 package PluginExample.commands;
 
 import PluginExample.CmdBase;
-import PluginReference.ChatColor;
-import PluginReference.MC_DamageType;
-import PluginReference.MC_ItemStack;
-import PluginReference.MC_Player;
-import PluginReference.RainbowUtils;
+import PluginReference.*;
 
 import static PluginExample.MyPlugin.server;
 
@@ -24,7 +20,7 @@ public class CmdInfo extends CmdBase {
         plr.sendMessage(ChatColor.AQUA + RainbowUtils.TextLabel("Server Port", len) + ChatColor.WHITE + server.getServerPort());
         plr.sendMessage(ChatColor.AQUA + RainbowUtils.TextLabel("Spawn Radius", len) + ChatColor.WHITE + server.getSpawnProtectionRadius());
         MC_ItemStack is = plr.getItemInHand();
-        plr.sendMessage(ChatColor.AQUA + RainbowUtils.TextLabel("Item In Hand", len) + ChatColor.WHITE + "ID=" + is.getId() + " - " + ChatColor.YELLOW + is.getFriendlyName());
+        plr.sendMessage(ChatColor.AQUA + RainbowUtils.TextLabel("Item In Hand", len) + ChatColor.WHITE + "ID=" + is.getOfficialName() + " - " + ChatColor.YELLOW + is.getFriendlyName());
         plr.sendMessage(ChatColor.AQUA + RainbowUtils.TextLabel("Motion Data", len) + ChatColor.WHITE + plr.getMotionData().toString());
         plr.sendMessage(ChatColor.AQUA + RainbowUtils.TextLabel("EXP", len) + ChatColor.WHITE + String.format("XP=%.2f, LVL=%d, TOT=%d", plr.getExp(), plr.getLevel(), plr.getTotalExperience()));
 

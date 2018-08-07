@@ -1,9 +1,8 @@
 package org.projectrainbow.interfaces;
 
-
 import net.minecraft.block.Block;
 
-public interface IMixinItemDoor {
+public interface IMixinItemBlock {
 
     Block getBlock();
 }

@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 public class MixinPlayerCapabilities implements IMixinPlayerCapabilities {
 
 	@Shadow
-	private float flySpeed;
+	private double flySpeed;
 	
 	@Shadow
 	private float walkSpeed;

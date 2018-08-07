@@ -34,6 +34,6 @@ public class MixinOutboundPacketSoundEffect implements IMixinOutboundPacketSound
 
     @Override
     public String getSoundName() {
-        return SoundEvent.REGISTRY.getNameForObject(sound).getResourcePath();
+        return SoundEvent.REGISTRY.getNameForObject(sound).getPath();
     }
 }

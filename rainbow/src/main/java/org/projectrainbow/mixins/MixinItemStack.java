@@ -3,16 +3,19 @@ package org.projectrainbow.mixins;
 import PluginReference.MC_Enchantment;
 import PluginReference.MC_EnchantmentType;
 import PluginReference.MC_ItemStack;
-import PluginReference.MC_ItemType;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItemFrame;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import org.projectrainbow.PluginHelper;
 import org.projectrainbow._DiwUtils;
-import org.projectrainbow.interfaces.IMixinNBTBase;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,8 +24,9 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Mixin(ItemStack.class)
 public abstract class MixinItemStack implements MC_ItemStack {
@@ -31,18 +35,16 @@ public abstract class MixinItemStack implements MC_ItemStack {
     @Shadow
     private NBTTagCompound stackTagCompound;
     @Shadow
-    private int itemDamage;
-    @Shadow
     private EntityItemFrame itemFrame;
 
-    @Shadow
-    public abstract String getDisplayName();
+    @Shadow(prefix = "getDisplayName$")
+    public abstract ITextComponent getDisplayName$func_200301_q();
 
     @Shadow
     public abstract boolean hasDisplayName();
 
-    @Shadow
-    public abstract ItemStack setStackDisplayName(String name);
+    @Shadow(prefix = "setDisplayName$")
+    public abstract ItemStack setDisplayName$func_200302_a(ITextComponent name);
 
     @Shadow
     public abstract void clearCustomName();
@@ -53,37 +55,43 @@ public abstract class MixinItemStack implements MC_ItemStack {
     @Shadow
     public abstract Item getItem();
 
-    @ModifyArg(method = "setStackDisplayName", at = @At(value = "INVOKE", target = "net.minecraft.nbt.NBTTagCompound.setString(Ljava/lang/String;Ljava/lang/String;)V"), index = 1)
+    @Shadow public abstract int getItemDamage();
+
+    @Shadow
+    public abstract void func_196085_b(int var1);
+
+    @ModifyArg(method = "func_200302_a", at = @At(value = "INVOKE", target = "net.minecraft.nbt.NBTTagCompound.setString(Ljava/lang/String;Ljava/lang/String;)V"), index = 1)
     private String censorItemName(String name) {
         if (_DiwUtils.DoCensor && _DiwUtils.HasBadLanguage(name)) {
-            return "Censored";
+            return ITextComponent.Serializer.componentToJson(new TextComponentString("Censored"));
         }
         return name;
     }
 
     @Override
     public String getFriendlyName() {
-        return getItem().getItemStackDisplayName((ItemStack) (Object) this);
+        return getItem().func_200295_i((ItemStack) (Object) this).getFormattedText();
     }
 
     @Override
     public String getCustomizedName() {
-        return getDisplayName();
+        return getDisplayName$func_200301_q().getString();
     }
 
     @Override
     public String getOfficialName() {
-        return getItem().getUnlocalizedName((ItemStack) (Object) this);
+        return Item.REGISTRY.getNameForObject(getItem()).getPath();
     }
 
     @Override
+    @Deprecated
     public int getId() {
         return Item.getIdFromItem(getItem());
     }
 
     @Override
     public int getDamage() {
-        return itemDamage;
+        return getItemDamage();
     }
 
     @Override
@@ -93,7 +101,7 @@ public abstract class MixinItemStack implements MC_ItemStack {
 
     @Override
     public void setDamage(int damage) {
-        itemDamage = damage;
+        func_196085_b(damage);
     }
 
     @Override
@@ -108,7 +116,7 @@ public abstract class MixinItemStack implements MC_ItemStack {
 
     @Override
     public void setCustomName(String name) {
-        setStackDisplayName(name);
+        setDisplayName$func_200302_a(new TextComponentString(name));
     }
 
     @Override
@@ -128,80 +136,34 @@ public abstract class MixinItemStack implements MC_ItemStack {
 
     @Override
     public int getEnchantmentLevel(MC_EnchantmentType var1) {
-        int level = 0;
-        if (isItemEnchanted()) {
-            NBTTagList var3 = this.stackTagCompound.getTagList("ench", 10);
-            for (int i = 0; i < var3.tagCount(); i++) {
-                if (var3.getCompoundTagAt(i).getShort("id") == PluginHelper.enchantmentMap.inverse().get(var1)) {
-                    level = Math.max(level, var3.getCompoundTagAt(i).getShort("lvl"));
-                }
-            }
-        }
-        return level;
+        return EnchantmentHelper.getEnchantmentLevel(PluginHelper.enchantmentMap.inverse().get(var1), PluginHelper.getItemStack(this));
     }
 
     @Override
     public void setEnchantments(List<MC_Enchantment> var1) {
-        if (stackTagCompound == null) {
-            stackTagCompound = new NBTTagCompound();
-        }
-
-        if (!this.stackTagCompound.hasKey("ench", 9)) {
-            this.stackTagCompound.setTag("ench", new NBTTagList());
-        }
-
-        NBTTagList var3 = this.stackTagCompound.getTagList("ench", 10);
-        while (var3.tagCount() > 0) {
-            var3.removeTag(0);
-        }
-        for (MC_Enchantment mc_enchantment : var1) {
-            NBTTagCompound var4 = new NBTTagCompound();
-            var4.setShort("id", PluginHelper.enchantmentMap.inverse().get(mc_enchantment.type));
-            var4.setShort("lvl", (short) mc_enchantment.level);
-            var3.appendTag(var4);
-        }
+        EnchantmentHelper.setEnchantments(var1.stream()
+                .collect(Collectors.toMap(
+                        ench -> PluginHelper.enchantmentMap.inverse().get(ench.type),
+                        ench -> ench.level
+                ))
+                , PluginHelper.getItemStack(this));
     }
 
     @Override
     public List<MC_Enchantment> getEnchantments() {
-        if (!isItemEnchanted()) {
-            return Collections.emptyList();
-        }
-        List<MC_Enchantment> enchantments = new ArrayList<MC_Enchantment>();
-        NBTTagList var3 = this.stackTagCompound.getTagList("ench", 10);
-        for (int i = 0; i < var3.tagCount(); i++) {
-            enchantments.add(new MC_Enchantment(PluginHelper.enchantmentMap.get(var3.getCompoundTagAt(i).getShort("id")), var3.getCompoundTagAt(i).getShort("lvl")));
-        }
-        return enchantments;
+        return EnchantmentHelper.getEnchantments(PluginHelper.getItemStack(this))
+                .entrySet().stream()
+                .map(entry -> new MC_Enchantment(PluginHelper.enchantmentMap.get(entry.getKey()),
+                        entry.getValue()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public void setEnchantmentLevel(MC_EnchantmentType var1, int var2) {
         // try to change existing enchantment level
-        if (isItemEnchanted()) {
-            NBTTagList var3 = this.stackTagCompound.getTagList("ench", 10);
-            for (int i = 0; i < var3.tagCount(); i++) {
-                if (var3.getCompoundTagAt(i).getShort("id") == PluginHelper.enchantmentMap.inverse().get(var1)) {
-                    var3.getCompoundTagAt(i).setShort("lvl", (short) var2);
-                    return;
-                }
-            }
-        }
-
-        if (stackTagCompound == null) {
-            stackTagCompound = new NBTTagCompound();
-        }
-
-        if (!this.stackTagCompound.hasKey("ench", 9)) {
-            this.stackTagCompound.setTag("ench", new NBTTagList());
-        }
-
-        NBTTagList var3 = this.stackTagCompound.getTagList("ench", 10);
-
-        NBTTagCompound var4 = new NBTTagCompound();
-        var4.setShort("id", PluginHelper.enchantmentMap.inverse().get(var1));
-        var4.setShort("lvl", (short) var2);
-        var3.appendTag(var4);
+        Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(PluginHelper.getItemStack(this));
+        enchantments.put(PluginHelper.enchantmentMap.inverse().get(var1), var2);
+        EnchantmentHelper.setEnchantments(enchantments, PluginHelper.getItemStack(this));
     }
 
     @Override
@@ -223,7 +185,7 @@ public abstract class MixinItemStack implements MC_ItemStack {
                 ArrayList<String> res = new ArrayList<String>();
                 NBTTagList lore = display.getTagList("Lore", 8);
 
-                for (int i = 0; i < lore.tagCount(); ++i) {
+                for (int i = 0; i < lore.size(); ++i) {
                     res.add(lore.getStringTagAt(i));
                 }
 
@@ -248,7 +210,7 @@ public abstract class MixinItemStack implements MC_ItemStack {
             NBTTagList lore = new NBTTagList();
 
             for (String line : argLore) {
-                lore.appendTag(new NBTTagString(line));
+                lore.add(new NBTTagString(line));
             }
 
             tag.setTag("Lore", lore);
@@ -267,7 +229,7 @@ public abstract class MixinItemStack implements MC_ItemStack {
             ByteArrayOutputStream exc = new ByteArrayOutputStream();
             DataOutputStream w = new DataOutputStream(exc);
 
-            ((IMixinNBTBase) data).write1(w);
+            data.write(w);
             w.flush();
             byte[] res = exc.toByteArray();
 
@@ -281,7 +243,7 @@ public abstract class MixinItemStack implements MC_ItemStack {
 
     @Override
     public void setSkullOwner(String name) {
-        if (getId() == MC_ItemType.SKELETON_SKULL) {
+        if (getItem() == Items.field_196184_dx) {
             if (stackTagCompound == null) {
                 stackTagCompound = new NBTTagCompound();
             }

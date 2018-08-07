@@ -2,12 +2,7 @@ package PluginExample.commands;
 
 import PluginExample.CmdBase;
 import PluginExample.MyPlugin;
-import PluginReference.ChatColor;
-import PluginReference.MC_Entity;
-import PluginReference.MC_ItemEntity;
-import PluginReference.MC_ItemStack;
-import PluginReference.MC_ItemType;
-import PluginReference.MC_Player;
+import PluginReference.*;
 
 public class CmdItemsGold extends CmdBase {
     public CmdItemsGold() {
@@ -16,7 +11,7 @@ public class CmdItemsGold extends CmdBase {
 
     @Override
     protected void execute(MC_Player plr, String[] args) {
-        MC_ItemStack isGold = MyPlugin.server.createItemStack(MC_ItemType.GOLD_BLOCK, 1, 0);
+        MC_ItemStack isGold = MyPlugin.server.createItemStack("gold_block", 1);
         int nItems = 0;
         for (MC_Entity ent : plr.getWorld().getEntities()) {
             if (!(ent instanceof MC_ItemEntity)) continue;

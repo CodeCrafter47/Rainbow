@@ -5,7 +5,6 @@ import PluginReference.ChatColor;
 import PluginReference.MC_Command;
 import PluginReference.MC_Entity;
 import PluginReference.MC_Player;
-import net.minecraft.command.CommandBase;
 import net.minecraft.entity.player.EntityPlayer;
 import org.projectrainbow._DiwUtils;
 
@@ -121,10 +120,7 @@ public class _CmdRide implements MC_Command {
 
     @Override
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
-        return args.length >= 1
-                ? CommandBase.getListOfStringsMatchingLastWord(args,
-                _DiwUtils.getMinecraftServer().getOnlinePlayerNames())
-                : null;
+        return null;
     }
 
     public boolean CanRide(String pName) {

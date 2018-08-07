@@ -4,6 +4,8 @@ package org.projectrainbow;
 import PluginReference.MC_Block;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 
 public class BlockWrapper implements MC_Block {
@@ -16,27 +18,44 @@ public class BlockWrapper implements MC_Block {
         this.m_blockObject = parm.getBlock();
     }
 
+    @Override
+    @Deprecated
     public int getId() {
-        return Block.getIdFromBlock(this.m_blockObject);
+        return 0;
     }
 
+    @Override
+    @Deprecated
     public int getSubtype() {
         try {
-            return this.m_blockObject.getMetaFromState(this.m_blockState);
+            return 0;
         } catch (Exception var2) {
             return -1;
         }
     }
 
+    @Override
     public boolean isLiquid() {
         return this.m_blockObject.getMaterial(m_blockState).isLiquid();
     }
 
+    @Override
     public boolean isSolid() {
         return this.m_blockObject.getMaterial(m_blockState).isSolid();
     }
 
+    @Override
+    @Deprecated
     public void setSubtype(int idx) {
-        this.m_blockState = this.m_blockObject.getStateFromMeta(idx);
+    }
+
+    @Override
+    public String getOfficialName() {
+        return Block.REGISTRY.getNameForObject(m_blockObject).getPath();
+    }
+
+    @Override
+    public String getFriendlyName() {
+        return Item.BLOCK_TO_ITEM.get(m_blockObject).func_200295_i(new ItemStack(m_blockObject)).getFormattedText();
     }
 }

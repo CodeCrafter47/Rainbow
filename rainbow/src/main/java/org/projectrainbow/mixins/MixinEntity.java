@@ -1,41 +1,24 @@
 package org.projectrainbow.mixins;
 
-import PluginReference.MC_DamageType;
-import PluginReference.MC_Entity;
-import PluginReference.MC_EntityType;
-import PluginReference.MC_EventInfo;
-import PluginReference.MC_FloatTriplet;
-import PluginReference.MC_ItemStack;
-import PluginReference.MC_Location;
-import PluginReference.MC_MotionData;
-import PluginReference.MC_PotionEffect;
-import PluginReference.MC_World;
+import PluginReference.*;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
 import org.projectrainbow._DiwUtils;
-import org.projectrainbow.interfaces.IMixinNBTBase;
-import org.spongepowered.asm.mixin.Implements;
-import org.spongepowered.asm.mixin.Interface;
-import org.spongepowered.asm.mixin.Intrinsic;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Constant;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -107,11 +90,11 @@ public abstract class MixinEntity implements MC_Entity {
     @Shadow
     public abstract void onKillCommand();
 
-    @Shadow
-    public abstract void setCustomNameTag(String name);
+    @Shadow(prefix = "setCustomNameTag$")
+    public abstract void setCustomNameTag$func_200203_b(ITextComponent name);
 
-    @Shadow
-    public abstract String getCustomNameTag();
+    @Shadow(prefix = "getCustomNameTag$")
+    public abstract ITextComponent getCustomNameTag$func_200201_e();
 
     @Shadow
     public abstract void setDead();
@@ -127,9 +110,6 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Shadow
     public abstract boolean shadow$startRiding(Entity var1);
-
-    @Shadow
-    public abstract String getName();
 
     @Shadow
     public abstract boolean isSprinting();
@@ -151,6 +131,12 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Shadow
     public abstract void dismountRidingEntity();
+
+    @Shadow
+    @Final
+    protected abstract String getEntityString();
+
+    @Shadow public abstract ITextComponent func_200200_C_();
 
     protected void setInvulnerable(boolean value) {
         invulnerable = value;
@@ -258,7 +244,7 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Override
     public String internalInfo() {
-        return EntityList.getEntityString((Entity) (Object) this) + ": " + toString();
+        return getEntityString() + ": " + toString();
     }
 
     @Override
@@ -296,12 +282,12 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Override
     public void setCustomName(String var1) {
-        setCustomNameTag(var1);
+        setCustomNameTag$func_200203_b(new TextComponentString(var1));
     }
 
     @Override
     public String getCustomName() {
-        return getCustomNameTag();
+        return getCustomNameTag$func_200201_e().getString();
     }
 
     @Override
@@ -392,7 +378,7 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Intrinsic
     public String api$getName() {
-        return getName();
+        return func_200200_C_().getFormattedText();
     }
 
     @Intrinsic
@@ -449,7 +435,7 @@ public abstract class MixinEntity implements MC_Entity {
     public byte[] serialize() {
         NBTTagCompound data = new NBTTagCompound();
         ((Entity) (Object) this).writeToNBT(data);
-        data.setString("id", EntityList.getEntityString((Entity) (Object) this));
+        data.setString("id", getEntityString());
         data.removeTag("UUIDMost");
         data.removeTag("UUIDLeast");
         data.removeTag("Dimension");
@@ -458,7 +444,7 @@ public abstract class MixinEntity implements MC_Entity {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             DataOutputStream dos = new DataOutputStream(os);
 
-            ((IMixinNBTBase) data).write1(dos);
+            data.write(dos);
             dos.flush();
             dos.close();
             return os.toByteArray();
@@ -489,9 +475,9 @@ public abstract class MixinEntity implements MC_Entity {
             dimension = ((MC_World) toWorld).getDimension();
             setPositionAndRotation(x, y, z, yaw, pitch);
 
-            toWorld.getChunkProvider().loadChunk((int) posX >> 4, (int) posZ >> 4);
+            toWorld.getChunkProvider().provideChunk((int) posX >> 4, (int) posZ >> 4);
 
-            while(safe && !toWorld.getCollisionBoxes((Entity) (Object) this, this.getEntityBoundingBox()).isEmpty() && this.posY < 255.0D) {
+            while(safe && !toWorld.func_195586_b((Entity) (Object) this, this.getEntityBoundingBox()) && this.posY < 255.0D) {
                 this.setPosition(this.posX, this.posY + 1.0D, this.posZ);
             }
 

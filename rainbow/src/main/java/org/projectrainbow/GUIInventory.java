@@ -6,14 +6,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IInteractionObject;
 
 public class GUIInventory extends InventoryBasic implements MC_InventoryGUI, IInteractionObject {
+    private final String title;
     private ClickHandler[] clickHandlers;
 
     public GUIInventory(String title, int size) {
-        super(title, true, size);
+        super(new TextComponentString(title), size);
+        this.title = title;
         clickHandlers = new ClickHandler[size];
     }
 
@@ -33,7 +35,7 @@ public class GUIInventory extends InventoryBasic implements MC_InventoryGUI, IIn
     }
 
     public String getTitle() {
-        return getName();
+        return title;
     }
 
     @Override

@@ -4,13 +4,14 @@ package org.projectrainbow.commands;
 import PluginReference.ChatColor;
 import PluginReference.MC_Command;
 import PluginReference.MC_Player;
-import net.minecraft.command.CommandBase;
 import org.projectrainbow.ServerWrapper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow._EconomyManager;
 import org.projectrainbow._UUIDMapper;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class _CmdPay implements MC_Command {
@@ -43,7 +44,7 @@ public class _CmdPay implements MC_Command {
                             + ChatColor.YELLOW + "PlayerName" + ChatColor.GREEN
                             + " Amount");
         } else {
-            Double amt = 0.0D;
+            Double amt;
 
             try {
                 amt = Double.parseDouble(args[1]);
@@ -111,8 +112,10 @@ public class _CmdPay implements MC_Command {
     @Override
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
         return args.length >= 1
-                ? CommandBase.getListOfStringsMatchingLastWord(args,
-                _DiwUtils.getMinecraftServer().getOnlinePlayerNames())
+                ? Arrays.stream(_DiwUtils.getMinecraftServer()
+                .getOnlinePlayerNames())
+                .filter(name -> name.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
+                .collect(Collectors.toList())
                 : null;
     }
 }

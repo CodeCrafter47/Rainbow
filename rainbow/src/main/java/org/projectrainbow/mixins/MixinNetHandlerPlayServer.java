@@ -6,11 +6,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketThreadUtil;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.server.*;
 import net.minecraft.server.management.PlayerList;
@@ -29,12 +28,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.projectrainbow.*;
 import org.projectrainbow.commands._CmdIgnore;
+import org.projectrainbow.interfaces.IMixinCPacketCustomPlayload;
 import org.projectrainbow.interfaces.IMixinEntityPlayerMP;
 import org.projectrainbow.interfaces.IMixinOutboundPacketSoundEffect;
 import org.projectrainbow.interfaces.IMixinOutboundPacketSpawnPosition;
 import org.projectrainbow.launch.Bootstrap;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -76,8 +77,8 @@ public class MixinNetHandlerPlayServer {
 
     @Inject(method = "onDisconnect", at = @At("HEAD"))
     private void onDisconnect(ITextComponent var1, CallbackInfo callback) {
-        _JOT_OnlineTimeUtils.HandlePlayerLogout(player.getName(), player.getUniqueID());
-        Hooks.onPlayerLogout(player.getName(), player.getUniqueID());
+        _JOT_OnlineTimeUtils.HandlePlayerLogout(player.getGameProfile().getName(), player.getUniqueID());
+        Hooks.onPlayerLogout(player.getGameProfile().getName(), player.getUniqueID());
     }
 
     @Inject(method = "processPlayerDigging", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.EntityPlayerMP.markPlayerActive()V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
@@ -126,7 +127,7 @@ public class MixinNetHandlerPlayServer {
             callbackInfo.cancel();
         } else {
             if (!((MC_Player) player).isOp()) {
-                String var11 = _JoeCommandStats.HandleNewCommand(player.getName(), packet.getMessage());
+                String var11 = _JoeCommandStats.HandleNewCommand(((MC_Player) player).getName(), packet.getMessage());
 
                 if (var11 != null) {
                     ((MC_Player) player).kick(var11);
@@ -135,11 +136,11 @@ public class MixinNetHandlerPlayServer {
                 }
 
                 if (_DiwUtils.HasBadLanguage(packet.getMessage())) {
-                    _DiwUtils.NotifyCensor(player.getName(), packet.getMessage());
+                    _DiwUtils.NotifyCensor(((MC_Player) player).getName(), packet.getMessage());
                     long var14 = _DiwUtils.IncreaseEventCount("CENSOR." + packet.getMessage());
                     String swearMsg = String.format(
                             "Kicking for Language (Censor #%d): %s: %s",
-                            var14, packet.getMessage(), player.getName());
+                            var14, packet.getMessage(), ((MC_Player) player).getName());
 
                     System.out.println(
                             "--------------------------------------------");
@@ -207,7 +208,7 @@ public class MixinNetHandlerPlayServer {
 
         SPacketChat packet = new SPacketChat(result, ChatType.byId((byte) (b ? 1 : 0)));
         for (EntityPlayerMP receiver : playerList.getPlayers()) {
-            if (!_CmdIgnore.IsIgnoring(receiver.getName(), this.player.getName())) {
+            if (!_CmdIgnore.IsIgnoring(receiver.getGameProfile().getName(), this.player.getGameProfile().getName())) {
                 receiver.connection.sendPacket(packet);
             }
         }
@@ -217,7 +218,7 @@ public class MixinNetHandlerPlayServer {
     @Inject(method = "handleSlashCommand", at = @At("HEAD"))
     private void onCommand(String command, CallbackInfo callbackInfo) {
         if (!command.startsWith("/login")) {
-            Bootstrap.logger.info("" + player.getName() + ": " + command);
+            Bootstrap.logger.info("" + player.getGameProfile().getName() + ": " + command);
         }
     }
 
@@ -244,7 +245,7 @@ public class MixinNetHandlerPlayServer {
         }
     }
 
-    @Inject(method = "processPlayer", at = @At(value = "FIELD", target = "net.minecraft.network.NetHandlerPlayServer.serverController:Lnet/minecraft/server/MinecraftServer;", ordinal = 0), cancellable = true)
+    @Inject(method = "processPlayer", at = @At(value = "FIELD", target = "net.minecraft.network.NetHandlerPlayServer.server:Lnet/minecraft/server/MinecraftServer;", ordinal = 0), cancellable = true)
     private void onPlayerMove(CPacketPlayer packet, CallbackInfo callbackInfo) {
         double x = packet.getX(this.player.posX);
         double y = packet.getY(this.player.posY);
@@ -306,7 +307,7 @@ public class MixinNetHandlerPlayServer {
         if (((MC_Player) player).hasPermission("rainbow.signcolor")) {
             return s;
         } else {
-            return TextFormatting.getTextWithoutFormattingCodes(s);
+            return ChatColor.StripColor(s);
         }
     }
 
@@ -347,7 +348,7 @@ public class MixinNetHandlerPlayServer {
                 replaceLines.get(0), replaceLines.get(1),
                 replaceLines.get(2), replaceLines.get(3));
         String var23 = String.format("------ [NEW SIGN by %s @ %s] --- %s",
-                this.player.getName(),
+                ((MC_Player) this.player).getName(),
                 player.getLocation().toString(), var22);
 
         LogManager.getLogger().debug(var23);
@@ -357,7 +358,7 @@ public class MixinNetHandlerPlayServer {
                 String line = newLines[i];
 
                 if (_DiwUtils.HasBadLanguage(line)) {
-                    _DiwUtils.NotifyCensor(this.player.getName(), "Sign: " + line);
+                    _DiwUtils.NotifyCensor(((MC_Player) this.player).getName(), "Sign: " + line);
                     System.out.println("* Censoring Sign Line: " + line);
                     line = "Censored";
                     newLines[i] = line;
@@ -373,70 +374,17 @@ public class MixinNetHandlerPlayServer {
         Hooks.onSignChanged((MC_Player) player, (MC_Sign) sign, location);
     }
 
-    @Inject(method = "processCustomPayload", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/play/client/CPacketCustomPayload;getChannelName()Ljava/lang/String;"))
-    private void onPluginMessage(CPacketCustomPayload var1, CallbackInfo callback) {
-        String channelName = var1.getChannelName();
-        PacketBuffer buf = var1.getBufferData();
+    @Overwrite
+    public void processCustomPayload(CPacketCustomPayload var1) {
+        PacketThreadUtil.checkThreadAndEnqueue(var1, (NetHandlerPlayServer)(Object)this, this.player.getServerWorld());
+        String channelName = ((IMixinCPacketCustomPlayload) var1).getChannel().toString();
+        PacketBuffer buf = ((IMixinCPacketCustomPlayload) var1).getData();
         byte[] data = new byte[buf.readableBytes()];
         int readerIndex = buf.readerIndex();
         buf.getBytes(readerIndex, data);
         Hooks.onPluginMessage(channelName, data, (MC_Player) player);
     }
 
-    @Inject(method = "processCustomPayload", at = @At(value = "INVOKE", target = "net.minecraft.item.ItemStack.setTagInfo(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void onBookChange(CPacketCustomPayload packet, CallbackInfo callbackInfo, String var2, PacketBuffer var3, ItemStack newBook, ItemStack oldBook) {
-        NBTTagList tagList = newBook.getTagCompound().getTagList("pages", 8);
-        ArrayList<String> pages = new ArrayList<>();
-        for (int j = 0; j < tagList.tagCount(); j++) {
-            pages.add(tagList.getStringTagAt(j));
-        }
-        MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptBookChange((MC_Player) player, pages, ei);
-        if (ei.isCancelled) {
-            callbackInfo.cancel();
-            return;
-        }
-
-        while (tagList.tagCount() > 0) {
-            tagList.removeTag(0);
-        }
-        for (String page : pages) {
-            tagList.appendTag(new NBTTagString(page));
-        }
-
-        newBook.setTagInfo("pages", tagList);
-    }
-
-    @Inject(method = "processCustomPayload", at = @At(value = "INVOKE", target = "net.minecraft.item.ItemStack.setTagInfo(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;)V", ordinal = 3), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void onBookSign(CPacketCustomPayload packet, CallbackInfo callbackInfo, String var2, PacketBuffer var3, ItemStack newBook, ItemStack oldBook) {
-        NBTTagList tagList = newBook.getTagCompound().getTagList("pages", 8);
-        ArrayList<String> pages = new ArrayList<>();
-        pages.add(oldBook.getTagCompound().getString("author"));
-        pages.add(oldBook.getTagCompound().getString("title"));
-        for (int j = 0; j < tagList.tagCount(); j++) {
-            pages.add(tagList.getStringTagAt(j));
-        }
-        MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptBookChange((MC_Player) player, pages, ei);
-        if (ei.isCancelled) {
-            callbackInfo.cancel();
-            oldBook.getTagCompound().removeTag("author");
-            oldBook.getTagCompound().removeTag("title");
-            return;
-        }
-
-        oldBook.setTagInfo("author", new NBTTagString(pages.remove(0)));
-        oldBook.setTagInfo("title", new NBTTagString(pages.remove(0)));
-
-        while (tagList.tagCount() > 0) {
-            tagList.removeTag(0);
-        }
-        for (String page : pages) {
-            tagList.appendTag(new NBTTagString(page));
-        }
-
-        newBook.setTagInfo("pages", tagList);
-    }
 
     @Inject(method = "processUseEntity", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.EntityPlayerMP.markPlayerActive()V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void onEntityInteract(CPacketUseEntity var1, CallbackInfo callbackInfo, WorldServer world, Entity target) {
@@ -476,7 +424,7 @@ public class MixinNetHandlerPlayServer {
     @Inject(method = "disconnect", at = @At("HEAD"), cancellable = true) // disconnect
     private void onKick(ITextComponent reason, CallbackInfo callbackInfo) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onPlayerKick((MC_Player) player, reason.getUnformattedText(), ei);
+        Hooks.onPlayerKick((MC_Player) player, reason.getString(), ei);
         if (ei.isCancelled) {
             callbackInfo.cancel();
         }

@@ -7,7 +7,7 @@
     <groupId>org.projectrainbow</groupId>
     <artifactId>rainbow-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.12.2-SNAPSHOT</version>
+    <version>1.13</version>
     <modules>
         <module>install-dependencies</module>
         <module>rainbow</module>
@@ -21,7 +21,8 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
         <build.number>unknown</build.number>
-        <minecraft.version>1.12.2</minecraft.version>
+        <minecraft.version>1.13</minecraft.version>
+        <minecraft.url>https://launcher.mojang.com/mc/game/1.13/server/d0caafb8438ebd206f99930cfaecfa6c9a13dca0/server.jar</minecraft.url>
     </properties>
 
     <profiles>

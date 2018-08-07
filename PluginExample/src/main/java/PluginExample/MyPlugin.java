@@ -1,74 +1,7 @@
 package PluginExample;
 
-import PluginExample.commands.CmdASAllArms;
-import PluginExample.commands.CmdASAllBase;
-import PluginExample.commands.CmdASNoArms;
-import PluginExample.commands.CmdASNoBase;
-import PluginExample.commands.CmdASPose;
-import PluginExample.commands.CmdArrows;
-import PluginExample.commands.CmdAsArmsOnly;
-import PluginExample.commands.CmdAsBaseOnly;
-import PluginExample.commands.CmdAttributeTest;
-import PluginExample.commands.CmdBiome;
-import PluginExample.commands.CmdBurn;
-import PluginExample.commands.CmdCarry;
-import PluginExample.commands.CmdCat;
-import PluginExample.commands.CmdChunkTest1;
-import PluginExample.commands.CmdChunkTest2;
-import PluginExample.commands.CmdChunkTest3;
-import PluginExample.commands.CmdClearItemName;
-import PluginExample.commands.CmdClearLore;
-import PluginExample.commands.CmdDrop1;
-import PluginExample.commands.CmdDrop2;
-import PluginExample.commands.CmdECarry;
-import PluginExample.commands.CmdEHead;
-import PluginExample.commands.CmdEgg;
-import PluginExample.commands.CmdEnchants;
-import PluginExample.commands.CmdFly;
-import PluginExample.commands.CmdFlySpeed;
-import PluginExample.commands.CmdGetBurn;
-import PluginExample.commands.CmdGetLore;
-import PluginExample.commands.CmdGui;
-import PluginExample.commands.CmdHat;
-import PluginExample.commands.CmdHead;
-import PluginExample.commands.CmdHeal;
-import PluginExample.commands.CmdHero;
-import PluginExample.commands.CmdInfo;
-import PluginExample.commands.CmdItemInfo;
-import PluginExample.commands.CmdItemsGold;
-import PluginExample.commands.CmdJunk;
-import PluginExample.commands.CmdNameItem;
-import PluginExample.commands.CmdNearinvis;
-import PluginExample.commands.CmdNearvis;
-import PluginExample.commands.CmdNether;
-import PluginExample.commands.CmdNickClear;
-import PluginExample.commands.CmdNickTest;
-import PluginExample.commands.CmdRemEffects;
-import PluginExample.commands.CmdSetAbsorb;
-import PluginExample.commands.CmdSetBiome;
-import PluginExample.commands.CmdSetFly;
-import PluginExample.commands.CmdSetHead;
-import PluginExample.commands.CmdSetLore;
-import PluginExample.commands.CmdShake;
-import PluginExample.commands.CmdStalkMe;
-import PluginExample.commands.CmdTest1;
-import PluginExample.commands.CmdTestEffects;
-import PluginExample.commands.CmdTestSpawn;
-import PluginExample.commands.CmdWalkSpeed;
-import PluginExample.commands.CmdWorlds;
-import PluginReference.ChatColor;
-import PluginReference.MC_Block;
-import PluginReference.MC_BlockType;
-import PluginReference.MC_Entity;
-import PluginReference.MC_ID;
-import PluginReference.MC_ItemStack;
-import PluginReference.MC_Location;
-import PluginReference.MC_Player;
-import PluginReference.MC_Server;
-import PluginReference.MC_World;
-import PluginReference.PluginBase;
-import PluginReference.PluginInfo;
-import PluginReference.RainbowUtils;
+import PluginExample.commands.*;
+import PluginReference.*;
 import net.md_5.bungee.config.Configuration;
 
 import java.util.ArrayList;
@@ -108,7 +41,6 @@ public class MyPlugin extends PluginBase {
         server.registerCommand(new CmdDrop1());
         server.registerCommand(new CmdDrop2());
         server.registerCommand(new CmdECarry());
-        server.registerCommand(new CmdEgg());
         server.registerCommand(new CmdEHead());
         server.registerCommand(new CmdEnchants());
         server.registerCommand(new CmdFly());
@@ -122,7 +54,6 @@ public class MyPlugin extends PluginBase {
         server.registerCommand(new CmdInfo());
         server.registerCommand(new CmdItemInfo());
         server.registerCommand(new CmdItemsGold());
-        server.registerCommand(new CmdJunk());
         server.registerCommand(new CmdNameItem());
         server.registerCommand(new CmdNearinvis());
         server.registerCommand(new CmdNearvis());
@@ -145,12 +76,12 @@ public class MyPlugin extends PluginBase {
         server.registerCommand(new CmdAttributeTest());
         server.registerCommand(new CmdGui());
 
-        server.addRecipe(server.createItemStack(MC_ID.ITEM_STONE_PICKAXE, 1, 0),
+        server.addRecipe(server.createItemStack("stone_pickaxe", 1),
                 "XXX", " I ", " I ",
-                'X', server.createItemStack(MC_ID.BLOCK_STONE, 1, 0),
-                'I', server.createItemStack(MC_ID.ITEM_STICK, 1, 0));
-        server.addShapelessRecipe(server.createItemStack(MC_ID.ITEM_LEATHER, 1, 0),
-                server.createItemStack(MC_ID.ITEM_ROTTEN_FLESH, 1, 0));
+                'X', server.createItemStack("stone", 1),
+                'I', server.createItemStack("stick", 1));
+        server.addShapelessRecipe(server.createItemStack("leather", 1),
+                server.createItemStack("rotten_flesh", 1));
     }
 
     public void onShutdown() {
@@ -176,7 +107,7 @@ public class MyPlugin extends PluginBase {
     }
 
     public void onInteracted(MC_Player plr, MC_Location loc, MC_ItemStack isHandItem) {
-        if (isHandItem.getId() == 280) {
+        if (isHandItem.getOfficialName().equals("compass")) {
             plr.setCompassTarget(loc);
         }
     }
@@ -230,16 +161,6 @@ public class MyPlugin extends PluginBase {
             int x = (int) Math.floor(loc.x); //loc.getBlockX();
             int y = loc.getBlockY() - 1;
             int z = (int) Math.floor(loc.z); //loc.getBlockZ();
-
-            MC_Block blk = world.getBlockAt(x, y, z);
-
-            int id = blk.getId();
-            if (id == MC_BlockType.SPONGE) {
-                // Let them know...
-                plr.sendMessage(ChatColor.GREEN + "You're on a sponge!");
-            } else {
-                //plr.sendMessage(ChatColor.DARK_AQUA + String.format("Block Under You: " + ChatColor.WHITE + "ID=%d, Subtype=%d", blk.getId(), blk.getSubtype()));
-            }
 
             // Show player status info...
             ArrayList<String> info = new ArrayList<>();

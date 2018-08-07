@@ -1,13 +1,6 @@
 package org.projectrainbow.mixins;
 
-import PluginReference.MC_Attribute;
-import PluginReference.MC_AttributeType;
-import PluginReference.MC_DamageType;
-import PluginReference.MC_Entity;
-import PluginReference.MC_EventInfo;
-import PluginReference.MC_LivingEntity;
-import PluginReference.MC_Player;
-import PluginReference.MC_PotionEffect;
+import PluginReference.*;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttribute;
@@ -19,16 +12,10 @@ import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Implements;
-import org.spongepowered.asm.mixin.Interface;
-import org.spongepowered.asm.mixin.Intrinsic;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
@@ -75,8 +62,8 @@ public abstract class MixinEntityLivingBase extends MixinEntity implements MC_Li
     @Shadow
     public abstract Collection<PotionEffect> getActivePotionEffects();
 
-    @Shadow
-    public abstract void clearActivePotions();
+    @Shadow(prefix = "clearActivePotions$")
+    public abstract boolean clearActivePotions$func_195061_cb();
 
     @Shadow
     protected abstract float applyPotionDamageCalculations(DamageSource var1, float var2);
@@ -113,13 +100,13 @@ public abstract class MixinEntityLivingBase extends MixinEntity implements MC_Li
         }
     }
 
-    @Inject(method = "addPotionEffect", at = @At("HEAD"), cancellable = true)
-    private void onAddPotionEffect(PotionEffect var1, CallbackInfo callbackInfo) {
+    @Inject(method = "func_195064_c", at = @At("HEAD"), cancellable = true)
+    private void onAddPotionEffect(PotionEffect var1, CallbackInfoReturnable<Boolean> callbackInfo) {
         if (this instanceof MC_Player) {
             MC_EventInfo ei = new MC_EventInfo();
             Hooks.onAttemptPotionEffect((MC_Player) this, PluginHelper.potionMap.get(var1.getPotion()), ei);
             if (ei.isCancelled) {
-                callbackInfo.cancel();
+                callbackInfo.setReturnValue(false);
             }
         }
     }
@@ -187,7 +174,7 @@ public abstract class MixinEntityLivingBase extends MixinEntity implements MC_Li
 
     @Override
     public void setPotionEffects(List<MC_PotionEffect> var1) {
-        clearActivePotions();
+        clearActivePotions$func_195061_cb();
         for (MC_PotionEffect mc_potionEffect : var1) {
             PotionEffect potionEffect = PluginHelper.unwrap(mc_potionEffect);
             PotionEffect var2 = this.activePotionsMap.get(potionEffect.getPotion());
@@ -195,7 +182,7 @@ public abstract class MixinEntityLivingBase extends MixinEntity implements MC_Li
                 this.activePotionsMap.put(potionEffect.getPotion(), potionEffect);
                 this.onNewPotionEffect(potionEffect);
             } else {
-                var2.combine(potionEffect);
+                var2.func_199308_a(potionEffect); // combine
                 this.onChangedPotionEffect(var2, true);
             }
         }

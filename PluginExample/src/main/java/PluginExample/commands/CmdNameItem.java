@@ -14,7 +14,7 @@ public class CmdNameItem extends CmdBase {
     @Override
     protected void execute(MC_Player plr, String[] args) {
         MC_ItemStack is = plr.getItemInHand();
-        if (is.getId() == 0) {
+        if (is.getCount() == 0) {
             plr.sendMessage(ChatColor.RED + "You must be holding something!");
             return;
         }

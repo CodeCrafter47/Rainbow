@@ -13,7 +13,7 @@ public class CmdDrop2 extends CmdBase {
 
     @Override
     protected void execute(MC_Player plr, String[] args) {
-        MC_ItemStack is = MyPlugin.server.createItemStack(1, 4, 1);
+        MC_ItemStack is = MyPlugin.server.createItemStack("stone", 4);
         plr.getWorld().dropItem(is, plr.getLocation(), null);
         plr.sendMessage(ChatColor.GREEN + "Ok. 4 stone");
     }
