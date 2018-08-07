@@ -5,7 +5,7 @@
     <parent>
         <artifactId>rainbow-parent</artifactId>
         <groupId>org.projectrainbow</groupId>
-        <version>1.12.2-SNAPSHOT</version>
+        <version>1.13</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -129,7 +129,6 @@
                         </goals>
                         <configuration>
                             <failOnError>false</failOnError>
-                            <includeDependencySources>true</includeDependencySources>
                         </configuration>
                     </execution>
                 </executions>

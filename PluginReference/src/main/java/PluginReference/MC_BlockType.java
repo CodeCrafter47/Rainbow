@@ -3,6 +3,7 @@ package PluginReference;
 /**
  * Convenience variables to use instead of Minecraft IDs
  */
+@Deprecated
 public class MC_BlockType {
     public static final int AIR = 0;
     public static final int STONE = 1;

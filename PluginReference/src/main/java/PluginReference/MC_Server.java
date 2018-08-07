@@ -205,6 +205,15 @@ public interface MC_Server {
     MC_World getWorld(int idxDimension);
 
     /**
+     * Create an MC_ItemStack given id, count
+     *
+     * @param id    Item ID
+     * @param count Stack Count
+     * @return MC_ItemStack object
+     */
+    MC_ItemStack createItemStack(String id, int count);
+
+    /**
      * Create an MC_ItemStack given id, count, and dmg/subtype value
      *
      * @param id    Item ID
@@ -212,6 +221,7 @@ public interface MC_Server {
      * @param dmg   Damage or Subtype
      * @return MC_ItemStack object
      */
+    @Deprecated
     MC_ItemStack createItemStack(int id, int count, int dmg);
 
     /**
@@ -322,6 +332,7 @@ public interface MC_Server {
      * @param id Block id
      * @return MC_Block object
      */
+    @Deprecated
     MC_Block getBlock(int id);
 
     /**
@@ -331,6 +342,7 @@ public interface MC_Server {
      * @param subtype Block subtype
      * @return MC_Block object
      */
+    @Deprecated
     MC_Block getBlock(int id, int subtype);
 
     /**
@@ -344,6 +356,7 @@ public interface MC_Server {
      * Register a world name. If already exists, returns existing identifier.
      *
      * @param worldName World Name
+     * @param settings misc configuration
      * @return Dimension (Integer identifier) for this world
      */
     @Deprecated
@@ -399,8 +412,8 @@ public interface MC_Server {
      * }
      * </pre>
      *
-     * @param result
-     * @param ingredients
+     * @param result resulting item
+     * @param ingredients required ingredients
      */
     void addShapelessRecipe(MC_ItemStack result, MC_ItemStack... ingredients);
 

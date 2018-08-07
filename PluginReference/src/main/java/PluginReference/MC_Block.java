@@ -8,13 +8,15 @@ public interface MC_Block
 	 /** 
      * Get the Minecraft ID for this block.
      * @return Minecraft ID
-     */ 		
+     */
+	 @Deprecated
 	public int getId();
 	
 	 /** 
      * Get the subtype for this block type
      * @return Subtype value
-     */ 		
+     */
+	 @Deprecated
 	public int getSubtype();
 	
 	 /** 
@@ -31,7 +33,12 @@ public interface MC_Block
 	 /** 
      * Set Subtype value
      * @param idx Subtype value
-     */ 		
+     */
+	 @Deprecated
 	public void setSubtype(int idx);
+
+	 public String getOfficialName();
+
+	 public String getFriendlyName();
 	
 }

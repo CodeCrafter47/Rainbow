@@ -75,8 +75,26 @@ public interface MC_World
      * @param loc Location
      * @return MC_Block object 
      */ 			
-	public MC_Block getBlockAt(MC_Location loc); 
-	
+	public MC_Block getBlockAt(MC_Location loc);
+
+
+	/**
+	 * Set block at location
+	 *
+	 * @param x X-Coordinate
+	 * @param y Y-Coordinate
+	 * @param z Z-Coordinate
+	 * @param blk MC_Block object
+	 */
+	public void setBlockAt(int x, int y, int z, MC_Block blk);
+
+	/**
+	 * Set block at location
+	 *
+	 * @param loc Location
+	 * @param blk MC_Block object
+	 */
+	public void setBlockAt(MC_Location loc, MC_Block blk);
 	
 	 /** 
      * Set block at location
@@ -86,7 +104,8 @@ public interface MC_World
      * @param z Z-Coordinate
      * @param blk MC_Block object
      * @param subType block Subtype
-     */ 			
+     */
+	 @Deprecated
 	public void setBlockAt(int x, int y, int z, MC_Block blk, int subType);
 
 	 /** 
@@ -95,7 +114,8 @@ public interface MC_World
      * @param loc Location
      * @param blk MC_Block object
      * @param subType block Subtype
-     */ 			
+     */
+	 @Deprecated
 	public void setBlockAt(MC_Location loc, MC_Block blk, int subType);
 	
 	 /** 
@@ -226,14 +246,6 @@ public interface MC_World
      * @return MC_WorldBiomeType value 
      */ 			
 	public MC_WorldBiomeType getBiomeTypeAt(int x, int z);
-
-	 /** 
-     * Get biome type at location
-     * 
-     * @param x X coordinate
-     * @param z Z coordinate
-     * @return MC_WorldBiomeType object 
-     */ 			
 	
 	 /** 
      * Set biome type at location
@@ -247,8 +259,8 @@ public interface MC_World
 	 /** 
      * Loads chunk at specified coordinate
      * 
-     * @param cx Chunk X coordinate (i.e. x >> 4)
-     * @param cz Chunk Z coordinate (i.e. z >> 4)
+     * @param cx Chunk X coordinate (i.e. x &gt;&gt; 4)
+     * @param cz Chunk Z coordinate (i.e. z &gt;&gt; 4)
      * @return True if chunk loaded. False otherwise 
      */ 			
 	public boolean loadChunk(int cx, int cz);
@@ -256,8 +268,8 @@ public interface MC_World
 	 /** 
      * Check if particular chunk is loaded
      * 
-     * @param cx Chunk X coordinate (i.e. x >> 4)
-     * @param cz Chunk Z coordinate (i.e. z >> 4)
+     * @param cx Chunk X coordinate (i.e. x &gt;&gt; 4)
+     * @param cz Chunk Z coordinate (i.e. z &gt;&gt; 4)
      * @return True if chunk loaded. False otherwise 
      */ 			
 	public boolean isChunkLoaded(int cx, int cz);

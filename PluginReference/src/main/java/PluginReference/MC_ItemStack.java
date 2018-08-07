@@ -34,7 +34,8 @@ public interface MC_ItemStack
      * Get the Minecraft ID for this item. E.g. 1=Stone, 2=Grass
      * 
      * @return Minecraft ID
-     */ 		
+     */
+	 @Deprecated
 	public int getId();
 	 /** 
      * Gets the damage/subtype value for this item. Note: This value is

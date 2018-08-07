@@ -29,6 +29,7 @@ public abstract class PluginBase
 
     /**
      * Internal method. Called by the plugin manager after creating an instance of the plugin.
+	 * @param dataFolder folder where the plugin can store its persistent data
      */
     public final void init(File dataFolder) {
         Preconditions.checkState(!initialized, "Plugin instance already initialized.");
@@ -183,6 +184,7 @@ public abstract class PluginBase
 	 * @param playerName Player Name
 	 * @param uuid Player UUID
 	 * @param address Remote player address
+	 * @param ei ei.isCancelled can be used to disallow the player to connect to the server. In that case ei.tag will be the disconnect reason.
 	 */
 	public void onPlayerLogin(String playerName, UUID uuid, InetAddress address, MC_EventInfo ei)  {}
 
@@ -311,6 +313,7 @@ public abstract class PluginBase
      *
      * @param ent Entity involved in the explosion
      * @param locs List of block locations
+	 * @return whether there are changes to the event.
      */
 	public boolean onAttemptExplodeSpecific(MC_Entity ent, List<MC_Location> locs) {return false;}
 

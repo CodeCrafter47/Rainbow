@@ -4,6 +4,9 @@ public+synthetic PluginReference/MC_Server/registerServerPacketListener(LPluginR
 public+synthetic PluginReference/MC_Server/registerWorld(Ljava/lang/String;LPluginReference/MC_WorldSettings;)I
 public+synthetic PluginReference/MC_Server/unregisterWorld(Ljava/lang/String;)Z
 
+public+synthetic PluginReference/MC_Server/getBlock(I)LPluginReference/MC_Block;
+public+synthetic PluginReference/MC_Server/getBlock(II)LPluginReference/MC_Block;
+
 public+synthetic PluginReference/PluginBase/onBlockBroke(LPluginReference/MC_Player;LPluginReference/MC_Location;I)V
 public+synthetic PluginReference/PluginBase/onPlayerLogin(Ljava/lang/String;Ljava/util/UUID;Ljava/lang/String;)V
 public+synthetic PluginReference/PluginBase/onAttemptPlaceOrInteract(LPluginReference/MC_Player;LPluginReference/MC_Location;LPluginReference/MC_EventInfo;LPluginReference/MC_DirectionNESWUD;)V
@@ -13,6 +16,8 @@ public+synthetic PluginReference/MC_EntityType/HANGING
 public+synthetic PluginReference/RainbowUtils/setServer(LPluginReference/MC_Server;)V
 
 public+synthetic PluginReference/MC_World/getBlockFromName(Ljava/lang/String;)LPluginReference/MC_Block;
+public+synthetic PluginReference/MC_World/setBlockAt(IIILPluginReference/MC_Block;I)V
+public+synthetic PluginReference/MC_World/setBlockAt(LPluginReference/MC_Location;LPluginReference/MC_Block;I)V
 
 public+synthetic PluginReference/MC_Horse/setHorseType(LPluginReference/MC_HorseType;)V
 public+synthetic PluginReference/MC_Horse/getHorseType()LPluginReference/MC_HorseType;
@@ -23,3 +28,24 @@ public+synthetic PluginReference/MC_Zombie/isVillager()Z
 public+synthetic PluginReference/MC_Skeleton/getSkeletonType()LPluginReference/MC_SkeletonType;
 public+synthetic PluginReference/MC_Skeleton/setSkeletonType(LPluginReference/MC_SkeletonType;)V
 public+synthetic PluginReference.MC_SkeletonType
+
+public+synthetic PluginReference/BlockHelper/mapBlockNames
+public+synthetic PluginReference/BlockHelper/mapItemNames
+public+synthetic PluginReference/BlockHelper/mapNumSubtypes
+public+synthetic PluginReference/BlockHelper/getBlockName(I)Ljava/lang/String;
+public+synthetic PluginReference/BlockHelper/getBlockFriendlyName(II)Ljava/lang/String;
+public+synthetic PluginReference/BlockHelper/getBlockID_FromKey(I)I
+public+synthetic PluginReference/BlockHelper/getBlockSubtype_FromKey(I)I
+
+public+synthetic PluginReference/MC_Chest/getBlockId()I
+
+public+synthetic PluginReference/MC_Block/getId()I
+public+synthetic PluginReference/MC_Block/getSubtype()I
+public+synthetic PluginReference/MC_Block/setSubtype(I)V
+
+public+synthetic PluginReference/MC_ItemStack/getId()I
+public+synthetic PluginReference/MC_BlockType/*
+public+synthetic PluginReference/MC_ID/*
+public+synthetic PluginReference/MC_ItemType/*
+
+public+synthetic PluginReference/MC_Server/createItemStack(III)LPluginReference/MC_ItemStack;

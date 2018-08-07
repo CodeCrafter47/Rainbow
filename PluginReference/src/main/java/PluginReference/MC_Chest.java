@@ -33,6 +33,13 @@ public interface MC_Chest
      * Get the Block ID for this chest (for determining chest type)
      * 
      * @return Block ID 
-     */ 			
-	public int getBlockId(); 
+     */
+	 @Deprecated
+	public int getBlockId();
+
+	/**
+	 * Get the block associated with this chest
+	 * @return a block
+	 */
+	public MC_Block getBlock();
 }

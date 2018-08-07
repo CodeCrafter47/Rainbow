@@ -5,30 +5,35 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /** 
  * Block-related utility functions and maps available to Rainbow plugins.
- */ 			
+ */
 public class BlockHelper
 {
 	 /** 
      * Map of Block ID to internal Block Name
      * For example, 8 maps to 'flowing_water'
-     */ 			
+     */
+	 @Deprecated
 	public static Map<Integer, String> mapBlockNames = new ConcurrentHashMap<Integer, String>();
 	 /** 
      * Map of ID:Subtype string to friendly Block Name
      * For example, "126:5" maps to "Dark Oak Wood Slab"
-     */ 			
+     */
+	 @Deprecated
 	public static Map<String, String> mapItemNames = new ConcurrentHashMap<String, String>();
 	 /**
      * Map of ID to number of subtypes
      * For example, ID 1 maps to 7 because there are 7 stone subtypes in MC 1.8
-     */ 			
+     */
+	 @Deprecated
 	public static Map<Integer, Integer> mapNumSubtypes = new ConcurrentHashMap<Integer, Integer>();
 
 	 /** 
      * Get internal block name from ID.
      * For example, returns "flowing_water" for ID 8.
+	 * @param blockID block id
      * @return Block Name
-     */ 			
+     */
+	 @Deprecated
 	public static String getBlockName(int blockID)
 	{
 		String res = mapBlockNames.get(blockID);
@@ -40,9 +45,11 @@ public class BlockHelper
 
 	 /** 
      * Translates (ID=139,Subtype=1) into "Mossy Cobblestone Wall" and so forth.
-
+	 * @param blockID
+	 * @param subType
      * @return Friendly Name
-     */ 			
+     */
+	 @Deprecated
 	public static String getBlockFriendlyName(int blockID, int subType)
 	{
 		Integer numSubTypes = mapNumSubtypes.get(blockID);
@@ -80,8 +87,10 @@ public class BlockHelper
 	 /** 
      * Translates Minecraft integer representation of a block into just the Block ID.
      * See PluginBase.onBlockBroke() for an example of where this is used. 
+     * @param  blockKey ID
      * @return Block ID
-     */ 			
+     */
+	 @Deprecated
 	public static int getBlockID_FromKey(int blockKey)
 	{
 		int blockID = blockKey & ((1 << 12) - 1);
@@ -90,9 +99,11 @@ public class BlockHelper
 
 	 /** 
      * Translates Minecraft integer representation of a block into just the Block Subtype
-     * See PluginBase.onBlockBroke() for an example of where this is used. 
+     * See PluginBase.onBlockBroke() for an example of where this is used.
+	 * @param  blockKey ID
      * @return Block Subtype
-     */ 			
+     */
+	 @Deprecated
 	public static int getBlockSubtype_FromKey(int blockKey)
 	{
 		return (blockKey >> 12);

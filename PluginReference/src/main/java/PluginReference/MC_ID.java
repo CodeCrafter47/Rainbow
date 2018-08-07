@@ -3,6 +3,7 @@ package PluginReference;
 /** 
  * Convenience variables to use instead of Minecraft IDs
  */
+@Deprecated
 public final class MC_ID
 {
 	public static final int AIR = 0;
