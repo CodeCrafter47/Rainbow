@@ -5,7 +5,6 @@ import PluginReference.MC_EnchantmentType;
 import PluginReference.MC_ItemStack;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -31,11 +30,9 @@ import java.util.stream.Collectors;
 @Mixin(ItemStack.class)
 public abstract class MixinItemStack implements MC_ItemStack {
     @Shadow
-    public int stackSize;
+    private int stackSize;
     @Shadow
     private NBTTagCompound stackTagCompound;
-    @Shadow
-    private EntityItemFrame itemFrame;
 
     @Shadow(prefix = "getDisplayName$")
     public abstract ITextComponent getDisplayName$func_200301_q();
@@ -86,7 +83,7 @@ public abstract class MixinItemStack implements MC_ItemStack {
     @Override
     @Deprecated
     public int getId() {
-        return Item.getIdFromItem(getItem());
+        return PluginHelper.getLegacyItemId(getItem());
     }
 
     @Override

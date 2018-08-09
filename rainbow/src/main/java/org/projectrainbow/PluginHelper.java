@@ -45,6 +45,7 @@ public class PluginHelper {
     public static BiMap<EnumHand, MC_Hand> handMap = HashBiMap.create();
     public static BiMap<MC_AttributeType, IAttribute> attributeMap = HashBiMap.create();
     public static BiMap<MC_AttributeModifier.Operator, Integer> operatorMap = HashBiMap.create();
+    public static BiMap<Item, Integer> legacyItemIdMap = HashBiMap.create();
 
     public static MC_EntityType getEntityType(Class<? extends Entity> clazz) {
         if (EntityPlayer.class.isAssignableFrom(clazz)) {
@@ -366,6 +367,418 @@ public class PluginHelper {
         operatorMap.put(MC_AttributeModifier.Operator.ADD_CONSTANT, 0);
         operatorMap.put(MC_AttributeModifier.Operator.ADD_SCALAR_BASE, 1);
         operatorMap.put(MC_AttributeModifier.Operator.ADD_SCALAR, 2);
+
+        legacyItemIdMap.put(Items.AIR, 0);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.STONE), 1);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.GRASS), 2);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DIRT), 3);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.COBBLESTONE), 4);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196662_n), 5); // oak planks
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196674_t), 6); // oak sapling
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.BEDROCK), 7);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.WATER), 8);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.WATER), 9);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.LAVA), 10);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.LAVA), 11);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.SAND), 12);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.GRAVEL), 13);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.GOLD_ORE), 14);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.IRON_ORE), 15);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.COAL_ORE), 16);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196617_K), 17); // oak log
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196642_W), 18); // oak leaves
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.SPONGE), 19);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.GLASS), 20);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.LAPIS_ORE), 21);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.LAPIS_BLOCK), 22);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DISPENSER), 23);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.SANDSTONE), 24);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196586_al), 25); // note block
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196552_aC), 27); // powered rail
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DETECTOR_RAIL), 28);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.STICKY_PISTON), 29);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196553_aF), 30); // web
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196804_gh), 31); // tall grass
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196555_aI), 32); // dead bush
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.PISTON), 33);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.PISTON_HEAD), 34);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196556_aL), 35); // white wool
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196605_bc), 37); // dandelion / yellow flower
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196606_bd), 38); // poppy / red flower
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.BROWN_MUSHROOM), 39);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.RED_MUSHROOM), 40);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.GOLD_BLOCK), 41);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.IRON_BLOCK), 42);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.STONE_SLAB), 44);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196584_bK), 45); // bricks
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.TNT), 46);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.BOOKSHELF), 47);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.MOSSY_COBBLESTONE), 48);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.OBSIDIAN), 49);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.TORCH), 50);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.FIRE), 51);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.MOB_SPAWNER), 52);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.OAK_STAIRS), 53);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.CHEST), 54);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_WIRE), 55);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DIAMOND_ORE), 56);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DIAMOND_BLOCK), 57);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.CRAFTING_TABLE), 58);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.FARMLAND), 60);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.FURNACE), 62);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196649_cc), 63); // sign
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.OAK_DOOR), 64);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.LADDER), 65);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.RAIL), 66);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196659_cl), 67); // cobblestone stairs
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.WALL_SIGN), 68);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.LEVER), 69);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.STONE_PRESSURE_PLATE), 70);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196663_cq), 72); // oak pressure plate
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_ORE), 74);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_TORCH), 76);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.STONE_BUTTON), 77);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.SNOW), 78);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.ICE), 79);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196604_cC), 80); // snow block
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.CACTUS), 81);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.CLAY), 82);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.JUKEBOX), 84);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.OAK_FENCE), 85);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.PUMPKIN), 86);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.NETHERRACK), 87);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.SOUL_SAND), 88);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.GLOWSTONE), 89);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.PORTAL), 90);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196628_cT), 91); // lit pumpkin
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196633_cV), 94); // repeater
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196807_gj), 95); // white stained glass
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196636_cW), 96); // oak trapdoor
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196686_dc), 97); // infested stone
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196696_di), 98); // stone bricks
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.BROWN_MUSHROOM_BLOCK), 99);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.RED_MUSHROOM_BLOCK), 100);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.IRON_BARS), 101);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.GLASS_PANE), 102);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.MELON_BLOCK), 103);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.PUMPKIN_STEM), 104);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.MELON_STEM), 105);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.VINE), 106);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.OAK_FENCE_GATE), 107);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.BRICK_STAIRS), 108);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.STONE_BRICK_STAIRS), 109);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.MYCELIUM), 110);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196651_dG), 111); // lily pad
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196653_dH), 112); // nether bricks
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.NETHER_BRICK_FENCE), 113);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.NETHER_BRICK_STAIRS), 114);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.ENCHANTING_TABLE), 116);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.END_PORTAL), 119);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.END_PORTAL_FRAME), 120);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.END_STONE), 121);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DRAGON_EGG), 122);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_LAMP), 124);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196622_bq), 126); // oak slab
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.COCOA), 127);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.SANDSTONE_STAIRS), 128);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.EMERALD_ORE), 129);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.ENDER_CHEST), 130);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.TRIPWIRE_HOOK), 131);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.TRIPWIRE), 132);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.EMERALD_BLOCK), 133);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.SPRUCE_STAIRS), 134);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.BIRCH_STAIRS), 135);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.JUNGLE_STAIRS), 136);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.COMMAND_BLOCK), 137);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.BEACON), 138);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.COBBLESTONE_WALL), 139);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.CARROTS), 141);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.POTATOES), 142);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196689_eF), 143); // oak button
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196703_eM), 144); // skeleton skull
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.ANVIL), 145);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.TRAPPED_CHEST), 146);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE), 147);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE), 148);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196762_fd), 150);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DAYLIGHT_DETECTOR), 151);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_BLOCK), 152);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196766_fg), 153); // nether quartz ore
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.HOPPER), 154);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.QUARTZ_BLOCK), 155);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.QUARTZ_STAIRS), 156);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.ACTIVATOR_RAIL), 157);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DROPPER), 158);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196777_fo), 159); // white terracotta
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196825_gz), 160); // white stained glass pane
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196574_ab), 161); // dark oak leaves
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196623_P), 162); // dark oak log
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.ACACIA_STAIRS), 163);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DARK_OAK_STAIRS), 164);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.SLIME_BLOCK), 165);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.BARRIER), 166);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.IRON_TRAPDOOR), 167);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.PRISMARINE), 168);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.SEA_LANTERN), 169);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.HAY_BLOCK), 170);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196724_fH), 171); // white carpet
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.HARDENED_CLAY), 172);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.COAL_BLOCK), 173);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.PACKED_ICE), 174);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196784_gT), 176); // white banner
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196843_hj), 177); // white wall banner
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DAYLIGHT_DETECTOR), 178);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.RED_SANDSTONE), 179);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.RED_SANDSTONE_STAIRS), 180);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.SPRUCE_FENCE_GATE), 183);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.BIRCH_FENCE_GATE), 184);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.JUNGLE_FENCE_GATE), 185);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DARK_OAK_FENCE_GATE), 186);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.ACACIA_FENCE_GATE), 187);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.SPRUCE_FENCE), 188);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.BIRCH_FENCE), 189);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.JUNGLE_FENCE), 190);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DARK_OAK_FENCE), 191);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.ACACIA_FENCE), 192);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.END_ROD), 198);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.CHORUS_PLANT), 199);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.CHORUS_FLOWER), 200);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.PURPUR_BLOCK), 201);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.PURPUR_PILLAR), 202);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.PURPUR_STAIRS), 203);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.PURPUR_SLAB), 205);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196806_hJ), 206); // end stone bricks
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.GRASS_PATH), 208);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.END_GATEWAY), 209);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.REPEATING_COMMAND_BLOCK), 210);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.CHAIN_COMMAND_BLOCK), 211);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.FROSTED_ICE), 212);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196814_hQ), 213); // magma block
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.NETHER_WART_BLOCK), 214);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196817_hS), 215); // red nether brick
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.BONE_BLOCK), 216);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.STRUCTURE_VOID), 217);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.OBSERVER), 218);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.WHITE_SHULKER_BOX), 219);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.ORANGE_SHULKER_BOX), 220);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.MAGENTA_SHULKER_BOX), 221);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.LIGHT_BLUE_SHULKER_BOX), 222);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.YELLOW_SHULKER_BOX), 223);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.LIME_SHULKER_BOX), 224);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.PINK_SHULKER_BOX), 225);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.GRAY_SHULKER_BOX), 226);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196875_ie), 227); // light gray shulker box
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.CYAN_SHULKER_BOX), 228);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.PURPLE_SHULKER_BOX), 229);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.BLUE_SHULKER_BOX), 230);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.BROWN_SHULKER_BOX), 231);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.GREEN_SHULKER_BOX), 232);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.RED_SHULKER_BOX), 233);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.BLACK_SHULKER_BOX), 234);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.STRUCTURE_BLOCK), 255);
+        legacyItemIdMap.put(Items.IRON_SHOVEL, 256);
+        legacyItemIdMap.put(Items.IRON_PICKAXE, 257);
+        legacyItemIdMap.put(Items.IRON_AXE, 258);
+        legacyItemIdMap.put(Items.FLINT_AND_STEEL, 259);
+        legacyItemIdMap.put(Items.APPLE, 260);
+        legacyItemIdMap.put(Items.BOW, 261);
+        legacyItemIdMap.put(Items.ARROW, 262);
+        legacyItemIdMap.put(Items.COAL, 263);
+        legacyItemIdMap.put(Items.DIAMOND, 264);
+        legacyItemIdMap.put(Items.IRON_INGOT, 265);
+        legacyItemIdMap.put(Items.GOLD_INGOT, 266);
+        legacyItemIdMap.put(Items.IRON_SWORD, 267);
+        legacyItemIdMap.put(Items.WOODEN_SWORD, 268);
+        legacyItemIdMap.put(Items.WOODEN_SHOVEL, 269);
+        legacyItemIdMap.put(Items.WOODEN_PICKAXE, 270);
+        legacyItemIdMap.put(Items.WOODEN_AXE, 271);
+        legacyItemIdMap.put(Items.STONE_SWORD, 272);
+        legacyItemIdMap.put(Items.STONE_SHOVEL, 273);
+        legacyItemIdMap.put(Items.STONE_PICKAXE, 274);
+        legacyItemIdMap.put(Items.STONE_AXE, 275);
+        legacyItemIdMap.put(Items.DIAMOND_SWORD, 276);
+        legacyItemIdMap.put(Items.DIAMOND_SHOVEL, 277);
+        legacyItemIdMap.put(Items.DIAMOND_PICKAXE, 278);
+        legacyItemIdMap.put(Items.DIAMOND_AXE, 279);
+        legacyItemIdMap.put(Items.STICK, 280);
+        legacyItemIdMap.put(Items.BOWL, 281);
+        legacyItemIdMap.put(Items.MUSHROOM_STEW, 282);
+        legacyItemIdMap.put(Items.GOLDEN_SWORD, 283);
+        legacyItemIdMap.put(Items.GOLDEN_SHOVEL, 284);
+        legacyItemIdMap.put(Items.GOLDEN_PICKAXE, 285);
+        legacyItemIdMap.put(Items.GOLDEN_AXE, 286);
+        legacyItemIdMap.put(Items.STRING, 287);
+        legacyItemIdMap.put(Items.FEATHER, 288);
+        legacyItemIdMap.put(Items.GUNPOWDER, 289);
+        legacyItemIdMap.put(Items.WOODEN_HOE, 290);
+        legacyItemIdMap.put(Items.STONE_HOE, 291);
+        legacyItemIdMap.put(Items.IRON_HOE, 292);
+        legacyItemIdMap.put(Items.DIAMOND_HOE, 293);
+        legacyItemIdMap.put(Items.GOLDEN_HOE, 294);
+        legacyItemIdMap.put(Items.WHEAT_SEEDS, 295);
+        legacyItemIdMap.put(Items.WHEAT, 296);
+        legacyItemIdMap.put(Items.BREAD, 297);
+        legacyItemIdMap.put(Items.LEATHER_HELMET, 298);
+        legacyItemIdMap.put(Items.LEATHER_CHESTPLATE, 299);
+        legacyItemIdMap.put(Items.LEATHER_LEGGINGS, 300);
+        legacyItemIdMap.put(Items.LEATHER_BOOTS, 301);
+        legacyItemIdMap.put(Items.CHAINMAIL_HELMET, 302);
+        legacyItemIdMap.put(Items.CHAINMAIL_CHESTPLATE, 303);
+        legacyItemIdMap.put(Items.CHAINMAIL_LEGGINGS, 304);
+        legacyItemIdMap.put(Items.CHAINMAIL_BOOTS, 305);
+        legacyItemIdMap.put(Items.IRON_HELMET, 306);
+        legacyItemIdMap.put(Items.IRON_CHESTPLATE, 307);
+        legacyItemIdMap.put(Items.IRON_LEGGINGS, 308);
+        legacyItemIdMap.put(Items.IRON_BOOTS, 309);
+        legacyItemIdMap.put(Items.DIAMOND_HELMET, 310);
+        legacyItemIdMap.put(Items.DIAMOND_CHESTPLATE, 311);
+        legacyItemIdMap.put(Items.DIAMOND_LEGGINGS, 312);
+        legacyItemIdMap.put(Items.DIAMOND_BOOTS, 313);
+        legacyItemIdMap.put(Items.GOLDEN_HELMET, 314);
+        legacyItemIdMap.put(Items.GOLDEN_CHESTPLATE, 315);
+        legacyItemIdMap.put(Items.GOLDEN_LEGGINGS, 316);
+        legacyItemIdMap.put(Items.GOLDEN_BOOTS, 317);
+        legacyItemIdMap.put(Items.FLINT, 318);
+        legacyItemIdMap.put(Items.PORKCHOP, 319);
+        legacyItemIdMap.put(Items.COOKED_PORKCHOP, 320);
+        legacyItemIdMap.put(Items.PAINTING, 321);
+        legacyItemIdMap.put(Items.GOLDEN_APPLE, 322);
+        legacyItemIdMap.put(Items.SIGN, 323);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.OAK_DOOR), 324);
+        legacyItemIdMap.put(Items.BUCKET, 325);
+        legacyItemIdMap.put(Items.WATER_BUCKET, 326);
+        legacyItemIdMap.put(Items.LAVA_BUCKET, 327);
+        legacyItemIdMap.put(Items.MINECART, 328);
+        legacyItemIdMap.put(Items.SADDLE, 329);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.IRON_DOOR), 330);
+        legacyItemIdMap.put(Items.REDSTONE, 331);
+        legacyItemIdMap.put(Items.SNOWBALL, 332);
+        legacyItemIdMap.put(Items.BOAT, 333);
+        legacyItemIdMap.put(Items.LEATHER, 334);
+        legacyItemIdMap.put(Items.MILK_BUCKET, 335);
+        legacyItemIdMap.put(Items.BRICK, 336);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196608_cF), 338); // sugar cane
+        legacyItemIdMap.put(Items.PAPER, 339);
+        legacyItemIdMap.put(Items.BOOK, 340);
+        legacyItemIdMap.put(Items.SLIME_BALL, 341);
+        legacyItemIdMap.put(Items.CHEST_MINECART, 342);
+        legacyItemIdMap.put(Items.FURNACE_MINECART, 343);
+        legacyItemIdMap.put(Items.EGG, 344);
+        legacyItemIdMap.put(Items.COMPASS, 345);
+        legacyItemIdMap.put(Items.FISHING_ROD, 346);
+        legacyItemIdMap.put(Items.CLOCK, 347);
+        legacyItemIdMap.put(Items.GLOWSTONE_DUST, 348);
+        legacyItemIdMap.put(Items.field_196086_aW, 349); // cod
+        legacyItemIdMap.put(Items.field_196102_ba, 350); // cooked cod
+        legacyItemIdMap.put(Items.field_196136_br, 351); // ink sac
+        legacyItemIdMap.put(Items.BONE, 352);
+        legacyItemIdMap.put(Items.SUGAR, 353);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.CAKE), 354);
+        legacyItemIdMap.put(Items.field_196140_bu, 355); // bed
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196633_cV), 356); // repeater
+        legacyItemIdMap.put(Items.COOKIE, 357);
+        legacyItemIdMap.put(Items.MAP, 358);
+        legacyItemIdMap.put(Items.SHEARS, 359);
+        legacyItemIdMap.put(Items.PUMPKIN_SEEDS, 361);
+        legacyItemIdMap.put(Items.MELON_SEEDS, 362);
+        legacyItemIdMap.put(Items.BEEF, 363);
+        legacyItemIdMap.put(Items.COOKED_BEEF, 364);
+        legacyItemIdMap.put(Items.CHICKEN, 365);
+        legacyItemIdMap.put(Items.COOKED_CHICKEN, 366);
+        legacyItemIdMap.put(Items.ROTTEN_FLESH, 367);
+        legacyItemIdMap.put(Items.ENDER_PEARL, 368);
+        legacyItemIdMap.put(Items.BLAZE_ROD, 369);
+        legacyItemIdMap.put(Items.GHAST_TEAR, 370);
+        legacyItemIdMap.put(Items.GOLD_NUGGET, 371);
+        legacyItemIdMap.put(Items.NETHER_WART, 372);
+        legacyItemIdMap.put(Items.GLASS_BOTTLE, 374);
+        legacyItemIdMap.put(Items.SPIDER_EYE, 375);
+        legacyItemIdMap.put(Items.FERMENTED_SPIDER_EYE, 376);
+        legacyItemIdMap.put(Items.BLAZE_POWDER, 377);
+        legacyItemIdMap.put(Items.MAGMA_CREAM, 378);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.BREWING_STAND), 379);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.CAULDRON), 380);
+        legacyItemIdMap.put(Items.ENDER_EYE, 381);
+        legacyItemIdMap.put(Items.SPECKLED_MELON, 382);
+        legacyItemIdMap.put(Items.field_196127_cN, 383); // pig spawn egg
+        legacyItemIdMap.put(Items.EXPERIENCE_BOTTLE, 384);
+        legacyItemIdMap.put(Items.FIRE_CHARGE, 385);
+        legacyItemIdMap.put(Items.WRITABLE_BOOK, 386);
+        legacyItemIdMap.put(Items.WRITTEN_BOOK, 387);
+        legacyItemIdMap.put(Items.EMERALD, 388);
+        legacyItemIdMap.put(Items.ITEM_FRAME, 389);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.FLOWER_POT), 390);
+        legacyItemIdMap.put(Items.CARROT, 391);
+        legacyItemIdMap.put(Items.POTATO, 392);
+        legacyItemIdMap.put(Items.BAKED_POTATO, 393);
+        legacyItemIdMap.put(Items.POISONOUS_POTATO, 394);
+        legacyItemIdMap.put(Items.MAP, 395);
+        legacyItemIdMap.put(Items.GOLDEN_CARROT, 396);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196703_eM), 397); // skeleton skull
+        legacyItemIdMap.put(Items.CARROT_ON_A_STICK, 398);
+        legacyItemIdMap.put(Items.NETHER_STAR, 399);
+        legacyItemIdMap.put(Items.PUMPKIN_PIE, 400);
+        legacyItemIdMap.put(Items.field_196152_dE, 401); // firework rocket
+        legacyItemIdMap.put(Items.field_196153_dF, 402); // firework star
+        legacyItemIdMap.put(Items.ENCHANTED_BOOK, 403);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196762_fd), 404); // comparator
+        legacyItemIdMap.put(Items.QUARTZ, 406);
+        legacyItemIdMap.put(Items.TNT_MINECART, 407);
+        legacyItemIdMap.put(Items.HOPPER_MINECART, 408);
+        legacyItemIdMap.put(Items.PRISMARINE_SHARD, 409);
+        legacyItemIdMap.put(Items.PRISMARINE_CRYSTALS, 410);
+        legacyItemIdMap.put(Items.RABBIT, 411);
+        legacyItemIdMap.put(Items.COOKED_RABBIT, 412);
+        legacyItemIdMap.put(Items.RABBIT_STEW, 413);
+        legacyItemIdMap.put(Items.RABBIT_FOOT, 414);
+        legacyItemIdMap.put(Items.RABBIT_HIDE, 415);
+        legacyItemIdMap.put(Items.ARMOR_STAND, 416);
+        legacyItemIdMap.put(Items.IRON_HORSE_ARMOR, 417);
+        legacyItemIdMap.put(Items.GOLDEN_HORSE_ARMOR, 418);
+        legacyItemIdMap.put(Items.DIAMOND_HORSE_ARMOR, 419);
+        legacyItemIdMap.put(Items.LEAD, 420);
+        legacyItemIdMap.put(Items.NAME_TAG, 421);
+        legacyItemIdMap.put(Items.COMMAND_BLOCK_MINECART, 422);
+        legacyItemIdMap.put(Items.MUTTON, 423);
+        legacyItemIdMap.put(Items.COOKED_MUTTON, 424);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.SPRUCE_DOOR), 427);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.BIRCH_DOOR), 428);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.JUNGLE_DOOR), 429);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.ACACIA_DOOR), 430);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DARK_OAK_DOOR), 431);
+        legacyItemIdMap.put(Items.CHORUS_FRUIT, 432);
+        legacyItemIdMap.put(Items.CHORUS_FRUIT_POPPED, 433);
+        legacyItemIdMap.put(Items.BEETROOT, 434);
+        legacyItemIdMap.put(Items.BEETROOT_SEEDS, 435);
+        legacyItemIdMap.put(Items.BEETROOT_SOUP, 436);
+        legacyItemIdMap.put(Items.DRAGON_BREATH, 437);
+        legacyItemIdMap.put(Items.SPLASH_POTION, 438);
+        legacyItemIdMap.put(Items.SPECTRAL_ARROW, 439);
+        legacyItemIdMap.put(Items.TIPPED_ARROW, 440);
+        legacyItemIdMap.put(Items.LINGERING_POTION, 441);
+        legacyItemIdMap.put(Items.SHIELD, 442);
+        legacyItemIdMap.put(Items.ELYTRA, 443);
+        legacyItemIdMap.put(Items.SPRUCE_BOAT, 444);
+        legacyItemIdMap.put(Items.BIRCH_BOAT, 445);
+        legacyItemIdMap.put(Items.JUNGLE_BOAT, 446);
+        legacyItemIdMap.put(Items.ACACIA_BOAT, 447);
+        legacyItemIdMap.put(Items.DARK_OAK_BOAT, 448);
+        legacyItemIdMap.put(Items.TOTEM_OF_UNDYING, 449);
+        legacyItemIdMap.put(Items.SHULKER_SHELL, 450);
+        legacyItemIdMap.put(Items.IRON_NUGGET, 452);
+        legacyItemIdMap.put(Items.KNOWLEDGE_BOOK, 453);
+        legacyItemIdMap.put(Items.field_196156_dS, 2256); // record 13
+        legacyItemIdMap.put(Items.field_196158_dT, 2257); // record cat
+        legacyItemIdMap.put(Items.field_196160_dU, 2258); // record blocks
+        legacyItemIdMap.put(Items.field_196162_dV, 2259); // record chirp
+        legacyItemIdMap.put(Items.field_196164_dW, 2260); // record far
+        legacyItemIdMap.put(Items.field_196166_dX, 2261); // record mall
+        legacyItemIdMap.put(Items.field_196168_dY, 2262); // record mellohi
+        legacyItemIdMap.put(Items.field_196170_dZ, 2263); // record stal
+        legacyItemIdMap.put(Items.field_196187_ea, 2264); // record strad
+        legacyItemIdMap.put(Items.field_196188_eb, 2265); // record ward
+        legacyItemIdMap.put(Items.field_196189_ec, 2266); // record 11
+        legacyItemIdMap.put(Items.field_196190_ed, 2267); // record wait
     }
 
     public static MC_Block getBlockFromName(String blockName) {
@@ -513,856 +926,10 @@ public class PluginHelper {
     }
     
     public static Item getItemFromLegacyId(int id) {
-        switch (id) {
-            case 0:
-                return Items.AIR;
-            case 1:
-                return Item.BLOCK_TO_ITEM.get(Blocks.STONE);
-            case 2:
-                return Item.BLOCK_TO_ITEM.get(Blocks.GRASS);
-            case 3:
-                return Item.BLOCK_TO_ITEM.get(Blocks.DIRT);
-            case 4:
-                return Item.BLOCK_TO_ITEM.get(Blocks.COBBLESTONE);
-            case 5:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196662_n); // oak planks
-            case 6:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196674_t); // oak sapling
-            case 7:
-                return Item.BLOCK_TO_ITEM.get(Blocks.BEDROCK);
-            case 8:
-                return Item.BLOCK_TO_ITEM.get(Blocks.WATER);
-            case 9:
-                return Item.BLOCK_TO_ITEM.get(Blocks.WATER);
-            case 10:
-                return Item.BLOCK_TO_ITEM.get(Blocks.LAVA);
-            case 11:
-                return Item.BLOCK_TO_ITEM.get(Blocks.LAVA);
-            case 12:
-                return Item.BLOCK_TO_ITEM.get(Blocks.SAND);
-            case 13:
-                return Item.BLOCK_TO_ITEM.get(Blocks.GRAVEL);
-            case 14:
-                return Item.BLOCK_TO_ITEM.get(Blocks.GOLD_ORE);
-            case 15:
-                return Item.BLOCK_TO_ITEM.get(Blocks.IRON_ORE);
-            case 16:
-                return Item.BLOCK_TO_ITEM.get(Blocks.COAL_ORE);
-            case 17:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196617_K); // oak log
-            case 18:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196642_W); // oak leaves
-            case 19:
-                return Item.BLOCK_TO_ITEM.get(Blocks.SPONGE);
-            case 20:
-                return Item.BLOCK_TO_ITEM.get(Blocks.GLASS);
-            case 21:
-                return Item.BLOCK_TO_ITEM.get(Blocks.LAPIS_ORE);
-            case 22:
-                return Item.BLOCK_TO_ITEM.get(Blocks.LAPIS_BLOCK);
-            case 23:
-                return Item.BLOCK_TO_ITEM.get(Blocks.DISPENSER);
-            case 24:
-                return Item.BLOCK_TO_ITEM.get(Blocks.SANDSTONE);
-            case 25:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196586_al); // note block
-            //case 26: return Item.BLOCK_TO_ITEM.get(Blocks.BED);
-            case 27:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196552_aC); // powered rail
-            case 28:
-                return Item.BLOCK_TO_ITEM.get(Blocks.DETECTOR_RAIL);
-            case 29:
-                return Item.BLOCK_TO_ITEM.get(Blocks.STICKY_PISTON);
-            case 30:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196553_aF); // web
-            case 31:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196804_gh); // tall grass
-            case 32:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196555_aI); // dead bush
-            case 33:
-                return Item.BLOCK_TO_ITEM.get(Blocks.PISTON);
-            case 34:
-                return Item.BLOCK_TO_ITEM.get(Blocks.PISTON_HEAD);
-            case 35:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196556_aL); // white wool
-            //case 36: return Item.BLOCK_TO_ITEM.get(Blocks.PISTON_EXTENSION);
-            case 37:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196605_bc); // dandelion / yellow flower
-            case 38:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196606_bd); // poppy / red flower
-            case 39:
-                return Item.BLOCK_TO_ITEM.get(Blocks.BROWN_MUSHROOM);
-            case 40:
-                return Item.BLOCK_TO_ITEM.get(Blocks.RED_MUSHROOM);
-            case 41:
-                return Item.BLOCK_TO_ITEM.get(Blocks.GOLD_BLOCK);
-            case 42:
-                return Item.BLOCK_TO_ITEM.get(Blocks.IRON_BLOCK);
-            //case 43: return Item.BLOCK_TO_ITEM.get(Blocks.DOUBLE_STONE_SLAB);
-            case 44:
-                return Item.BLOCK_TO_ITEM.get(Blocks.STONE_SLAB);
-            case 45:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196584_bK); // bricks
-            case 46:
-                return Item.BLOCK_TO_ITEM.get(Blocks.TNT);
-            case 47:
-                return Item.BLOCK_TO_ITEM.get(Blocks.BOOKSHELF);
-            case 48:
-                return Item.BLOCK_TO_ITEM.get(Blocks.MOSSY_COBBLESTONE);
-            case 49:
-                return Item.BLOCK_TO_ITEM.get(Blocks.OBSIDIAN);
-            case 50:
-                return Item.BLOCK_TO_ITEM.get(Blocks.TORCH);
-            case 51:
-                return Item.BLOCK_TO_ITEM.get(Blocks.FIRE);
-            case 52:
-                return Item.BLOCK_TO_ITEM.get(Blocks.MOB_SPAWNER);
-            case 53:
-                return Item.BLOCK_TO_ITEM.get(Blocks.OAK_STAIRS);
-            case 54:
-                return Item.BLOCK_TO_ITEM.get(Blocks.CHEST);
-            case 55:
-                return Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_WIRE);
-            case 56:
-                return Item.BLOCK_TO_ITEM.get(Blocks.DIAMOND_ORE);
-            case 57:
-                return Item.BLOCK_TO_ITEM.get(Blocks.DIAMOND_BLOCK);
-            case 58:
-                return Item.BLOCK_TO_ITEM.get(Blocks.CRAFTING_TABLE);
-            //case 59: return Item.BLOCK_TO_ITEM.get(Blocks.WHEAT);
-            case 60:
-                return Item.BLOCK_TO_ITEM.get(Blocks.FARMLAND);
-            case 61: // fall through
-            case 62:
-                return Item.BLOCK_TO_ITEM.get(Blocks.FURNACE);
-            case 63:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196649_cc); // sign
-            case 64:
-                return Item.BLOCK_TO_ITEM.get(Blocks.OAK_DOOR);
-            case 65:
-                return Item.BLOCK_TO_ITEM.get(Blocks.LADDER);
-            case 66:
-                return Item.BLOCK_TO_ITEM.get(Blocks.RAIL);
-            case 67:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196659_cl); // cobblestone stairs
-            case 68:
-                return Item.BLOCK_TO_ITEM.get(Blocks.WALL_SIGN);
-            case 69:
-                return Item.BLOCK_TO_ITEM.get(Blocks.LEVER);
-            case 70:
-                return Item.BLOCK_TO_ITEM.get(Blocks.STONE_PRESSURE_PLATE);
-            //case 71: return Item.BLOCK_TO_ITEM.get(Blocks.IRON_DOOR);
-            case 72:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196663_cq); // oak pressure plate
-            case 73: // fall through
-            case 74:
-                return Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_ORE);
-            case 75:
-            case 76:
-                return Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_TORCH);
-            case 77:
-                return Item.BLOCK_TO_ITEM.get(Blocks.STONE_BUTTON);
-            case 78:
-                return Item.BLOCK_TO_ITEM.get(Blocks.SNOW);
-            case 79:
-                return Item.BLOCK_TO_ITEM.get(Blocks.ICE);
-            case 80:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196604_cC); // snow block
-            case 81:
-                return Item.BLOCK_TO_ITEM.get(Blocks.CACTUS);
-            case 82:
-                return Item.BLOCK_TO_ITEM.get(Blocks.CLAY);
-            case 84:
-                return Item.BLOCK_TO_ITEM.get(Blocks.JUKEBOX);
-            case 85:
-                return Item.BLOCK_TO_ITEM.get(Blocks.OAK_FENCE);
-            case 86:
-                return Item.BLOCK_TO_ITEM.get(Blocks.PUMPKIN);
-            case 87:
-                return Item.BLOCK_TO_ITEM.get(Blocks.NETHERRACK);
-            case 88:
-                return Item.BLOCK_TO_ITEM.get(Blocks.SOUL_SAND);
-            case 89:
-                return Item.BLOCK_TO_ITEM.get(Blocks.GLOWSTONE);
-            case 90:
-                return Item.BLOCK_TO_ITEM.get(Blocks.PORTAL);
-            case 91:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196628_cT); // lit pumpkin
-            //case 92: return Item.BLOCK_TO_ITEM.get(Blocks.CAKE);
-            case 93:
-            case 94:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196633_cV); // repeater
-            case 95:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196807_gj); // white stained glass
-            case 96:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196636_cW); // oak trapdoor
-            case 97:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196686_dc); // infested stone
-            case 98:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196696_di); // stone bricks
-            case 99:
-                return Item.BLOCK_TO_ITEM.get(Blocks.BROWN_MUSHROOM_BLOCK);
-            case 100:
-                return Item.BLOCK_TO_ITEM.get(Blocks.RED_MUSHROOM_BLOCK);
-            case 101:
-                return Item.BLOCK_TO_ITEM.get(Blocks.IRON_BARS);
-            case 102:
-                return Item.BLOCK_TO_ITEM.get(Blocks.GLASS_PANE);
-            case 103:
-                return Item.BLOCK_TO_ITEM.get(Blocks.MELON_BLOCK);
-            case 104:
-                return Item.BLOCK_TO_ITEM.get(Blocks.PUMPKIN_STEM);
-            case 105:
-                return Item.BLOCK_TO_ITEM.get(Blocks.MELON_STEM);
-            case 106:
-                return Item.BLOCK_TO_ITEM.get(Blocks.VINE);
-            case 107:
-                return Item.BLOCK_TO_ITEM.get(Blocks.OAK_FENCE_GATE);
-            case 108:
-                return Item.BLOCK_TO_ITEM.get(Blocks.BRICK_STAIRS);
-            case 109:
-                return Item.BLOCK_TO_ITEM.get(Blocks.STONE_BRICK_STAIRS);
-            case 110:
-                return Item.BLOCK_TO_ITEM.get(Blocks.MYCELIUM);
-            case 111:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196651_dG); // lily pad
-            case 112:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196653_dH); // nether bricks
-            case 113:
-                return Item.BLOCK_TO_ITEM.get(Blocks.NETHER_BRICK_FENCE);
-            case 114:
-                return Item.BLOCK_TO_ITEM.get(Blocks.NETHER_BRICK_STAIRS);
-            //case 115: return Item.BLOCK_TO_ITEM.get(Blocks.NETHER_WART);
-            case 116:
-                return Item.BLOCK_TO_ITEM.get(Blocks.ENCHANTING_TABLE);
-            //case 117: return Item.BLOCK_TO_ITEM.get(Blocks.BREWING_STAND);
-            //case 118: return Item.BLOCK_TO_ITEM.get(Blocks.CAULDRON);
-            case 119:
-                return Item.BLOCK_TO_ITEM.get(Blocks.END_PORTAL);
-            case 120:
-                return Item.BLOCK_TO_ITEM.get(Blocks.END_PORTAL_FRAME);
-            case 121:
-                return Item.BLOCK_TO_ITEM.get(Blocks.END_STONE);
-            case 122:
-                return Item.BLOCK_TO_ITEM.get(Blocks.DRAGON_EGG);
-            case 123:
-            case 124:
-                return Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_LAMP);
-            //case 125: return Item.BLOCK_TO_ITEM.get(Blocks.DOUBLE_WOODEN_SLAB);
-            case 126:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196622_bq); // oak slab
-            case 127:
-                return Item.BLOCK_TO_ITEM.get(Blocks.COCOA);
-            case 128:
-                return Item.BLOCK_TO_ITEM.get(Blocks.SANDSTONE_STAIRS);
-            case 129:
-                return Item.BLOCK_TO_ITEM.get(Blocks.EMERALD_ORE);
-            case 130:
-                return Item.BLOCK_TO_ITEM.get(Blocks.ENDER_CHEST);
-            case 131:
-                return Item.BLOCK_TO_ITEM.get(Blocks.TRIPWIRE_HOOK);
-            case 132:
-                return Item.BLOCK_TO_ITEM.get(Blocks.TRIPWIRE);
-            case 133:
-                return Item.BLOCK_TO_ITEM.get(Blocks.EMERALD_BLOCK);
-            case 134:
-                return Item.BLOCK_TO_ITEM.get(Blocks.SPRUCE_STAIRS);
-            case 135:
-                return Item.BLOCK_TO_ITEM.get(Blocks.BIRCH_STAIRS);
-            case 136:
-                return Item.BLOCK_TO_ITEM.get(Blocks.JUNGLE_STAIRS);
-            case 137:
-                return Item.BLOCK_TO_ITEM.get(Blocks.COMMAND_BLOCK);
-            case 138:
-                return Item.BLOCK_TO_ITEM.get(Blocks.BEACON);
-            case 139:
-                return Item.BLOCK_TO_ITEM.get(Blocks.COBBLESTONE_WALL);
-            //case 140: return Item.BLOCK_TO_ITEM.get(Blocks.FLOWER_POT);
-            case 141:
-                return Item.BLOCK_TO_ITEM.get(Blocks.CARROTS);
-            case 142:
-                return Item.BLOCK_TO_ITEM.get(Blocks.POTATOES);
-            case 143:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196689_eF); // oak button
-            case 144:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196703_eM); // skeleton skull
-            case 145:
-                return Item.BLOCK_TO_ITEM.get(Blocks.ANVIL);
-            case 146:
-                return Item.BLOCK_TO_ITEM.get(Blocks.TRAPPED_CHEST);
-            case 147:
-                return Item.BLOCK_TO_ITEM.get(Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE);
-            case 148:
-                return Item.BLOCK_TO_ITEM.get(Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE);
-            case 149:
-            case 150:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196762_fd);
-            case 151:
-                return Item.BLOCK_TO_ITEM.get(Blocks.DAYLIGHT_DETECTOR);
-            case 152:
-                return Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_BLOCK);
-            case 153:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196766_fg); // nether quartz ore
-            case 154:
-                return Item.BLOCK_TO_ITEM.get(Blocks.HOPPER);
-            case 155:
-                return Item.BLOCK_TO_ITEM.get(Blocks.QUARTZ_BLOCK);
-            case 156:
-                return Item.BLOCK_TO_ITEM.get(Blocks.QUARTZ_STAIRS);
-            case 157:
-                return Item.BLOCK_TO_ITEM.get(Blocks.ACTIVATOR_RAIL);
-            case 158:
-                return Item.BLOCK_TO_ITEM.get(Blocks.DROPPER);
-            case 159:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196777_fo); // white terracotta
-            case 160:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196825_gz); // white stained glass pane
-            case 161:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196574_ab); // dark oak leaves
-            case 162:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196623_P); // dark oak log
-            case 163:
-                return Item.BLOCK_TO_ITEM.get(Blocks.ACACIA_STAIRS);
-            case 164:
-                return Item.BLOCK_TO_ITEM.get(Blocks.DARK_OAK_STAIRS);
-            case 165:
-                return Item.BLOCK_TO_ITEM.get(Blocks.SLIME_BLOCK);
-            case 166:
-                return Item.BLOCK_TO_ITEM.get(Blocks.BARRIER);
-            case 167:
-                return Item.BLOCK_TO_ITEM.get(Blocks.IRON_TRAPDOOR);
-            case 168:
-                return Item.BLOCK_TO_ITEM.get(Blocks.PRISMARINE);
-            case 169:
-                return Item.BLOCK_TO_ITEM.get(Blocks.SEA_LANTERN);
-            case 170:
-                return Item.BLOCK_TO_ITEM.get(Blocks.HAY_BLOCK);
-            case 171:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196724_fH); // white carpet
-            case 172:
-                return Item.BLOCK_TO_ITEM.get(Blocks.HARDENED_CLAY);
-            case 173:
-                return Item.BLOCK_TO_ITEM.get(Blocks.COAL_BLOCK);
-            case 174:
-                return Item.BLOCK_TO_ITEM.get(Blocks.PACKED_ICE);
-            case 176:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196784_gT); // white banner
-            case 177:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196843_hj); // white wall banner
-            case 178:
-                return Item.BLOCK_TO_ITEM.get(Blocks.DAYLIGHT_DETECTOR);
-            case 179:
-                return Item.BLOCK_TO_ITEM.get(Blocks.RED_SANDSTONE);
-            case 180:
-                return Item.BLOCK_TO_ITEM.get(Blocks.RED_SANDSTONE_STAIRS);
-            case 183:
-                return Item.BLOCK_TO_ITEM.get(Blocks.SPRUCE_FENCE_GATE);
-            case 184:
-                return Item.BLOCK_TO_ITEM.get(Blocks.BIRCH_FENCE_GATE);
-            case 185:
-                return Item.BLOCK_TO_ITEM.get(Blocks.JUNGLE_FENCE_GATE);
-            case 186:
-                return Item.BLOCK_TO_ITEM.get(Blocks.DARK_OAK_FENCE_GATE);
-            case 187:
-                return Item.BLOCK_TO_ITEM.get(Blocks.ACACIA_FENCE_GATE);
-            case 188:
-                return Item.BLOCK_TO_ITEM.get(Blocks.SPRUCE_FENCE);
-            case 189:
-                return Item.BLOCK_TO_ITEM.get(Blocks.BIRCH_FENCE);
-            case 190:
-                return Item.BLOCK_TO_ITEM.get(Blocks.JUNGLE_FENCE);
-            case 191:
-                return Item.BLOCK_TO_ITEM.get(Blocks.DARK_OAK_FENCE);
-            case 192:
-                return Item.BLOCK_TO_ITEM.get(Blocks.ACACIA_FENCE);
-            //case 193: return Item.BLOCK_TO_ITEM.get(Blocks.SPRUCE_DOOR);
-            //case 194: return Item.BLOCK_TO_ITEM.get(Blocks.BIRCH_DOOR);
-            //case 195: return Item.BLOCK_TO_ITEM.get(Blocks.JUNGLE_DOOR);
-            //case 196: return Item.BLOCK_TO_ITEM.get(Blocks.ACACIA_DOOR);
-            //case 197: return Item.BLOCK_TO_ITEM.get(Blocks.DARK_OAK_DOOR);
-            case 198:
-                return Item.BLOCK_TO_ITEM.get(Blocks.END_ROD);
-            case 199:
-                return Item.BLOCK_TO_ITEM.get(Blocks.CHORUS_PLANT);
-            case 200:
-                return Item.BLOCK_TO_ITEM.get(Blocks.CHORUS_FLOWER);
-            case 201:
-                return Item.BLOCK_TO_ITEM.get(Blocks.PURPUR_BLOCK);
-            case 202:
-                return Item.BLOCK_TO_ITEM.get(Blocks.PURPUR_PILLAR);
-            case 203:
-                return Item.BLOCK_TO_ITEM.get(Blocks.PURPUR_STAIRS);
-            case 205:
-                return Item.BLOCK_TO_ITEM.get(Blocks.PURPUR_SLAB);
-            case 206:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196806_hJ); // end stone bricks
-            //case 207: return Item.BLOCK_TO_ITEM.get(Blocks.BEETROOTS);
-            case 208:
-                return Item.BLOCK_TO_ITEM.get(Blocks.GRASS_PATH);
-            case 209:
-                return Item.BLOCK_TO_ITEM.get(Blocks.END_GATEWAY);
-            case 210:
-                return Item.BLOCK_TO_ITEM.get(Blocks.REPEATING_COMMAND_BLOCK);
-            case 211:
-                return Item.BLOCK_TO_ITEM.get(Blocks.CHAIN_COMMAND_BLOCK);
-            case 212:
-                return Item.BLOCK_TO_ITEM.get(Blocks.FROSTED_ICE);
-            case 213:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196814_hQ); // magma block
-            case 214:
-                return Item.BLOCK_TO_ITEM.get(Blocks.NETHER_WART_BLOCK);
-            case 215:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196817_hS); // red nether brick
-            case 216:
-                return Item.BLOCK_TO_ITEM.get(Blocks.BONE_BLOCK);
-            case 217:
-                return Item.BLOCK_TO_ITEM.get(Blocks.STRUCTURE_VOID);
-            case 218:
-                return Item.BLOCK_TO_ITEM.get(Blocks.OBSERVER);
-            case 219:
-                return Item.BLOCK_TO_ITEM.get(Blocks.WHITE_SHULKER_BOX);
-            case 220:
-                return Item.BLOCK_TO_ITEM.get(Blocks.ORANGE_SHULKER_BOX);
-            case 221:
-                return Item.BLOCK_TO_ITEM.get(Blocks.MAGENTA_SHULKER_BOX);
-            case 222:
-                return Item.BLOCK_TO_ITEM.get(Blocks.LIGHT_BLUE_SHULKER_BOX);
-            case 223:
-                return Item.BLOCK_TO_ITEM.get(Blocks.YELLOW_SHULKER_BOX);
-            case 224:
-                return Item.BLOCK_TO_ITEM.get(Blocks.LIME_SHULKER_BOX);
-            case 225:
-                return Item.BLOCK_TO_ITEM.get(Blocks.PINK_SHULKER_BOX);
-            case 226:
-                return Item.BLOCK_TO_ITEM.get(Blocks.GRAY_SHULKER_BOX);
-            case 227:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196875_ie); // light gray shulker box
-            case 228:
-                return Item.BLOCK_TO_ITEM.get(Blocks.CYAN_SHULKER_BOX);
-            case 229:
-                return Item.BLOCK_TO_ITEM.get(Blocks.PURPLE_SHULKER_BOX);
-            case 230:
-                return Item.BLOCK_TO_ITEM.get(Blocks.BLUE_SHULKER_BOX);
-            case 231:
-                return Item.BLOCK_TO_ITEM.get(Blocks.BROWN_SHULKER_BOX);
-            case 232:
-                return Item.BLOCK_TO_ITEM.get(Blocks.GREEN_SHULKER_BOX);
-            case 233:
-                return Item.BLOCK_TO_ITEM.get(Blocks.RED_SHULKER_BOX);
-            case 234:
-                return Item.BLOCK_TO_ITEM.get(Blocks.BLACK_SHULKER_BOX);
-            case 255:
-                return Item.BLOCK_TO_ITEM.get(Blocks.STRUCTURE_BLOCK);
-            case 256:
-                return Items.IRON_SHOVEL;
-            case 257:
-                return Items.IRON_PICKAXE;
-            case 258:
-                return Items.IRON_AXE;
-            case 259:
-                return Items.FLINT_AND_STEEL;
-            case 260:
-                return Items.APPLE;
-            case 261:
-                return Items.BOW;
-            case 262:
-                return Items.ARROW;
-            case 263:
-                return Items.COAL;
-            case 264:
-                return Items.DIAMOND;
-            case 265:
-                return Items.IRON_INGOT;
-            case 266:
-                return Items.GOLD_INGOT;
-            case 267:
-                return Items.IRON_SWORD;
-            case 268:
-                return Items.WOODEN_SWORD;
-            case 269:
-                return Items.WOODEN_SHOVEL;
-            case 270:
-                return Items.WOODEN_PICKAXE;
-            case 271:
-                return Items.WOODEN_AXE;
-            case 272:
-                return Items.STONE_SWORD;
-            case 273:
-                return Items.STONE_SHOVEL;
-            case 274:
-                return Items.STONE_PICKAXE;
-            case 275:
-                return Items.STONE_AXE;
-            case 276:
-                return Items.DIAMOND_SWORD;
-            case 277:
-                return Items.DIAMOND_SHOVEL;
-            case 278:
-                return Items.DIAMOND_PICKAXE;
-            case 279:
-                return Items.DIAMOND_AXE;
-            case 280:
-                return Items.STICK;
-            case 281:
-                return Items.BOWL;
-            case 282:
-                return Items.MUSHROOM_STEW;
-            case 283:
-                return Items.GOLDEN_SWORD;
-            case 284:
-                return Items.GOLDEN_SHOVEL;
-            case 285:
-                return Items.GOLDEN_PICKAXE;
-            case 286:
-                return Items.GOLDEN_AXE;
-            case 287:
-                return Items.STRING;
-            case 288:
-                return Items.FEATHER;
-            case 289:
-                return Items.GUNPOWDER;
-            case 290:
-                return Items.WOODEN_HOE;
-            case 291:
-                return Items.STONE_HOE;
-            case 292:
-                return Items.IRON_HOE;
-            case 293:
-                return Items.DIAMOND_HOE;
-            case 294:
-                return Items.GOLDEN_HOE;
-            case 295:
-                return Items.WHEAT_SEEDS;
-            case 296:
-                return Items.WHEAT;
-            case 297:
-                return Items.BREAD;
-            case 298:
-                return Items.LEATHER_HELMET;
-            case 299:
-                return Items.LEATHER_CHESTPLATE;
-            case 300:
-                return Items.LEATHER_LEGGINGS;
-            case 301:
-                return Items.LEATHER_BOOTS;
-            case 302:
-                return Items.CHAINMAIL_HELMET;
-            case 303:
-                return Items.CHAINMAIL_CHESTPLATE;
-            case 304:
-                return Items.CHAINMAIL_LEGGINGS;
-            case 305:
-                return Items.CHAINMAIL_BOOTS;
-            case 306:
-                return Items.IRON_HELMET;
-            case 307:
-                return Items.IRON_CHESTPLATE;
-            case 308:
-                return Items.IRON_LEGGINGS;
-            case 309:
-                return Items.IRON_BOOTS;
-            case 310:
-                return Items.DIAMOND_HELMET;
-            case 311:
-                return Items.DIAMOND_CHESTPLATE;
-            case 312:
-                return Items.DIAMOND_LEGGINGS;
-            case 313:
-                return Items.DIAMOND_BOOTS;
-            case 314:
-                return Items.GOLDEN_HELMET;
-            case 315:
-                return Items.GOLDEN_CHESTPLATE;
-            case 316:
-                return Items.GOLDEN_LEGGINGS;
-            case 317:
-                return Items.GOLDEN_BOOTS;
-            case 318:
-                return Items.FLINT;
-            case 319:
-                return Items.PORKCHOP;
-            case 320:
-                return Items.COOKED_PORKCHOP;
-            case 321:
-                return Items.PAINTING;
-            case 322:
-                return Items.GOLDEN_APPLE;
-            case 323:
-                return Items.SIGN;
-            case 324:
-                return Item.BLOCK_TO_ITEM.get(Blocks.OAK_DOOR);
-            case 325:
-                return Items.BUCKET;
-            case 326:
-                return Items.WATER_BUCKET;
-            case 327:
-                return Items.LAVA_BUCKET;
-            case 328:
-                return Items.MINECART;
-            case 329:
-                return Items.SADDLE;
-            case 330:
-                return Item.BLOCK_TO_ITEM.get(Blocks.IRON_DOOR);
-            case 331:
-                return Items.REDSTONE;
-            case 332:
-                return Items.SNOWBALL;
-            case 333:
-                return Items.BOAT;
-            case 334:
-                return Items.LEATHER;
-            case 335:
-                return Items.MILK_BUCKET;
-            case 336:
-                return Items.BRICK;
-            case 338:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196608_cF); // sugar cane
-            case 339:
-                return Items.PAPER;
-            case 340:
-                return Items.BOOK;
-            case 341:
-                return Items.SLIME_BALL;
-            case 342:
-                return Items.CHEST_MINECART;
-            case 343:
-                return Items.FURNACE_MINECART;
-            case 344:
-                return Items.EGG;
-            case 345:
-                return Items.COMPASS;
-            case 346:
-                return Items.FISHING_ROD;
-            case 347:
-                return Items.CLOCK;
-            case 348:
-                return Items.GLOWSTONE_DUST;
-            case 349:
-                return Items.field_196086_aW; // cod
-            case 350:
-                return Items.field_196102_ba; // cooked cod
-            case 351:
-                return Items.field_196136_br; // ink sac
-            case 352:
-                return Items.BONE;
-            case 353:
-                return Items.SUGAR;
-            case 354:
-                return Item.BLOCK_TO_ITEM.get(Blocks.CAKE);
-            case 355:
-                return Items.field_196140_bu; // bed
-            case 356:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196633_cV); // repeater
-            case 357:
-                return Items.COOKIE;
-            case 358:
-                return Items.MAP;
-            case 359:
-                return Items.SHEARS;
-            case 361:
-                return Items.PUMPKIN_SEEDS;
-            case 362:
-                return Items.MELON_SEEDS;
-            case 363:
-                return Items.BEEF;
-            case 364:
-                return Items.COOKED_BEEF;
-            case 365:
-                return Items.CHICKEN;
-            case 366:
-                return Items.COOKED_CHICKEN;
-            case 367:
-                return Items.ROTTEN_FLESH;
-            case 368:
-                return Items.ENDER_PEARL;
-            case 369:
-                return Items.BLAZE_ROD;
-            case 370:
-                return Items.GHAST_TEAR;
-            case 371:
-                return Items.GOLD_NUGGET;
-            case 372:
-                return Items.NETHER_WART;
-            case 373:
-            case 374:
-                return Items.GLASS_BOTTLE;
-            case 375:
-                return Items.SPIDER_EYE;
-            case 376:
-                return Items.FERMENTED_SPIDER_EYE;
-            case 377:
-                return Items.BLAZE_POWDER;
-            case 378:
-                return Items.MAGMA_CREAM;
-            case 379:
-                return Item.BLOCK_TO_ITEM.get(Blocks.BREWING_STAND);
-            case 380:
-                return Item.BLOCK_TO_ITEM.get(Blocks.CAULDRON);
-            case 381:
-                return Items.ENDER_EYE;
-            case 382:
-                return Items.SPECKLED_MELON;
-            case 383:
-                return Items.field_196127_cN; // pig spawn egg
-            case 384:
-                return Items.EXPERIENCE_BOTTLE;
-            case 385:
-                return Items.FIRE_CHARGE;
-            case 386:
-                return Items.WRITABLE_BOOK;
-            case 387:
-                return Items.WRITTEN_BOOK;
-            case 388:
-                return Items.EMERALD;
-            case 389:
-                return Items.ITEM_FRAME;
-            case 390:
-                return Item.BLOCK_TO_ITEM.get(Blocks.FLOWER_POT);
-            case 391:
-                return Items.CARROT;
-            case 392:
-                return Items.POTATO;
-            case 393:
-                return Items.BAKED_POTATO;
-            case 394:
-                return Items.POISONOUS_POTATO;
-            case 395:
-                return Items.MAP;
-            case 396:
-                return Items.GOLDEN_CARROT;
-            case 397:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196703_eM); // skeleton skull
-            case 398:
-                return Items.CARROT_ON_A_STICK;
-            case 399:
-                return Items.NETHER_STAR;
-            case 400:
-                return Items.PUMPKIN_PIE;
-            case 401:
-                return Items.field_196152_dE; // firework rocket
-            case 402:
-                return Items.field_196153_dF; // firework star
-            case 403:
-                return Items.ENCHANTED_BOOK;
-            case 404:
-                return Item.BLOCK_TO_ITEM.get(Blocks.field_196762_fd); // comparator
-            case 406:
-                return Items.QUARTZ;
-            case 407:
-                return Items.TNT_MINECART;
-            case 408:
-                return Items.HOPPER_MINECART;
-            case 409:
-                return Items.PRISMARINE_SHARD;
-            case 410:
-                return Items.PRISMARINE_CRYSTALS;
-            case 411:
-                return Items.RABBIT;
-            case 412:
-                return Items.COOKED_RABBIT;
-            case 413:
-                return Items.RABBIT_STEW;
-            case 414:
-                return Items.RABBIT_FOOT;
-            case 415:
-                return Items.RABBIT_HIDE;
-            case 416:
-                return Items.ARMOR_STAND;
-            case 417:
-                return Items.IRON_HORSE_ARMOR;
-            case 418:
-                return Items.GOLDEN_HORSE_ARMOR;
-            case 419:
-                return Items.DIAMOND_HORSE_ARMOR;
-            case 420:
-                return Items.LEAD;
-            case 421:
-                return Items.NAME_TAG;
-            case 422:
-                return Items.COMMAND_BLOCK_MINECART;
-            case 423:
-                return Items.MUTTON;
-            case 424:
-                return Items.COOKED_MUTTON;
-            //case 425: return Items.BLACK_BANNER;
-            case 427:
-                return Item.BLOCK_TO_ITEM.get(Blocks.SPRUCE_DOOR);
-            case 428:
-                return Item.BLOCK_TO_ITEM.get(Blocks.BIRCH_DOOR);
-            case 429:
-                return Item.BLOCK_TO_ITEM.get(Blocks.JUNGLE_DOOR);
-            case 430:
-                return Item.BLOCK_TO_ITEM.get(Blocks.ACACIA_DOOR);
-            case 431:
-                return Item.BLOCK_TO_ITEM.get(Blocks.DARK_OAK_DOOR);
-            case 432:
-                return Items.CHORUS_FRUIT;
-            case 433:
-                return Items.CHORUS_FRUIT_POPPED;
-            case 434:
-                return Items.BEETROOT;
-            case 435:
-                return Items.BEETROOT_SEEDS;
-            case 436:
-                return Items.BEETROOT_SOUP;
-            case 437:
-                return Items.DRAGON_BREATH;
-            case 438:
-                return Items.SPLASH_POTION;
-            case 439:
-                return Items.SPECTRAL_ARROW;
-            case 440:
-                return Items.TIPPED_ARROW;
-            case 441:
-                return Items.LINGERING_POTION;
-            case 442:
-                return Items.SHIELD;
-            case 443:
-                return Items.ELYTRA;
-            case 444:
-                return Items.SPRUCE_BOAT;
-            case 445:
-                return Items.BIRCH_BOAT;
-            case 446:
-                return Items.JUNGLE_BOAT;
-            case 447:
-                return Items.ACACIA_BOAT;
-            case 448:
-                return Items.DARK_OAK_BOAT;
-            case 449:
-                return Items.TOTEM_OF_UNDYING;
-            case 450:
-                return Items.SHULKER_SHELL;
-            case 452:
-                return Items.IRON_NUGGET;
-            case 453:
-                return Items.KNOWLEDGE_BOOK;
+        return legacyItemIdMap.inverse().getOrDefault(id, Items.AIR);
+    }
 
-            case 2256:
-                return Items.field_196156_dS; // record 13
-            case 2257:
-                return Items.field_196158_dT; // record cat
-            case 2258:
-                return Items.field_196160_dU; // record blocks
-            case 2259:
-                return Items.field_196162_dV; // record chirp
-            case 2260:
-                return Items.field_196164_dW; // record far
-            case 2261:
-                return Items.field_196166_dX; // record mall
-            case 2262:
-                return Items.field_196168_dY; // record mellohi
-            case 2263:
-                return Items.field_196170_dZ; // record stal
-            case 2264:
-                return Items.field_196187_ea; // record strad
-            case 2265:
-                return Items.field_196188_eb; // record ward
-            case 2266:
-                return Items.field_196189_ec; // record 11
-            case 2267:
-                return Items.field_196190_ed; // record wait
-        }
-        return Items.AIR;
+    public static int getLegacyItemId(Item item) {
+        return legacyItemIdMap.getOrDefault(item, 547);
     }
 }
