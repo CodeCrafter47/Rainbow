@@ -21,17 +21,13 @@ public class BlockWrapper implements MC_Block {
     @Override
     @Deprecated
     public int getId() {
-        return 0;
+        return PluginHelper.getLegacyBlockId(m_blockObject);
     }
 
     @Override
     @Deprecated
     public int getSubtype() {
-        try {
-            return 0;
-        } catch (Exception var2) {
-            return -1;
-        }
+        return 0;
     }
 
     @Override

@@ -9,12 +9,10 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.CommandNode;
-import net.minecraft.block.Block;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -398,15 +396,13 @@ public class ServerWrapper implements MC_Server {
     @Override
     @Deprecated
     public MC_Block getBlock(int id) {
-        return getBlock(id, 0);
+        return new BlockWrapper(PluginHelper.getBlockFromLegacyId(id).getDefaultState());
     }
 
     @Override
     @Deprecated
     public MC_Block getBlock(int id, int subtype) {
-        Block block = Blocks.AIR;
-        // todo
-        return new BlockWrapper(block.getDefaultState());
+        return getBlock(id);
     }
 
     private int nextRecipeId = 0;

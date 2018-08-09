@@ -6,6 +6,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
 import joebkt._SerializableLocation;
+import net.minecraft.block.Block;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.Entity;
@@ -44,6 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 public class _DiwUtils {
     public static boolean ArmorStand_DanceEverywhere = false;
@@ -224,6 +226,10 @@ public class _DiwUtils {
     public static void Startup() {
         _DiwUtils.MC_VERSION_STRING = getMinecraftServer().getMinecraftVersion();
         _DiwUtils.DefaultMOTD = String.format(DefaultMOTD, _DiwUtils.MC_VERSION_STRING);
+
+        // Setup BlockHelper
+        BlockHelper.mapBlockNames = PluginHelper.legacyBlockIdMap.values().stream()
+                .collect(Collectors.toMap(id -> id, id -> Block.REGISTRY.getNameForObject(PluginHelper.getBlockFromLegacyId(id)).getPath()));
 
         // Setup Command permissions
         Commands commands = minecraftServer.func_195571_aL();

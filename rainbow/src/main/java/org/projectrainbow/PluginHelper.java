@@ -46,6 +46,7 @@ public class PluginHelper {
     public static BiMap<MC_AttributeType, IAttribute> attributeMap = HashBiMap.create();
     public static BiMap<MC_AttributeModifier.Operator, Integer> operatorMap = HashBiMap.create();
     public static BiMap<Item, Integer> legacyItemIdMap = HashBiMap.create();
+    public static BiMap<Block, Integer> legacyBlockIdMap = HashBiMap.create();
 
     public static MC_EntityType getEntityType(Class<? extends Entity> clazz) {
         if (EntityPlayer.class.isAssignableFrom(clazz)) {
@@ -376,10 +377,8 @@ public class PluginHelper {
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196662_n), 5); // oak planks
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196674_t), 6); // oak sapling
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.BEDROCK), 7);
-        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.WATER), 8);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.WATER), 9);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.LAVA), 10);
-        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.LAVA), 11);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.SAND), 12);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.GRAVEL), 13);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.GOLD_ORE), 14);
@@ -425,7 +424,7 @@ public class PluginHelper {
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DIAMOND_BLOCK), 57);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.CRAFTING_TABLE), 58);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.FARMLAND), 60);
-        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.FURNACE), 62);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.FURNACE), 61);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196649_cc), 63); // sign
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.OAK_DOOR), 64);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.LADDER), 65);
@@ -435,7 +434,7 @@ public class PluginHelper {
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.LEVER), 69);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.STONE_PRESSURE_PLATE), 70);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196663_cq), 72); // oak pressure plate
-        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_ORE), 74);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_ORE), 73);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_TORCH), 76);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.STONE_BUTTON), 77);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.SNOW), 78);
@@ -451,7 +450,7 @@ public class PluginHelper {
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.GLOWSTONE), 89);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.PORTAL), 90);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196628_cT), 91); // lit pumpkin
-        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196633_cV), 94); // repeater
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196633_cV), 93); // repeater
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196807_gj), 95); // white stained glass
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196636_cW), 96); // oak trapdoor
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196686_dc), 97); // infested stone
@@ -477,7 +476,7 @@ public class PluginHelper {
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.END_PORTAL_FRAME), 120);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.END_STONE), 121);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DRAGON_EGG), 122);
-        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_LAMP), 124);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_LAMP), 123);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196622_bq), 126); // oak slab
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.COCOA), 127);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.SANDSTONE_STAIRS), 128);
@@ -500,7 +499,7 @@ public class PluginHelper {
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.TRAPPED_CHEST), 146);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE), 147);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE), 148);
-        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196762_fd), 150);
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196762_fd), 149); // comparator
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DAYLIGHT_DETECTOR), 151);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.REDSTONE_BLOCK), 152);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196766_fg), 153); // nether quartz ore
@@ -509,7 +508,7 @@ public class PluginHelper {
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.QUARTZ_STAIRS), 156);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.ACTIVATOR_RAIL), 157);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DROPPER), 158);
-        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196777_fo), 159); // white terracotta
+        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.CLAY), 159);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196825_gz), 160); // white stained glass pane
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196574_ab), 161); // dark oak leaves
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196623_P), 162); // dark oak log
@@ -527,7 +526,6 @@ public class PluginHelper {
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.PACKED_ICE), 174);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196784_gT), 176); // white banner
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.field_196843_hj), 177); // white wall banner
-        legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.DAYLIGHT_DETECTOR), 178);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.RED_SANDSTONE), 179);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.RED_SANDSTONE_STAIRS), 180);
         legacyItemIdMap.put(Item.BLOCK_TO_ITEM.get(Blocks.SPRUCE_FENCE_GATE), 183);
@@ -779,6 +777,243 @@ public class PluginHelper {
         legacyItemIdMap.put(Items.field_196188_eb, 2265); // record ward
         legacyItemIdMap.put(Items.field_196189_ec, 2266); // record 11
         legacyItemIdMap.put(Items.field_196190_ed, 2267); // record wait
+
+        legacyBlockIdMap.put(Blocks.AIR, 0);
+        legacyBlockIdMap.put(Blocks.STONE, 1);
+        legacyBlockIdMap.put(Blocks.GRASS, 2);
+        legacyBlockIdMap.put(Blocks.DIRT, 3);
+        legacyBlockIdMap.put(Blocks.COBBLESTONE, 4);
+        legacyBlockIdMap.put(Blocks.field_196662_n, 5); // oak planks
+        legacyBlockIdMap.put(Blocks.field_196674_t, 6); // oak sapling
+        legacyBlockIdMap.put(Blocks.BEDROCK, 7);
+        legacyBlockIdMap.put(Blocks.WATER, 9);
+        legacyBlockIdMap.put(Blocks.LAVA, 11);
+        legacyBlockIdMap.put(Blocks.SAND, 12);
+        legacyBlockIdMap.put(Blocks.GRAVEL, 13);
+        legacyBlockIdMap.put(Blocks.GOLD_ORE, 14);
+        legacyBlockIdMap.put(Blocks.IRON_ORE, 15);
+        legacyBlockIdMap.put(Blocks.COAL_ORE, 16);
+        legacyBlockIdMap.put(Blocks.field_196617_K, 17); // oak log
+        legacyBlockIdMap.put(Blocks.field_196642_W, 18); // oak leaves
+        legacyBlockIdMap.put(Blocks.SPONGE, 19);
+        legacyBlockIdMap.put(Blocks.GLASS, 20);
+        legacyBlockIdMap.put(Blocks.LAPIS_ORE, 21);
+        legacyBlockIdMap.put(Blocks.LAPIS_BLOCK, 22);
+        legacyBlockIdMap.put(Blocks.DISPENSER, 23);
+        legacyBlockIdMap.put(Blocks.SANDSTONE, 24);
+        legacyBlockIdMap.put(Blocks.field_196586_al, 25); // note block
+        legacyBlockIdMap.put(Blocks.field_196587_am, 26); // white bed
+        legacyBlockIdMap.put(Blocks.field_196552_aC, 27); // powered rail
+        legacyBlockIdMap.put(Blocks.DETECTOR_RAIL, 28);
+        legacyBlockIdMap.put(Blocks.STICKY_PISTON, 29);
+        legacyBlockIdMap.put(Blocks.field_196553_aF, 30); // web
+        legacyBlockIdMap.put(Blocks.field_196804_gh, 31); // tall grass
+        legacyBlockIdMap.put(Blocks.field_196555_aI, 32); // dead bush
+        legacyBlockIdMap.put(Blocks.PISTON, 33);
+        legacyBlockIdMap.put(Blocks.PISTON_HEAD, 34);
+        legacyBlockIdMap.put(Blocks.field_196556_aL, 35); // white wool
+        legacyBlockIdMap.put(Blocks.field_196605_bc, 37); // dandelion / yellow flower
+        legacyBlockIdMap.put(Blocks.field_196606_bd, 38); // poppy / red flower
+        legacyBlockIdMap.put(Blocks.BROWN_MUSHROOM, 39);
+        legacyBlockIdMap.put(Blocks.RED_MUSHROOM, 40);
+        legacyBlockIdMap.put(Blocks.GOLD_BLOCK, 41);
+        legacyBlockIdMap.put(Blocks.IRON_BLOCK, 42);
+        legacyBlockIdMap.put(Blocks.STONE_SLAB, 44);
+        legacyBlockIdMap.put(Blocks.field_196584_bK, 45); // bricks
+        legacyBlockIdMap.put(Blocks.TNT, 46);
+        legacyBlockIdMap.put(Blocks.BOOKSHELF, 47);
+        legacyBlockIdMap.put(Blocks.MOSSY_COBBLESTONE, 48);
+        legacyBlockIdMap.put(Blocks.OBSIDIAN, 49);
+        legacyBlockIdMap.put(Blocks.TORCH, 50);
+        legacyBlockIdMap.put(Blocks.FIRE, 51);
+        legacyBlockIdMap.put(Blocks.MOB_SPAWNER, 52);
+        legacyBlockIdMap.put(Blocks.OAK_STAIRS, 53);
+        legacyBlockIdMap.put(Blocks.CHEST, 54);
+        legacyBlockIdMap.put(Blocks.REDSTONE_WIRE, 55);
+        legacyBlockIdMap.put(Blocks.DIAMOND_ORE, 56);
+        legacyBlockIdMap.put(Blocks.DIAMOND_BLOCK, 57);
+        legacyBlockIdMap.put(Blocks.CRAFTING_TABLE, 58);
+        legacyBlockIdMap.put(Blocks.WHEAT, 59);
+        legacyBlockIdMap.put(Blocks.FARMLAND, 60);
+        legacyBlockIdMap.put(Blocks.FURNACE, 61);
+        legacyBlockIdMap.put(Blocks.field_196649_cc, 63); // sign
+        legacyBlockIdMap.put(Blocks.OAK_DOOR, 64);
+        legacyBlockIdMap.put(Blocks.LADDER, 65);
+        legacyBlockIdMap.put(Blocks.RAIL, 66);
+        legacyBlockIdMap.put(Blocks.field_196659_cl, 67); // cobblestone stairs
+        legacyBlockIdMap.put(Blocks.WALL_SIGN, 68);
+        legacyBlockIdMap.put(Blocks.LEVER, 69);
+        legacyBlockIdMap.put(Blocks.STONE_PRESSURE_PLATE, 70);
+        legacyBlockIdMap.put(Blocks.IRON_DOOR, 71);
+        legacyBlockIdMap.put(Blocks.field_196663_cq, 72); // oak pressure plate
+        legacyBlockIdMap.put(Blocks.REDSTONE_ORE, 73);
+        legacyBlockIdMap.put(Blocks.REDSTONE_TORCH, 76);
+        legacyBlockIdMap.put(Blocks.STONE_BUTTON, 77);
+        legacyBlockIdMap.put(Blocks.SNOW, 78);
+        legacyBlockIdMap.put(Blocks.ICE, 79);
+        legacyBlockIdMap.put(Blocks.field_196604_cC, 80); // snow block
+        legacyBlockIdMap.put(Blocks.CACTUS, 81);
+        legacyBlockIdMap.put(Blocks.CLAY, 82);
+        legacyBlockIdMap.put(Blocks.JUKEBOX, 84);
+        legacyBlockIdMap.put(Blocks.OAK_FENCE, 85);
+        legacyBlockIdMap.put(Blocks.PUMPKIN, 86);
+        legacyBlockIdMap.put(Blocks.NETHERRACK, 87);
+        legacyBlockIdMap.put(Blocks.SOUL_SAND, 88);
+        legacyBlockIdMap.put(Blocks.GLOWSTONE, 89);
+        legacyBlockIdMap.put(Blocks.PORTAL, 90);
+        legacyBlockIdMap.put(Blocks.field_196628_cT, 91); // lit pumpkin
+        legacyBlockIdMap.put(Blocks.CAKE, 92);
+        legacyBlockIdMap.put(Blocks.field_196633_cV, 93); // repeater
+        legacyBlockIdMap.put(Blocks.field_196807_gj, 95); // white stained glass
+        legacyBlockIdMap.put(Blocks.field_196636_cW, 96); // oak trapdoor
+        legacyBlockIdMap.put(Blocks.field_196686_dc, 97); // infested stone
+        legacyBlockIdMap.put(Blocks.field_196696_di, 98); // stone brick
+        legacyBlockIdMap.put(Blocks.BROWN_MUSHROOM_BLOCK, 99);
+        legacyBlockIdMap.put(Blocks.RED_MUSHROOM_BLOCK, 100);
+        legacyBlockIdMap.put(Blocks.IRON_BARS, 101);
+        legacyBlockIdMap.put(Blocks.GLASS_PANE, 102);
+        legacyBlockIdMap.put(Blocks.MELON_BLOCK, 103);
+        legacyBlockIdMap.put(Blocks.PUMPKIN_STEM, 104);
+        legacyBlockIdMap.put(Blocks.MELON_STEM, 105);
+        legacyBlockIdMap.put(Blocks.VINE, 106);
+        legacyBlockIdMap.put(Blocks.OAK_FENCE_GATE, 107);
+        legacyBlockIdMap.put(Blocks.BRICK_STAIRS, 108);
+        legacyBlockIdMap.put(Blocks.STONE_BRICK_STAIRS, 109);
+        legacyBlockIdMap.put(Blocks.MYCELIUM, 110);
+        legacyBlockIdMap.put(Blocks.field_196651_dG, 111); // water lily
+        legacyBlockIdMap.put(Blocks.field_196653_dH, 112); // nether bricks
+        legacyBlockIdMap.put(Blocks.NETHER_BRICK_FENCE, 113);
+        legacyBlockIdMap.put(Blocks.NETHER_BRICK_STAIRS, 114);
+        legacyBlockIdMap.put(Blocks.NETHER_WART, 115);
+        legacyBlockIdMap.put(Blocks.ENCHANTING_TABLE, 116);
+        legacyBlockIdMap.put(Blocks.BREWING_STAND, 117);
+        legacyBlockIdMap.put(Blocks.CAULDRON, 118);
+        legacyBlockIdMap.put(Blocks.END_PORTAL, 119);
+        legacyBlockIdMap.put(Blocks.END_PORTAL_FRAME, 120);
+        legacyBlockIdMap.put(Blocks.END_STONE, 121);
+        legacyBlockIdMap.put(Blocks.DRAGON_EGG, 122);
+        legacyBlockIdMap.put(Blocks.REDSTONE_LAMP, 123);
+        legacyBlockIdMap.put(Blocks.field_196622_bq, 126); // oak slab
+        legacyBlockIdMap.put(Blocks.COCOA, 127);
+        legacyBlockIdMap.put(Blocks.SANDSTONE_STAIRS, 128);
+        legacyBlockIdMap.put(Blocks.EMERALD_ORE, 129);
+        legacyBlockIdMap.put(Blocks.ENDER_CHEST, 130);
+        legacyBlockIdMap.put(Blocks.TRIPWIRE_HOOK, 131);
+        legacyBlockIdMap.put(Blocks.TRIPWIRE, 132);
+        legacyBlockIdMap.put(Blocks.EMERALD_BLOCK, 133);
+        legacyBlockIdMap.put(Blocks.SPRUCE_STAIRS, 134);
+        legacyBlockIdMap.put(Blocks.BIRCH_STAIRS, 135);
+        legacyBlockIdMap.put(Blocks.JUNGLE_STAIRS, 136);
+        legacyBlockIdMap.put(Blocks.COMMAND_BLOCK, 137);
+        legacyBlockIdMap.put(Blocks.BEACON, 138);
+        legacyBlockIdMap.put(Blocks.COBBLESTONE_WALL, 139);
+        legacyBlockIdMap.put(Blocks.FLOWER_POT, 140);
+        legacyBlockIdMap.put(Blocks.CARROTS, 141);
+        legacyBlockIdMap.put(Blocks.POTATOES, 142);
+        legacyBlockIdMap.put(Blocks.field_196689_eF, 143); // oak button
+        legacyBlockIdMap.put(Blocks.field_196703_eM, 144); // skeleton skull
+        legacyBlockIdMap.put(Blocks.ANVIL, 145);
+        legacyBlockIdMap.put(Blocks.TRAPPED_CHEST, 146);
+        legacyBlockIdMap.put(Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE, 147);
+        legacyBlockIdMap.put(Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE, 148);
+        legacyBlockIdMap.put(Blocks.field_196762_fd, 149);
+        legacyBlockIdMap.put(Blocks.DAYLIGHT_DETECTOR, 151);
+        legacyBlockIdMap.put(Blocks.REDSTONE_BLOCK, 152);
+        legacyBlockIdMap.put(Blocks.field_196766_fg, 153); // nether quarz ore
+        legacyBlockIdMap.put(Blocks.HOPPER, 154);
+        legacyBlockIdMap.put(Blocks.QUARTZ_BLOCK, 155);
+        legacyBlockIdMap.put(Blocks.QUARTZ_STAIRS, 156);
+        legacyBlockIdMap.put(Blocks.ACTIVATOR_RAIL, 157);
+        legacyBlockIdMap.put(Blocks.DROPPER, 158);
+        legacyBlockIdMap.put(Blocks.field_196825_gz, 160); // white tained glass pane
+        legacyBlockIdMap.put(Blocks.field_196574_ab, 161); // dark oak leaves
+        legacyBlockIdMap.put(Blocks.field_196623_P, 162); // dark oak log
+        legacyBlockIdMap.put(Blocks.ACACIA_STAIRS, 163);
+        legacyBlockIdMap.put(Blocks.DARK_OAK_STAIRS, 164);
+        legacyBlockIdMap.put(Blocks.SLIME_BLOCK, 165);
+        legacyBlockIdMap.put(Blocks.BARRIER, 166);
+        legacyBlockIdMap.put(Blocks.IRON_TRAPDOOR, 167);
+        legacyBlockIdMap.put(Blocks.PRISMARINE, 168);
+        legacyBlockIdMap.put(Blocks.SEA_LANTERN, 169);
+        legacyBlockIdMap.put(Blocks.HAY_BLOCK, 170);
+        legacyBlockIdMap.put(Blocks.field_196724_fH, 171); // white carpet
+        legacyBlockIdMap.put(Blocks.HARDENED_CLAY, 172);
+        legacyBlockIdMap.put(Blocks.COAL_BLOCK, 173);
+        legacyBlockIdMap.put(Blocks.PACKED_ICE, 174);
+        legacyBlockIdMap.put(Blocks.field_196784_gT, 176); // white banner
+        legacyBlockIdMap.put(Blocks.field_196843_hj, 177); // white wall banner
+        legacyBlockIdMap.put(Blocks.RED_SANDSTONE, 179);
+        legacyBlockIdMap.put(Blocks.RED_SANDSTONE_STAIRS, 180);
+        legacyBlockIdMap.put(Blocks.SPRUCE_FENCE_GATE, 183);
+        legacyBlockIdMap.put(Blocks.BIRCH_FENCE_GATE, 184);
+        legacyBlockIdMap.put(Blocks.JUNGLE_FENCE_GATE, 185);
+        legacyBlockIdMap.put(Blocks.DARK_OAK_FENCE_GATE, 186);
+        legacyBlockIdMap.put(Blocks.ACACIA_FENCE_GATE, 187);
+        legacyBlockIdMap.put(Blocks.SPRUCE_FENCE, 188);
+        legacyBlockIdMap.put(Blocks.BIRCH_FENCE, 189);
+        legacyBlockIdMap.put(Blocks.JUNGLE_FENCE, 190);
+        legacyBlockIdMap.put(Blocks.DARK_OAK_FENCE, 191);
+        legacyBlockIdMap.put(Blocks.ACACIA_FENCE, 192);
+        legacyBlockIdMap.put(Blocks.SPRUCE_DOOR, 193);
+        legacyBlockIdMap.put(Blocks.BIRCH_DOOR, 194);
+        legacyBlockIdMap.put(Blocks.JUNGLE_DOOR, 195);
+        legacyBlockIdMap.put(Blocks.ACACIA_DOOR, 196);
+        legacyBlockIdMap.put(Blocks.DARK_OAK_DOOR, 197);
+        legacyBlockIdMap.put(Blocks.END_ROD, 198);
+        legacyBlockIdMap.put(Blocks.CHORUS_PLANT, 199);
+        legacyBlockIdMap.put(Blocks.CHORUS_FLOWER, 200);
+        legacyBlockIdMap.put(Blocks.PURPUR_BLOCK, 201);
+        legacyBlockIdMap.put(Blocks.PURPUR_PILLAR, 202);
+        legacyBlockIdMap.put(Blocks.PURPUR_STAIRS, 203);
+        legacyBlockIdMap.put(Blocks.PURPUR_SLAB, 205);
+        legacyBlockIdMap.put(Blocks.field_196806_hJ, 206); // ed stone bricks
+        legacyBlockIdMap.put(Blocks.BEETROOTS, 207);
+        legacyBlockIdMap.put(Blocks.GRASS_PATH, 208);
+        legacyBlockIdMap.put(Blocks.END_GATEWAY, 209);
+        legacyBlockIdMap.put(Blocks.REPEATING_COMMAND_BLOCK, 210);
+        legacyBlockIdMap.put(Blocks.CHAIN_COMMAND_BLOCK, 211);
+        legacyBlockIdMap.put(Blocks.FROSTED_ICE, 212);
+        legacyBlockIdMap.put(Blocks.field_196814_hQ, 213); // magma block
+        legacyBlockIdMap.put(Blocks.NETHER_WART_BLOCK, 214);
+        legacyBlockIdMap.put(Blocks.field_196817_hS, 215); // red nether brick
+        legacyBlockIdMap.put(Blocks.BONE_BLOCK, 216);
+        legacyBlockIdMap.put(Blocks.STRUCTURE_VOID, 217);
+        legacyBlockIdMap.put(Blocks.OBSERVER, 218);
+        legacyBlockIdMap.put(Blocks.WHITE_SHULKER_BOX, 219);
+        legacyBlockIdMap.put(Blocks.ORANGE_SHULKER_BOX, 220);
+        legacyBlockIdMap.put(Blocks.MAGENTA_SHULKER_BOX, 221);
+        legacyBlockIdMap.put(Blocks.LIGHT_BLUE_SHULKER_BOX, 222);
+        legacyBlockIdMap.put(Blocks.YELLOW_SHULKER_BOX, 223);
+        legacyBlockIdMap.put(Blocks.LIME_SHULKER_BOX, 224);
+        legacyBlockIdMap.put(Blocks.PINK_SHULKER_BOX, 225);
+        legacyBlockIdMap.put(Blocks.GRAY_SHULKER_BOX, 226);
+        legacyBlockIdMap.put(Blocks.field_196875_ie, 227); // light gray shulker box
+        legacyBlockIdMap.put(Blocks.CYAN_SHULKER_BOX, 228);
+        legacyBlockIdMap.put(Blocks.PURPLE_SHULKER_BOX, 229);
+        legacyBlockIdMap.put(Blocks.BLUE_SHULKER_BOX, 230);
+        legacyBlockIdMap.put(Blocks.BROWN_SHULKER_BOX, 231);
+        legacyBlockIdMap.put(Blocks.GREEN_SHULKER_BOX, 232);
+        legacyBlockIdMap.put(Blocks.RED_SHULKER_BOX, 233);
+        legacyBlockIdMap.put(Blocks.BLACK_SHULKER_BOX, 234);
+        legacyBlockIdMap.put(Blocks.field_196777_fo, 235); // white terracotta
+        legacyBlockIdMap.put(Blocks.field_196778_fp, 236); // orange
+        legacyBlockIdMap.put(Blocks.field_196780_fq, 237); // magenta
+        legacyBlockIdMap.put(Blocks.field_196782_fr, 238); // light blue
+        legacyBlockIdMap.put(Blocks.field_196783_fs, 239); // yellow
+        legacyBlockIdMap.put(Blocks.field_196785_ft, 240); // lime
+        legacyBlockIdMap.put(Blocks.field_196787_fu, 241); // pink
+        legacyBlockIdMap.put(Blocks.field_196789_fv, 242); // gray
+        legacyBlockIdMap.put(Blocks.field_196791_fw, 243); // light gray
+        legacyBlockIdMap.put(Blocks.field_196793_fx, 244); // cyan
+        legacyBlockIdMap.put(Blocks.field_196795_fy, 245); // purple
+        legacyBlockIdMap.put(Blocks.field_196797_fz, 246); // blue
+        legacyBlockIdMap.put(Blocks.field_196719_fA, 247); // brown
+        legacyBlockIdMap.put(Blocks.field_196720_fB, 248); // green
+        legacyBlockIdMap.put(Blocks.field_196721_fC, 249); // red
+        legacyBlockIdMap.put(Blocks.field_196722_fD, 250); // black
+        legacyBlockIdMap.put(Blocks.field_196828_iC, 251); // white concrete
+        legacyBlockIdMap.put(Blocks.field_196860_iS, 252); // white concrete powder
+        legacyBlockIdMap.put(Blocks.STRUCTURE_BLOCK, 255);
     }
 
     public static MC_Block getBlockFromName(String blockName) {
@@ -930,6 +1165,14 @@ public class PluginHelper {
     }
 
     public static int getLegacyItemId(Item item) {
-        return legacyItemIdMap.getOrDefault(item, 547);
+        return legacyItemIdMap.getOrDefault(item, 0);
+    }
+
+    public static Block getBlockFromLegacyId(int id) {
+        return legacyBlockIdMap.inverse().getOrDefault(id, Blocks.AIR);
+    }
+
+    public static int getLegacyBlockId(Block block) {
+        return legacyBlockIdMap.getOrDefault(block, 0);
     }
 }
