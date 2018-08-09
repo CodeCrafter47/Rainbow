@@ -378,7 +378,7 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Intrinsic
     public String api$getName() {
-        return func_200200_C_().getFormattedText();
+        return func_200200_C_().getString();
     }
 
     @Intrinsic
