@@ -5,7 +5,7 @@
     <parent>
         <artifactId>rainbow-parent</artifactId>
         <groupId>org.projectrainbow</groupId>
-        <version>1.13</version>
+        <version>1.13.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -34,7 +34,7 @@
                             <outputDirectory>
                                 ${project.build.directory}
                             </outputDirectory>
-                            <md5>200bfa59cc85e9a212adfa6694f45c1c</md5>
+                            <md5>234c32ff17aabaf5d389c8b5dd101408</md5>
                         </configuration>
                     </execution>
                 </executions>
