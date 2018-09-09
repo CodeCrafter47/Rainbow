@@ -16,10 +16,7 @@ import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.*;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Enchantments;
-import net.minecraft.init.Items;
-import net.minecraft.init.MobEffects;
+import net.minecraft.init.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -27,9 +24,11 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.GameType;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -278,79 +277,79 @@ public class PluginHelper {
         enchantmentMap.put(Enchantments.MENDING, MC_EnchantmentType.MENDING);
         enchantmentMap.put(Enchantments.VANISHING_CURSE, MC_EnchantmentType.CURSE_OF_VANISHING);
 
-        biomeMap.put(Biome.getBiome(0), MC_WorldBiomeType.OCEAN);
-        biomeMap.put(Biome.getBiome(1), MC_WorldBiomeType.PLAINS);
-        biomeMap.put(Biome.getBiome(2), MC_WorldBiomeType.DESERT);
-        biomeMap.put(Biome.getBiome(3), MC_WorldBiomeType.EXTREME_HILLS);
-        biomeMap.put(Biome.getBiome(4), MC_WorldBiomeType.FOREST);
-        biomeMap.put(Biome.getBiome(5), MC_WorldBiomeType.TAIGA);
-        biomeMap.put(Biome.getBiome(6), MC_WorldBiomeType.SWAMPLAND);
-        biomeMap.put(Biome.getBiome(7), MC_WorldBiomeType.RIVER);
-        biomeMap.put(Biome.getBiome(8), MC_WorldBiomeType.HELL);
-        biomeMap.put(Biome.getBiome(9), MC_WorldBiomeType.THE_END);
-        biomeMap.put(Biome.getBiome(10), MC_WorldBiomeType.FROZEN_OCEAN);
-        biomeMap.put(Biome.getBiome(11), MC_WorldBiomeType.FROZEN_RIVER);
-        biomeMap.put(Biome.getBiome(12), MC_WorldBiomeType.ICE_PLAINS);
-        biomeMap.put(Biome.getBiome(13), MC_WorldBiomeType.ICE_MOUNTAINS);
-        biomeMap.put(Biome.getBiome(14), MC_WorldBiomeType.MUSHROOM_ISLAND);
-        biomeMap.put(Biome.getBiome(15), MC_WorldBiomeType.MUSHROOM_ISLAND_SHORE);
-        biomeMap.put(Biome.getBiome(16), MC_WorldBiomeType.BEACH);
-        biomeMap.put(Biome.getBiome(17), MC_WorldBiomeType.DESERT_HILLS);
-        biomeMap.put(Biome.getBiome(18), MC_WorldBiomeType.FOREST_HILLS);
-        biomeMap.put(Biome.getBiome(19), MC_WorldBiomeType.TAIGA_HILLS);
-        biomeMap.put(Biome.getBiome(20), MC_WorldBiomeType.EXTREME_HILLS_EDGE);
-        biomeMap.put(Biome.getBiome(21), MC_WorldBiomeType.JUNGLE);
-        biomeMap.put(Biome.getBiome(22), MC_WorldBiomeType.JUNGLE_HILLS);
-        biomeMap.put(Biome.getBiome(23), MC_WorldBiomeType.JUNGLE_EDGE);
-        biomeMap.put(Biome.getBiome(24), MC_WorldBiomeType.DEEP_OCEAN);
-        biomeMap.put(Biome.getBiome(25), MC_WorldBiomeType.STONE_BEACH);
-        biomeMap.put(Biome.getBiome(26), MC_WorldBiomeType.COLD_BEACH);
-        biomeMap.put(Biome.getBiome(27), MC_WorldBiomeType.BIRCH_FOREST);
-        biomeMap.put(Biome.getBiome(28), MC_WorldBiomeType.BIRCH_FOREST_HILLS);
-        biomeMap.put(Biome.getBiome(29), MC_WorldBiomeType.ROOFED_FOREST);
-        biomeMap.put(Biome.getBiome(30), MC_WorldBiomeType.COLD_TAIGA);
-        biomeMap.put(Biome.getBiome(31), MC_WorldBiomeType.COLD_TAIGA_HILLS);
-        biomeMap.put(Biome.getBiome(32), MC_WorldBiomeType.MEGA_TAIGA);
-        biomeMap.put(Biome.getBiome(33), MC_WorldBiomeType.MEGA_TAIGA_HILLS);
-        biomeMap.put(Biome.getBiome(34), MC_WorldBiomeType.EXTREME_HILLS_PLUS);
-        biomeMap.put(Biome.getBiome(35), MC_WorldBiomeType.SAVANNA);
-        biomeMap.put(Biome.getBiome(36), MC_WorldBiomeType.SAVANNA_PLATEAU);
-        biomeMap.put(Biome.getBiome(37), MC_WorldBiomeType.MESA);
-        biomeMap.put(Biome.getBiome(38), MC_WorldBiomeType.MESA_PLATEAU_F);
-        biomeMap.put(Biome.getBiome(39), MC_WorldBiomeType.MESA_PLATEAU);
-        biomeMap.put(Biome.getBiome(40), MC_WorldBiomeType.END_SMALL_ISLANDS);
-        biomeMap.put(Biome.getBiome(41), MC_WorldBiomeType.END_MIDLANDS);
-        biomeMap.put(Biome.getBiome(42), MC_WorldBiomeType.END_HIGHLANDS);
-        biomeMap.put(Biome.getBiome(43), MC_WorldBiomeType.END_BARRENS);
-        biomeMap.put(Biome.getBiome(44), MC_WorldBiomeType.WARM_OCEAN);
-        biomeMap.put(Biome.getBiome(45), MC_WorldBiomeType.LUKEWARM_OCEAN);
-        biomeMap.put(Biome.getBiome(46), MC_WorldBiomeType.COLD_OCEAN);
-        biomeMap.put(Biome.getBiome(47), MC_WorldBiomeType.DEEP_WARM_OCEAN);
-        biomeMap.put(Biome.getBiome(48), MC_WorldBiomeType.DEEP_LUKEWARM_OCEAN);
-        biomeMap.put(Biome.getBiome(49), MC_WorldBiomeType.DEEP_COLD_OCEAN);
-        biomeMap.put(Biome.getBiome(50), MC_WorldBiomeType.DEEP_FROZEN_OCEAN);
-        biomeMap.put(Biome.getBiome(127), MC_WorldBiomeType.VOID);
-        biomeMap.put(Biome.getBiome(129), MC_WorldBiomeType.SUNFLOWER_PLAINS);
-        biomeMap.put(Biome.getBiome(130), MC_WorldBiomeType.DESERT_M);
-        biomeMap.put(Biome.getBiome(131), MC_WorldBiomeType.EXTREME_HILLS_M);
-        biomeMap.put(Biome.getBiome(132), MC_WorldBiomeType.FLOWER_FOREST);
-        biomeMap.put(Biome.getBiome(133), MC_WorldBiomeType.TAIGA_M);
-        biomeMap.put(Biome.getBiome(134), MC_WorldBiomeType.SWAMPLAND_M);
-        biomeMap.put(Biome.getBiome(140), MC_WorldBiomeType.ICE_PLAINS_SPIKES);
-        biomeMap.put(Biome.getBiome(149), MC_WorldBiomeType.JUNGLE_M);
-        biomeMap.put(Biome.getBiome(151), MC_WorldBiomeType.JUNGLE_EDGE_M);
-        biomeMap.put(Biome.getBiome(155), MC_WorldBiomeType.BIRCH_FOREST_M);
-        biomeMap.put(Biome.getBiome(156), MC_WorldBiomeType.BIRCH_FOREST_HILLS_M);
-        biomeMap.put(Biome.getBiome(157), MC_WorldBiomeType.ROOFED_FOREST_M);
-        biomeMap.put(Biome.getBiome(158), MC_WorldBiomeType.COLD_TAIGA_M);
-        biomeMap.put(Biome.getBiome(160), MC_WorldBiomeType.MEGA_SPRUCE_TAIGA);
-        biomeMap.put(Biome.getBiome(161), MC_WorldBiomeType.REDWOOD_TAIGA_HILLS_M);
-        biomeMap.put(Biome.getBiome(162), MC_WorldBiomeType.EXTREME_HILLS_PLUS_M);
-        biomeMap.put(Biome.getBiome(163), MC_WorldBiomeType.SAVANNA_M);
-        biomeMap.put(Biome.getBiome(164), MC_WorldBiomeType.SAVANNA_PLATEAU_M);
-        biomeMap.put(Biome.getBiome(165), MC_WorldBiomeType.MESA_M);
-        biomeMap.put(Biome.getBiome(166), MC_WorldBiomeType.MESA_PLATEAU_F_M);
-        biomeMap.put(Biome.getBiome(167), MC_WorldBiomeType.MESA_PLATEAU_M);
+        biomeMap.put(Biome.a(0, null), MC_WorldBiomeType.OCEAN);
+        biomeMap.put(Biome.a(1, null), MC_WorldBiomeType.PLAINS);
+        biomeMap.put(Biome.a(2, null), MC_WorldBiomeType.DESERT);
+        biomeMap.put(Biome.a(3, null), MC_WorldBiomeType.EXTREME_HILLS);
+        biomeMap.put(Biome.a(4, null), MC_WorldBiomeType.FOREST);
+        biomeMap.put(Biome.a(5, null), MC_WorldBiomeType.TAIGA);
+        biomeMap.put(Biome.a(6, null), MC_WorldBiomeType.SWAMPLAND);
+        biomeMap.put(Biome.a(7, null), MC_WorldBiomeType.RIVER);
+        biomeMap.put(Biome.a(8, null), MC_WorldBiomeType.HELL);
+        biomeMap.put(Biome.a(9, null), MC_WorldBiomeType.THE_END);
+        biomeMap.put(Biome.a(10, null), MC_WorldBiomeType.FROZEN_OCEAN);
+        biomeMap.put(Biome.a(11, null), MC_WorldBiomeType.FROZEN_RIVER);
+        biomeMap.put(Biome.a(12, null), MC_WorldBiomeType.ICE_PLAINS);
+        biomeMap.put(Biome.a(13, null), MC_WorldBiomeType.ICE_MOUNTAINS);
+        biomeMap.put(Biome.a(14, null), MC_WorldBiomeType.MUSHROOM_ISLAND);
+        biomeMap.put(Biome.a(15, null), MC_WorldBiomeType.MUSHROOM_ISLAND_SHORE);
+        biomeMap.put(Biome.a(16, null), MC_WorldBiomeType.BEACH);
+        biomeMap.put(Biome.a(17, null), MC_WorldBiomeType.DESERT_HILLS);
+        biomeMap.put(Biome.a(18, null), MC_WorldBiomeType.FOREST_HILLS);
+        biomeMap.put(Biome.a(19, null), MC_WorldBiomeType.TAIGA_HILLS);
+        biomeMap.put(Biome.a(20, null), MC_WorldBiomeType.EXTREME_HILLS_EDGE);
+        biomeMap.put(Biome.a(21, null), MC_WorldBiomeType.JUNGLE);
+        biomeMap.put(Biome.a(22, null), MC_WorldBiomeType.JUNGLE_HILLS);
+        biomeMap.put(Biome.a(23, null), MC_WorldBiomeType.JUNGLE_EDGE);
+        biomeMap.put(Biome.a(24, null), MC_WorldBiomeType.DEEP_OCEAN);
+        biomeMap.put(Biome.a(25, null), MC_WorldBiomeType.STONE_BEACH);
+        biomeMap.put(Biome.a(26, null), MC_WorldBiomeType.COLD_BEACH);
+        biomeMap.put(Biome.a(27, null), MC_WorldBiomeType.BIRCH_FOREST);
+        biomeMap.put(Biome.a(28, null), MC_WorldBiomeType.BIRCH_FOREST_HILLS);
+        biomeMap.put(Biome.a(29, null), MC_WorldBiomeType.ROOFED_FOREST);
+        biomeMap.put(Biome.a(30, null), MC_WorldBiomeType.COLD_TAIGA);
+        biomeMap.put(Biome.a(31, null), MC_WorldBiomeType.COLD_TAIGA_HILLS);
+        biomeMap.put(Biome.a(32, null), MC_WorldBiomeType.MEGA_TAIGA);
+        biomeMap.put(Biome.a(33, null), MC_WorldBiomeType.MEGA_TAIGA_HILLS);
+        biomeMap.put(Biome.a(34, null), MC_WorldBiomeType.EXTREME_HILLS_PLUS);
+        biomeMap.put(Biome.a(35, null), MC_WorldBiomeType.SAVANNA);
+        biomeMap.put(Biome.a(36, null), MC_WorldBiomeType.SAVANNA_PLATEAU);
+        biomeMap.put(Biome.a(37, null), MC_WorldBiomeType.MESA);
+        biomeMap.put(Biome.a(38, null), MC_WorldBiomeType.MESA_PLATEAU_F);
+        biomeMap.put(Biome.a(39, null), MC_WorldBiomeType.MESA_PLATEAU);
+        biomeMap.put(Biome.a(40, null), MC_WorldBiomeType.END_SMALL_ISLANDS);
+        biomeMap.put(Biome.a(41, null), MC_WorldBiomeType.END_MIDLANDS);
+        biomeMap.put(Biome.a(42, null), MC_WorldBiomeType.END_HIGHLANDS);
+        biomeMap.put(Biome.a(43, null), MC_WorldBiomeType.END_BARRENS);
+        biomeMap.put(Biome.a(44, null), MC_WorldBiomeType.WARM_OCEAN);
+        biomeMap.put(Biome.a(45, null), MC_WorldBiomeType.LUKEWARM_OCEAN);
+        biomeMap.put(Biome.a(46, null), MC_WorldBiomeType.COLD_OCEAN);
+        biomeMap.put(Biome.a(47, null), MC_WorldBiomeType.DEEP_WARM_OCEAN);
+        biomeMap.put(Biome.a(48, null), MC_WorldBiomeType.DEEP_LUKEWARM_OCEAN);
+        biomeMap.put(Biome.a(49, null), MC_WorldBiomeType.DEEP_COLD_OCEAN);
+        biomeMap.put(Biome.a(50, null), MC_WorldBiomeType.DEEP_FROZEN_OCEAN);
+        biomeMap.put(Biome.a(127, null), MC_WorldBiomeType.VOID);
+        biomeMap.put(Biome.a(129, null), MC_WorldBiomeType.SUNFLOWER_PLAINS);
+        biomeMap.put(Biome.a(130, null), MC_WorldBiomeType.DESERT_M);
+        biomeMap.put(Biome.a(131, null), MC_WorldBiomeType.EXTREME_HILLS_M);
+        biomeMap.put(Biome.a(132, null), MC_WorldBiomeType.FLOWER_FOREST);
+        biomeMap.put(Biome.a(133, null), MC_WorldBiomeType.TAIGA_M);
+        biomeMap.put(Biome.a(134, null), MC_WorldBiomeType.SWAMPLAND_M);
+        biomeMap.put(Biome.a(140, null), MC_WorldBiomeType.ICE_PLAINS_SPIKES);
+        biomeMap.put(Biome.a(149, null), MC_WorldBiomeType.JUNGLE_M);
+        biomeMap.put(Biome.a(151, null), MC_WorldBiomeType.JUNGLE_EDGE_M);
+        biomeMap.put(Biome.a(155, null), MC_WorldBiomeType.BIRCH_FOREST_M);
+        biomeMap.put(Biome.a(156, null), MC_WorldBiomeType.BIRCH_FOREST_HILLS_M);
+        biomeMap.put(Biome.a(157, null), MC_WorldBiomeType.ROOFED_FOREST_M);
+        biomeMap.put(Biome.a(158, null), MC_WorldBiomeType.COLD_TAIGA_M);
+        biomeMap.put(Biome.a(160, null), MC_WorldBiomeType.MEGA_SPRUCE_TAIGA);
+        biomeMap.put(Biome.a(161, null), MC_WorldBiomeType.REDWOOD_TAIGA_HILLS_M);
+        biomeMap.put(Biome.a(162, null), MC_WorldBiomeType.EXTREME_HILLS_PLUS_M);
+        biomeMap.put(Biome.a(163, null), MC_WorldBiomeType.SAVANNA_M);
+        biomeMap.put(Biome.a(164, null), MC_WorldBiomeType.SAVANNA_PLATEAU_M);
+        biomeMap.put(Biome.a(165, null), MC_WorldBiomeType.MESA_M);
+        biomeMap.put(Biome.a(166, null), MC_WorldBiomeType.MESA_PLATEAU_F_M);
+        biomeMap.put(Biome.a(167, null), MC_WorldBiomeType.MESA_PLATEAU_M);
 
         handMap.put(EnumHand.MAIN_HAND, MC_Hand.MAIN_HAND);
         handMap.put(EnumHand.OFF_HAND, MC_Hand.OFF_HAND);
@@ -1026,7 +1025,7 @@ public class PluginHelper {
                 blockName = "wool";
             }
 
-            Block bo = Block.getBlockFromName(blockName.toLowerCase());
+            Block bo = GameRegistry.g.b(new ResourceLocation(blockName.toLowerCase()));
 
             if (bo != null) {
                 return new BlockWrapper(bo.getDefaultState());
@@ -1174,5 +1173,17 @@ public class PluginHelper {
 
     public static int getLegacyBlockId(Block block) {
         return legacyBlockIdMap.getOrDefault(block, 0);
+    }
+
+    public static int getLegacyDimensionId(DimensionType dimensionType) {
+        if (dimensionType == DimensionType.OVERWORLD) {
+            return 0;
+        } else if (dimensionType == DimensionType.NETHER) {
+            return -1;
+        } else if (dimensionType == DimensionType.THE_END) {
+            return 1;
+        } else {
+            return -2;
+        }
     }
 }

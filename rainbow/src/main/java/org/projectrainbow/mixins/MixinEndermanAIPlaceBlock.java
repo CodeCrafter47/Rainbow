@@ -9,6 +9,7 @@ import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.projectrainbow.Hooks;
+import org.projectrainbow.PluginHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,10 +26,10 @@ public class MixinEndermanAIPlaceBlock {
     @Final
     private EntityEnderman enderman;
 
-    @Inject(method = "updateTask()V", at = @At(value = "INVOKE", target = "net.minecraft.world.World.setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "updateTask()V", at = @At(value = "INVOKE", target = "Layg;a(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void grief(CallbackInfo callbackInfo, Random var1, World var2, int var3, int var4, int var5, BlockPos pos, IBlockState var7, IBlockState var8, IBlockState var9) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptEntityMiscGrief((MC_Entity) enderman, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), enderman.dimension), MC_MiscGriefType.ENDERMAN_PLACE_CARRIED_BLOCK, ei);
+        Hooks.onAttemptEntityMiscGrief((MC_Entity) enderman, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(enderman.ap)), MC_MiscGriefType.ENDERMAN_PLACE_CARRIED_BLOCK, ei);
         if (ei.isCancelled) {
             callbackInfo.cancel();
         }

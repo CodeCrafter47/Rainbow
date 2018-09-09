@@ -8,10 +8,8 @@ import org.projectrainbow._DiwUtils;
 import org.projectrainbow._PermMgr;
 import org.projectrainbow._UUIDMapper;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 
 public class _CmdPerm implements MC_Command {
@@ -134,12 +132,7 @@ public class _CmdPerm implements MC_Command {
 
     @Override
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
-        return args.length >= 1
-                ? Arrays.stream(_DiwUtils.getMinecraftServer()
-                .getOnlinePlayerNames())
-                .filter(name -> name.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
-                .collect(Collectors.toList())
-                : null;
+        return null;
     }
 
     public void showUsage(MC_Player plr) {

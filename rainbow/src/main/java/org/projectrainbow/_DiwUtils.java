@@ -6,7 +6,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
 import joebkt._SerializableLocation;
-import net.minecraft.block.Block;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.Entity;
@@ -23,6 +22,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.init.GameRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.Launch;
@@ -224,12 +224,12 @@ public class _DiwUtils {
     }
 
     public static void Startup() {
-        _DiwUtils.MC_VERSION_STRING = getMinecraftServer().getMinecraftVersion();
+        _DiwUtils.MC_VERSION_STRING = getMinecraftServer().x(); // getMinecraftVersion
         _DiwUtils.DefaultMOTD = String.format(DefaultMOTD, _DiwUtils.MC_VERSION_STRING);
 
         // Setup BlockHelper
         BlockHelper.mapBlockNames = PluginHelper.legacyBlockIdMap.values().stream()
-                .collect(Collectors.toMap(id -> id, id -> Block.REGISTRY.getNameForObject(PluginHelper.getBlockFromLegacyId(id)).getPath()));
+                .collect(Collectors.toMap(id -> id, id -> GameRegistry.g.b(PluginHelper.getBlockFromLegacyId(id)).getPath()));
 
         // Setup Command permissions
         Commands commands = minecraftServer.func_195571_aL();
@@ -1959,7 +1959,7 @@ public class _DiwUtils {
     }
 
     public static boolean IsInsideSpawn(int x, int z) {
-        WorldServer world = getMinecraftServer().getWorld(0);
+        WorldServer world = getMinecraftServer().func_200667_a(DimensionType.OVERWORLD);
         BlockPos coords = world.getSpawnPoint();
         int depth = getMinecraftServer().getSpawnProtectionSize();
         int spawnX = coords.getX();
@@ -1983,10 +1983,8 @@ public class _DiwUtils {
     public static void Do_ArmorStand_Fun_At_Spawn() {
         if (ArmorStandsDance) {
             ++g_standFunIdx;
-            WorldServer[] worlds = getMinecraftServer().worlds;
 
-            for (int i = 0; i < worlds.length; ++i) {
-                WorldServer world = worlds[i];
+            for (WorldServer world: getMinecraftServer().w()) {
 
                 if (world.provider.getDimensionType() == DimensionType.OVERWORLD) {
                     for (MC_Entity entity : ((MC_World) world).getEntities()) {
@@ -2035,7 +2033,7 @@ public class _DiwUtils {
 
     public static void Do_Spawn_Forcefield_MobClean() {
         new ConcurrentHashMap();
-        WorldServer world = getMinecraftServer().getWorld(0);
+        WorldServer world = getMinecraftServer().func_200667_a(DimensionType.OVERWORLD);
 
         for (MC_Entity entity : ((MC_World) world).getEntities()) {
 
@@ -2078,11 +2076,8 @@ public class _DiwUtils {
         double bestDist = 100000.0D;
         MC_Entity bestEnt = null;
         String tgtNameLower = tgtName.toLowerCase();
-        WorldServer[] worlds = getMinecraftServer().worlds;
-        int i = 0;
 
-        while (i < worlds.length) {
-            WorldServer world = worlds[i];
+        for (WorldServer world: getMinecraftServer().w()) {
             Iterator<MC_Entity> var12 = ((MC_World) world).getEntities().iterator();
 
             while (true) {
@@ -2125,7 +2120,6 @@ public class _DiwUtils {
                     }
                 }
 
-                ++i;
                 break;
             }
         }

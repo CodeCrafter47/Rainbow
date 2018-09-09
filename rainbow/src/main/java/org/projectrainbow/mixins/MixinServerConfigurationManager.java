@@ -10,6 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.dimension.DimensionType;
 import org.projectrainbow.Hooks;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow._JOT_OnlineTimeUtils;
@@ -32,18 +33,18 @@ public class MixinServerConfigurationManager {
     private void onLogin(EntityPlayerMP var1, CallbackInfo callback) {
         _JOT_OnlineTimeUtils.HandlePlayerLogin((MC_Player) var1);
         _UUIDMapper.AddMap(((MC_Player) var1).getName(), var1.getUniqueID().toString());
-        Hooks.onPlayerLogin(((MC_Player) var1).getName(), var1.getUniqueID(), var1.getPlayerIP());
+        Hooks.onPlayerLogin(((MC_Player) var1).getName(), var1.getUniqueID(), var1.v()); // getPlayerIP
         Hooks.onPlayerJoin((MC_Player) var1);
     }
 
     @Inject(method = "recreatePlayerEntity", at = @At("RETURN"))
-    private void onRespawn(EntityPlayerMP oldPlayer, int dimension, boolean fromEnd /* false if player has been dead; if false inventory is cleared */,
+    private void onRespawn(EntityPlayerMP oldPlayer, DimensionType dimension, boolean fromEnd /* false if player has been dead; if false inventory is cleared */,
                            CallbackInfoReturnable<EntityPlayerMP> callback){
         Hooks.onPlayerRespawn((MC_Player) callback.getReturnValue());
     }
 
     @Redirect(method = "recreatePlayerEntity", at = @At(value = "INVOKE", target = "net.minecraft.world.WorldServer.getSpawnPoint()Lnet/minecraft/util/math/BlockPos;"))
-    private BlockPos onRespawnSendCompassTarget(WorldServer worldServer, EntityPlayerMP oldPlayer, int dimension, boolean fromEnd){
+    private BlockPos onRespawnSendCompassTarget(WorldServer worldServer, EntityPlayerMP oldPlayer, DimensionType dimension, boolean fromEnd){
         MC_Location compassTarget = ((MC_Player) oldPlayer).getCompassTarget();
         return new BlockPos(compassTarget.getBlockX(), compassTarget.getBlockY(), compassTarget.getBlockZ());
     }

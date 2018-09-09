@@ -54,7 +54,7 @@ public abstract class MixinEntityFishHook {
     }
 
     @Inject(method = "handleHookRetraction", at = @At(value = "NEW", target = "Lnet/minecraft/entity/item/EntityItem;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void hook(CallbackInfoReturnable<Integer> callbackInfo, EntityFishHook self, int var1, LootContext.Builder var2, List<ItemStack> l, Iterator var3, ItemStack var4) {
+    private void hook(ItemStack fishing_rod, CallbackInfoReturnable<Integer> callbackInfo, int var1, LootContext.Builder var2, List<ItemStack> l, Iterator var3, ItemStack var4) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptFishingReel((MC_Player) angler, (MC_ItemStack) (Object) var4, null, false, ei);
         if (ei.isCancelled) {

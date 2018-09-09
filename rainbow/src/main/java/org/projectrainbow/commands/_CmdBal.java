@@ -9,8 +9,10 @@ import org.projectrainbow._DiwUtils;
 import org.projectrainbow._EconomyManager;
 import org.projectrainbow._UUIDMapper;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
 
 
 public class _CmdBal implements MC_Command {
@@ -59,12 +61,7 @@ public class _CmdBal implements MC_Command {
 
     @Override
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
-        return args.length >= 1
-                ? Arrays.stream(_DiwUtils.getMinecraftServer()
-                .getOnlinePlayerNames())
-                .filter(name -> name.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
-                .collect(Collectors.toList())
-                : null;
+        return null;
     }
 
     public void ShowBalTop(MC_Player cs) {

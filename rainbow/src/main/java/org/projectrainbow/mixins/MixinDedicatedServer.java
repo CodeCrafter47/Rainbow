@@ -84,7 +84,7 @@ public class MixinDedicatedServer {
     public void setGuiEnabled() {
     }
 
-    @Redirect(method = "executePendingCommands", at = @At(value = "INVOKE", target = "Lnet/minecraft/command/Commands;func_197059_a(Lnet/minecraft/command/CommandSource;Ljava/lang/String;)I"))
+    @Redirect(method = "aU", at = @At(value = "INVOKE", target = "Lnet/minecraft/command/Commands;func_197059_a(Lnet/minecraft/command/CommandSource;Ljava/lang/String;)I"))
     private int onCommand(Commands commandManager, CommandSource commandSender, String command) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onConsoleInput(command, ei);

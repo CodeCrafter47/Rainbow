@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.dimension.DimensionType;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.interfaces.IMixinEntityPlayerMP;
@@ -44,7 +45,7 @@ public class _CmdSpawn implements MC_Command {
         EntityPlayer p;
         if (player != null) {
             p = (EntityPlayerMP) player;
-            final WorldServer world = _DiwUtils.getMinecraftServer().getWorld(0);
+            final WorldServer world = _DiwUtils.getMinecraftServer().func_200667_a(DimensionType.OVERWORLD);
             final BlockPos coords = world.getSpawnPoint();
             final double x = coords.getX() + 0.5;
             final int y = coords.getY();

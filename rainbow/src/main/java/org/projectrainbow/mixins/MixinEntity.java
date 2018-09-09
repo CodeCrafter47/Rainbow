@@ -14,8 +14,10 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.dimension.DimensionType;
 import org.projectrainbow.Hooks;
 import org.projectrainbow.PluginHelper;
+import org.projectrainbow.ServerWrapper;
 import org.projectrainbow._DiwUtils;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
@@ -38,8 +40,6 @@ public abstract class MixinEntity implements MC_Entity {
     public float rotationYaw;
     @Shadow
     public float rotationPitch;
-    @Shadow
-    public int dimension;
     @Shadow
     public World world;
     @Shadow
@@ -87,8 +87,8 @@ public abstract class MixinEntity implements MC_Entity {
     @Shadow
     public abstract UUID getUniqueID();
 
-    @Shadow
-    public abstract void onKillCommand();
+    @Shadow(prefix = "onKillCommand$")
+    public abstract void onKillCommand$S();
 
     @Shadow(prefix = "setCustomNameTag$")
     public abstract void setCustomNameTag$func_200203_b(ITextComponent name);
@@ -138,11 +138,17 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Shadow public abstract ITextComponent func_200200_C_();
 
+    @Shadow public DimensionType ap;
+
     protected void setInvulnerable(boolean value) {
         invulnerable = value;
     }
 
     private float waterFallDistance = 0;
+
+    private int getLegacyDimensionId() {
+        return PluginHelper.getLegacyDimensionId(((Entity) (Object) this).ap);
+    }
 
     @Inject(method = "handleWaterMovement", at = @At(value = "FIELD", target = "net.minecraft.entity.Entity.fallDistance:F"))
     private void onWaterEntered(CallbackInfoReturnable<Boolean> callbackInfo) {
@@ -152,9 +158,9 @@ public abstract class MixinEntity implements MC_Entity {
     @Inject(method = "updateFallState", at = @At("HEAD"))
     protected void a(double var1, boolean onGround, IBlockState var4, BlockPos var5, CallbackInfo callbackInfo) {
         if (onGround && fallDistance > 0) {
-            Hooks.onFallComplete(this, this.fallDistance, new MC_Location(var5.getX(), var5.getY(), var5.getZ(), dimension), inWater);
+            Hooks.onFallComplete(this, this.fallDistance, new MC_Location(var5.getX(), var5.getY(), var5.getZ(), getLegacyDimensionId()), inWater);
         } else if (inWater && waterFallDistance > 0) {
-            Hooks.onFallComplete(this, this.waterFallDistance, new MC_Location(var5.getX(), var5.getY(), var5.getZ(), dimension), inWater);
+            Hooks.onFallComplete(this, this.waterFallDistance, new MC_Location(var5.getX(), var5.getY(), var5.getZ(), getLegacyDimensionId()), inWater);
             waterFallDistance = 0;
         }
     }
@@ -170,14 +176,14 @@ public abstract class MixinEntity implements MC_Entity {
         }
     }
 
-    @ModifyConstant(method = "changeDimension", constant = @Constant(doubleValue = 8.0D))
+    @ModifyConstant(method = "Lnet/minecraft/entity/Entity;changeDimension(Lnet/minecraft/world/dimension/DimensionType;)Lnet/minecraft/entity/Entity;", constant = @Constant(doubleValue = 8.0D))
     private double injectNetherDistanceRatio(double ignored) {
         return _DiwUtils.netherDistanceRatio;
     }
 
     @Override
     public MC_Location getLocation() {
-        return new MC_Location(posX, posY, posZ, dimension, rotationYaw, rotationPitch);
+        return new MC_Location(posX, posY, posZ, getLegacyDimensionId(), rotationYaw, rotationPitch);
     }
 
     @Override
@@ -198,7 +204,7 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Override
     public void kill() {
-        onKillCommand();
+        onKillCommand$S();
     }
 
     @Override
@@ -357,8 +363,9 @@ public abstract class MixinEntity implements MC_Entity {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<MC_Entity> getNearbyEntities(float var1) {
-        return (List<MC_Entity>) (List) world.getEntitiesInAABBexcluding((Entity) (Object) this, new AxisAlignedBB(posX - var1, posY - var1, posZ - var1, posX + var1, posY + var1, posZ + var1), entity -> true);
+        return (List<MC_Entity>) (List) world.a((Entity) (Object) this, new AxisAlignedBB(posX - var1, posY - var1, posZ - var1, posX + var1, posY + var1, posZ + var1), entity -> true); // getEntitiesInAABBexcluding
     }
 
     @Override
@@ -428,7 +435,7 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Override
     public void teleport(MC_Location loc, boolean safe) {
-        teleport(_DiwUtils.getMinecraftServer().getWorld(loc.dimension), loc.x, loc.y, loc.z, loc.yaw, loc.pitch, safe);
+        teleport((WorldServer) ServerWrapper.getInstance().getWorld(loc.dimension), loc.x, loc.y, loc.z, loc.yaw, loc.pitch, safe);
     }
 
     @Override
@@ -472,10 +479,10 @@ public abstract class MixinEntity implements MC_Entity {
             final WorldServer toWorld = world;
 
             fromWorld.removeEntityDangerously((EntityPlayerMP) (Object) this);
-            dimension = ((MC_World) toWorld).getDimension();
+            ((Entity) (Object) this).ap = toWorld.provider.getDimensionType();
             setPositionAndRotation(x, y, z, yaw, pitch);
 
-            toWorld.getChunkProvider().provideChunk((int) posX >> 4, (int) posZ >> 4);
+            toWorld.getChunk((int) posX >> 4, (int) posZ >> 4);
 
             while(safe && !toWorld.func_195586_b((Entity) (Object) this, this.getEntityBoundingBox()) && this.posY < 255.0D) {
                 this.setPosition(this.posX, this.posY + 1.0D, this.posZ);
@@ -484,8 +491,8 @@ public abstract class MixinEntity implements MC_Entity {
             this.setWorld(toWorld);
             toWorld.spawnEntity((Entity) (Object) this);
 
-            fromWorld.resetUpdateEntityTick();
-            toWorld.resetUpdateEntityTick();
+            // todo fromWorld.resetUpdateEntityTick();
+            // todo toWorld.resetUpdateEntityTick();
         } else {
             setPositionAndRotation(x, y, z, yaw, pitch);
         }

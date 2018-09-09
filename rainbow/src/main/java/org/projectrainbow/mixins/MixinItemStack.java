@@ -5,6 +5,7 @@ import PluginReference.MC_EnchantmentType;
 import PluginReference.MC_ItemStack;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.init.GameRegistry;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -77,7 +78,7 @@ public abstract class MixinItemStack implements MC_ItemStack {
 
     @Override
     public String getOfficialName() {
-        return Item.REGISTRY.getNameForObject(getItem()).getPath();
+        return GameRegistry.s.b(getItem()).getPath();
     }
 
     @Override

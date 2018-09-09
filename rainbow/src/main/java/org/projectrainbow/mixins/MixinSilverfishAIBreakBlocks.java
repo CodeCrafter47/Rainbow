@@ -11,6 +11,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.projectrainbow.Hooks;
+import org.projectrainbow.PluginHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,7 +29,7 @@ public class MixinSilverfishAIBreakBlocks {
         IBlockState blockState = world.getBlockState(pos);
         if (blockState.getBlock() instanceof BlockSilverfish) {
             MC_EventInfo ei = new MC_EventInfo();
-            Hooks.onAttemptEntityMiscGrief((MC_Entity) silverfish, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), silverfish.dimension), MC_MiscGriefType.SILVERFISH_BREAK_MONSTER_EGG_BLOCK, ei);
+            Hooks.onAttemptEntityMiscGrief((MC_Entity) silverfish, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(silverfish.ap)), MC_MiscGriefType.SILVERFISH_BREAK_MONSTER_EGG_BLOCK, ei);
             if (ei.isCancelled) {
                 return Blocks.AIR.getDefaultState();
             }

@@ -31,8 +31,8 @@ public class MixinBootstrap {
      * we could also do that for the System.out messages, but I might break the fancy
      * rainbow logo.
      */
-    @Overwrite
-    private static void redirectOutputToLog() {
+    @Overwrite()
+    private static void d() {
         System.setErr(new LoggingErrorStream("STDERR", System.err));
         System.setOut(new LoggingPrintStream("STDOUT", SYSOUT));
     }

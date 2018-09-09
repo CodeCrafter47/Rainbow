@@ -4,6 +4,7 @@ import PluginReference.MC_Command;
 import PluginReference.MC_Player;
 import joebkt._SerializableLocation;
 import net.minecraft.entity.player.EntityPlayer;
+import org.projectrainbow.PluginHelper;
 import org.projectrainbow._ColorHelper;
 import org.projectrainbow._HomeUtils;
 
@@ -44,7 +45,7 @@ public class _CmdSetHome implements MC_Command {
         }
         final EntityPlayer p = (EntityPlayer) player;
         final String pName = player.getName();
-        final _SerializableLocation sloc = new _SerializableLocation(p.posX, p.posY, p.posZ, p.dimension, p.rotationYaw, p.rotationPitch);
+        final _SerializableLocation sloc = new _SerializableLocation(p.posX, p.posY, p.posZ, PluginHelper.getLegacyDimensionId(p.ap), p.rotationYaw, p.rotationPitch);
         _HomeUtils.setHome(p.getUniqueID(), sloc);
         _HomeUtils.SaveHomes();
         final String msg = String.format("Home Set for %s set to %s", pName, sloc.toString());

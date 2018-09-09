@@ -4,6 +4,7 @@ package org.projectrainbow;
 import PluginReference.MC_Block;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.GameRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -47,7 +48,7 @@ public class BlockWrapper implements MC_Block {
 
     @Override
     public String getOfficialName() {
-        return Block.REGISTRY.getNameForObject(m_blockObject).getPath();
+        return GameRegistry.g.b(m_blockObject).getPath();
     }
 
     @Override

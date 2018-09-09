@@ -42,14 +42,14 @@ public class MixinItemInWorldManager {
 
     @Inject(method = "tryHarvestBlock", at = @At(value = "INVOKE", target = "net.minecraft.server.management.PlayerInteractionManager.removeBlock(Lnet/minecraft/util/math/BlockPos;)Z"))
     private void blockBreakHook(BlockPos blockPos, CallbackInfoReturnable<Boolean> callbackInfo) {
-        Hooks.onBlockBroke((MC_Player) player, new MC_Location(blockPos.getX(), blockPos.getY(), blockPos.getZ(), player.dimension), new BlockWrapper(world.getBlockState(blockPos)));
+        Hooks.onBlockBroke((MC_Player) player, new MC_Location(blockPos.getX(), blockPos.getY(), blockPos.getZ(), PluginHelper.getLegacyDimensionId(player.ap)), new BlockWrapper(world.getBlockState(blockPos)));
     }
 
     @Redirect(method = "processRightClickBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/state/IBlockState;func_196943_a(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;Lnet/minecraft/util/EnumFacing;FFF)Z"))
     private boolean hookInteract(IBlockState state, World var2, BlockPos var5, EntityPlayer var1, EnumHand var4, EnumFacing face, float var7, float var8, float var9) {
         if (state.func_196943_a(var2, var5, var1, var4, face, var7, var8, var9)) {
             LogManager.getLogger().debug("JKC DBG: INTERACTING WITH BLOCK, like Chest/Furnace but also Cake" + state.getBlock().toString());
-            Hooks.onInteracted((MC_Player) var1, new MC_Location(var5.getX(), var5.getY(), var5.getZ(), var1.dimension), (MC_ItemStack) (Object) var1.getHeldItem(var4));
+            Hooks.onInteracted((MC_Player) var1, new MC_Location(var5.getX(), var5.getY(), var5.getZ(), PluginHelper.getLegacyDimensionId(var1.ap)), (MC_ItemStack) (Object) var1.getHeldItem(var4));
             return true;
         }
         return false;
@@ -57,8 +57,8 @@ public class MixinItemInWorldManager {
 
     @Redirect(method = "processRightClickBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;func_196084_a(Lnet/minecraft/item/ItemUseContext;)Lnet/minecraft/util/EnumActionResult;"))
     private EnumActionResult hookPlace(ItemStack itemStack, ItemUseContext context) {
-        MC_Location locPlacedAgainst = new MC_Location(context.func_195995_a().getX(), context.func_195995_a().getY(), context.func_195995_a().getZ(), context.func_195999_j().dimension);
-        MC_Location loc = new MC_Location(context.func_195995_a().offset(context.func_196000_l()).getX(), context.func_195995_a().offset(context.func_196000_l()).getY(), context.func_195995_a().offset(context.func_196000_l()).getZ(), context.func_195999_j().dimension);
+        MC_Location locPlacedAgainst = new MC_Location(context.func_195995_a().getX(), context.func_195995_a().getY(), context.func_195995_a().getZ(), PluginHelper.getLegacyDimensionId(context.func_195999_j().ap));
+        MC_Location loc = new MC_Location(context.func_195995_a().offset(context.func_196000_l()).getX(), context.func_195995_a().offset(context.func_196000_l()).getY(), context.func_195995_a().offset(context.func_196000_l()).getZ(), PluginHelper.getLegacyDimensionId(context.func_195999_j().ap));
         BlockWrapper bWrap = null;
         if (itemStack.getItem() instanceof ItemBlock) {
             bWrap = new BlockWrapper(((ItemBlock) itemStack.getItem()).getBlock().getDefaultState());

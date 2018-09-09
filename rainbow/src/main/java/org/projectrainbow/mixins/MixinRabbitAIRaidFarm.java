@@ -10,6 +10,7 @@ import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.projectrainbow.Hooks;
+import org.projectrainbow.PluginHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -27,7 +28,7 @@ public class MixinRabbitAIRaidFarm {
     @Inject(method = "updateTask()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/state/IStateHolder;getValue(Lnet/minecraft/state/IProperty;)Ljava/lang/Comparable;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void grief(CallbackInfo callbackInfo, World w, BlockPos pos, IBlockState var3, Block var4) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptEntityMiscGrief((MC_Entity) rabbit, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), rabbit.dimension), MC_MiscGriefType.RABBIT_EATS_CARROT, ei);
+        Hooks.onAttemptEntityMiscGrief((MC_Entity) rabbit, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(rabbit.ap)), MC_MiscGriefType.RABBIT_EATS_CARROT, ei);
         if (ei.isCancelled) {
             callbackInfo.cancel();
         }

@@ -113,7 +113,7 @@ public class _CmdTpaHere implements MC_Command {
     public List<String> getTabCompletionList(MC_Player plr, String[] args) {
         return args.length >= 1
                 ? Arrays.stream(_DiwUtils.getMinecraftServer()
-                .getOnlinePlayerNames())
+                .A()) // getOnlinePlayerNames
                 .filter(name -> name.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
                 .collect(Collectors.toList())
                 : null;

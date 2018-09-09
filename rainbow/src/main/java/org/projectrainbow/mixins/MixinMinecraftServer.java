@@ -41,8 +41,8 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
     @Shadow
     private PlayerList playerList;
 
-    @Shadow
-    protected abstract void saveAllWorlds(boolean b);
+    @Shadow(prefix = "saveAllWorlds$")
+    protected abstract void saveAllWorlds$a(boolean b);
 
     @Shadow
     public abstract void applyServerIconToResponse(ServerStatusResponse var1);
@@ -60,7 +60,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
 
     }
 
-    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "net.minecraft.server.MinecraftServer.saveAllWorlds(Z)V"))
+    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "net.minecraft.server.MinecraftServer.a(Z)V"))
     void cancelMojangAutosave2(MinecraftServer minecraftServer, boolean b) {
 
     }
@@ -100,7 +100,7 @@ public abstract class MixinMinecraftServer implements IMixinMinecraftServer {
             System.out.println("----------------------------------\n");
             this.profiler.startSection("save");
             this.playerList.saveAllPlayerData();
-            this.saveAllWorlds(true);
+            this.saveAllWorlds$a(true);
             this.profiler.endSection();
             System.out.println("==============================================================");
         }

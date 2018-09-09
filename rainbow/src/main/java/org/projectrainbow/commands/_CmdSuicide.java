@@ -45,6 +45,6 @@ public class _CmdSuicide implements MC_Command {
             return;
         }
         player.sendMessage(String.valueOf(_ColorHelper.AQUA) + "You give up on the world!");
-        ((EntityPlayerMP) player).onKillCommand();
+        ((EntityPlayerMP) player).S(); // onKillCommand
     }
 }

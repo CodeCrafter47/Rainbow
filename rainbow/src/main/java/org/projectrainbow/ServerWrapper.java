@@ -13,6 +13,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.GameRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -24,6 +25,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.dimension.DimensionType;
 import org.projectrainbow.commands._CmdPerm;
 import org.projectrainbow.interfaces.IMixinMinecraftServer;
 import org.projectrainbow.plugins.PluginCommand;
@@ -154,12 +156,14 @@ public class ServerWrapper implements MC_Server {
     }
 
     public MC_World getWorld(int idxDimension) {
-        return (MC_World) _DiwUtils.getMinecraftServer().getWorld(idxDimension);
+        return (MC_World) (idxDimension == 0 ? _DiwUtils.getMinecraftServer().func_200667_a(DimensionType.OVERWORLD)
+                : idxDimension == 1 ? _DiwUtils.getMinecraftServer().func_200667_a(DimensionType.THE_END)
+                : _DiwUtils.getMinecraftServer().func_200667_a(DimensionType.NETHER));
     }
 
     @Override
     public MC_ItemStack createItemStack(String id, int count) {
-        Item item = Item.REGISTRY.getObject(new ResourceLocation(id));
+        Item item = GameRegistry.s.b(new ResourceLocation(id));
         if (item != null) {
             return (MC_ItemStack)(Object)new ItemStack(item, count);
         }
@@ -364,7 +368,7 @@ public class ServerWrapper implements MC_Server {
     }
 
     public void log(String msg) {
-        _DiwUtils.getMinecraftServer().logInfo(msg);
+        _DiwUtils.getMinecraftServer().g(msg); // logInfo
     }
 
     @Deprecated
@@ -380,7 +384,7 @@ public class ServerWrapper implements MC_Server {
     }
 
     public List<MC_World> getWorlds() {
-        return (List<MC_World>) (Object) Lists.newArrayList(_DiwUtils.getMinecraftServer().worlds);
+        return (List<MC_World>) (Object) Lists.newArrayList(_DiwUtils.getMinecraftServer().w());
     }
 
     @Override
@@ -546,6 +550,6 @@ public class ServerWrapper implements MC_Server {
 
     @Override
     public String getMinecraftVersion() {
-        return _DiwUtils.getMinecraftServer().getMinecraftVersion();
+        return _DiwUtils.getMinecraftServer().x(); // getMinecraftVersion
     }
 }

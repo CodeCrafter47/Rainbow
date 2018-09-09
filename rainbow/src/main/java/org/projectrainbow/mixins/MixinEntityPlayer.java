@@ -60,9 +60,6 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
     public abstract void addExperienceLevel(int var1);
 
     @Shadow
-    public abstract BlockPos getBedLocation();
-
-    @Shadow
     public abstract void setSpawnPoint(BlockPos var1, boolean var2);
 
     /*

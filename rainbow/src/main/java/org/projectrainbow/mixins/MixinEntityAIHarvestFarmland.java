@@ -11,6 +11,7 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.projectrainbow.Hooks;
+import org.projectrainbow.PluginHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,10 +26,10 @@ public class MixinEntityAIHarvestFarmland {
     @Final
     private EntityVillager villager;
 
-    @Inject(method = "updateTask", at = @At(value = "INVOKE", target = "net.minecraft.world.World.destroyBlock(Lnet/minecraft/util/math/BlockPos;Z)Z"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "updateTask", at = @At(value = "INVOKE", target = "Layg;a(Lnet/minecraft/util/math/BlockPos;Z)Z"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD) // destroyBlock
     private void grief(CallbackInfo callbackInfo, World w, BlockPos pos, IBlockState state, Block block) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptEntityMiscGrief((MC_Entity) villager, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), villager.dimension), MC_MiscGriefType.VILLAGER_HARVEST, ei);
+        Hooks.onAttemptEntityMiscGrief((MC_Entity) villager, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(villager.ap)), MC_MiscGriefType.VILLAGER_HARVEST, ei);
         if (ei.isCancelled) {
             callbackInfo.cancel();
         }

@@ -25,8 +25,8 @@ import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
+import net.minecraft.world.storage.WorldSavedDataStorage;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.projectrainbow.BlockWrapper;
 import org.projectrainbow.PluginHelper;
 import org.projectrainbow.ServerWrapper;
@@ -34,9 +34,8 @@ import org.projectrainbow._DiwUtils;
 import org.projectrainbow.interfaces.IMixinWorldServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
+import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.lang.reflect.Constructor;
@@ -49,20 +48,23 @@ import java.util.List;
 public abstract class MixinWorldServer extends World implements MC_World, IMixinWorldServer {
 
 
-    protected MixinWorldServer(ISaveHandler iSaveHandler, WorldInfo worldInfo, Dimension dimension, Profiler profiler, boolean b) {
-        super(iSaveHandler, worldInfo, dimension, profiler, b);
+    protected MixinWorldServer(ISaveHandler iSaveHandler, @Nullable WorldSavedDataStorage worldSavedDataStorage, WorldInfo worldInfo, Dimension dimension, Profiler profiler, boolean b) {
+        super(iSaveHandler, worldSavedDataStorage, worldInfo, dimension, profiler, b);
         // dummy
     }
 
     @Shadow
     public abstract boolean isChunkLoaded(int x, int z, boolean ignored);
 
+    /*
     @Redirect(method = "canAddEntity", at = @At(value = "INVOKE", target = "org/apache/logging/log4j/Logger.warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false))
     private void doLogWarning(Logger logger, String message, Object arg1, Object arg2) {
         if (!_DiwUtils.DoHideAnnoyingDefaultServerOutput) {
             logger.warn(message, arg1, arg2);
         }
-    }
+    }*/
+
+    @Shadow public abstract boolean spawnEntity(Entity entity);
 
     @Override
     @Deprecated
@@ -167,7 +169,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
             return false;
         } else {
             bs.func_196949_c(this, coords, toolOptional == null ? 0 : toolOptional.getEnchantmentLevel(MC_EnchantmentType.FORTUNE)); // dropBlockAsItem
-            setBlockState(coords, Blocks.AIR.getDefaultState(), 3);
+            setBlockState(coords, Blocks.AIR.getDefaultState());
             return true;
         }
     }
@@ -326,7 +328,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
 
     @Override
     public List<MC_Chunk> getLoadedChunks() {
-        return (List<MC_Chunk>) new ArrayList(((ChunkProviderServer) super.chunkProvider).getLoadedChunks());
+        return (List<MC_Chunk>) new ArrayList(((ChunkProviderServer) super.chunkProvider).a()); // getLoadedChunks
     }
 
     @Override

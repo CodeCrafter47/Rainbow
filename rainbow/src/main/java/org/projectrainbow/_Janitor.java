@@ -20,9 +20,8 @@ public class _Janitor {
         StringBuilder sbPlayers = new StringBuilder();
         int nPlayers = 0;
         int nRemoved = 0;
-        WorldServer[] worlds = _DiwUtils.getMinecraftServer().worlds;
 
-        for (WorldServer world : worlds) {
+        for (WorldServer world : _DiwUtils.getMinecraftServer().w()) {
             for (Entity ent : world.loadedEntityList) {
                 EntityType<?> var1 = ent.func_200600_R();
                 ResourceLocation var2 = EntityType.func_200718_a(var1);
@@ -61,7 +60,7 @@ public class _Janitor {
                     int secX = Math.abs(mobX) / sectionSize * (mobX < 0 ? -1 : 1);
                     int secY = Math.abs(mobY) / sectionSize * (mobY < 0 ? -1 : 1);
                     int secZ = Math.abs(mobZ) / sectionSize * (mobZ < 0 ? -1 : 1);
-                    String key = String.format("%d %d %d %d %s", ent.dimension, secX, secY, secZ, mobName);
+                    String key = String.format("%d %d %d %d %s", PluginHelper.getLegacyDimensionId(ent.ap), secX, secY, secZ, mobName);
                     Integer hits = sectionHit.get(key);
                     if (hits == null) {
                         hits = 1;
@@ -72,7 +71,7 @@ public class _Janitor {
                     sectionHit.put(key, hits);
                     if (hits > mobLimitPerSection) {
                         if (hits == mobLimitPerSection + 1) {
-                            String locStr = String.format("%d %d %d %d", ent.dimension, mobX, mobY, mobZ);
+                            String locStr = String.format("%d %d %d %d", PluginHelper.getLegacyDimensionId(ent.ap), mobX, mobY, mobZ);
                             String msg = String.format("Reached Mob Limit %d (%s) @ %s", mobLimitPerSection, mobName, locStr);
                             _DiwUtils.reply(p, _ColorHelper.LIGHT_PURPLE + msg);
                         }

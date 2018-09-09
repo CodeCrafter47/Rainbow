@@ -56,9 +56,9 @@ public class _CmdDiw implements MC_Command {
             for (int dz = -1 * radius; dz <= radius; ++dz) {
                 for (int dy = -4; dy < 0; ++dy) {
                     if (dy >= -1) {
-                        p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.GRASS.getDefaultState(), 3);
+                        p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.GRASS.getDefaultState());
                     } else {
-                        p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.DIRT.getDefaultState(), 3);
+                        p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.DIRT.getDefaultState());
                     }
                 }
             }
@@ -74,16 +74,16 @@ public class _CmdDiw implements MC_Command {
 
         for (int dx = -1 * radius; dx <= radius; ++dx) {
             int dy = 0;
-            p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + radius), Blocks.COBBLESTONE_WALL.getDefaultState(), 3);
+            p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + radius), Blocks.COBBLESTONE_WALL.getDefaultState());
             int dz = -1 * radius;
-            p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.COBBLESTONE_WALL.getDefaultState(), 3);
+            p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.COBBLESTONE_WALL.getDefaultState());
         }
 
         for (int dz = -1 * radius; dz <= radius; ++dz) {
             int dy = 0;
-            p.getEntityWorld().setBlockState(new BlockPos(x + radius, y + dy, z + dz), Blocks.COBBLESTONE_WALL.getDefaultState(), 3);
+            p.getEntityWorld().setBlockState(new BlockPos(x + radius, y + dy, z + dz), Blocks.COBBLESTONE_WALL.getDefaultState());
             int dx = -1 * radius;
-            p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.COBBLESTONE_WALL.getDefaultState(), 3);
+            p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.COBBLESTONE_WALL.getDefaultState());
         }
 
         ((MC_Player) p).sendMessage(_ColorHelper.GREEN + "Wall set around you! " + _ColorHelper.AQUA + "Radius: " + radius);
@@ -98,7 +98,7 @@ public class _CmdDiw implements MC_Command {
         for (int dx = -1 * radius; dx <= radius; ++dx) {
             for (int dz = -1 * radius; dz <= radius; ++dz) {
                 for (int dy = 0; y + dy < maxHeight; ++dy) {
-                    p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.AIR.getDefaultState(), 3);
+                    p.getEntityWorld().setBlockState(new BlockPos(x + dx, y + dy, z + dz), Blocks.AIR.getDefaultState());
                 }
             }
         }
