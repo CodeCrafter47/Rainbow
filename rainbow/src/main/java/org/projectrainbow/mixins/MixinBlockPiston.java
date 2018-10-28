@@ -21,7 +21,7 @@ public class MixinBlockPiston {
 
     @Inject(method = "eventReceived(Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;II)Z", at = @At("HEAD"), cancellable = true)
     private void onPistonEvent(IBlockState state, World var1, BlockPos var2, int var4, int var5, CallbackInfoReturnable<Boolean> callbackInfo) {
-        MC_DirectionNESWUD direction = PluginHelper.directionMap.get(state.getValue(BlockDirectional.FACING));
+        MC_DirectionNESWUD direction = PluginHelper.directionMap.get(state.get(BlockDirectional.FACING));
         MC_EventInfo ei = new MC_EventInfo();
         MC_Location loc = new MC_Location(var2.getX(), var2.getY(), var2.getZ(), ((MC_World)var1).getDimension());
 

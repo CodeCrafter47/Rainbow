@@ -18,11 +18,11 @@ import java.util.Collection;
 @Mixin(MessageCommand.class)
 public class MixinCommandMessage {
 
-    @Inject(method = "func_198538_a", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "sendPrivateMessage", at = @At("HEAD"), cancellable = true)
     private static void onPrivateMessage(CommandSource var0, Collection<EntityPlayerMP> var1, ITextComponent var2, CallbackInfoReturnable<Integer> ci) {
         MC_Player target = (MC_Player) Iterables.getFirst(var1, null);
-        if (var0.func_197022_f() != null && _CmdIgnore.IsIgnoring(target.getName(), ((MC_Player) var0.func_197022_f()).getName())) {
-            ((MC_Player) var0.func_197022_f()).sendMessage(ChatColor.RED + "That player is ignoring you!");
+        if (var0.getEntity() != null && _CmdIgnore.IsIgnoring(target.getName(), ((MC_Player) var0.getEntity()).getName())) {
+            ((MC_Player) var0.getEntity()).sendMessage(ChatColor.RED + "That player is ignoring you!");
             ci.setReturnValue(0);
         }
     }

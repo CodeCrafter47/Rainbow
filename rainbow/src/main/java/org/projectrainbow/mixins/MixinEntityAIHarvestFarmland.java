@@ -26,10 +26,10 @@ public class MixinEntityAIHarvestFarmland {
     @Final
     private EntityVillager villager;
 
-    @Inject(method = "updateTask", at = @At(value = "INVOKE", target = "Layg;a(Lnet/minecraft/util/math/BlockPos;Z)Z"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD) // destroyBlock
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/IWorldWriter;destroyBlock(Lnet/minecraft/util/math/BlockPos;Z)Z"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD) // destroyBlock
     private void grief(CallbackInfo callbackInfo, World w, BlockPos pos, IBlockState state, Block block) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptEntityMiscGrief((MC_Entity) villager, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(villager.ap)), MC_MiscGriefType.VILLAGER_HARVEST, ei);
+        Hooks.onAttemptEntityMiscGrief((MC_Entity) villager, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(villager.dimension)), MC_MiscGriefType.VILLAGER_HARVEST, ei);
         if (ei.isCancelled) {
             callbackInfo.cancel();
         }

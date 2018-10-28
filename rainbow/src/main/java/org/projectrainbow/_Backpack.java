@@ -19,10 +19,10 @@ public class _Backpack extends InventoryBasic {
         }
 
         for (var2 = 0; var2 < var1.size(); ++var2) {
-            NBTTagCompound var3 = var1.getCompoundTagAt(var2);
+            NBTTagCompound var3 = var1.getCompound(var2);
             int var4 = var3.getByte("Slot") & 255;
             if (var4 >= 0 && var4 < this.getSizeInventory()) {
-                this.setInventorySlotContents(var4, ItemStack.func_199557_a(var3));
+                this.setInventorySlotContents(var4, ItemStack.read(var3));
             }
         }
 
@@ -35,8 +35,8 @@ public class _Backpack extends InventoryBasic {
             ItemStack var3 = this.getStackInSlot(var2);
             if (var3 != null) {
                 NBTTagCompound var4 = new NBTTagCompound();
-                var4.setByte("Slot", (byte) var2);
-                var3.writeToNBT(var4);
+                var4.putByte("Slot", (byte) var2);
+                var3.write(var4);
                 var1.add(var4);
             }
         }

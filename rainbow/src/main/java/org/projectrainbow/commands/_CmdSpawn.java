@@ -45,7 +45,7 @@ public class _CmdSpawn implements MC_Command {
         EntityPlayer p;
         if (player != null) {
             p = (EntityPlayerMP) player;
-            final WorldServer world = _DiwUtils.getMinecraftServer().func_200667_a(DimensionType.OVERWORLD);
+            final WorldServer world = _DiwUtils.getMinecraftServer().getWorld(DimensionType.OVERWORLD);
             final BlockPos coords = world.getSpawnPoint();
             final double x = coords.getX() + 0.5;
             final int y = coords.getY();

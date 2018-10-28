@@ -23,11 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.UUID;
 
 @Mixin(EntityItem.class)
-public abstract class MixinEntityItem extends Entity implements MC_ItemEntity {
-
-    public MixinEntityItem(EntityType<?> entityType, World world) {
-        super(entityType, world);
-    }
+public abstract class MixinEntityItem extends MixinEntity implements MC_ItemEntity {
 
     @Shadow
     public abstract ItemStack getItem();
@@ -62,7 +58,7 @@ public abstract class MixinEntityItem extends Entity implements MC_ItemEntity {
     @Override
     public String getThrowerName() {
         EntityPlayer entity = world.getPlayerEntityByUUID(thrower);
-        return entity == null ? thrower.toString() : entity.func_200200_C_().getFormattedText();
+        return entity == null ? thrower.toString() : entity.getDisplayName().getFormattedText();
     }
 
     @Override
@@ -76,7 +72,7 @@ public abstract class MixinEntityItem extends Entity implements MC_ItemEntity {
     @Override
     public String getOwnerName() {
         EntityPlayer entity = world.getPlayerEntityByUUID(owner);
-        return entity == null ? owner.toString() : entity.func_200200_C_().getFormattedText();
+        return entity == null ? owner.toString() : entity.getDisplayName().getFormattedText();
     }
 
     @Override

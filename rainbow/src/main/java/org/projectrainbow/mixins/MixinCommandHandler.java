@@ -15,13 +15,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Commands.class)
 public class MixinCommandHandler {
 
-    @Inject(method = "func_197059_a", at = @At("HEAD"))
+    @Inject(method = "handleCommand", at = @At("HEAD"))
     private void onCommandExecuteStart(CommandSource sender, String commandLine, CallbackInfoReturnable<Integer> callbackInfo) {
         MC_CommandSenderInfo newInfo = new MC_CommandSenderInfo();
 
         newInfo.lastCommand = commandLine;
         newInfo.senderType = MC_CommandSenderType.UNSPECIFIED;
-        if (sender.func_197022_f() instanceof EntityPlayer) {
+        if (sender.getEntity() instanceof EntityPlayer) {
             newInfo.senderType = MC_CommandSenderType.PLAYER;
             // todo
         //} else if (sender. instanceof CommandBlockBaseLogic) {
@@ -30,7 +30,7 @@ public class MixinCommandHandler {
         //    newInfo.senderType = MC_CommandSenderType.CONSOLE;
         //} else if (sender instanceof RConConsoleSource) {
         //    newInfo.senderType = MC_CommandSenderType.RCON;
-        } else if (sender.func_197022_f() instanceof Entity) {
+        } else if (sender.getEntity() != null) {
             newInfo.senderType = MC_CommandSenderType.ENTITY;
         } else {
             newInfo.senderType = MC_CommandSenderType.CONSOLE;
@@ -39,7 +39,7 @@ public class MixinCommandHandler {
         ServerWrapper.commandSenderInfo.addLast(newInfo);
     }
 
-    @Inject(method = "func_197059_a", at = @At("RETURN"))
+    @Inject(method = "handleCommand", at = @At("RETURN"))
     private void onCommandExecuteEnd(CommandSource sender, String commandLine, CallbackInfoReturnable<Integer> callbackInfo) {
         ServerWrapper.commandSenderInfo.removeLast();
     }

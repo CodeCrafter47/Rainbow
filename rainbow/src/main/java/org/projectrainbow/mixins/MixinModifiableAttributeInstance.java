@@ -8,16 +8,15 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import org.projectrainbow.PluginHelper;
-import org.spongepowered.asm.mixin.Implements;
-import org.spongepowered.asm.mixin.Interface;
-import org.spongepowered.asm.mixin.Intrinsic;
-import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.*;
 
 import java.util.Collection;
 
 @Mixin(ModifiableAttributeInstance.class)
 @Implements(@Interface(iface = MC_Attribute.class, prefix = "api$"))
 public abstract class MixinModifiableAttributeInstance implements IAttributeInstance {
+    @Shadow public abstract double getValue();
+
     /**
      * Get the type of this attribute.
      *
@@ -54,7 +53,7 @@ public abstract class MixinModifiableAttributeInstance implements IAttributeInst
      * @return the effective value
      */
     public double api$getEffectiveValue() {
-        return getAttributeValue();
+        return getValue();
     }
 
     /**

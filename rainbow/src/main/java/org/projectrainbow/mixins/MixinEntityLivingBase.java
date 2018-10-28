@@ -69,7 +69,7 @@ public abstract class MixinEntityLivingBase extends MixinEntity implements MC_Li
     protected abstract float applyPotionDamageCalculations(DamageSource var1, float var2);
 
     @Shadow
-    public abstract IAttributeInstance getEntityAttribute(IAttribute var1);
+    public abstract IAttributeInstance getAttribute(IAttribute var1);
 
     @Inject(method = "attackEntityFrom", at = @At("HEAD"), cancellable = true)
     private void onAttacked(DamageSource damageSource, float damage, CallbackInfoReturnable<Boolean> callbackInfo) {
@@ -100,7 +100,7 @@ public abstract class MixinEntityLivingBase extends MixinEntity implements MC_Li
         }
     }
 
-    @Inject(method = "func_195064_c", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "addPotionEffect", at = @At("HEAD"), cancellable = true)
     private void onAddPotionEffect(PotionEffect var1, CallbackInfoReturnable<Boolean> callbackInfo) {
         if (this instanceof MC_Player) {
             MC_EventInfo ei = new MC_EventInfo();
@@ -128,7 +128,7 @@ public abstract class MixinEntityLivingBase extends MixinEntity implements MC_Li
 
     @Override
     public void setMaxHealth(float var1) {
-        ((EntityLivingBase) (Object) this).getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(var1);
+        ((EntityLivingBase) (Object) this).getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(var1);
     }
 
     @Override
@@ -191,6 +191,6 @@ public abstract class MixinEntityLivingBase extends MixinEntity implements MC_Li
     @Override
     public MC_Attribute getAttribute(MC_AttributeType type) {
         IAttribute attribute = PluginHelper.attributeMap.get(type);
-        return attribute == null ? null : (MC_Attribute) getEntityAttribute(attribute);
+        return attribute == null ? null : (MC_Attribute) getAttribute(attribute);
     }
 }

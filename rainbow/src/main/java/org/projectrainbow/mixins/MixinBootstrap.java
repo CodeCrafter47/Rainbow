@@ -32,7 +32,7 @@ public class MixinBootstrap {
      * rainbow logo.
      */
     @Overwrite()
-    private static void d() {
+    private static void redirectOutputToLog() {
         System.setErr(new LoggingErrorStream("STDERR", System.err));
         System.setOut(new LoggingPrintStream("STDOUT", SYSOUT));
     }

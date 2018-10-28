@@ -90,11 +90,11 @@ public class _CmdCron implements MC_Command {
         for (final Map.Entry<String, _CronData> entry : _CmdCron.mapData.entrySet()) {
             final _CronData data = entry.getValue();
             final long delta = msNow - data.msLastRun;
-            final Commands exec = _DiwUtils.getMinecraftServer().func_195571_aL();
+            final Commands exec = _DiwUtils.getMinecraftServer().getCommandManager();
             if (delta > data.msDelay) {
                 try {
                     _DiwUtils.ConsoleMsg("[CRON] Job " + data.jobName + ": " + data.cmdToRun);
-                    exec.func_197059_a(_DiwUtils.getMinecraftServer().func_195573_aM(), data.cmdToRun);
+                    exec.handleCommand(_DiwUtils.getMinecraftServer().getCommandSource(), data.cmdToRun);
                 } catch (Exception exc) {
                     exc.printStackTrace();
                 }

@@ -4,9 +4,9 @@ package org.projectrainbow;
 import PluginReference.MC_Block;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.GameRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.registry.IRegistry;
 
 
 public class BlockWrapper implements MC_Block {
@@ -48,11 +48,11 @@ public class BlockWrapper implements MC_Block {
 
     @Override
     public String getOfficialName() {
-        return GameRegistry.g.b(m_blockObject).getPath();
+        return IRegistry.BLOCK.getKey(m_blockObject).getPath();
     }
 
     @Override
     public String getFriendlyName() {
-        return Item.BLOCK_TO_ITEM.get(m_blockObject).func_200295_i(new ItemStack(m_blockObject)).getFormattedText();
+        return Item.BLOCK_TO_ITEM.get(m_blockObject).getDisplayName(new ItemStack(m_blockObject)).getFormattedText();
     }
 }

@@ -85,7 +85,7 @@ public class MixinNetHandlerPlayServer {
     private void onPacketPlayerDigging(CPacketPlayerDigging packet, CallbackInfo callback, WorldServer worldServer, BlockPos blockPos) {
         if (packet.getAction().equals(CPacketPlayerDigging.Action.START_DESTROY_BLOCK)) {
             MC_EventInfo ei = new MC_EventInfo();
-            Hooks.onAttemptBlockBreak((MC_Player) player, new MC_Location(blockPos.getX(), blockPos.getY(), blockPos.getZ(), PluginHelper.getLegacyDimensionId(player.ap)), ei);
+            Hooks.onAttemptBlockBreak((MC_Player) player, new MC_Location(blockPos.getX(), blockPos.getY(), blockPos.getZ(), PluginHelper.getLegacyDimensionId(player.dimension)), ei);
             if (ei.isCancelled) {
                 player.connection.sendPacket(new SPacketBlockChange(worldServer, blockPos));
                 callback.cancel();
@@ -98,7 +98,7 @@ public class MixinNetHandlerPlayServer {
                                         EnumHand hand, ItemStack itemStack, BlockPos blockPos,
                                         EnumFacing clickedFace) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptPlaceOrInteract((MC_Player) player, new MC_Location(blockPos.getX(), blockPos.getY(), blockPos.getZ(), PluginHelper.getLegacyDimensionId(player.ap)), PluginHelper.directionMap.get(clickedFace), PluginHelper.handMap.get(hand), ei);
+        Hooks.onAttemptPlaceOrInteract((MC_Player) player, new MC_Location(blockPos.getX(), blockPos.getY(), blockPos.getZ(), PluginHelper.getLegacyDimensionId(player.dimension)), PluginHelper.directionMap.get(clickedFace), PluginHelper.handMap.get(hand), ei);
         if (ei.isCancelled) {
             for (BlockPos pos : BlockPos.getAllInBox(blockPos.add(-1, -1, -1), blockPos.add(1, 1, 1))) {
                 if (pos.getY() < 0 || pos.getY() > 255) continue;
@@ -106,7 +106,7 @@ public class MixinNetHandlerPlayServer {
             }
             callback.cancel();
         } else {
-            _DynReward.HandleInteract((MC_Player) player, blockPos.getX(), blockPos.getY(), blockPos.getZ(), PluginHelper.getLegacyDimensionId(player.ap));
+            _DynReward.HandleInteract((MC_Player) player, blockPos.getX(), blockPos.getY(), blockPos.getZ(), PluginHelper.getLegacyDimensionId(player.dimension));
         }
     }
 
@@ -197,7 +197,7 @@ public class MixinNetHandlerPlayServer {
             if (!link.startsWith("http://") && !link.startsWith("https://")) {
                 link = "http://" + link;
             }
-            result.appendSibling(new TextComponentString(matcher.group()).setStyle(new Style().a(new ClickEvent(ClickEvent.Action.OPEN_URL, link)))); // setClockEvent
+            result.appendSibling(new TextComponentString(matcher.group()).setStyle(new Style().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link)))); // setClickEvent
         }
 
         StringBuffer buffer = new StringBuffer();
@@ -231,7 +231,7 @@ public class MixinNetHandlerPlayServer {
         float finalPitch = flags.contains(SPacketPlayerPosLook.EnumFlags.X_ROT) ? pitch + player.rotationPitch : pitch;
         // teleport
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptPlayerTeleport((MC_Player) player, new MC_Location(player.posX + dx, player.posY + dy, player.posZ + dz, PluginHelper.getLegacyDimensionId(player.ap), finalYaw, finalPitch), ei);
+        Hooks.onAttemptPlayerTeleport((MC_Player) player, new MC_Location(player.posX + dx, player.posY + dy, player.posZ + dz, PluginHelper.getLegacyDimensionId(player.dimension), finalYaw, finalPitch), ei);
         if (ei.isCancelled) {
             callbackInfo.cancel();
 
@@ -276,14 +276,14 @@ public class MixinNetHandlerPlayServer {
         }
     }
 
-    @Inject(method = "sendPacket", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "sendPacket(Lnet/minecraft/network/Packet;)V", at = @At("HEAD"), cancellable = true)
     private void onPacketSent(final Packet<?> argPacket, CallbackInfo callbackInfo) {
         if (argPacket instanceof SPacketSpawnPosition) {
             BlockPos pos = ((IMixinOutboundPacketSpawnPosition) argPacket).getPos();
 
             ((IMixinEntityPlayerMP) player).onCompassTargetUpdated(new MC_Location(
                     (double) pos.getX(), (double) pos.getY(),
-                    (double) pos.getZ(), PluginHelper.getLegacyDimensionId(player.ap)));
+                    (double) pos.getZ(), PluginHelper.getLegacyDimensionId(player.dimension)));
         }
 
         if (argPacket instanceof IMixinOutboundPacketSoundEffect) {
@@ -291,7 +291,7 @@ public class MixinNetHandlerPlayServer {
             MC_EventInfo ei = new MC_EventInfo();
             MC_Location loc = new MC_Location(
                     (double) (packet.getX() / 8), (double) (packet.getY() / 8),
-                    (double) (packet.getZ() / 8), PluginHelper.getLegacyDimensionId(player.ap));
+                    (double) (packet.getZ() / 8), PluginHelper.getLegacyDimensionId(player.dimension));
 
 
             Hooks.onPacketSoundEffect((MC_Player) player, packet.getSoundName(), loc, ei);
@@ -302,7 +302,7 @@ public class MixinNetHandlerPlayServer {
         }
     }
 
-    @Redirect(method = "processUpdateSign", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/text/TextFormatting;b(Ljava/lang/String;)Ljava/lang/String;"))
+    @Redirect(method = "processUpdateSign", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/text/TextFormatting;getTextWithoutFormattingCodes(Ljava/lang/String;)Ljava/lang/String;"))
     private String stripColorCodes(String s) {
         if (((MC_Player) player).hasPermission("rainbow.signcolor")) {
             return s;
@@ -324,7 +324,7 @@ public class MixinNetHandlerPlayServer {
 
         MC_EventInfo ei = new MC_EventInfo();
 
-        MC_Location location = new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(this.player.ap));
+        MC_Location location = new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(this.player.dimension));
 
         ArrayList<String> replaceLines = new ArrayList<>();
 
@@ -369,7 +369,7 @@ public class MixinNetHandlerPlayServer {
 
     @Inject(method = "processUpdateSign", at = @At(value = "INVOKE", target = "net.minecraft.tileentity.TileEntitySign.markDirty()V"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void onChangedSign(CPacketUpdateSign packet, CallbackInfo callbackInfo, WorldServer var2, BlockPos pos, IBlockState var4, TileEntity var5, TileEntitySign sign) {
-        MC_Location location = new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(player.ap));
+        MC_Location location = new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(player.dimension));
 
         Hooks.onSignChanged((MC_Player) player, (MC_Sign) sign, location);
     }

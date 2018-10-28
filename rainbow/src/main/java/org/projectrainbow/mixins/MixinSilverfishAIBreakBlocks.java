@@ -24,12 +24,12 @@ public class MixinSilverfishAIBreakBlocks {
     @Final
     private EntitySilverfish silverfish;
 
-    @Redirect(method = "updateTask()V", at = @At(value = "INVOKE", target = "net.minecraft.world.World.getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/state/IBlockState;"))
+    @Redirect(method = "tick()V", at = @At(value = "INVOKE", target = "net.minecraft.world.World.getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/state/IBlockState;"))
     private IBlockState grief(World world, BlockPos pos) {
         IBlockState blockState = world.getBlockState(pos);
         if (blockState.getBlock() instanceof BlockSilverfish) {
             MC_EventInfo ei = new MC_EventInfo();
-            Hooks.onAttemptEntityMiscGrief((MC_Entity) silverfish, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(silverfish.ap)), MC_MiscGriefType.SILVERFISH_BREAK_MONSTER_EGG_BLOCK, ei);
+            Hooks.onAttemptEntityMiscGrief((MC_Entity) silverfish, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(silverfish.dimension)), MC_MiscGriefType.SILVERFISH_BREAK_MONSTER_EGG_BLOCK, ei);
             if (ei.isCancelled) {
                 return Blocks.AIR.getDefaultState();
             }

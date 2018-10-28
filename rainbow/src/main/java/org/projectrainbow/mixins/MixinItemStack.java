@@ -5,13 +5,13 @@ import PluginReference.MC_EnchantmentType;
 import PluginReference.MC_ItemStack;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.init.GameRegistry;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.registry.IRegistry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import org.projectrainbow.PluginHelper;
@@ -31,54 +31,55 @@ import java.util.stream.Collectors;
 @Mixin(ItemStack.class)
 public abstract class MixinItemStack implements MC_ItemStack {
     @Shadow
-    private int stackSize;
+    private int count;
     @Shadow
-    private NBTTagCompound stackTagCompound;
+    private NBTTagCompound tag;
 
-    @Shadow(prefix = "getDisplayName$")
-    public abstract ITextComponent getDisplayName$func_200301_q();
+    @Shadow
+    public abstract ITextComponent getDisplayName();
 
     @Shadow
     public abstract boolean hasDisplayName();
 
-    @Shadow(prefix = "setDisplayName$")
-    public abstract ItemStack setDisplayName$func_200302_a(ITextComponent name);
+    @Shadow
+    public abstract ItemStack setDisplayName(ITextComponent name);
 
     @Shadow
     public abstract void clearCustomName();
 
     @Shadow
-    public abstract boolean isItemEnchanted();
+    public abstract boolean isEnchanted();
 
     @Shadow
     public abstract Item getItem();
 
-    @Shadow public abstract int getItemDamage();
+    @Shadow
+    public abstract int shadow$getDamage();
 
     @Shadow
-    public abstract void func_196085_b(int var1);
+    public abstract void shadow$setDamage(int var1);
 
-    @ModifyArg(method = "func_200302_a", at = @At(value = "INVOKE", target = "net.minecraft.nbt.NBTTagCompound.setString(Ljava/lang/String;Ljava/lang/String;)V"), index = 1)
+    @ModifyArg(method = "setDisplayName", at = @At(value = "INVOKE", target = "net.minecraft.nbt.NBTTagCompound.putString(Ljava/lang/String;Ljava/lang/String;)V"), index = 1)
     private String censorItemName(String name) {
         if (_DiwUtils.DoCensor && _DiwUtils.HasBadLanguage(name)) {
-            return ITextComponent.Serializer.componentToJson(new TextComponentString("Censored"));
+            return ITextComponent.Serializer.toJson(new TextComponentString("Censored"));
         }
         return name;
     }
 
     @Override
     public String getFriendlyName() {
-        return getItem().func_200295_i((ItemStack) (Object) this).getFormattedText();
+        return getItem().getDisplayName((ItemStack) (Object) this).getFormattedText();
     }
 
     @Override
     public String getCustomizedName() {
-        return getDisplayName$func_200301_q().getString();
+        return getDisplayName().getString();
     }
 
     @Override
     public String getOfficialName() {
-        return GameRegistry.s.b(getItem()).getPath();
+        return IRegistry.ITEM.getKey(getItem()).getPath();
     }
 
     @Override
@@ -89,22 +90,22 @@ public abstract class MixinItemStack implements MC_ItemStack {
 
     @Override
     public int getDamage() {
-        return getItemDamage();
+        return shadow$getDamage();
     }
 
     @Override
     public int getCount() {
-        return stackSize;
+        return count;
     }
 
     @Override
     public void setDamage(int damage) {
-        func_196085_b(damage);
+        shadow$setDamage(damage);
     }
 
     @Override
     public void setCount(int count) {
-        stackSize = count;
+        this.count = count;
     }
 
     @Override
@@ -114,7 +115,7 @@ public abstract class MixinItemStack implements MC_ItemStack {
 
     @Override
     public void setCustomName(String name) {
-        setDisplayName$func_200302_a(new TextComponentString(name));
+        setDisplayName(new TextComponentString(name));
     }
 
     @Override
@@ -124,12 +125,12 @@ public abstract class MixinItemStack implements MC_ItemStack {
 
     @Override
     public boolean getHasCustomDetails() {
-        return stackTagCompound != null;
+        return tag != null;
     }
 
     @Override
     public int getMaxStackSize() {
-        return getItem().getItemStackLimit();
+        return getItem().getMaxStackSize();
     }
 
     @Override
@@ -171,20 +172,20 @@ public abstract class MixinItemStack implements MC_ItemStack {
 
     @Override
     public List<String> getLore() {
-        if (stackTagCompound == null) {
+        if (tag == null) {
             return null;
-        } else if (!stackTagCompound.hasKey("display")) {
+        } else if (!tag.contains("display")) {
             return null;
         } else {
-            NBTTagCompound display = stackTagCompound.getCompoundTag("display");
-            if (!display.hasKey("Lore")) {
+            NBTTagCompound display = tag.getCompound("display");
+            if (!display.contains("Lore")) {
                 return null;
             } else {
                 ArrayList<String> res = new ArrayList<String>();
-                NBTTagList lore = display.getTagList("Lore", 8);
+                NBTTagList lore = display.getList("Lore", 8);
 
                 for (int i = 0; i < lore.size(); ++i) {
-                    res.add(lore.getStringTagAt(i));
+                    res.add(lore.getString(i));
                 }
 
                 return res;
@@ -194,15 +195,15 @@ public abstract class MixinItemStack implements MC_ItemStack {
 
     @Override
     public void setLore(List<String> argLore) {
-        if (stackTagCompound == null) {
-            stackTagCompound = new NBTTagCompound();
+        if (tag == null) {
+            tag = new NBTTagCompound();
         }
 
-        if (!stackTagCompound.hasKey("display")) {
-            stackTagCompound.setTag("display", new NBTTagCompound());
+        if (!tag.contains("display")) {
+            tag.put("display", new NBTTagCompound());
         }
 
-        NBTTagCompound tag = stackTagCompound.getCompoundTag("display");
+        NBTTagCompound tag = this.tag.getCompound("display");
 
         if (argLore != null && argLore.size() > 0) {
             NBTTagList lore = new NBTTagList();
@@ -211,9 +212,9 @@ public abstract class MixinItemStack implements MC_ItemStack {
                 lore.add(new NBTTagString(line));
             }
 
-            tag.setTag("Lore", lore);
+            tag.put("Lore", lore);
         } else {
-            tag.removeTag("Lore");
+            tag.remove("Lore");
         }
     }
 
@@ -221,7 +222,7 @@ public abstract class MixinItemStack implements MC_ItemStack {
     public byte[] serialize() {
         NBTTagCompound data = new NBTTagCompound();
 
-        data = ((ItemStack) (Object) this).writeToNBT(data);
+        data = ((ItemStack) (Object) this).write(data);
 
         try {
             ByteArrayOutputStream exc = new ByteArrayOutputStream();
@@ -241,13 +242,13 @@ public abstract class MixinItemStack implements MC_ItemStack {
 
     @Override
     public void setSkullOwner(String name) {
-        if (getItem() == Items.field_196184_dx) {
-            if (stackTagCompound == null) {
-                stackTagCompound = new NBTTagCompound();
+        if (getItem() == Items.PLAYER_HEAD) {
+            if (tag == null) {
+                tag = new NBTTagCompound();
             }
 
-            stackTagCompound.setString("SkullOwner", name);
-            getItem().updateItemStackNBT(stackTagCompound);
+            tag.putString("SkullOwner", name);
+            getItem().updateItemStackNBT(tag);
         }
     }
 }

@@ -33,7 +33,7 @@ public class MixinServerConfigurationManager {
     private void onLogin(EntityPlayerMP var1, CallbackInfo callback) {
         _JOT_OnlineTimeUtils.HandlePlayerLogin((MC_Player) var1);
         _UUIDMapper.AddMap(((MC_Player) var1).getName(), var1.getUniqueID().toString());
-        Hooks.onPlayerLogin(((MC_Player) var1).getName(), var1.getUniqueID(), var1.v()); // getPlayerIP
+        Hooks.onPlayerLogin(((MC_Player) var1).getName(), var1.getUniqueID(), var1.getPlayerIP()); // getPlayerIP
         Hooks.onPlayerJoin((MC_Player) var1);
     }
 
@@ -58,7 +58,7 @@ public class MixinServerConfigurationManager {
         }
     }
 
-    @Inject(method = "func_206258_a", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "canPlayerLogin", at = @At("HEAD"), cancellable = true)
     public void reconnectDelay(SocketAddress var1, GameProfile var2, CallbackInfoReturnable<ITextComponent> callbackInfo) {
         String var4;
 
@@ -77,7 +77,7 @@ public class MixinServerConfigurationManager {
         }
     }
 
-    @Inject(method = "func_206258_a", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "canPlayerLogin", at = @At("RETURN"), cancellable = true)
     public void attemptLoginEvent(SocketAddress var1, GameProfile var2, CallbackInfoReturnable<ITextComponent> callbackInfo) {
         MC_EventInfo ei = new MC_EventInfo();
         ei.tag = callbackInfo.getReturnValue() != null ? callbackInfo.getReturnValue().getFormattedText() : null;

@@ -15,10 +15,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(EntityDragon.class)
 public abstract class MixinEntityDragon extends MixinEntity {
 
-    @Redirect(method = "destroyBlocksInAABB", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;g(Lnet/minecraft/util/math/BlockPos;)Z")) // todo remap setBlockToAir
+    @Redirect(method = "destroyBlocksInAABB", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;removeBlock(Lnet/minecraft/util/math/BlockPos;)Z"))
     private boolean grief(World world, BlockPos pos) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptEntityMiscGrief(this, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(ap)), MC_MiscGriefType.ENDERDRAGON_BRUSH, ei);
-        return !ei.isCancelled && world.g(pos);
+        Hooks.onAttemptEntityMiscGrief(this, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(dimension)), MC_MiscGriefType.ENDERDRAGON_BRUSH, ei);
+        return !ei.isCancelled && world.removeBlock(pos);
     }
 }

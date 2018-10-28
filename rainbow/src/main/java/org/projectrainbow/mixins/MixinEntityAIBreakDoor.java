@@ -22,10 +22,10 @@ public class MixinEntityAIBreakDoor extends EntityAIDoorInteract {
         // dummy
     }
 
-    @Inject(method = "updateTask", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
     private void grief(CallbackInfo callbackInfo) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptEntityMiscGrief((MC_Entity) entity, new MC_Location(doorPosition.getX(), doorPosition.getY(), doorPosition.getZ(), PluginHelper.getLegacyDimensionId(entity.ap)), MC_MiscGriefType.ZOMBIE_DOOR_BREAK, ei);
+        Hooks.onAttemptEntityMiscGrief((MC_Entity) entity, new MC_Location(doorPosition.getX(), doorPosition.getY(), doorPosition.getZ(), PluginHelper.getLegacyDimensionId(entity.dimension)), MC_MiscGriefType.ZOMBIE_DOOR_BREAK, ei);
         if (ei.isCancelled) {
             callbackInfo.cancel();
         }

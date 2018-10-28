@@ -11,7 +11,6 @@ import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecartContainer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.GameRegistry;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTSizeTracker;
@@ -30,6 +29,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.IRegistry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.GameRules;
@@ -111,10 +111,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
     }
 
     public void teleport(WorldServer world, double x, double y, double z, float yaw, float pitch, boolean safe) {
-        dismountRidingEntity();
-        for (Entity passenger : getPassengers()) {
-            passenger.dismountRidingEntity();
-        }
+        removePassengers();
         // Close open containers
         if (openContainer != ((EntityPlayerMP) (Object) this).inventoryContainer) {
             ((EntityPlayerMP) (Object) this).closeScreen();
@@ -123,17 +120,17 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
             MinecraftServer mcServer = _DiwUtils.getMinecraftServer();
             final WorldServer fromWorld = (WorldServer) this.world;
             final WorldServer toWorld = world;
-            fromWorld.getEntityTracker().b((EntityPlayerMP) (Object) this); // removePlayerFromTrackers
+            fromWorld.getEntityTracker().removePlayerFromTrackers((EntityPlayerMP) (Object) this);
             fromWorld.getPlayerChunkMap().removePlayer((EntityPlayerMP) (Object) this);
             mcServer.getPlayerList().getPlayers().remove(this);
-            // todo fromWorld.getEntityTracker().untrack((EntityPlayerMP) (Object) this);
+            fromWorld.getEntityTracker().untrack((EntityPlayerMP) (Object) this);
 
             fromWorld.removeEntityDangerously((EntityPlayerMP) (Object) this);
-            DimensionType currentDim = ap;
-            ap = toWorld.provider.getDimensionType();
+            DimensionType currentDim = dimension;
+            dimension = toWorld.dimension.getType();
             setPositionAndRotation(x, y, z, yaw, pitch);
 
-            // todo toWorld.getChunkProvider().provideChunk((int) posX >> 4, (int) posZ >> 4);
+            toWorld.getChunkProvider().getChunk((int) posX >> 4, (int) posZ >> 4, true, true);
 
             EntityPlayerMP entityplayermp1 = (EntityPlayerMP) (Object) this;
 
@@ -148,10 +145,10 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
                                 entityplayermp1.interactionManager.getGameType()));
             }*/
 
-            entityplayermp1.connection.sendPacket(new SPacketRespawn(toWorld.provider.getDimensionType(), toWorld.getDifficulty(), toWorld.getWorldInfo().getTerrainType(), entityplayermp1.interactionManager.getGameType()));
+            entityplayermp1.connection.sendPacket(new SPacketRespawn(toWorld.dimension.getType(), toWorld.getDifficulty(), toWorld.getWorldInfo().getGenerator(), entityplayermp1.interactionManager.getGameType()));
             setWorld(toWorld);
-            isDead = false;
-            while (safe && !toWorld.func_195586_b((Entity) (Object) this, this.getEntityBoundingBox()) && this.posY < 255.0D) {
+            removed = true;
+            while (safe && !toWorld.isCollisionBoxesEmpty((Entity) (Object) this, this.getBoundingBox()) && this.posY < 255.0D) {
                 this.setPosition(this.posX, this.posY + 1.0D, this.posZ);
             }
             entityplayermp1.connection.setPlayerLocation(entityplayermp1.posX, entityplayermp1.posY, entityplayermp1.posZ, entityplayermp1.rotationYaw, entityplayermp1.rotationPitch);
@@ -159,7 +156,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
             MC_Location compassTarget = getCompassTarget();
             entityplayermp1.connection.sendPacket(new SPacketSpawnPosition(new BlockPos(compassTarget.getBlockX(), compassTarget.getBlockY(), compassTarget.getBlockZ())));
             entityplayermp1.connection.sendPacket(new SPacketSetExperience(entityplayermp1.experience, entityplayermp1.experienceTotal, entityplayermp1.experienceLevel));
-            mcServer.getPlayerList().updateTimeAndWeatherForPlayer(entityplayermp1, toWorld);
+            mcServer.getPlayerList().sendWorldInfo(entityplayermp1, toWorld);
             toWorld.getPlayerChunkMap().addPlayer(entityplayermp1);
             toWorld.spawnEntity(entityplayermp1); // spawnEntity
             mcServer.getPlayerList().getPlayers().add(entityplayermp1);
@@ -167,14 +164,14 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
             entityplayermp1.sendContainerToPlayer(openContainer);
             entityplayermp1.setHealth(entityplayermp1.getHealth());
 
-            // todo fromWorld.resetUpdateEntityTick();
-            // todo toWorld.resetUpdateEntityTick();
+            fromWorld.resetUpdateEntityTick();
+            toWorld.resetUpdateEntityTick();
         } else {
             connection.setPlayerLocation(x, y, z, yaw, pitch);
         }
     }
 
-    @Inject(method = "readEntityFromNBT", at = @At("HEAD"))
+    @Inject(method = "readAdditional", at = @At("HEAD"))
     public void hook_readEntityFromNBT(NBTTagCompound nbt, CallbackInfo callbackInfo) {
         NBTTagList tagList = new NBTTagList();
 
@@ -193,7 +190,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
         }
     }
 
-    @Inject(method = "writeEntityToNBT", at = @At("HEAD"))
+    @Inject(method = "writeAdditional", at = @At("HEAD"))
     public void hook_writeEntityToNBT(NBTTagCompound nbt, CallbackInfo callbackInfo) {
         try {
             int nActualItems = 0;
@@ -235,7 +232,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
         return "keepInventory".equals(key) && _DiwUtils.OpsKeepInventory && isOp() || gameRules.getBoolean(key);
     }
 
-    @Inject(method = "changeDimension", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "func_212321_a", at = @At("HEAD"), cancellable = true)
     private void handleChangeDimension(DimensionType newDimension, CallbackInfoReturnable<Entity> callbackInfo) {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptPlayerChangeDimension(this, PluginHelper.getLegacyDimensionId(newDimension), ei);
@@ -334,12 +331,12 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Inject(method = "trySleep", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.EntityPlayerMP.getServerWorld()Lnet/minecraft/world/WorldServer;"))
     private void startSleeping(BlockPos bed, CallbackInfoReturnable callbackInfo) {
-        Hooks.onPlayerBedEnter(this, new BlockWrapper(world.getBlockState(bed)), new MC_Location(bed.getX(), bed.getY(), bed.getZ(), PluginHelper.getLegacyDimensionId(ap)));
+        Hooks.onPlayerBedEnter(this, new BlockWrapper(world.getBlockState(bed)), new MC_Location(bed.getX(), bed.getY(), bed.getZ(), PluginHelper.getLegacyDimensionId(dimension)));
     }
 
     @Inject(method = "wakeUpPlayer", at = @At(value = "INVOKE", target = "net.minecraft.entity.player.EntityPlayerMP.getServerWorld()Lnet/minecraft/world/WorldServer;"))
     private void finishSleeping(boolean a, boolean b, boolean c, CallbackInfo callbackInfo) {
-        Hooks.onPlayerBedLeave(this, new BlockWrapper(world.getBlockState(bedLocation)), new MC_Location(bedLocation.getX(), bedLocation.getY(), bedLocation.getZ(), PluginHelper.getLegacyDimensionId(ap)));
+        Hooks.onPlayerBedLeave(this, new BlockWrapper(world.getBlockState(bedLocation)), new MC_Location(bedLocation.getX(), bedLocation.getY(), bedLocation.getZ(), PluginHelper.getLegacyDimensionId(dimension)));
     }
 
     @Inject(method = "setSpectatingEntity", at = @At("HEAD"), cancellable = true)
@@ -413,12 +410,12 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public void teleport(MC_Location var1, boolean safe) {
-        teleport(_DiwUtils.getMinecraftServer().func_200667_a(var1.dimension == 0 ? DimensionType.OVERWORLD : var1.dimension == 1 ? DimensionType.THE_END : DimensionType.NETHER ), var1.x, var1.y, var1.z, var1.yaw, var1.pitch, safe);
+        teleport(_DiwUtils.getMinecraftServer().getWorld(var1.dimension == 0 ? DimensionType.OVERWORLD : var1.dimension == 1 ? DimensionType.THE_END : DimensionType.NETHER ), var1.x, var1.y, var1.z, var1.yaw, var1.pitch, safe);
     }
 
     @Override
     public void executeCommand(String var1) {
-        _DiwUtils.getMinecraftServer().func_195571_aL().func_197059_a(((EntityPlayerMP)(Object) this).func_195051_bN(), var1);
+        _DiwUtils.getMinecraftServer().getCommandManager().handleCommand(((EntityPlayerMP)(Object) this).getCommandSource(), var1);
     }
 
     @Override
@@ -494,7 +491,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public boolean isInvulnerable() {
-        return isEntityInvulnerable(DamageSource.MAGIC);
+        return isInvulnerableTo(DamageSource.MAGIC);
     }
 
     @Override
@@ -504,33 +501,33 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public boolean isAllowedFlight() {
-        return capabilities.allowFlying;
+        return abilities.allowFlying;
     }
 
     @Override
     public boolean isFlying() {
-        return capabilities.isFlying;
+        return abilities.isFlying;
     }
 
     @Override
     public float getFlySpeed() {
-        return capabilities.getFlySpeed();
+        return abilities.getFlySpeed();
     }
 
     @Override
     public float getWalkSpeed() {
-        return capabilities.getWalkSpeed();
+        return abilities.getWalkSpeed();
     }
 
     @Override
     public void setFlySpeed(float var1) {
-        ((IMixinPlayerCapabilities) capabilities).setFlySpeed(var1);
+        ((IMixinPlayerCapabilities) abilities).setFlySpeed(var1);
         sendPlayerAbilities();
     }
 
     @Override
     public void setWalkSpeed(float var1) {
-        ((IMixinPlayerCapabilities) capabilities).setWalkSpeed(var1);
+        ((IMixinPlayerCapabilities) abilities).setWalkSpeed(var1);
         sendPlayerAbilities();
     }
 
@@ -541,19 +538,19 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public void setAllowFlight(boolean var1) {
-        capabilities.allowFlying = var1;
+        abilities.allowFlying = var1;
         sendPlayerAbilities();
     }
 
     @Override
     public void setFlying(boolean var1) {
-        capabilities.isFlying = var1;
+        abilities.isFlying = var1;
         sendPlayerAbilities();
     }
 
     @Override
     public void giveExp(int var1) {
-        addExperience$func_195068_e(var1);
+        giveExperiencePoints(var1);
     }
 
     @Override
@@ -594,7 +591,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
         experience = 0;
         experienceLevel = 0;
         experienceTotal = 0;
-        addExperience$func_195068_e(var1);
+        giveExperiencePoints(var1);
     }
 
     @Override
@@ -620,7 +617,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
         if (loc == null) {
             return getWorld().getSpawnLocation();
         }
-        return new MC_Location(PluginHelper.getLegacyDimensionId(ap), loc.getX(), loc.getY(), loc.getZ());
+        return new MC_Location(PluginHelper.getLegacyDimensionId(dimension), loc.getX(), loc.getY(), loc.getZ());
     }
 
     @Override
@@ -630,7 +627,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public void playSound(String var1, float var2, float var3) {
-        SoundEvent object = GameRegistry.v.b(new ResourceLocation(var1));
+        SoundEvent object = IRegistry.SOUND_EVENT.get(new ResourceLocation(var1));
         if (object == null) {
             System.err.println("Sound " + var1 + " does not exist.");
             return;
@@ -703,7 +700,7 @@ public abstract class MixinEntityPlayerMP extends MixinEntityPlayer implements I
 
     @Override
     public void sendJsonMessage(String json) {
-        connection.sendPacket(new SPacketChat(TextComponentString.Serializer.jsonToComponent(json)));
+        connection.sendPacket(new SPacketChat(TextComponentString.Serializer.fromJson(json)));
     }
 
     @Override

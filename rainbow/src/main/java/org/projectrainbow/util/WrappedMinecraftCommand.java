@@ -43,8 +43,8 @@ public class WrappedMinecraftCommand implements MC_Command {
     @Override
     public List<String> getAliases() {
         return _DiwUtils.getMinecraftServer()
-                .func_195571_aL()
-                .func_197054_a()
+                .getCommandManager()
+                .getDispatcher()
                 .getRoot()
                 .getChildren()
                 .stream()
@@ -62,10 +62,10 @@ public class WrappedMinecraftCommand implements MC_Command {
     public void handleCommand(MC_Player plr, String[] args) {
         try {
             _DiwUtils.getMinecraftServer()
-                    .func_195571_aL()
-                    .func_197059_a(plr == null
-                    ? _DiwUtils.getMinecraftServer().func_195573_aM()
-                    : ((EntityPlayerMP)plr).func_195051_bN(),
+                    .getCommandManager()
+                    .handleCommand(plr == null
+                    ? _DiwUtils.getMinecraftServer().getCommandSource()
+                    : ((EntityPlayerMP)plr).getCommandSource(),
                             delegate.getName() + " " + Arrays.stream(args).collect(Collectors.joining(" ")));
         } catch (CommandException e) {
             Util.sneakyThrow(e);
@@ -74,7 +74,7 @@ public class WrappedMinecraftCommand implements MC_Command {
 
     @Override
     public boolean hasPermissionToUse(MC_Player plr) {
-        return delegate.getRequirement().test(((EntityPlayerMP) plr).func_195051_bN());
+        return delegate.getRequirement().test(((EntityPlayerMP) plr).getCommandSource());
     }
 
     @Override

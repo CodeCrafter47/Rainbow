@@ -41,7 +41,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
     @Shadow
     public InventoryPlayer inventory;
     @Shadow
-    public PlayerCapabilities capabilities;
+    public PlayerCapabilities abilities;
     @Shadow
     protected FoodStats foodStats;
     @Shadow
@@ -53,8 +53,8 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
     @Shadow
     public abstract boolean isPlayerSleeping();
 
-    @Shadow(prefix = "addExperience$")
-    public abstract void addExperience$func_195068_e(int var1);
+    @Shadow
+    public abstract void giveExperiencePoints(int var1);
 
     @Shadow
     public abstract void addExperienceLevel(int var1);
@@ -67,7 +67,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
      * To do this the first call to getName() is intercepted and if we have a colored
      * name for that player we return it. Otherwise we return the result of getName().
      */
-    @Redirect(method = "getDisplayName", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;func_200200_C_()Lnet/minecraft/util/text/ITextComponent;", ordinal = 0))
+    @Redirect(method = "getDisplayName", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;getDisplayName()Lnet/minecraft/util/text/ITextComponent;", ordinal = 0))
     public ITextComponent hook_getName(EntityPlayer player) {
         String s = _CmdNameColor.ColorNameDict.get(player.getUniqueID().toString());
         if (s == null) {
@@ -76,7 +76,7 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
         if (s != null) {
             return new TextComponentString(s);
         }
-        return player.func_200200_C_();
+        return player.getDisplayName();
     }
 
     @Inject(method = "dropItem(Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/item/EntityItem;", at = @At("HEAD"), cancellable = true)

@@ -43,8 +43,6 @@ public abstract class MixinEntity implements MC_Entity {
     @Shadow
     public World world;
     @Shadow
-    public boolean isDead;
-    @Shadow
     public double posX;
     @Shadow
     public double posY;
@@ -79,7 +77,7 @@ public abstract class MixinEntity implements MC_Entity {
     public abstract void setPositionAndRotation(double x, double y, double z, float yaw, float pitch);
 
     @Shadow
-    public abstract AxisAlignedBB getEntityBoundingBox();
+    public abstract AxisAlignedBB getBoundingBox();
 
     @Shadow
     public abstract void setSneaking(boolean sneaking);
@@ -87,20 +85,20 @@ public abstract class MixinEntity implements MC_Entity {
     @Shadow
     public abstract UUID getUniqueID();
 
-    @Shadow(prefix = "onKillCommand$")
-    public abstract void onKillCommand$S();
-
-    @Shadow(prefix = "setCustomNameTag$")
-    public abstract void setCustomNameTag$func_200203_b(ITextComponent name);
-
-    @Shadow(prefix = "getCustomNameTag$")
-    public abstract ITextComponent getCustomNameTag$func_200201_e();
+    @Shadow
+    public abstract void onKillCommand();
 
     @Shadow
-    public abstract void setDead();
+    public abstract void setCustomName(ITextComponent name);
 
     @Shadow
-    public abstract boolean isEntityInvulnerable(DamageSource var1);
+    public abstract ITextComponent shadow$getCustomName();
+
+    @Shadow
+    public abstract void remove();
+
+    @Shadow
+    public abstract boolean isInvulnerableTo(DamageSource var1);
 
     @Shadow
     public abstract boolean shadow$isSneaking();
@@ -130,15 +128,19 @@ public abstract class MixinEntity implements MC_Entity {
     public abstract void setPosition(double var1, double var3, double var5);
 
     @Shadow
-    public abstract void dismountRidingEntity();
+    public abstract void removePassengers();
 
     @Shadow
     @Final
     protected abstract String getEntityString();
 
-    @Shadow public abstract ITextComponent func_200200_C_();
+    @Shadow public abstract ITextComponent getDisplayName();
 
-    @Shadow public DimensionType ap;
+    @Shadow public DimensionType dimension;
+
+    @Shadow public abstract boolean isAlive();
+
+    @Shadow public boolean removed;
 
     protected void setInvulnerable(boolean value) {
         invulnerable = value;
@@ -147,7 +149,7 @@ public abstract class MixinEntity implements MC_Entity {
     private float waterFallDistance = 0;
 
     private int getLegacyDimensionId() {
-        return PluginHelper.getLegacyDimensionId(((Entity) (Object) this).ap);
+        return PluginHelper.getLegacyDimensionId(((Entity) (Object) this).dimension);
     }
 
     @Inject(method = "handleWaterMovement", at = @At(value = "FIELD", target = "net.minecraft.entity.Entity.fallDistance:F"))
@@ -176,7 +178,7 @@ public abstract class MixinEntity implements MC_Entity {
         }
     }
 
-    @ModifyConstant(method = "Lnet/minecraft/entity/Entity;changeDimension(Lnet/minecraft/world/dimension/DimensionType;)Lnet/minecraft/entity/Entity;", constant = @Constant(doubleValue = 8.0D))
+    @ModifyConstant(method = "Lnet/minecraft/entity/Entity;func_212321_a(Lnet/minecraft/world/dimension/DimensionType;)Lnet/minecraft/entity/Entity;", constant = @Constant(doubleValue = 8.0D))
     private double injectNetherDistanceRatio(double ignored) {
         return _DiwUtils.netherDistanceRatio;
     }
@@ -199,12 +201,12 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Override
     public boolean isDead() {
-        return isDead;
+        return !isAlive();
     }
 
     @Override
     public void kill() {
-        onKillCommand$S();
+        onKillCommand();
     }
 
     @Override
@@ -222,7 +224,7 @@ public abstract class MixinEntity implements MC_Entity {
         if (var1 == null) {
             MC_Entity rider = getRider();
             if (rider != null) {
-                ((Entity) rider).dismountRidingEntity();
+                ((Entity) rider).stopRiding();
             }
             return;
         }
@@ -232,7 +234,7 @@ public abstract class MixinEntity implements MC_Entity {
     @Override
     public void setVehicle(MC_Entity var1) {
         if (var1 == null) {
-            ((Entity) (Object) this).dismountRidingEntity();
+            ((Entity) (Object) this).stopRiding();
             return;
         }
         shadow$startRiding((Entity) var1);
@@ -288,12 +290,12 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Override
     public void setCustomName(String var1) {
-        setCustomNameTag$func_200203_b(new TextComponentString(var1));
+        setCustomName(new TextComponentString(var1));
     }
 
     @Override
     public String getCustomName() {
-        return getCustomNameTag$func_200201_e().getString();
+        return shadow$getCustomName().getString();
     }
 
     @Override
@@ -365,12 +367,12 @@ public abstract class MixinEntity implements MC_Entity {
     @Override
     @SuppressWarnings("unchecked")
     public List<MC_Entity> getNearbyEntities(float var1) {
-        return (List<MC_Entity>) (List) world.a((Entity) (Object) this, new AxisAlignedBB(posX - var1, posY - var1, posZ - var1, posX + var1, posY + var1, posZ + var1), entity -> true); // getEntitiesInAABBexcluding
+        return (List<MC_Entity>) (List) world.getEntitiesInAABBexcluding((Entity) (Object) this, new AxisAlignedBB(posX - var1, posY - var1, posZ - var1, posX + var1, posY + var1, posZ + var1), entity -> true); // getEntitiesInAABBexcluding
     }
 
     @Override
     public void removeEntity() {
-        setDead();
+        remove();
     }
 
     @Intrinsic
@@ -385,7 +387,7 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Intrinsic
     public String api$getName() {
-        return func_200200_C_().getString();
+        return getDisplayName().getString();
     }
 
     @Intrinsic
@@ -420,7 +422,7 @@ public abstract class MixinEntity implements MC_Entity {
 
     @Override
     public void removeRider(MC_Entity ent) {
-        ((Entity)ent).dismountRidingEntity();
+        ((Entity)ent).stopRiding();
     }
 
     @Override
@@ -441,11 +443,11 @@ public abstract class MixinEntity implements MC_Entity {
     @Override
     public byte[] serialize() {
         NBTTagCompound data = new NBTTagCompound();
-        ((Entity) (Object) this).writeToNBT(data);
-        data.setString("id", getEntityString());
-        data.removeTag("UUIDMost");
-        data.removeTag("UUIDLeast");
-        data.removeTag("Dimension");
+        ((Entity) (Object) this).writeWithoutTypeId(data);
+        data.putString("id", getEntityString());
+        data.remove("UUIDMost");
+        data.remove("UUIDLeast");
+        data.remove("Dimension");
 
         try {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -470,29 +472,26 @@ public abstract class MixinEntity implements MC_Entity {
     }
 
     public void teleport(WorldServer world, double x, double y, double z, float yaw, float pitch, boolean safe) {
-        dismountRidingEntity();
-        for (Entity passenger : getPassengers()) {
-            passenger.dismountRidingEntity();
-        }
+        removePassengers();
         if (world != this.world) {
             final WorldServer fromWorld = (WorldServer) this.world;
             final WorldServer toWorld = world;
 
             fromWorld.removeEntityDangerously((EntityPlayerMP) (Object) this);
-            ((Entity) (Object) this).ap = toWorld.provider.getDimensionType();
+            ((Entity) (Object) this).dimension = toWorld.dimension.getType();
             setPositionAndRotation(x, y, z, yaw, pitch);
 
             toWorld.getChunk((int) posX >> 4, (int) posZ >> 4);
 
-            while(safe && !toWorld.func_195586_b((Entity) (Object) this, this.getEntityBoundingBox()) && this.posY < 255.0D) {
+            while(safe && !toWorld.checkNoEntityCollision((Entity) (Object) this, this.getBoundingBox()) && this.posY < 255.0D) {
                 this.setPosition(this.posX, this.posY + 1.0D, this.posZ);
             }
 
             this.setWorld(toWorld);
             toWorld.spawnEntity((Entity) (Object) this);
 
-            // todo fromWorld.resetUpdateEntityTick();
-            // todo toWorld.resetUpdateEntityTick();
+            fromWorld.resetUpdateEntityTick();
+            toWorld.resetUpdateEntityTick();
         } else {
             setPositionAndRotation(x, y, z, yaw, pitch);
         }

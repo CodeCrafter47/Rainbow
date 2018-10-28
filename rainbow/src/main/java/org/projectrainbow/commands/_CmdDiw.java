@@ -116,12 +116,12 @@ public class _CmdDiw implements MC_Command {
         File file = new File(fname);
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            CommandSource sender = _DiwUtils.getMinecraftServer().func_195573_aM();
+            CommandSource sender = _DiwUtils.getMinecraftServer().getCommandSource();
             if (plr != null) {
-                sender = plr.func_195051_bN();
+                sender = plr.getCommandSource();
             }
 
-            Commands executor = _DiwUtils.getMinecraftServer().func_195571_aL();
+            Commands executor = _DiwUtils.getMinecraftServer().getCommandManager();
 
             String line;
             while ((line = br.readLine()) != null) {
@@ -146,7 +146,7 @@ public class _CmdDiw implements MC_Command {
 
                             line = _DiwUtils.FullTranslate(line);
                             System.out.println("[Script] Running: " + line);
-                            executor.func_197059_a(sender, line);
+                            executor.handleCommand(sender, line);
                         } catch (Exception var15) {
                             System.out.println("[Script] Command Error: " + var15.getMessage());
                         }
@@ -236,19 +236,19 @@ public class _CmdDiw implements MC_Command {
                 ((MC_Player) p).sendMessage(_ColorHelper.RED + "Example 1: " + _ColorHelper.GOLD + "/diw flySpeed 2");
             } else {
                 float spd = Float.parseFloat(args[1]);
-                ((IMixinPlayerCapabilities) p.capabilities).setFlySpeed(spd * 0.05F);
+                ((IMixinPlayerCapabilities) p.abilities).setFlySpeed(spd * 0.05F);
                 ((MC_Player) p).sendMessage(_ColorHelper.GREEN + String.format("Set fly speed to %.2f", spd));
                 p.sendPlayerAbilities();
             }
         } else if (args[0].equalsIgnoreCase("speed") && p != null) {
-            ((MC_Player) p).sendMessage(_ColorHelper.GOLD + String.format("Fly Speed: %.2f, Walk Speed: %.2f", (double) p.capabilities.getFlySpeed() / 0.05D, (double) p.capabilities.getWalkSpeed() / 0.1D));
-            ((MC_Player) p).sendMessage(_ColorHelper.GOLD + String.format("MayFly: %s, IsFlying: %s", p.capabilities.allowFlying, p.capabilities.isFlying));
+            ((MC_Player) p).sendMessage(_ColorHelper.GOLD + String.format("Fly Speed: %.2f, Walk Speed: %.2f", (double) p.abilities.getFlySpeed() / 0.05D, (double) p.abilities.getWalkSpeed() / 0.1D));
+            ((MC_Player) p).sendMessage(_ColorHelper.GOLD + String.format("MayFly: %s, IsFlying: %s", p.abilities.allowFlying, p.abilities.isFlying));
         } else if (args[0].equalsIgnoreCase("walkspeed") && p != null) {
             if (args.length < 2) {
                 ((MC_Player) p).sendMessage(_ColorHelper.RED + "Example 1: " + _ColorHelper.GOLD + "/diw walkspeed 2");
             } else {
                 float spd = Float.parseFloat(args[1]) * 0.1F;
-                ((IMixinPlayerCapabilities) p.capabilities).setWalkSpeed(spd);
+                ((IMixinPlayerCapabilities) p.abilities).setWalkSpeed(spd);
                 ((MC_Player) p).sendMessage(_ColorHelper.GREEN + String.format("Set walk speed to %.2f", spd));
             }
         } else if ((args[0].equalsIgnoreCase("setgrass") || args[0].equalsIgnoreCase("skyclear")) && p != null) {

@@ -20,18 +20,18 @@ public abstract class MixinEntityArrow extends MixinEntity implements MC_Arrow {
 
     @Override
     public MC_Entity getProjectileSource() {
-        return (MC_Entity) ((EntityArrow) (Object) this).k();
+        return (MC_Entity) ((EntityArrow) (Object) this).func_212360_k();
     }
 
     @Inject(method = "onHit", at = @At("HEAD"), cancellable = true)
     private void onHit(RayTraceResult hit, CallbackInfo ci) {
         MC_EventInfo ei = new MC_EventInfo();
         Vec3d hitVec = hit.hitVec;
-        if (hit.typeOfHit == RayTraceResult.Type.ENTITY) {
-            Hooks.onAttemptProjectileHitEntity(this, (MC_Entity) hit.entityHit, new MC_Location(hitVec.x, hitVec.y, hitVec.z, PluginHelper.getLegacyDimensionId(ap)), ei);
-        } else if (hit.typeOfHit == RayTraceResult.Type.BLOCK) {
+        if (hit.type == RayTraceResult.Type.ENTITY) {
+            Hooks.onAttemptProjectileHitEntity(this, (MC_Entity) hit.entity, new MC_Location(hitVec.x, hitVec.y, hitVec.z, PluginHelper.getLegacyDimensionId(dimension)), ei);
+        } else if (hit.type == RayTraceResult.Type.BLOCK) {
             BlockPos pos = hit.getBlockPos();
-            Hooks.onAttemptProjectileHitBlock(this, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(ap)), PluginHelper.directionMap.get(hit.sideHit), new MC_Location(hitVec.x, hitVec.y, hitVec.z, PluginHelper.getLegacyDimensionId(ap)), ei);
+            Hooks.onAttemptProjectileHitBlock(this, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(dimension)), PluginHelper.directionMap.get(hit.sideHit), new MC_Location(hitVec.x, hitVec.y, hitVec.z, PluginHelper.getLegacyDimensionId(dimension)), ei);
         }
         if (ei.isCancelled) {
             ci.cancel();

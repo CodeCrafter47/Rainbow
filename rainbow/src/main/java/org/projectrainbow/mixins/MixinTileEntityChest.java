@@ -40,11 +40,11 @@ public abstract class MixinTileEntityChest extends TileEntity implements MC_Ches
 
     @Override
     public MC_Chest GetLinkedChestAt(MC_DirectionNESWUD var1) {
-        if (func_195044_w().getValue(BlockChest.field_196314_b) == ChestType.SINGLE) {
+        if (getBlockState().get(BlockChest.TYPE) == ChestType.SINGLE) {
             return null;
         }
-        BlockPos adjacent = pos.offset(BlockChest.func_196311_i(func_195044_w()));
-        if (world.getBlockState(adjacent).getBlock() != func_195044_w().getBlock()) {
+        BlockPos adjacent = pos.offset(BlockChest.getDirectionToAttached(getBlockState()));
+        if (world.getBlockState(adjacent).getBlock() != getBlockState().getBlock()) {
             return null;
         }
         return (MC_Chest)world.getTileEntity(adjacent);
@@ -58,6 +58,6 @@ public abstract class MixinTileEntityChest extends TileEntity implements MC_Ches
 
     @Override
     public MC_Block getBlock() {
-        return new BlockWrapper(func_195044_w());
+        return new BlockWrapper(getBlockState());
     }
 }

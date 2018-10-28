@@ -1,8 +1,8 @@
 package org.projectrainbow.mixins;
 
-import net.minecraft.init.GameRegistry;
 import net.minecraft.network.play.server.SPacketSoundEffect;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.registry.IRegistry;
 import org.projectrainbow.interfaces.IMixinOutboundPacketSoundEffect;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,6 +35,6 @@ public class MixinOutboundPacketSoundEffect implements IMixinOutboundPacketSound
 
     @Override
     public String getSoundName() {
-        return GameRegistry.v.b(sound).getPath();
+        return IRegistry.SOUND_EVENT.getKey(sound).getPath();
     }
 }

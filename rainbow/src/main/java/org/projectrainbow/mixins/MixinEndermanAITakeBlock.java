@@ -21,13 +21,13 @@ public class MixinEndermanAITakeBlock {
     @Final
     private EntityEnderman enderman;
 
-    @Redirect(method = "updateTask()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;g(Lnet/minecraft/util/math/BlockPos;)Z")) // setBlockToAir
+    @Redirect(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;removeBlock(Lnet/minecraft/util/math/BlockPos;)Z"))
     private boolean grief(World world, BlockPos pos) {
         MC_EventInfo ei = new MC_EventInfo();
-        Hooks.onAttemptEntityMiscGrief((MC_Entity) enderman, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(enderman.ap)), MC_MiscGriefType.ENDERMAN_PICKUP_BLOCK, ei);
+        Hooks.onAttemptEntityMiscGrief((MC_Entity) enderman, new MC_Location(pos.getX(), pos.getY(), pos.getZ(), PluginHelper.getLegacyDimensionId(enderman.dimension)), MC_MiscGriefType.ENDERMAN_PICKUP_BLOCK, ei);
         if (ei.isCancelled) {
             this.enderman.func_195406_b(null);
         }
-        return !ei.isCancelled && world.g(pos);
+        return !ei.isCancelled && world.removeBlock(pos);
     }
 }

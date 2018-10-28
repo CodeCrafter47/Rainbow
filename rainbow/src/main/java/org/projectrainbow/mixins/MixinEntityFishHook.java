@@ -30,7 +30,7 @@ public abstract class MixinEntityFishHook {
     public EntityPlayer angler;
 
     @Shadow
-    public abstract void setDead();
+    public abstract void remove();
 
     @Inject(method = "handleHookRetraction", at = @At("HEAD"), cancellable = true)
     private void hook(CallbackInfoReturnable<Integer> callbackInfo) {
@@ -38,7 +38,7 @@ public abstract class MixinEntityFishHook {
             MC_EventInfo ei = new MC_EventInfo();
             Hooks.onAttemptFishingReel((MC_Player) angler, null, (MC_Entity) caughtEntity, false, ei);
             if (ei.isCancelled) {
-                this.setDead();
+                this.remove();
                 this.angler.fishEntity = null;
                 callbackInfo.setReturnValue(0);
             }
@@ -46,7 +46,7 @@ public abstract class MixinEntityFishHook {
             MC_EventInfo ei = new MC_EventInfo();
             Hooks.onAttemptFishingReel((MC_Player) angler, null, null, true, ei);
             if (ei.isCancelled) {
-                this.setDead();
+                this.remove();
                 this.angler.fishEntity = null;
                 callbackInfo.setReturnValue(0);
             }
@@ -58,7 +58,7 @@ public abstract class MixinEntityFishHook {
         MC_EventInfo ei = new MC_EventInfo();
         Hooks.onAttemptFishingReel((MC_Player) angler, (MC_ItemStack) (Object) var4, null, false, ei);
         if (ei.isCancelled) {
-            this.setDead();
+            this.remove();
             this.angler.fishEntity = null;
             callbackInfo.setReturnValue(0);
         }

@@ -22,12 +22,12 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.entity.projectile.EntityThrowable;
-import net.minecraft.init.GameRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.IRegistry;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.dimension.DimensionType;
 import org.apache.logging.log4j.LogManager;
@@ -224,23 +224,23 @@ public class _DiwUtils {
     }
 
     public static void Startup() {
-        _DiwUtils.MC_VERSION_STRING = getMinecraftServer().x(); // getMinecraftVersion
+        _DiwUtils.MC_VERSION_STRING = getMinecraftServer().getMinecraftVersion();
         _DiwUtils.DefaultMOTD = String.format(DefaultMOTD, _DiwUtils.MC_VERSION_STRING);
 
         // Setup BlockHelper
         BlockHelper.mapBlockNames = PluginHelper.legacyBlockIdMap.values().stream()
-                .collect(Collectors.toMap(id -> id, id -> GameRegistry.g.b(PluginHelper.getBlockFromLegacyId(id)).getPath()));
+                .collect(Collectors.toMap((Integer id) -> id, (Integer id) -> IRegistry.BLOCK.getKey(PluginHelper.getBlockFromLegacyId(id)).getPath()));
 
         // Setup Command permissions
-        Commands commands = minecraftServer.func_195571_aL();
-        CommandDispatcher<CommandSource> dispatcher = commands.func_197054_a();
+        Commands commands = minecraftServer.getCommandManager();
+        CommandDispatcher<CommandSource> dispatcher = commands.getDispatcher();
         RootCommandNode<CommandSource> rootCommandNode = dispatcher.getRoot();
         for (CommandNode<CommandSource> commandNode : rootCommandNode.getChildren()) {
             String name = commandNode.getName();
             String permission = "rainbow." + name;
             Predicate<CommandSource> requirement = commandNode.getRequirement();
             Predicate<CommandSource> newRequirement = source -> {
-                Entity entity = source.func_197022_f();
+                Entity entity = source.getEntity();
                 if (entity instanceof EntityPlayerMP) {
                     return ((MC_Player) entity).hasPermission(permission);
                 }
@@ -316,7 +316,7 @@ public class _DiwUtils {
         ServerWrapper.getInstance().registerCommand(new _CmdWorth());
 
         ReadRestrictedCommands();
-        CommandNode<CommandSource> root = getMinecraftServer().func_195571_aL().func_197054_a().getRoot();
+        CommandNode<CommandSource> root = getMinecraftServer().getCommandManager().getDispatcher().getRoot();
         root.getChildren().removeIf(node -> g_removedCommand.contains(node.getName()));
 
         // load plugins
@@ -1959,7 +1959,7 @@ public class _DiwUtils {
     }
 
     public static boolean IsInsideSpawn(int x, int z) {
-        WorldServer world = getMinecraftServer().func_200667_a(DimensionType.OVERWORLD);
+        WorldServer world = getMinecraftServer().getWorld(DimensionType.OVERWORLD);
         BlockPos coords = world.getSpawnPoint();
         int depth = getMinecraftServer().getSpawnProtectionSize();
         int spawnX = coords.getX();
@@ -1984,9 +1984,9 @@ public class _DiwUtils {
         if (ArmorStandsDance) {
             ++g_standFunIdx;
 
-            for (WorldServer world: getMinecraftServer().w()) {
+            for (WorldServer world: getMinecraftServer().getWorlds()) {
 
-                if (world.provider.getDimensionType() == DimensionType.OVERWORLD) {
+                if (world.dimension.getType() == DimensionType.OVERWORLD) {
                     for (MC_Entity entity : ((MC_World) world).getEntities()) {
                         if (entity instanceof MC_ArmorStand) {
                             int x = entity.getLocation().getBlockX();
@@ -2033,7 +2033,7 @@ public class _DiwUtils {
 
     public static void Do_Spawn_Forcefield_MobClean() {
         new ConcurrentHashMap();
-        WorldServer world = getMinecraftServer().func_200667_a(DimensionType.OVERWORLD);
+        WorldServer world = getMinecraftServer().getWorld(DimensionType.OVERWORLD);
 
         for (MC_Entity entity : ((MC_World) world).getEntities()) {
 
@@ -2077,7 +2077,7 @@ public class _DiwUtils {
         MC_Entity bestEnt = null;
         String tgtNameLower = tgtName.toLowerCase();
 
-        for (WorldServer world: getMinecraftServer().w()) {
+        for (WorldServer world: getMinecraftServer().getWorlds()) {
             Iterator<MC_Entity> var12 = ((MC_World) world).getEntities().iterator();
 
             while (true) {

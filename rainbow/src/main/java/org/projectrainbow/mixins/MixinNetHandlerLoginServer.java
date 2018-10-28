@@ -2,9 +2,9 @@ package org.projectrainbow.mixins;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.minecraft.network.NetHandlerLoginServer;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.NetHandlerLoginServer;
 import org.projectrainbow._DiwUtils;
 import org.projectrainbow.interfaces.IBungeeDataStorage;
 import org.spongepowered.asm.mixin.Final;

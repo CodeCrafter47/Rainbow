@@ -13,7 +13,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.profiler.Profiler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -21,11 +20,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.gen.ChunkProviderServer;
-import net.minecraft.world.storage.ISaveHandler;
-import net.minecraft.world.storage.WorldInfo;
-import net.minecraft.world.storage.WorldSavedDataStorage;
 import org.apache.logging.log4j.LogManager;
 import org.projectrainbow.BlockWrapper;
 import org.projectrainbow.PluginHelper;
@@ -35,7 +30,6 @@ import org.projectrainbow.interfaces.IMixinWorldServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.lang.reflect.Constructor;
@@ -45,13 +39,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Mixin(WorldServer.class)
-public abstract class MixinWorldServer extends World implements MC_World, IMixinWorldServer {
-
-
-    protected MixinWorldServer(ISaveHandler iSaveHandler, @Nullable WorldSavedDataStorage worldSavedDataStorage, WorldInfo worldInfo, Dimension dimension, Profiler profiler, boolean b) {
-        super(iSaveHandler, worldSavedDataStorage, worldInfo, dimension, profiler, b);
-        // dummy
-    }
+public abstract class MixinWorldServer extends MixinWorld implements MC_World, IMixinWorldServer {
 
     @Shadow
     public abstract boolean isChunkLoaded(int x, int z, boolean ignored);
@@ -80,7 +68,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
     @Override
     public MC_DirectionNESWUD getBlockFacing(int x, int y, int z) {
         try {
-            EnumFacing value = getBlockState(new BlockPos(x, y, z)).getValue(BlockDirectional.FACING);
+            EnumFacing value = getBlockState(new BlockPos(x, y, z)).get(BlockDirectional.FACING);
             return MoreObjects.firstNonNull(PluginHelper.directionMap.get(value), MC_DirectionNESWUD.UNSPECIFIED);
         } catch (Throwable ignored) {
             return MC_DirectionNESWUD.UNSPECIFIED;
@@ -91,7 +79,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
     public void setBlockRotation(int x, int y, int z, int rotation) {
         BlockPos blockPos = new BlockPos(x, y, z);
         try {
-            setBlockState(blockPos, getBlockState(blockPos).func_206870_a(BlockStandingSign.ROTATION, rotation));
+            setBlockState(blockPos, getBlockState(blockPos).with(BlockStandingSign.ROTATION, rotation));
         } catch (Throwable ignored) {
             // block not a sign, ignore
         }
@@ -105,7 +93,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
 
         BlockPos blockPos = new BlockPos(x, y, z);
         try {
-            setBlockState(blockPos, getBlockState(blockPos).func_206870_a(BlockDirectional.FACING, PluginHelper.directionMap.inverse().get(direction)));
+            setBlockState(blockPos, getBlockState(blockPos).with(BlockDirectional.FACING, PluginHelper.directionMap.inverse().get(direction)));
         } catch (Throwable ignored) {
             // block not directional, ignore
         }
@@ -116,7 +104,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
         BlockPos coords = new BlockPos(x, y, z);
 
         try {
-            return getBlockState(coords).getValue(BlockStandingSign.ROTATION);
+            return getBlockState(coords).get(BlockStandingSign.ROTATION);
         } catch (Throwable ignored) {
             return 0;
         }
@@ -168,7 +156,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
         if (mat == Material.AIR) {
             return false;
         } else {
-            bs.func_196949_c(this, coords, toolOptional == null ? 0 : toolOptional.getEnchantmentLevel(MC_EnchantmentType.FORTUNE)); // dropBlockAsItem
+            bs.dropBlockAsItem((World)(Object)this, coords, toolOptional == null ? 0 : toolOptional.getEnchantmentLevel(MC_EnchantmentType.FORTUNE)); // dropBlockAsItem
             setBlockState(coords, Blocks.AIR.getDefaultState());
             return true;
         }
@@ -182,7 +170,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
 
     @Override
     public String getName() {
-        return super.getWorldInfo().getWorldName() + provider.getDimensionType().getSuffix();
+        return getWorldInfo().getWorldName() + dimension.getType().getSuffix();
     }
 
     @Override
@@ -264,7 +252,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
         double var4 = (double) (rand.nextFloat() * v) + (double) (1.0F - v) * 0.5D;
         double var6 = (double) (rand.nextFloat() * v) + (double) (1.0F - v) * 0.5D;
         double var8 = (double) (rand.nextFloat() * v) + (double) (1.0F - v) * 0.5D;
-        EntityItem var10 = new EntityItem(this, var2.x + var4, var2.y + var6, var2.z + var8, PluginHelper.getItemStack(var1));
+        EntityItem var10 = new EntityItem((World)(Object)this, var2.x + var4, var2.y + var6, var2.z + var8, PluginHelper.getItemStack(var1));
         var10.setDefaultPickupDelay();
         spawnEntity(var10);
         return (MC_Entity) var10;
@@ -272,17 +260,17 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
 
     @Override
     public int getDimension() {
-        return provider.getDimensionType().getId();
+        return dimension.getType().getId();
     }
 
     @Override
     public int getDayTime() {
-        return (int) getWorldTime();
+        return (int) shadow$getDayTime();
     }
 
     @Override
     public int getGameTime() {
-        return (int) getTotalWorldTime();
+        return (int) shadow$getGameTime();
     }
 
     @Override
@@ -313,12 +301,12 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
         int xInChunk = x & 15;
         int zInChunk = z & 15;
 
-        var2.func_201590_e()[zInChunk << 4 | xInChunk] = biomeGenBase;
+        var2.getBiomes()[zInChunk << 4 | xInChunk] = biomeGenBase;
     }
 
     @Override
     public boolean loadChunk(int x, int z) {
-        return super.getChunk(x, z) != null;
+        return getChunk(x, z) != null;
     }
 
     @Override
@@ -328,7 +316,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
 
     @Override
     public List<MC_Chunk> getLoadedChunks() {
-        return (List<MC_Chunk>) new ArrayList(((ChunkProviderServer) super.chunkProvider).a()); // getLoadedChunks
+        return (List<MC_Chunk>) new ArrayList(((ChunkProviderServer) super.chunkProvider).getLoadedChunks()); // getLoadedChunks
     }
 
     @Override
@@ -355,7 +343,7 @@ public abstract class MixinWorldServer extends World implements MC_World, IMixin
             compound.read(dis, 0, new NBTSizeTracker(Long.MAX_VALUE));
             bis.close();
 
-            Entity entity = EntityType.func_200716_a(compound, this);
+            Entity entity = EntityType.create(compound, (World)(Object) this);
             entity.setPositionAndRotation(loc.x, loc.y, loc.z, loc.yaw, loc.pitch);
             entity.forceSpawn = true;
 

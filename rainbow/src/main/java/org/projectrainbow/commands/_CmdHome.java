@@ -51,9 +51,9 @@ public class _CmdHome implements MC_Command {
             return;
         }
         try {
-            p.dismountRidingEntity();
+            p.stopRiding();
             for (Entity entity : p.getPassengers()) {
-                entity.dismountRidingEntity();
+                entity.stopRiding();
             }
         } catch (Exception exc) {
             System.out.println("Home Step 1 SetVehicle EXC: " + exc.getMessage());

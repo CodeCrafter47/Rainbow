@@ -123,7 +123,7 @@ public abstract class MixinEntityHorse extends MixinEntityAnimal {
     @Override
     public MC_Attribute getAttribute(MC_AttributeType type) {
         if (type == MC_AttributeType.HORSE_JUMP_STRENGTH) {
-            return (MC_Attribute) getEntityAttribute(JUMP_STRENGTH);
+            return (MC_Attribute) getAttribute(JUMP_STRENGTH);
         }
         return super.getAttribute(type);
     }
