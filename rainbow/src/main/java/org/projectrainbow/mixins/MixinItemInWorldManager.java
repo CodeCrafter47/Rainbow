@@ -65,7 +65,7 @@ public class MixinItemInWorldManager {
         }
         if (bWrap != null) {
             MC_EventInfo ei = new MC_EventInfo();
-            Hooks.onAttemptBlockPlace((MC_Player) context.getWorld(), loc, bWrap, (MC_ItemStack) (Object) itemStack, locPlacedAgainst, PluginHelper.directionMap.get(context.getFace()), ei);
+            Hooks.onAttemptBlockPlace((MC_Player) context.getPlayer(), loc, bWrap, (MC_ItemStack) (Object) itemStack, locPlacedAgainst, PluginHelper.directionMap.get(context.getFace()), ei);
             if (ei.isCancelled) {
                 return EnumActionResult.FAIL;
             }
@@ -73,7 +73,7 @@ public class MixinItemInWorldManager {
         EnumActionResult a = itemStack.onItemUse(context);
         if (a == EnumActionResult.SUCCESS) {
             LogManager.getLogger().debug("JKC DBG: " + context.getWorld().toString() + " PLACING " + itemStack.toString());
-            Hooks.onItemPlaced((MC_Player) context.getWorld(), loc, (MC_ItemStack) (Object) itemStack, locPlacedAgainst, PluginHelper.directionMap.get(context.getFace()));
+            Hooks.onItemPlaced((MC_Player) context.getPlayer(), loc, (MC_ItemStack) (Object) itemStack, locPlacedAgainst, PluginHelper.directionMap.get(context.getFace()));
         }
         return a;
     }
