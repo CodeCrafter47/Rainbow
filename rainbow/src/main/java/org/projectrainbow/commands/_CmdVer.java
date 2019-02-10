@@ -40,6 +40,6 @@ public class _CmdVer implements MC_Command {
     public void handleCommand(MC_Player player, String[] strings) {
         _DiwUtils.reply(player, String.valueOf(_ColorHelper.AQUA) + "Rainbow " + _ColorHelper.LIGHT_PURPLE + _DiwUtils.MC_VERSION_STRING + " b" + Bootstrap.buildNumber);
         _DiwUtils.reply(player, "Checking for update, please wait...");
-        _DiwUtils.reply(player, Updater.checkForUpdate());
+        _DiwUtils.reply(player, _DiwUtils.updater.checkForUpdate());
     }
 }

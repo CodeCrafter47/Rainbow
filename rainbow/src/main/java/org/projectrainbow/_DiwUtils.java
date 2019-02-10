@@ -90,6 +90,7 @@ public class _DiwUtils {
     public static boolean UpdateNameColorOnTab = false;
     public static double netherDistanceRatio = 8.0D;
     public static long g_restartCountdown = -1L;
+    public static Updater updater = new Updater("master", "CodeCrafter47/Rainbow", false);
 
     public static MinecraftServer getMinecraftServer() {
         return minecraftServer;
