@@ -25,7 +25,7 @@ public class Updater {
 
     public Updater(String branch, String repo, boolean ignoreDirty) {
         this.branch = branch;
-        this.repo = repo
+        this.repo = repo;
         this.ignoreDirty = ignoreDirty;
     }
 
@@ -36,7 +36,7 @@ public class Updater {
             return "You are running the latest version.";
 
         if (behind == -2)
-            return "HTTP 404 Error. Check your internet connection."
+            return "HTTP 404 Error. Check your internet connection.";
 
         if (behind < 0)
             return "Unknown version, custom build?";
@@ -45,7 +45,7 @@ public class Updater {
     }
 
     public int getBehind() {
-        Attributes a = getManifest(Rail_Updater.class).getMainAttributes();
+        Attributes a = getManifest(Updater.class).getMainAttributes();
         String hash = a.getValue("GitCommitHash");
         if (hash.endsWith("-dirty")) {
             if (ignoreDirty) hash = hash.replace("-dirty", "");
